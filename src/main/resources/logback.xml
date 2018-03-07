@@ -1,0 +1,32 @@
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${application.home:-.}/logs/application.log</file>
+    <encoder>
+      <pattern>%date{ISO8601} %-5level [%logger] [%X{sourceThread}] [%X{akkaSource}] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%X{akkaTimestamp} %highlight(%-5level) [%X{sourceThread}] [%X{akkaSource}] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ASYNCFILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="FILE" />
+  </appender>
+
+  <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="STDOUT" />
+  </appender>
+
+  <logger name="net.creasource" level="DEBUG" />
+  <logger name="akka.event.slf4j.Slf4jLogger" level="WARN" />
+
+  <root level="INFO">
+    <appender-ref ref="ASYNCFILE" />
+    <appender-ref ref="ASYNCSTDOUT" />
+  </root>
+
+</configuration>

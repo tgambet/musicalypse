@@ -1,14 +1,14 @@
 import scala.sys.process.Process
 
-lazy val akkaHttpVersion = "10.0.10"
-lazy val akkaVersion    = "2.5.6"
+lazy val akkaHttpVersion = "10.1.0-RC2"
+lazy val akkaVersion    = "2.5.11"
 
 val ng = inputKey[Int]("The angular-cli command.")
 val ngBuild = taskKey[Int]("ng build -prod -aot.")
 
 lazy val root = (project in file(".")).
   settings(
-    name            := "Akka Http Angular",
+    name            := "Musicalypse",
     version         := "0.1",
     licenses        := Seq("Unlicense" -> new URL("http://unlicense.org/")),
     organization    := "net.creasource",

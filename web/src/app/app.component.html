@@ -15,35 +15,33 @@
         <div class="a1">
           <mat-list class="artists">
             <a href="" mat-list-item *ngFor="let artist of artists">
-              <div matListAvatar class="artistAvatar"></div>
+              <mat-checkbox color="primary" matListIcon></mat-checkbox>
+              <div matListAvatar class="avatar"></div>
               <span matLine matTooltip="{{artist}}">{{artist}}</span>
               <span matLine>33 songs</span>
-              <mat-checkbox></mat-checkbox>
               <i class="material-icons">keyboard_arrow_right</i>
               <mat-divider></mat-divider>
             </a>
           </mat-list>
         </div>
         <div class="a2">
-          <mat-list class="artists">
-            <a href="" mat-list-item *ngFor="let artist of artists">
-              <div matListAvatar class="artistAvatar"></div>
-              <span matLine matTooltip="{{artist}}">{{artist}}</span>
+          <mat-list class="albums">
+            <a href="" mat-list-item *ngFor="let album of albums">
+              <mat-checkbox color="primary" matListIcon></mat-checkbox>
+              <div matListAvatar class="avatar"></div>
+              <span matLine matTooltip="{{album}}">{{album}}</span>
               <span matLine>33 songs</span>
-              <mat-checkbox></mat-checkbox>
               <i class="material-icons">keyboard_arrow_right</i>
               <mat-divider></mat-divider>
             </a>
           </mat-list>
         </div>
         <div class="a3">
-          <mat-list class="artists">
-            <a href="" mat-list-item *ngFor="let artist of artists">
-              <div matListAvatar class="artistAvatar"></div>
-              <span matLine matTooltip="{{artist}}">{{artist}}</span>
-              <span matLine>33 songs</span>
-              <mat-checkbox></mat-checkbox>
-              <i class="material-icons">keyboard_arrow_right</i>
+          <mat-list class="tracks">
+            <a href="" mat-list-item *ngFor="let track of tracks">
+              <span matLine matTooltip="{{track}}">{{track}}</span>
+              <span matLine>01:00</span>
+              <i class="material-icons">play_arrow</i>
               <mat-divider></mat-divider>
             </a>
           </mat-list>

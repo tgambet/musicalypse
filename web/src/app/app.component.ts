@@ -18,6 +18,21 @@ export class AppComponent implements OnInit {
     'Metallica'
   ];
 
+  albums: string[] = [
+    'The Black album',
+    'Death Magnetic'
+  ];
+
+  tracks: string[] = [
+    'That Was Just Your Life',
+    'The End Of The Line',
+    'Broken, Beat and Scarred',
+    'The Day That Never Comes',
+    'All Nightmare Long',
+    'Cyanide',
+    'The Unforgiven III'
+  ];
+
   // isSmallScreen: boolean;
 
   constructor(

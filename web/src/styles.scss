@@ -15,4 +15,35 @@ app-root {
   flex-direction: column;
 }
 
+.albumArt {
+  .mat-tab-header {
+    .mat-tab-labels {
+      justify-content: center;
+      align-items: center;
+    }
+    .mat-tab-label {
+      min-width: unset;
+      border-radius: 50%;
+      padding: 0;
+      height: 8px;
+      width: 8px;
+      border: 1px solid black;
+      margin: 0 2px;
+    }
+    .mat-tab-label-active {
+      background-color: darkgrey !important;
+      height: 12px;
+      width: 12px;
+    }
+    .mat-ripple-element {
+      display: none;
+    }
+    border: none;
+  }
+  mat-ink-bar {
+    display: none;
+  }
+}
+
+
 

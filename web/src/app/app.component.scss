@@ -108,21 +108,18 @@ mat-list {
   text-align: center;
 }
 
-.volume {
+.volume, .progress {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   mat-slider {
-    width: 100%;
+    flex-grow: 1;
+    margin: 0 0.5rem;
   }
 }
 
 .albumArt {
   flex-grow: 1;
-  border: 1px solid #f0f0f0;
-}
-
-.progress {
-  mat-slider {
-    width: 100%;
-  }
 }
 
 .menu {
@@ -134,6 +131,7 @@ mat-list {
     box-sizing: content-box;
     border: 1px solid #c0c0c0;
     border-radius: 50%;
+    padding: 4px;
     width: 3rem;
     height: 3rem;
     i {
@@ -144,6 +142,7 @@ mat-list {
     box-sizing: content-box;
     border: 1px solid #c0c0c0;
     border-radius: 50%;
+    padding: 4px;
     width: 2rem;
     height: 2rem;
     i {

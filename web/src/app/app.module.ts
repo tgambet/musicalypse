@@ -16,6 +16,8 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     HttpClientModule,
     Material.MatTabsModule,
+    Material.MatFormFieldModule,
+    Material.MatInputModule,
     Material.MatSliderModule,
     Material.MatListModule,
     Material.MatTooltipModule,

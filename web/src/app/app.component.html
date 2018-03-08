@@ -1,24 +1,59 @@
 <mat-toolbar class="header">
-  <a *ngIf="isSmallScreen && !sidenav.opened" (click)="sidenav.open()" class="icon"><mat-icon>menu</mat-icon></a>
-  <a *ngIf="isSmallScreen && sidenav.opened" (click)="sidenav.close()" class="icon"><mat-icon>close</mat-icon></a>
-  Akka-Http Angular
+  <a *ngIf="!sidenav.opened" (click)="sidenav.open()" class="icon"><mat-icon>menu</mat-icon></a>
+  <a *ngIf="sidenav.opened" (click)="sidenav.close()" class="icon"><mat-icon>close</mat-icon></a>
+  Musicalypse
 </mat-toolbar>
 
 <mat-sidenav-container>
-  <mat-sidenav #sidenav [mode]="isSmallScreen ? 'over' : 'side'">
+  <mat-sidenav #sidenav [mode]="'over'">
     <p>Sidenav</p>
   </mat-sidenav>
 
   <div class="container">
     <div class="content">
-      <p>Welcome to Akka-Http Angular.</p>
-      <p>This is an Angular5 project backed by akka-http.</p>
-      <p>It provides a basic UI shell using Angular Material and WebSockets support out-of-the-box.</p>
-      <p>Find out more information on features and installation <a href="https://github.com/tgambet/akka-http-angular">on Github</a>.</p>
+      <div class="playerContainer">
+        <div class="a1">
+          <mat-list class="artists">
+            <a href="" mat-list-item *ngFor="let artist of artists">
+              <div matListAvatar class="artistAvatar"></div>
+              <span matLine matTooltip="{{artist}}">{{artist}}</span>
+              <span matLine>33 songs</span>
+              <mat-checkbox></mat-checkbox>
+              <i class="material-icons">keyboard_arrow_right</i>
+              <mat-divider></mat-divider>
+            </a>
+          </mat-list>
+        </div>
+        <div class="a2">
+          <mat-list class="artists">
+            <a href="" mat-list-item *ngFor="let artist of artists">
+              <div matListAvatar class="artistAvatar"></div>
+              <span matLine matTooltip="{{artist}}">{{artist}}</span>
+              <span matLine>33 songs</span>
+              <mat-checkbox></mat-checkbox>
+              <i class="material-icons">keyboard_arrow_right</i>
+              <mat-divider></mat-divider>
+            </a>
+          </mat-list>
+        </div>
+        <div class="a3">
+          <mat-list class="artists">
+            <a href="" mat-list-item *ngFor="let artist of artists">
+              <div matListAvatar class="artistAvatar"></div>
+              <span matLine matTooltip="{{artist}}">{{artist}}</span>
+              <span matLine>33 songs</span>
+              <mat-checkbox></mat-checkbox>
+              <i class="material-icons">keyboard_arrow_right</i>
+              <mat-divider></mat-divider>
+            </a>
+          </mat-list>
+        </div>
+        <div class="a4">test</div>
+      </div>
     </div>
-    <mat-toolbar class="footer">
-      Footer
-    </mat-toolbar>
+    <!--<mat-toolbar class="footer">-->
+      <!--Footer-->
+    <!--</mat-toolbar>-->
   </div>
 
 </mat-sidenav-container>

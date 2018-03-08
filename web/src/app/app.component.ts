@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as Material from '@angular/material';
-import {BreakpointObserver} from '@angular/cdk/layout';
+// import {BreakpointObserver} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-root',
@@ -9,19 +9,23 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 })
 export class AppComponent implements OnInit {
 
-  title = 'app';
-
   @ViewChild('sidenav')
   sidenav: Material.MatSidenav;
 
-  isSmallScreen: boolean;
+  artists: string[] = [
+    'Orelsan',
+    'IAM',
+    'Metallica'
+  ];
+
+  // isSmallScreen: boolean;
 
   constructor(
-    private breakpointObserver: BreakpointObserver
+    // private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
-    this.breakpointObserver.observe('(max-width: 960px)').subscribe(result => {
+/*    this.breakpointObserver.observe('(max-width: 960px)').subscribe(result => {
       if (result.matches) {
         this.isSmallScreen = true;
         this.sidenav.close();
@@ -29,7 +33,7 @@ export class AppComponent implements OnInit {
         this.isSmallScreen = false;
         this.sidenav.open();
       }
-    });
+    });*/
   }
 
 }

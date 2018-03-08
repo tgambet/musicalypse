@@ -20,10 +20,60 @@ mat-sidenav {
   flex-direction: column;
   .content {
     flex-grow: 1;
-    padding: 1rem;
+    position: relative;
   }
 }
 
-p {
-  margin-bottom: 0.5rem;
+.playerContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
 }
+
+.a1, .a2, .a3 {
+  overflow-y: scroll;
+  width: 240px;
+}
+
+.a2 {
+  //background-color: black;
+}
+
+.a3 {
+  //background-color: aqua;
+}
+
+.a4 {
+  flex-grow: 1;
+  width: 600px;
+}
+
+mat-list {
+  padding-top: 0;
+  a {
+    text-decoration: none;
+    mat-checkbox {
+      visibility: hidden;
+    }
+    .mat-checkbox-checked {
+      visibility: visible;
+    }
+    &:hover {
+      mat-checkbox {
+        visibility: visible;
+      }
+    }
+  }
+}
+
+.artists {
+  .artistAvatar {
+    background-color: black;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+

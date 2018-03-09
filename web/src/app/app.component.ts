@@ -38,12 +38,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     'The Unforgiven III'
   ];
 
-  playing = false;
-
-  // volume = 1.0;
-  //
-  // muted = false;
-
   // isSmallScreen: boolean;
 
   constructor(
@@ -63,17 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.audio.play();
-  }
 
-  play() {
-    this.playing = true;
-    this.audio.play();
-  }
-
-  pause() {
-    this.playing = false;
-    this.audio.pause();
   }
 
 }

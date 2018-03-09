@@ -54,9 +54,9 @@
             </div>
             <div class="volume">
               <a (click)="audio.muted = !audio.muted">
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.66">volume_up</i>
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.33 && audio.volume <= 0.66">volume_down</i>
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume <= 0.33">volume_mute</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.50">volume_up</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0 && audio.volume <= 0.50">volume_down</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume == 0">volume_mute</i>
                 <i class="material-icons" *ngIf="audio.muted">volume_off</i>
               </a>
               <mat-slider
@@ -207,9 +207,9 @@
               <a class="previous">
                 <i class="material-icons">skip_previous</i>
               </a>
-              <a class="playPause" (click)="playing ? pause() : play()">
-                <i class="material-icons" *ngIf="playing">pause</i>
-                <i class="material-icons" *ngIf="!playing">play_arrow</i>
+              <a class="playPause" (click)="audio.playing ? audio.pause() : audio.play()">
+                <i class="material-icons" *ngIf="audio.playing">pause</i>
+                <i class="material-icons" *ngIf="!audio.playing">play_arrow</i>
               </a>
               <a class="next">
                 <i class="material-icons">skip_next</i>

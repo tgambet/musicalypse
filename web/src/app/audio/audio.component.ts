@@ -30,15 +30,23 @@ export class AudioComponent implements OnInit, AfterViewInit {
     this.audioElement = this.audioElementRef.nativeElement;
     this.audioElement.addEventListener(
       'loadedmetadata',
-      m => {
-        this.duration = m.target['duration'];
-      }
+      m => this.duration = m.target['duration']
     );
     this.audioElement.addEventListener(
       'timeupdate',
-      m => {
-        this.currentTime = m.target['currentTime'];
-      }
+      m => this.currentTime = m.target['currentTime']
+    );
+    this.audioElement.addEventListener(
+      'playing',
+      m => this.playing = true
+    );
+    this.audioElement.addEventListener(
+      'pause',
+      m => this.playing = false
+    );
+    this.audioElement.addEventListener(
+      'ended',
+      m => this.playing = false
     );
   }
 
@@ -47,12 +55,12 @@ export class AudioComponent implements OnInit, AfterViewInit {
   }
 
   play() {
-    this.audioElement.play().then(v => this.playing = true);
+    // TODO deal with errors
+    this.audioElement.play();
   }
 
   pause() {
     this.audioElement.pause();
-    this.playing = false;
   }
 
 }

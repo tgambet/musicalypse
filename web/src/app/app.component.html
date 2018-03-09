@@ -54,9 +54,18 @@
             </div>
             <div class="volume">
               <a (click)="audio.muted = !audio.muted">
-                <i class="material-icons">volume_down</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.66">volume_up</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.33 && audio.volume <= 0.66">volume_down</i>
+                <i class="material-icons" *ngIf="!audio.muted && audio.volume <= 0.33">volume_mute</i>
+                <i class="material-icons" *ngIf="audio.muted">volume_off</i>
               </a>
-              <mat-slider [value]="audio.volume" (input)="audio.volume = $event.value" max="1" step="0.01" color="primary"></mat-slider>
+              <mat-slider
+                [disabled]="audio.muted"
+                [value]="audio.volume"
+                (input)="audio.volume = $event.value"
+                max="1"
+                step="0.01"
+                color="primary"></mat-slider>
             </div>
             <div class="carousel">
               <mat-tab-group selectedIndex="1">

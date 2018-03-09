@@ -14,14 +14,21 @@
       <div class="playerContainer">
         <div class="a1">
           <mat-list class="artists">
-            <a href="" mat-list-item *ngFor="let artist of artists">
-              <mat-checkbox color="primary" matListIcon></mat-checkbox>
-              <div matListAvatar class="avatar"></div>
-              <span matLine matTooltip="{{artist}}" matTooltipShowDelay="1000">{{artist}}</span>
-              <span matLine>33 songs</span>
-              <i class="material-icons">keyboard_arrow_right</i>
-              <mat-divider></mat-divider>
-            </a>
+            <ng-container *ngFor="let artist of artists">
+              <a (click)="selectArtist(artist)" mat-list-item>
+                <mat-checkbox
+                  color="primary"
+                  matListIcon
+                  [checked]="isSelectedArtist(artist)"
+                  (change)="$event.checked ? addArtist(artist) : removeArtist(artist)"
+                  (click)="$event.stopPropagation()"></mat-checkbox>
+                <div matListAvatar class="avatar"></div>
+                <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
+                <span matLine>{{artist.songsNumber}} songs</span>
+                <i class="material-icons">keyboard_arrow_right</i>
+                <mat-divider></mat-divider>
+              </a>
+            </ng-container>
           </mat-list>
         </div>
         <div class="a2">
@@ -29,8 +36,8 @@
             <a href="" mat-list-item *ngFor="let album of albums">
               <mat-checkbox color="primary" matListIcon></mat-checkbox>
               <div matListAvatar class="avatar"></div>
-              <span matLine matTooltip="{{album}}" matTooltipShowDelay="1000">{{album}}</span>
-              <span matLine>33 songs</span>
+              <span matLine matTooltip="{{album.name}}" matTooltipShowDelay="1000">{{album.name}}</span>
+              <span matLine>{{album.songsNumber}} songs</span>
               <i class="material-icons">keyboard_arrow_right</i>
               <mat-divider></mat-divider>
             </a>
@@ -39,8 +46,8 @@
         <div class="a3">
           <mat-list class="tracks">
             <a href="" mat-list-item *ngFor="let track of tracks">
-              <span matLine matTooltip="{{track}}" matTooltipShowDelay="1000">{{track}}</span>
-              <span matLine>01:00</span>
+              <span matLine matTooltip="{{track.name}}" matTooltipShowDelay="1000">{{track.name}}</span>
+              <span matLine>{{track.duration | sgTime}}</span>
               <i class="material-icons">play_arrow</i>
               <mat-divider></mat-divider>
             </a>

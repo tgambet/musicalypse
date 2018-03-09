@@ -2,6 +2,8 @@ import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import * as Material from '@angular/material';
 import {AudioComponent} from './audio/audio.component';
 // import {BreakpointObserver} from '@angular/cdk/layout';
+import { Artist, Album, Track } from './model';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -17,26 +19,29 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild(AudioComponent)
   audio: AudioComponent;
 
-  artists: string[] = [
-    'Orelsan',
-    'IAM',
-    'Metallica'
+  artists: Artist[] = [
+    { id: '0', name: 'Orelsan', songsNumber: 21 },
+    { id: '1', name: 'IAM', songsNumber: 45 },
+    { id: '2', name: 'Metallica', songsNumber: 73 },
   ];
 
-  albums: string[] = [
-    'The Black album',
-    'Death Magnetic'
+  albums: Album[] = [
+    { id: '00', artistId: '2', name: 'The Black album', songsNumber: 35 },
+    { id: '01', artistId: '2', name: 'Death Magnetic', songsNumber: 38 },
+    { id: '02', artistId: '0', name: 'La Fête Est Finie', songsNumber: 38 }
   ];
 
-  tracks: string[] = [
-    'That Was Just Your Life',
-    'The End Of The Line',
-    'Broken, Beat and Scarred',
-    'The Day That Never Comes',
-    'All Nightmare Long',
-    'Cyanide',
-    'The Unforgiven III'
+  tracks: Track[] = [
+    { id: '000', albumId: '01', artistId: '2', name: 'That Was Just Your Life', source: '/assets/music/zone.mp3', duration: 120 },
+    { id: '001', albumId: '01', artistId: '2', name: 'The End Of The Line', source: '/assets/music/zone.mp3', duration: 145 },
+    { id: '002', albumId: '01', artistId: '2', name: 'Broken, Beat and Scarred', source: '/assets/music/zone.mp3', duration: 264 },
+    { id: '003', albumId: '01', artistId: '2', name: 'The Day That Never Comes', source: '/assets/music/zone.mp3', duration: 186 },
+    { id: '004', albumId: '01', artistId: '2', name: 'All Nightmare Long', source: '/assets/music/zone.mp3', duration: 321 },
+    { id: '005', albumId: '01', artistId: '2', name: 'Cyanide', source: '/assets/music/zone.mp3', duration: 432 }
   ];
+
+  selectedArtistsIds: string[] = [];
+  selectedAlbumsIds: string[] = [];
 
   // isSmallScreen: boolean;
 
@@ -58,6 +63,24 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
 
+  }
+
+  selectArtist(artist: Artist) {
+    this.selectedArtistsIds = [artist.id];
+  }
+
+  addArtist(artist: Artist) {
+    if (!_.includes(this.selectedArtistsIds, artist.id)) {
+      this.selectedArtistsIds.push(artist.id);
+    }
+  }
+
+  removeArtist(artist: Artist) {
+    _.remove(this.selectedArtistsIds, a => a === artist.id);
+  }
+
+  isSelectedArtist(artist: Artist): boolean {
+    return _.includes(this.selectedArtistsIds, artist.id);
   }
 
 }

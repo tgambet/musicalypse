@@ -83,4 +83,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     return _.includes(this.selectedArtistsIds, artist.id);
   }
 
+  getSelectedAlbums(): Album[] {
+    return _.filter(this.albums, album => _.includes(this.selectedArtistsIds, album.artistId));
+  }
+
+  selectAlbum(album: Album) {
+    this.selectedAlbumsIds = [album.id];
+  }
+
+  addAlbum(album: Album) {
+    if (!_.includes(this.selectedAlbumsIds, album.id)) {
+      this.selectedAlbumsIds.push(album.id);
+    }
+  }
+
+  removeAlbum(album: Album) {
+    _.remove(this.selectedAlbumsIds, a => a === album.id);
+  }
+
+  isSelectedAlbum(album: Album): boolean {
+    return _.includes(this.selectedAlbumsIds, album.id);
+  }
+
+  getSelectedTracks(): Track[] {
+    return _.filter(this.tracks, track => _.includes(this.selectedAlbumsIds, track.albumId));
+  }
+
 }

@@ -1,5 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import * as Material from '@angular/material';
+import {AudioComponent} from './audio/audio.component';
 // import {BreakpointObserver} from '@angular/cdk/layout';
 
 @Component({
@@ -7,10 +8,14 @@ import * as Material from '@angular/material';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild('sidenav')
   sidenav: Material.MatSidenav;
+
+
+  @ViewChild(AudioComponent)
+  audio: AudioComponent;
 
   artists: string[] = [
     'Orelsan',
@@ -33,6 +38,8 @@ export class AppComponent implements OnInit {
     'The Unforgiven III'
   ];
 
+  playing = false;
+
   // isSmallScreen: boolean;
 
   constructor(
@@ -49,6 +56,20 @@ export class AppComponent implements OnInit {
         this.sidenav.open();
       }
     });*/
+  }
+
+  ngAfterViewInit(): void {
+    // this.audio.play();
+  }
+
+  play() {
+    this.playing = true;
+    this.audio.play();
+  }
+
+  pause() {
+    this.playing = false;
+    this.audio.pause();
   }
 
 }

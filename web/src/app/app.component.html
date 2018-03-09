@@ -17,7 +17,7 @@
             <a href="" mat-list-item *ngFor="let artist of artists">
               <mat-checkbox color="primary" matListIcon></mat-checkbox>
               <div matListAvatar class="avatar"></div>
-              <span matLine matTooltip="{{artist}}">{{artist}}</span>
+              <span matLine matTooltip="{{artist}}" matTooltipShowDelay="1000">{{artist}}</span>
               <span matLine>33 songs</span>
               <i class="material-icons">keyboard_arrow_right</i>
               <mat-divider></mat-divider>
@@ -29,7 +29,7 @@
             <a href="" mat-list-item *ngFor="let album of albums">
               <mat-checkbox color="primary" matListIcon></mat-checkbox>
               <div matListAvatar class="avatar"></div>
-              <span matLine matTooltip="{{album}}">{{album}}</span>
+              <span matLine matTooltip="{{album}}" matTooltipShowDelay="1000">{{album}}</span>
               <span matLine>33 songs</span>
               <i class="material-icons">keyboard_arrow_right</i>
               <mat-divider></mat-divider>
@@ -39,7 +39,7 @@
         <div class="a3">
           <mat-list class="tracks">
             <a href="" mat-list-item *ngFor="let track of tracks">
-              <span matLine matTooltip="{{track}}">{{track}}</span>
+              <span matLine matTooltip="{{track}}" matTooltipShowDelay="1000">{{track}}</span>
               <span matLine>01:00</span>
               <i class="material-icons">play_arrow</i>
               <mat-divider></mat-divider>
@@ -57,7 +57,7 @@
               <mat-slider color="primary"></mat-slider>
             </div>
             <div class="carousel">
-              <mat-tab-group >
+              <mat-tab-group selectedIndex="1">
                 <mat-tab>
                   <div class="details">
                     <mat-form-field>
@@ -191,8 +191,9 @@
               <a class="previous">
                 <i class="material-icons">skip_previous</i>
               </a>
-              <a class="playPause">
-                <i class="material-icons">pause</i>
+              <a class="playPause" (click)="playing ? pause() : play()">
+                <i class="material-icons" *ngIf="playing">pause</i>
+                <i class="material-icons" *ngIf="!playing">play_arrow</i>
               </a>
               <a class="next">
                 <i class="material-icons">skip_next</i>
@@ -201,13 +202,13 @@
                 <i class="material-icons">more_vert</i>
               </a>
             </div>
+            <div class="audio">
+              <app-audio></app-audio>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!--<mat-toolbar class="footer">-->
-      <!--Footer-->
-    <!--</mat-toolbar>-->
   </div>
 
 </mat-sidenav-container>

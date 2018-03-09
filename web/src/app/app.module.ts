@@ -6,10 +6,12 @@ import * as Material from '@angular/material';
 import { BreakpointObserver, MediaMatcher } from '@angular/cdk/layout';
 
 import { AppComponent } from './app.component';
+import { AudioComponent } from './audio/audio.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AudioComponent
   ],
   imports: [
     BrowserModule,

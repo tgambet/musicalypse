@@ -191,14 +191,14 @@
               </mat-tab-group>
             </div>
             <div class="progress">
-              <span>{{audio.currentTime}}</span>
+              <span>{{audio.currentTime | sgTime}}</span>
               <mat-slider
                 color="primary"
                 step="0.01"
                 [max]="audio.duration"
                 [value]="audio.currentTime"
                 (change)="audio.seekTo($event.value)"></mat-slider>
-              <span>{{audio.duration}}</span>
+              <span>{{audio.duration | sgTime}}</span>
             </div>
             <div class="menu">
               <a class="shuffle">

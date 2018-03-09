@@ -7,11 +7,13 @@ import { BreakpointObserver, MediaMatcher } from '@angular/cdk/layout';
 
 import { AppComponent } from './app.component';
 import { AudioComponent } from './audio/audio.component';
+import { TimePipe } from './time.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AudioComponent
+    AudioComponent,
+    TimePipe
   ],
   imports: [
     BrowserModule,

@@ -53,8 +53,10 @@
               Metallica
             </div>
             <div class="volume">
-              <i class="material-icons">volume_down</i>
-              <mat-slider color="primary"></mat-slider>
+              <a (click)="audio.muted = !audio.muted">
+                <i class="material-icons">volume_down</i>
+              </a>
+              <mat-slider [value]="audio.volume" (input)="audio.volume = $event.value" max="1" step="0.01" color="primary"></mat-slider>
             </div>
             <div class="carousel">
               <mat-tab-group selectedIndex="1">
@@ -180,9 +182,14 @@
               </mat-tab-group>
             </div>
             <div class="progress">
-              <span>0:30</span>
-              <mat-slider color="primary"></mat-slider>
-              <span>1:00</span>
+              <span>{{audio.currentTime}}</span>
+              <mat-slider
+                color="primary"
+                step="0.01"
+                [max]="audio.duration"
+                [value]="audio.currentTime"
+                (change)="audio.seekTo($event.value)"></mat-slider>
+              <span>{{audio.duration}}</span>
             </div>
             <div class="menu">
               <a class="shuffle">
@@ -203,7 +210,11 @@
               </a>
             </div>
             <div class="audio">
-              <app-audio></app-audio>
+              <app-audio
+                source="/assets/music/zone.mp3"
+                [muted]="audio.muted"
+                [volume]="audio.volume"
+                [currentTime]="audio.currentTime"></app-audio>
             </div>
           </div>
         </div>

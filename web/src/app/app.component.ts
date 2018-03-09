@@ -40,6 +40,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   playing = false;
 
+  // volume = 1.0;
+  //
+  // muted = false;
+
   // isSmallScreen: boolean;
 
   constructor(

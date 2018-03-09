@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-audio',
@@ -14,7 +14,12 @@ export class AudioComponent implements OnInit, AfterViewInit {
 
   playing = false;
 
-
+  @Input('autoplay') autoplay = false;
+  @Input('source')   source: string;
+  @Input('volume')   volume = 1.0;
+  @Input('muted')    muted = false;
+  @Input('currentTime') currentTime = 0;
+  duration = 1;
 
   constructor() { }
 
@@ -23,6 +28,22 @@ export class AudioComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.audioElement = this.audioElementRef.nativeElement;
+    this.audioElement.addEventListener(
+      'loadedmetadata',
+      m => {
+        this.duration = m.target['duration'];
+      }
+    );
+    this.audioElement.addEventListener(
+      'timeupdate',
+      m => {
+        this.currentTime = m.target['currentTime'];
+      }
+    );
+  }
+
+  seekTo(time: number) {
+    this.audioElement.currentTime = time;
   }
 
   play() {

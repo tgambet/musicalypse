@@ -37,11 +37,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     { id: '002', albumId: '01', artistId: '2', name: 'Broken, Beat and Scarred', source: '/assets/music/zone.mp3', duration: 264 },
     { id: '003', albumId: '01', artistId: '2', name: 'The Day That Never Comes', source: '/assets/music/zone.mp3', duration: 186 },
     { id: '004', albumId: '01', artistId: '2', name: 'All Nightmare Long', source: '/assets/music/zone.mp3', duration: 321 },
-    { id: '005', albumId: '01', artistId: '2', name: 'Cyanide', source: '/assets/music/zone.mp3', duration: 432 }
+    { id: '005', albumId: '02', artistId: '0', name: 'San', source: '/assets/music/1 - San.mp3', duration: 432 },
+    { id: '006',
+      albumId: '02', artistId: '0', name: 'La fête est finie', source: '/assets/music/2 - La fete est finie.mp3', duration: 432 },
+    { id: '007', albumId: '02', artistId: '0', name: 'Basique', source: '/assets/music/3 - Basique .mp3', duration: 432 },
+    { id: '008', albumId: '02', artistId: '0', name: 'Tout va bien', source: '/assets/music/4 - Tout va bien .mp3', duration: 432 },
+    { id: '009',
+      albumId: '02', artistId: '0', name: 'Défaite de famille', source: '/assets/music/5 - Defaite de famille.mp3', duration: 432 },
+    { id: '010', albumId: '02', artistId: '0', name: 'La Lumière', source: '/assets/music/6 - La lumiere .mp3', duration: 432 },
+    { id: '011', albumId: '02', artistId: '0', name: 'Bonne Meuf', source: '/assets/music/7 - Bonne Meuf .mp3', duration: 432 }
   ];
 
-  selectedArtistsIds: string[] = [];
-  selectedAlbumsIds: string[] = [];
+  selectedArtists: Artist[] = [];
+  selectedAlbums: Album[] = [];
 
   // isSmallScreen: boolean;
 
@@ -66,47 +74,48 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   selectArtist(artist: Artist) {
-    this.selectedArtistsIds = [artist.id];
+    this.selectedArtists = [artist];
   }
 
   addArtist(artist: Artist) {
-    if (!_.includes(this.selectedArtistsIds, artist.id)) {
-      this.selectedArtistsIds.push(artist.id);
+    if (!_.includes(this.selectedArtists, artist)) {
+      this.selectedArtists.push(artist);
     }
   }
 
   removeArtist(artist: Artist) {
-    _.remove(this.selectedArtistsIds, a => a === artist.id);
+    _.remove(this.selectedArtists, a => a.id === artist.id);
+    _.remove(this.selectedAlbums, a => a.artistId === artist.id);
   }
 
   isSelectedArtist(artist: Artist): boolean {
-    return _.includes(this.selectedArtistsIds, artist.id);
+    return _.includes(this.selectedArtists, artist);
   }
 
-  getSelectedAlbums(): Album[] {
-    return _.filter(this.albums, album => _.includes(this.selectedArtistsIds, album.artistId));
+  getAlbumsOf(artists: Artist[]): Album[] {
+    return _.filter(this.albums, album => _.includes(_.map(artists, 'id'), album.artistId));
   }
 
   selectAlbum(album: Album) {
-    this.selectedAlbumsIds = [album.id];
+    this.selectedAlbums = [album];
   }
 
   addAlbum(album: Album) {
-    if (!_.includes(this.selectedAlbumsIds, album.id)) {
-      this.selectedAlbumsIds.push(album.id);
+    if (!_.includes(this.selectedAlbums, album)) {
+      this.selectedAlbums.push(album);
     }
   }
 
   removeAlbum(album: Album) {
-    _.remove(this.selectedAlbumsIds, a => a === album.id);
+    _.remove(this.selectedAlbums, a => a.id === album.id);
   }
 
   isSelectedAlbum(album: Album): boolean {
-    return _.includes(this.selectedAlbumsIds, album.id);
+    return _.includes(this.selectedAlbums, album);
   }
 
-  getSelectedTracks(): Track[] {
-    return _.filter(this.tracks, track => _.includes(this.selectedAlbumsIds, track.albumId));
+  getTracksOf(albums: Album[]): Track[] {
+    return _.filter(this.tracks, track => _.includes(_.map(albums, 'id'), track.albumId));
   }
 
 }

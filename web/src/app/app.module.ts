@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpClientModule} from '@angular/common/http';
 import * as Material from '@angular/material';
-import { BreakpointObserver, MediaMatcher } from '@angular/cdk/layout';
+import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 
-import { AppComponent } from './app.component';
-import { AudioComponent } from './audio/audio.component';
-import { TimePipe } from './time.pipe';
+import {AppComponent} from './app.component';
+import {AudioComponent} from './audio/audio.component';
+import {TimePipe} from './time.pipe';
+import {HttpSocketClientService} from './services/http-socket-client.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { TimePipe } from './time.pipe';
   ],
   providers: [
     MediaMatcher,
-    BreakpointObserver
+    BreakpointObserver,
+    HttpSocketClientService
   ],
   bootstrap: [AppComponent]
 })

@@ -20,6 +20,7 @@ export class AudioComponent implements OnInit, AfterViewInit {
   @Input('muted')    muted = false;
   @Input('currentTime') currentTime = 0;
   duration = 1;
+  loading = false;
 
   constructor() { }
 
@@ -48,6 +49,10 @@ export class AudioComponent implements OnInit, AfterViewInit {
       'ended',
       m => this.playing = false
     );
+    this.audioElement.addEventListener(
+      'abort',
+      m => this.playing = false
+    );
   }
 
   seekTo(time: number) {
@@ -55,8 +60,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
   }
 
   play() {
+    this.loading = true;
     // TODO deal with errors
-    this.audioElement.play();
+    this.audioElement.play().then(e => { this.loading = false; });
   }
 
   pause() {

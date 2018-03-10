@@ -51,6 +51,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedArtists: Artist[] = [];
   selectedAlbums: Album[] = [];
 
+  currentTrack: Track = this.tracks[0];
+
   // isSmallScreen: boolean;
 
   constructor(
@@ -96,6 +98,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     return _.filter(this.albums, album => _.includes(_.map(artists, 'id'), album.artistId));
   }
 
+  getDisplayedAlbums() {
+    if (this.selectedArtists.length === 0) {
+      return this.albums;
+    } else {
+      return this.getAlbumsOf(this.selectedArtists);
+    }
+  }
+
   selectAlbum(album: Album) {
     this.selectedAlbums = [album];
   }
@@ -116,6 +126,19 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getTracksOf(albums: Album[]): Track[] {
     return _.filter(this.tracks, track => _.includes(_.map(albums, 'id'), track.albumId));
+  }
+
+  getDisplayedTracks() {
+    if (this.selectedAlbums.length === 0) {
+      return this.tracks;
+    } else {
+      return this.getTracksOf(this.selectedAlbums);
+    }
+  }
+
+  setTrack(track: Track) {
+    this.currentTrack = track;
+    window.setTimeout(e => { this.audio.seekTo(0); this.audio.play(); }, 0);
   }
 
 }

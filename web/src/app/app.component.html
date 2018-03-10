@@ -33,7 +33,7 @@
         </div>
         <div class="a2">
           <mat-list class="albums">
-            <ng-container *ngFor="let album of getAlbumsOf(this.selectedArtists)">
+            <ng-container *ngFor="let album of getDisplayedAlbums()">
               <a (click)="selectAlbum(album)" mat-list-item>
                 <mat-checkbox
                   color="primary"
@@ -52,11 +52,12 @@
         </div>
         <div class="a3">
           <mat-list class="tracks">
-            <ng-container *ngFor="let track of getTracksOf(this.selectedAlbums)">
-              <a href="" mat-list-item>
+            <ng-container *ngFor="let track of getDisplayedTracks()">
+              <a (click)="setTrack(track)" mat-list-item>
                 <span matLine matTooltip="{{track.name}}" matTooltipShowDelay="1000">{{track.name}}</span>
                 <span matLine>{{track.duration | sgTime}}</span>
-                <i class="material-icons">play_arrow</i>
+                <i class="material-icons" *ngIf="!audio.playing || currentTrack !== track">play_arrow</i>
+                <i class="material-icons" *ngIf="audio.playing && currentTrack == track">pause</i>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>
@@ -65,8 +66,8 @@
         <div class="a4">
           <div class="player">
             <div class="title">
-              The End Of The Line<br>
-              Metallica
+              {{currentTrack.name}}<br>
+              {{currentTrack.artistId}}
             </div>
             <div class="volume">
               <a (click)="audio.muted = !audio.muted">
@@ -208,7 +209,9 @@
             </div>
             <div class="progress">
               <span>{{audio.currentTime | sgTime}}</span>
+              <mat-progress-bar mode="indeterminate" *ngIf="audio.loading"></mat-progress-bar>
               <mat-slider
+                *ngIf="!audio.loading"
                 color="primary"
                 step="0.01"
                 [max]="audio.duration"
@@ -236,7 +239,7 @@
             </div>
             <div class="audio">
               <app-audio
-                source="/assets/music/zone.mp3"
+                [source]="currentTrack.source"
                 [muted]="audio.muted"
                 [volume]="audio.volume"
                 [currentTime]="audio.currentTime"></app-audio>

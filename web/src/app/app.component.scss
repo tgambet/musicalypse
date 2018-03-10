@@ -127,6 +127,13 @@ mat-list {
   }
 }
 
+.progress {
+  height: 3rem;
+  mat-progress-bar {
+    margin: 0 1rem;
+  }
+}
+
 .carousel {
   height: 100%;
   flex-grow: 1;

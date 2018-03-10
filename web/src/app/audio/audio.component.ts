@@ -11,10 +11,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
   audioElementRef: ElementRef;
   audioElement: HTMLMediaElement;
 
-  @Input('autoplay') autoplay = false;
-  @Input('source')   source: string;
-  @Input('volume')   volume = 1.0;
-  @Input('muted')    muted = false;
+  @Input('source') source: string;
+  volume = 1.0;
+  muted = false;
   currentTime = 0;
   duration = 1;
   loading = false;

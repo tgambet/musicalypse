@@ -66,8 +66,18 @@
         <div class="a4">
           <div class="player">
             <div class="title">
-              {{currentTrack.name}}<br>
-              {{currentTrack.artistId}}
+              <!--<div class="spinner">-->
+                <!--<mat-progress-spinner-->
+                  <!--*ngIf="audio.progress < 100"-->
+                  <!--[mode]="audio.progress == 0 ? 'indeterminate' : 'determinate'"-->
+                  <!--[value]="audio.progress"-->
+                  <!--diameter="25"></mat-progress-spinner>-->
+              <!--</div>-->
+              <div class="metadata">
+                {{currentTrack.name}}<br>
+                {{currentTrack.artistId}}
+              </div>
+              <!--<div class="filler"></div>-->
             </div>
             <div class="volume">
               <a (click)="audio.muted = !audio.muted">

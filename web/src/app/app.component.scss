@@ -106,6 +106,17 @@ mat-list {
 
 .title {
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  .metadata {
+    flex-grow: 1;
+  }
+  //.filler {
+  //  width: 25px;
+  //  height: 25px;
+  //}
 }
 
 .volume, .progress {

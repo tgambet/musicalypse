@@ -19,6 +19,7 @@ import { TimePipe } from './time.pipe';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    // Material.MatProgressSpinnerModule,
     Material.MatProgressBarModule,
     Material.MatTabsModule,
     Material.MatFormFieldModule,

@@ -12,8 +12,6 @@ export class AudioComponent implements OnInit, AfterViewInit {
   @ViewChild('audioElement')
   audioElementRef: ElementRef;
 
-  playing = false;
-
   @Input('autoplay') autoplay = false;
   @Input('source')   source: string;
   @Input('volume')   volume = 1.0;
@@ -21,6 +19,8 @@ export class AudioComponent implements OnInit, AfterViewInit {
   @Input('currentTime') currentTime = 0;
   duration = 1;
   loading = false;
+  playing = false;
+  // progress = 0;
 
   constructor() { }
 
@@ -53,6 +53,16 @@ export class AudioComponent implements OnInit, AfterViewInit {
       'abort',
       m => this.playing = false
     );
+    // this.audioElement.addEventListener(
+    //   'progress',
+    //   m => {
+    //     const buffer = this.audioElement.buffered;
+    //     if (buffer.length > 0) {
+    //       const bufferEnd = buffer.end(buffer.length - 1);
+    //       this.progress = (bufferEnd / this.duration) * 100;
+    //     }
+    //   }
+    // );
   }
 
   seekTo(time: number) {
@@ -62,7 +72,10 @@ export class AudioComponent implements OnInit, AfterViewInit {
   play() {
     this.loading = true;
     // TODO deal with errors
-    this.audioElement.play().then(e => { this.loading = false; });
+    this.audioElement.play().then(
+      e => { this.loading = false; },
+      e => {}// console.log(e)
+    );
   }
 
   pause() {

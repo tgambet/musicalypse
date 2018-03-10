@@ -143,12 +143,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     return _.filter(this.tracks, track => _.includes(_.map(albums, 'id'), track.albumId));
   }
 
+  getTracksOfArtists(artists: Artist[]): Track[] {
+    return _.filter(this.tracks, track => _.includes(_.map(artists, 'id'), track.artistId));
+  }
+
   getDisplayedTracks() {
-    if (this.selectedAlbums.length === 0) {
+    if (this.selectedArtists.length === 0 && this.selectedAlbums.length === 0) {
       return this.tracks;
-    } else {
-      return this.getTracksOf(this.selectedAlbums);
     }
+    if (this.selectedAlbums.length === 0) {
+      return this.getTracksOfArtists(this.selectedArtists);
+    }
+    return this.getTracksOf(this.selectedAlbums);
   }
 
   setTrack(track: Track) {

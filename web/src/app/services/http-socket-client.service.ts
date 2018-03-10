@@ -52,7 +52,7 @@ export class HttpSocketClientService implements OnDestroy {
     if (!this.socket) {
       this.socket = webSocket(HttpSocketClientService.getSocketUrl());
       this.socket.subscribe(
-        (next) => {},
+        () => {},
         (error) => this.closeSocket(),
         () => this.closeSocket()
       );
@@ -72,7 +72,8 @@ export class HttpSocketClientService implements OnDestroy {
   }
 
   send(message: any): void {
-    this.getSocket().next(JSON.stringify(message));
+    if (!this.socket) { throw new Error('Unable to send on a closed socket: ' + message); }
+    this.socket.next(JSON.stringify(message));
   }
 
   ngOnDestroy(): void {

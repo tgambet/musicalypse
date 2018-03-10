@@ -4,6 +4,7 @@ import {AudioComponent} from './audio/audio.component';
 // import {BreakpointObserver} from '@angular/cdk/layout';
 import { Artist, Album, Track } from './model';
 import * as _ from 'lodash';
+import {HttpSocketClientService} from './services/http-socket-client.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild('sidenav')
   sidenav: Material.MatSidenav;
-
 
   @ViewChild(AudioComponent)
   audio: AudioComponent;
@@ -57,6 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     // private breakpointObserver: BreakpointObserver
+    public httpSocketClient: HttpSocketClientService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +70,20 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.sidenav.open();
       }
     });*/
+    this.sidenav.open();
+    this.openSocket();
+  }
+
+  openSocket() {
+    this.httpSocketClient.getSocket().subscribe(
+      (next) => console.log(next),
+      error => console.log(error),
+      () => console.log('socket completed')
+    );
+  }
+
+  closeSocket() {
+    this.httpSocketClient.closeSocket();
   }
 
   ngAfterViewInit(): void {
@@ -138,7 +153,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   setTrack(track: Track) {
     this.currentTrack = track;
-    window.setTimeout(e => { this.audio.seekTo(0); this.audio.play(); }, 0);
+    window.setTimeout(() => { this.audio.seekTo(0); this.audio.play(); }, 0);
   }
 
 }

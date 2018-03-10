@@ -1,6 +1,7 @@
 package net.creasource.core
 
 import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await
@@ -18,13 +19,15 @@ class Application {
 
   val config: Config = ConfigFactory.load()
 
-  val system: ActorSystem = ActorSystem("MySystem", config)
+  implicit val system: ActorSystem = ActorSystem("MySystem", config)
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   system.log.info("Application starting.")
 
   def shutdown() {
-    system.log.info("Shutting down Akka system.")
+    system.log.info("Shutting down Akka materializer and system.")
     import scala.concurrent.duration._
+    materializer.shutdown()
     Await.result(system.terminate(), 5.seconds)
   }
 

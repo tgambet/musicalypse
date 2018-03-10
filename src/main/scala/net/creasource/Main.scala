@@ -26,7 +26,7 @@ object Main extends App with SPAWebServer with SocketWebServer {
   private val apiRoutes = new APIRoutes(app)
 
   override implicit val system: ActorSystem = app.system
-  override val socketActorProps: Props = SocketActor.props()
+  override val socketActorProps: Props = SocketActor.props(apiRoutes.routes)
   override val keepAliveTimeout: FiniteDuration = keepAliveInSec.seconds
   override val routes: Route = apiRoutes.routes ~ super.routes
 

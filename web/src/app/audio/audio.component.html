@@ -2,4 +2,11 @@
        [autoplay]="autoplay"
        [src]="source"
        [volume]="volume"
-       [muted]="muted"></audio>
+       [muted]="muted"
+       (loadedmetadata)="duration = $event.target.duration"
+       (timeupdate)="currentTime = $event.target.currentTime"
+       (playing)="playing = true"
+       (pause)="playing = false"
+       (abort)="playing = false"
+       (ended)="playing = false"
+></audio>

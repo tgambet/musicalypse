@@ -100,7 +100,23 @@
               <a (click)="setTrack(track)" mat-list-item>
                 <span matLine matTooltip="{{track.name}}" matTooltipShowDelay="1000">{{track.name}}</span>
                 <span matLine>{{track.duration | sgTime}}</span>
-                <mat-icon class="more">more_vert</mat-icon>
+                <button mat-icon-button [matMenuTriggerFor]="trackMenu" class="more" (click)="$event.stopPropagation()">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #trackMenu>
+                  <button mat-menu-item>
+                    <mat-icon>play_arrow</mat-icon>
+                    <span>Play this track only</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>playlist_add</mat-icon>
+                    <span>Add to current playlist</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>favorite_border</mat-icon>
+                    <span>Add to favorites</span>
+                  </button>
+                </mat-menu>
                 <mat-icon *ngIf="!audio.playing || currentTrack != track">play_arrow</mat-icon>
                 <span class="spinner" *ngIf="audio.playing && currentTrack == track">
                   <mat-progress-spinner
@@ -292,10 +308,20 @@
               <a class="next">
                 <mat-icon>skip_next</mat-icon>
               </a>
-              <a class="more">
+              <button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
                 <mat-icon>more_vert</mat-icon>
-              </a>
+              </button>
             </div>
+            <mat-menu #playerMenu>
+              <button mat-menu-item>
+                <mat-icon>play_arrow</mat-icon>
+                <span>Show details</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>playlist_add</mat-icon>
+                <span></span>
+              </button>
+            </mat-menu>
             <div class="audio">
               <app-audio [source]="currentTrack.source"></app-audio>
             </div>

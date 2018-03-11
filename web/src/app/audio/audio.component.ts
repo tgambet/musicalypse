@@ -13,7 +13,7 @@ export class AudioComponent implements OnInit, AfterViewInit {
 
   @Input('source') source: string;
   volume = 1.0;
-  muted = false;
+  muted = true;
   currentTime = 0;
   duration = 1;
   loading = false;
@@ -34,7 +34,7 @@ export class AudioComponent implements OnInit, AfterViewInit {
   play() {
     this.loading = true;
     this.audioElement.play().then(
-      e => { this.loading = false; },
+      () => { this.loading = false; },
       e => { console.log(e); }
     );
   }

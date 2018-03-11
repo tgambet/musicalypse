@@ -70,8 +70,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.sidenav.open();
       }
     });*/
-    this.sidenav.open();
+    // this.sidenav.open();
     this.openSocket();
+  }
+
+  ngAfterViewInit(): void {
+
   }
 
   openSocket() {
@@ -84,10 +88,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   closeSocket() {
     this.httpSocketClient.closeSocket();
-  }
-
-  ngAfterViewInit(): void {
-
   }
 
   selectArtist(artist: Artist) {

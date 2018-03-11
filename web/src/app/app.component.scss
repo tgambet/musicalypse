@@ -51,11 +51,9 @@ mat-sidenav {
 }
 
 .a2 {
-  //background-color: black;
 }
 
 .a3 {
-  //background-color: aqua;
 }
 
 .a4 {
@@ -93,6 +91,49 @@ mat-list {
       .avatar {
         display: none;
       }
+    }
+  }
+}
+
+.controls {
+  height: 60px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  //position: fixed;
+  .search {
+    flex-grow: 1;
+
+    mat-placeholder {
+      mat-icon {
+        vertical-align: bottom;
+      }
+    }
+  }
+  .select-all {
+    margin: 0 1.25rem 0 0.35rem;
+  }
+  .playlist-add {
+    margin: 0 0.5rem;
+  }
+}
+
+.tracks {
+  .mat-list-item {
+    .more {
+      display: none;
+      margin-right: 0.5rem;
+    }
+    &:hover {
+      .more {
+        display: inline-block;
+      }
+    }
+    .spinner {
+      display: inline-block;
+      height: 24px;
+      width: 24px;
     }
   }
 }
@@ -184,7 +225,7 @@ mat-list {
     padding: 4px;
     width: 3rem;
     height: 3rem;
-    i {
+    mat-icon {
       font-size: 3rem;
     }
   }
@@ -195,7 +236,7 @@ mat-list {
     padding: 4px;
     width: 2rem;
     height: 2rem;
-    i {
+    mat-icon {
       font-size: 2rem;
     }
   }

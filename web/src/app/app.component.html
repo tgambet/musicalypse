@@ -8,15 +8,14 @@
   <mat-sidenav #sidenav [mode]="'over'">
     <p *ngIf="!httpSocketClient.isSocketOpen()">
       <a (click)="openSocket()">Open Socket</a>
-      <i class="material-icons">radio_button_unchecked</i>
+      <mat-icon>radio_button_unchecked</mat-icon>
     </p>
     <p *ngIf="httpSocketClient.isSocketOpen()">
       <a (click)="closeSocket()">Close Socket</a>
-      <i class="material-icons">radio_button_checked</i>
+      <mat-icon>radio_button_checked</mat-icon>
     </p>
-    <p>
-      <a *ngIf="httpSocketClient.isSocketOpen()"
-         (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
+    <p *ngIf="httpSocketClient.isSocketOpen()">
+      <a (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
     </p>
   </mat-sidenav>
 
@@ -24,6 +23,17 @@
     <div class="content">
       <div class="playerContainer">
         <div class="a1">
+          <div class="controls">
+            <mat-icon class="select-all">select_all</mat-icon>
+            <mat-form-field floatLabel="never" class="search">
+              <input matInput title="Search">
+              <mat-placeholder>
+                <mat-icon>search</mat-icon>
+                Search
+              </mat-placeholder>
+            </mat-form-field>
+          </div>
+          <mat-divider></mat-divider>
           <mat-list class="artists">
             <ng-container *ngFor="let artist of artists">
               <a (click)="selectArtist(artist)" mat-list-item>
@@ -36,13 +46,24 @@
                 <div matListAvatar class="avatar"></div>
                 <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
                 <span matLine>{{artist.songsNumber}} songs</span>
-                <i class="material-icons">keyboard_arrow_right</i>
+                <mat-icon>keyboard_arrow_right</mat-icon>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>
           </mat-list>
         </div>
         <div class="a2">
+          <div class="controls">
+            <mat-icon class="select-all">select_all</mat-icon>
+            <mat-form-field floatLabel="never" class="search">
+              <input matInput title="Search">
+              <mat-placeholder>
+                <mat-icon>search</mat-icon>
+                Search
+              </mat-placeholder>
+            </mat-form-field>
+          </div>
+          <mat-divider></mat-divider>
           <mat-list class="albums">
             <ng-container *ngFor="let album of getDisplayedAlbums()">
               <a (click)="selectAlbum(album)" mat-list-item>
@@ -55,20 +76,38 @@
                 <div matListAvatar class="avatar"></div>
                 <span matLine matTooltip="{{album.name}}" matTooltipShowDelay="1000">{{album.name}}</span>
                 <span matLine>{{album.songsNumber}} songs</span>
-                <i class="material-icons">keyboard_arrow_right</i>
+                <mat-icon>keyboard_arrow_right</mat-icon>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>
           </mat-list>
         </div>
         <div class="a3">
+          <div class="controls">
+            <mat-form-field floatLabel="never" class="search">
+              <input matInput title="Search">
+              <mat-placeholder>
+                <mat-icon>search</mat-icon>
+                Search
+              </mat-placeholder>
+            </mat-form-field>
+            <mat-icon class="playlist-add">playlist_add</mat-icon>
+            <mat-icon class="playlist-play">playlist_play</mat-icon>
+          </div>
+          <mat-divider></mat-divider>
           <mat-list class="tracks">
             <ng-container *ngFor="let track of getDisplayedTracks()">
               <a (click)="setTrack(track)" mat-list-item>
                 <span matLine matTooltip="{{track.name}}" matTooltipShowDelay="1000">{{track.name}}</span>
                 <span matLine>{{track.duration | sgTime}}</span>
-                <i class="material-icons" *ngIf="!audio.playing || currentTrack !== track">play_arrow</i>
-                <i class="material-icons" *ngIf="audio.playing && currentTrack == track">pause</i>
+                <mat-icon class="more">more_vert</mat-icon>
+                <mat-icon *ngIf="!audio.playing || currentTrack != track">play_arrow</mat-icon>
+                <span class="spinner" *ngIf="audio.playing && currentTrack == track">
+                  <mat-progress-spinner
+                    diameter="24"
+                    mode="determinate"
+                    [value]="audio.currentTime / audio.duration * 100"></mat-progress-spinner>
+                </span>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>
@@ -92,10 +131,10 @@
             </div>
             <div class="volume">
               <a (click)="audio.muted = !audio.muted">
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0.50">volume_up</i>
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume > 0 && audio.volume <= 0.50">volume_down</i>
-                <i class="material-icons" *ngIf="!audio.muted && audio.volume == 0">volume_mute</i>
-                <i class="material-icons" *ngIf="audio.muted">volume_off</i>
+                <mat-icon *ngIf="!audio.muted && audio.volume > 0.50">volume_up</mat-icon>
+                <mat-icon *ngIf="!audio.muted && audio.volume > 0 && audio.volume <= 0.50">volume_down</mat-icon>
+                <mat-icon *ngIf="!audio.muted && audio.volume == 0">volume_mute</mat-icon>
+                <mat-icon *ngIf="audio.muted">volume_off</mat-icon>
               </a>
               <mat-slider
                 [disabled]="audio.muted"
@@ -242,20 +281,19 @@
             </div>
             <div class="menu">
               <a class="shuffle">
-                <i class="material-icons">shuffle</i>
+                <mat-icon>shuffle</mat-icon>
               </a>
               <a class="previous">
-                <i class="material-icons">skip_previous</i>
+                <mat-icon>skip_previous</mat-icon>
               </a>
               <a class="playPause" (click)="audio.playing ? audio.pause() : audio.play()">
-                <i class="material-icons" *ngIf="audio.playing">pause</i>
-                <i class="material-icons" *ngIf="!audio.playing">play_arrow</i>
+                <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
               </a>
               <a class="next">
-                <i class="material-icons">skip_next</i>
+                <mat-icon>skip_next</mat-icon>
               </a>
               <a class="more">
-                <i class="material-icons">more_vert</i>
+                <mat-icon>more_vert</mat-icon>
               </a>
             </div>
             <div class="audio">

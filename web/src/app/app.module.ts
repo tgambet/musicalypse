@@ -20,7 +20,7 @@ import {HttpSocketClientService} from './services/http-socket-client.service';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    // Material.MatProgressSpinnerModule,
+    Material.MatProgressSpinnerModule,
     Material.MatProgressBarModule,
     Material.MatTabsModule,
     Material.MatFormFieldModule,

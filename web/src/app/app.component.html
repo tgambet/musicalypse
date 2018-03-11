@@ -117,15 +117,42 @@
                 <mat-menu #trackMenu>
                   <button mat-menu-item>
                     <mat-icon>play_arrow</mat-icon>
-                    <span>Play this track only</span>
+                    <span>Play next</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>replay</mat-icon>
+                    <span>Play repeatedly</span>
                   </button>
                   <button mat-menu-item>
                     <mat-icon>playlist_add</mat-icon>
                     <span>Add to current playlist</span>
                   </button>
+                  <button mat-menu-item [matMenuTriggerFor]="playlistsMenu">
+                    <mat-icon>playlist_add</mat-icon>
+                    <span>Add to playlist</span>
+                  </button>
                   <button mat-menu-item>
                     <mat-icon>favorite_border</mat-icon>
                     <span>Add to favorites</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>details</mat-icon>
+                    <span>Details</span>
+                  </button>
+                </mat-menu>
+                <mat-menu #playlistsMenu="matMenu">
+                  <button mat-menu-item>
+                    <mat-icon>add</mat-icon>
+                    New playlist
+                  </button>
+                  <mat-divider></mat-divider>
+                  <button mat-menu-item>
+                    <mat-icon>album</mat-icon>
+                    Playlist1
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>album</mat-icon>
+                    Playlist2
                   </button>
                 </mat-menu>
                 <button mat-icon-button
@@ -313,7 +340,7 @@
               <mat-slider
                 *ngIf="!audio.loading"
                 color="primary"
-                step="0.01"
+                step="1"
                 [max]="audio.duration"
                 [value]="audio.currentTime"
                 (change)="audio.seekTo($event.value)"></mat-slider>
@@ -336,14 +363,52 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>
-            <mat-menu #playerMenu>
-              <button mat-menu-item>
-                <mat-icon>play_arrow</mat-icon>
-                <span>Show details</span>
+            <mat-menu #playerMenu="matMenu">
+              <button mat-menu-item [matMenuTriggerFor]="playlistsMenu3">
+                <mat-icon>playlist_add</mat-icon>
+                <span>Add to playlist</span>
               </button>
               <button mat-menu-item>
-                <mat-icon>playlist_add</mat-icon>
-                <span></span>
+                <mat-icon>favorite_border</mat-icon>
+                <span>Add to favorites</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>details</mat-icon>
+                <span>Details</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item>
+                <mat-icon>save</mat-icon>
+                <span>Save playlist</span>
+              </button>
+              <button mat-menu-item [matMenuTriggerFor]="playlistsMenu2">
+                <mat-icon>playlist_play</mat-icon>
+                <span>Load playlist</span>
+              </button>
+            </mat-menu>
+            <mat-menu #playlistsMenu2="matMenu">
+              <button mat-menu-item>
+                <mat-icon>album</mat-icon>
+                Playlist1
+              </button>
+              <button mat-menu-item>
+                <mat-icon>album</mat-icon>
+                Playlist2
+              </button>
+            </mat-menu>
+            <mat-menu #playlistsMenu3="matMenu">
+              <button mat-menu-item>
+                <mat-icon>add</mat-icon>
+                New playlist
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item>
+                <mat-icon>album</mat-icon>
+                Playlist1
+              </button>
+              <button mat-menu-item>
+                <mat-icon>album</mat-icon>
+                Playlist2
               </button>
             </mat-menu>
             <div class="audio">

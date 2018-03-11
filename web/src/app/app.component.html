@@ -98,9 +98,6 @@
             <button mat-icon-button class="playlist-add">
               <mat-icon>playlist_add</mat-icon>
             </button>
-            <button mat-icon-button class="playlist-play">
-              <mat-icon>playlist_play</mat-icon>
-            </button>
           </div>
           <mat-divider></mat-divider>
           <mat-list class="tracks">
@@ -110,6 +107,7 @@
                 <span matLine>{{track.duration | sgTime}}</span>
                 <button mat-icon-button
                   class="more"
+                  *ngIf="currentTrack != track"
                   [matMenuTriggerFor]="trackMenu"
                   (click)="$event.stopPropagation()">
                   <mat-icon>more_vert</mat-icon>
@@ -157,7 +155,7 @@
                 </mat-menu>
                 <button mat-icon-button
                   class="play"
-                  *ngIf="!audio.playing || currentTrack != track"
+                  *ngIf="!audio.playing && currentTrack == track"
                   (click)="playTrack(track); $event.stopPropagation()">
                   <mat-icon>play_arrow</mat-icon>
                 </button>

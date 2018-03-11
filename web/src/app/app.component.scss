@@ -120,14 +120,6 @@ mat-list {
 
 .tracks {
   .mat-list-item {
-    .more {
-      display: none;
-    }
-    &:hover {
-      .more {
-        display: inline-block;
-      }
-    }
     .spinner {
       display: inline-block;
       height: 40px;

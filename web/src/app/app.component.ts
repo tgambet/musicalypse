@@ -157,9 +157,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     return this.getTracksOf(this.selectedAlbums);
   }
 
-  setTrack(track: Track) {
-    this.currentTrack = track;
-    window.setTimeout(() => { this.audio.seekTo(0); this.audio.play(); }, 0);
+  playTrack(track: Track) {
+    if (this.currentTrack === track) {
+      this.audio.play();
+    } else {
+      this.audio.pause();
+      // this.audio.seekTo(0);
+      this.currentTrack = track;
+      window.setTimeout(() => {
+        this.audio.play();
+      }, 0);
+    }
   }
 
 }

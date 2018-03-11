@@ -105,7 +105,7 @@
           <mat-divider></mat-divider>
           <mat-list class="tracks">
             <ng-container *ngFor="let track of getDisplayedTracks()">
-              <a (click)="setTrack(track)" mat-list-item>
+              <a (click)="playTrack(track)" mat-list-item>
                 <span matLine matTooltip="{{track.name}}" matTooltipShowDelay="1000">{{track.name}}</span>
                 <span matLine>{{track.duration | sgTime}}</span>
                 <button mat-icon-button [matMenuTriggerFor]="trackMenu" class="more" (click)="$event.stopPropagation()">
@@ -126,7 +126,7 @@
                   </button>
                 </mat-menu>
                 <button
-                  (click)="audio.play(); $event.stopPropagation()"
+                  (click)="playTrack(track); $event.stopPropagation()"
                   class="play"
                   mat-icon-button
                   *ngIf="!audio.playing || currentTrack != track">
@@ -142,7 +142,7 @@
                 <span class="spinner" *ngIf="currentTrack == track">
                   <mat-progress-spinner
                     diameter="40"
-                    mode="determinate"
+                    [mode]="audio.loading ? 'indeterminate' : 'determinate'"
                     [value]="audio.currentTime / audio.duration * 100"></mat-progress-spinner>
                 </span>
                 <mat-divider></mat-divider>

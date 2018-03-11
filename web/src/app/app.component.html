@@ -24,7 +24,9 @@
       <div class="playerContainer">
         <div class="a1">
           <div class="controls">
-            <mat-icon class="select-all">select_all</mat-icon>
+            <button mat-icon-button class="select-all">
+              <mat-icon>select_all</mat-icon>
+            </button>
             <mat-form-field floatLabel="never" class="search">
               <input matInput title="Search">
               <mat-placeholder>
@@ -54,7 +56,9 @@
         </div>
         <div class="a2">
           <div class="controls">
-            <mat-icon class="select-all">select_all</mat-icon>
+            <button mat-icon-button class="select-all">
+              <mat-icon>select_all</mat-icon>
+            </button>
             <mat-form-field floatLabel="never" class="search">
               <input matInput title="Search">
               <mat-placeholder>
@@ -91,8 +95,12 @@
                 Search
               </mat-placeholder>
             </mat-form-field>
-            <mat-icon class="playlist-add">playlist_add</mat-icon>
-            <mat-icon class="playlist-play">playlist_play</mat-icon>
+            <button mat-icon-button class="playlist-add">
+              <mat-icon>playlist_add</mat-icon>
+            </button>
+            <button mat-icon-button class="playlist-play">
+              <mat-icon>playlist_play</mat-icon>
+            </button>
           </div>
           <mat-divider></mat-divider>
           <mat-list class="tracks">
@@ -117,10 +125,23 @@
                     <span>Add to favorites</span>
                   </button>
                 </mat-menu>
-                <mat-icon *ngIf="!audio.playing || currentTrack != track">play_arrow</mat-icon>
-                <span class="spinner" *ngIf="audio.playing && currentTrack == track">
+                <button
+                  (click)="audio.play(); $event.stopPropagation()"
+                  class="play"
+                  mat-icon-button
+                  *ngIf="!audio.playing || currentTrack != track">
+                  <mat-icon>play_arrow</mat-icon>
+                </button>
+                <button
+                  (click)="audio.pause(); $event.stopPropagation()"
+                  class="pause"
+                  mat-icon-button
+                  *ngIf="audio.playing && currentTrack == track">
+                  <mat-icon>pause</mat-icon>
+                </button>
+                <span class="spinner" *ngIf="currentTrack == track">
                   <mat-progress-spinner
-                    diameter="24"
+                    diameter="40"
                     mode="determinate"
                     [value]="audio.currentTime / audio.duration * 100"></mat-progress-spinner>
                 </span>

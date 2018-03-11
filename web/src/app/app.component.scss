@@ -68,7 +68,7 @@ mat-list {
     text-decoration: none;
     mat-checkbox {
       display: none;
-      padding: 6px;
+      padding: 8px;
       position: relative;
       left: 2px;
       bottom: 3px;
@@ -81,8 +81,8 @@ mat-list {
     }
     .avatar {
       background-color: black;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
     }
     &:hover {
       mat-checkbox {
@@ -104,7 +104,6 @@ mat-list {
   //position: fixed;
   .search {
     flex-grow: 1;
-
     mat-placeholder {
       mat-icon {
         vertical-align: bottom;
@@ -112,10 +111,10 @@ mat-list {
     }
   }
   .select-all {
-    margin: 0 1.25rem 0 0.35rem;
+    margin-right: 1rem;
   }
   .playlist-add {
-    margin: 0 0.5rem;
+    margin-left: 0.5rem;
   }
 }
 
@@ -123,7 +122,6 @@ mat-list {
   .mat-list-item {
     .more {
       display: none;
-      margin-right: 0.5rem;
     }
     &:hover {
       .more {
@@ -132,8 +130,15 @@ mat-list {
     }
     .spinner {
       display: inline-block;
-      height: 24px;
-      width: 24px;
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      right: 1rem;
+      z-index: 1;
+    }
+    .pause, .play {
+      position: relative;
+      z-index: 2;
     }
   }
 }

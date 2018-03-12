@@ -11,7 +11,7 @@ import akka.http.scaladsl.server._
 trait SPAWebServer extends WebServer { self: WebServer =>
 
   override def routes: Route =
-    extractUnmatchedPath { path =>
+    //extractUnmatchedPath { path =>
       encodeResponse {
         headerValueByName("Accept") { accept =>
           val serveIndexIfNotFound: RejectionHandler =
@@ -28,7 +28,6 @@ trait SPAWebServer extends WebServer { self: WebServer =>
             getFromResourceDirectory("dist")
           }
         }
-      }
-    } ~ super.routes
+      } ~ super.routes
 
 }

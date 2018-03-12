@@ -24,11 +24,12 @@ object Main extends App with SPAWebServer with SocketWebServer {
   private val keepAliveInSec = app.config.getInt("http.webSocket.keep-alive")
 
   private val apiRoutes = new APIRoutes(app)
+  private val libraryRoutes = new AudioLibraryRoutes(app)
 
   override implicit val system: ActorSystem = app.system
   override val socketActorProps: Props = SocketActor.props(apiRoutes.routes)
   override val keepAliveTimeout: FiniteDuration = keepAliveInSec.seconds
-  override val routes: Route = apiRoutes.routes ~ super.routes
+  override val routes: Route = libraryRoutes.routes ~ apiRoutes.routes ~ super.routes
 
   start(host, port) foreach { _ =>
     if (stopOnReturn) {

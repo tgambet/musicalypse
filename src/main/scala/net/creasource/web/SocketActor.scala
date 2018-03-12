@@ -1,5 +1,7 @@
 package net.creasource.web
 
+import java.io.File
+
 import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
 import akka.http.scaladsl.model._
@@ -7,6 +9,7 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
+import net.creasource.audio.LibraryScanner
 import spray.json._
 
 import scala.collection.immutable.Seq
@@ -30,6 +33,8 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer) ex
 
   private val client = context.parent
 
+  private val scanner = new LibraryScanner
+
   override def receive: Receive = {
 
     case value: JsValue =>
@@ -47,11 +52,22 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer) ex
         client ! JsonMessage("HttpResponse", id, response.toJson).toJson
       }
 
-    case a @ JsonMessage(_, _, _) => client ! a
+    case JsonMessage("ScanLibrary", _, JsNull) =>
+      scanner
+        .scanLibrary(new File("D:\\Musique\\Megadeth"))
+        .runWith(Sink.foreach(client ! _.toJson))
 
-    case str: JsString => client ! str
+    case a @ JsonMessage(_, _, _) =>
+      logger.info("test")
+      client ! a
 
-    case obj: JsObject => client ! obj
+    case str: JsString =>
+      logger.info("test2")
+      client ! str
+
+    case obj: JsObject =>
+      logger.info("test3")
+      client ! obj
 
   }
 

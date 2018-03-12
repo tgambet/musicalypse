@@ -16,6 +16,8 @@
     </p>
     <p *ngIf="httpSocketClient.isSocketOpen()">
       <a (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
+      <br>
+      <a (click)="scanLibrary()">Request Scan</a>
     </p>
   </mat-sidenav>
 
@@ -48,7 +50,9 @@
                 <div matListAvatar class="avatar"></div>
                 <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
                 <span matLine>{{artist.songsNumber}} songs</span>
-                <mat-icon>keyboard_arrow_right</mat-icon>
+                <button mat-icon-button>
+                  <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>
@@ -80,7 +84,9 @@
                 <div matListAvatar class="avatar"></div>
                 <span matLine matTooltip="{{album.name}}" matTooltipShowDelay="1000">{{album.name}}</span>
                 <span matLine>{{album.songsNumber}} songs</span>
-                <mat-icon>keyboard_arrow_right</mat-icon>
+                <button mat-icon-button>
+                  <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
                 <mat-divider></mat-divider>
               </a>
             </ng-container>

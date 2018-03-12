@@ -70,7 +70,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.sidenav.open();
       }
     });*/
-    // this.sidenav.open();
+    this.sidenav.open();
     this.openSocket();
   }
 
@@ -168,6 +168,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.audio.play();
       }, 0);
     }
+  }
+
+  scanLibrary() {
+    this.httpSocketClient.send({method: 'ScanLibrary', id: 0, entity: null});
   }
 
 }

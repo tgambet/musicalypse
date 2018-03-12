@@ -27,7 +27,6 @@ class LibraryScanner(val libraryFolder: File) {
     if (mp3file.hasId3v2Tag) {
       val tags = mp3file.getId3v2Tag
       AudioMetadata(
-        url = "/music/" + libraryFolder.toPath.relativize(audioFile.toPath).toString.replaceAll("""\\""", "/"),
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
@@ -35,7 +34,6 @@ class LibraryScanner(val libraryFolder: File) {
         duration = mp3file.getLengthInSeconds.toInt)
     } else {
       AudioMetadata(
-        url = "/music/" + libraryFolder.toPath.relativize(audioFile.toPath).toString.replaceAll("""\\""", "/"),
         location = audioFile.getAbsolutePath,
         title = None,
         artist = None,

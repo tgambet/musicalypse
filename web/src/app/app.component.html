@@ -164,16 +164,10 @@
                   </button>
                 </mat-menu>
                 <button mat-icon-button
-                  class="play"
-                  *ngIf="!audio.playing && currentTrack == track"
-                  (click)="playTrack(track); $event.stopPropagation()">
-                  <mat-icon>play_arrow</mat-icon>
-                </button>
-                <button mat-icon-button
-                  class="pause"
-                  *ngIf="audio.playing && currentTrack == track"
-                  (click)="audio.pause(); $event.stopPropagation()">
-                  <mat-icon>pause</mat-icon>
+                  class = "playPause"
+                  *ngIf="currentTrack == track"
+                  (click)="audio.playing ? audio.pause() : playTrack(track); $event.stopPropagation()">
+                  <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
                 </button>
                 <span class="spinner" *ngIf="currentTrack == track">
                   <mat-progress-spinner

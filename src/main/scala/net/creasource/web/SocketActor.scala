@@ -2,7 +2,6 @@ package net.creasource.web
 
 import java.io.File
 
-import akka.Done
 import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
 import akka.http.scaladsl.model._
@@ -57,23 +56,28 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
     case JsonMessage("ScanLibrary", id, _) =>
       logger.info("scanning libraries")
-      val s: Seq[Future[Done]] = audioLibraries
+      audioLibraries
+          // get a scanner per library
           .map(s => new LibraryScanner(new File(s)))
-          .map(s => (s.scanLibrary(), s.libraryFolder))
-          .map{s =>
-            s._1.runWith(
-              Sink.foreach(m => client ! JsonMessage(
-                method = "TrackAdded",
-                id = id,
-                entity = Track(
-                  url = getUrlFromAudioMetadata(m, s._2),
-                  metadata = m
-                ).toJson
-              ).toJson)
-            )
-          }
-
-      Future.sequence(s).onComplete(_ => ())
+          // scan
+          .map(s => s.scanLibrary()
+            // create a track per metadata
+            .map(metadata => Track(
+              url = getUrlFromAudioMetadata(metadata, s.libraryFolder),
+              metadata = metadata
+            ))
+            // encapsulate the track into a JsonMessage
+            .map(track => JsonMessage(
+              method = "TrackAdded",
+              id = id,
+              entity = track.toJson
+            ).toJson))
+          // reduce to a single source
+          .reduce(_ concat _)
+          // stream to client
+          .runWith(Sink.foreach(client ! _))
+          // send complete acknowledgment
+          .onComplete(_ => ())
 
     case a @ JsonMessage(_, _, _) =>
       logger.info("test")

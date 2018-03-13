@@ -16,7 +16,7 @@
       background-color: mat-color($background, app-bar);
     }
     &::-webkit-scrollbar-thumb {
-      background-color: mat-color($foreground, disabled);
+      background-color: mat-color($foreground, disabled-button);
     }
   }
 

@@ -6,6 +6,7 @@ import { Artist, Album, Track, SocketMessage } from './model';
 import * as _ from 'lodash';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
+import {OverlayContainer} from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-root',
@@ -54,15 +55,20 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   currentTrack: Track;
 
+  themeClass = 'light-theme';
+
   // isSmallScreen: boolean;
 
   private id = 0;
 
   constructor(
     // private breakpointObserver: BreakpointObserver
+    private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
     public libraryService: LibraryService
-  ) {}
+  ) {
+    overlayContainer.getContainerElement().classList.add(this.themeClass);
+  }
 
   ngOnInit(): void {
 /*    this.breakpointObserver.observe('(max-width: 960px)').subscribe(result => {
@@ -80,6 +86,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
 
+  }
+
+  changeTheme(theme: string) {
+    this.overlayContainer.getContainerElement().classList.remove(this.themeClass);
+    this.overlayContainer.getContainerElement().classList.add(theme);
+    this.themeClass = theme;
   }
 
   // openSocket() {

@@ -1,193 +1,200 @@
-<mat-toolbar class="header">
-  <a *ngIf="!sidenav.opened" (click)="sidenav.open()" class="icon"><mat-icon>menu</mat-icon></a>
-  <a *ngIf="sidenav.opened" (click)="sidenav.close()" class="icon"><mat-icon>close</mat-icon></a>
-  Musicalypse
-</mat-toolbar>
+<div [class]="themeClass">
+  <mat-toolbar class="header">
+    <a *ngIf="!sidenav.opened" (click)="sidenav.open()" class="icon"><mat-icon>menu</mat-icon></a>
+    <a *ngIf="sidenav.opened" (click)="sidenav.close()" class="icon"><mat-icon>close</mat-icon></a>
+    Musicalypse
+  </mat-toolbar>
 
-<mat-sidenav-container>
-  <mat-sidenav #sidenav [mode]="'over'">
-    <p>
-      <a (click)="httpSocketClient.openSocket()">Open Socket</a>
-      <mat-icon>radio_button_unchecked</mat-icon>
-    </p>
-    <p>
-      <a (click)="httpSocketClient.closeSocket()">Close Socket</a>
-      <mat-icon>radio_button_checked</mat-icon>
-    </p>
-    <p>
-      <a *ngIf="httpSocketClient.isSocketOpen()" (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
-      <br>
-      <a (click)="scanLibrary()">Request Scan</a>
-    </p>
-  </mat-sidenav>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav [mode]="'over'">
+      <p>
+        <a (click)="httpSocketClient.openSocket()">Open Socket</a>
+        <mat-icon>radio_button_unchecked</mat-icon>
+      </p>
+      <p>
+        <a (click)="httpSocketClient.closeSocket()">Close Socket</a>
+        <mat-icon>radio_button_checked</mat-icon>
+      </p>
+      <p>
+        <a *ngIf="httpSocketClient.isSocketOpen()" (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
+        <br>
+        <a (click)="scanLibrary()">Request Scan</a>
+      </p>
+      <p>
+        <a (click)="changeTheme('dark-theme')">Dark theme</a>
+      </p>
+      <p>
+        <a (click)="changeTheme('light-theme')">Light theme</a>
+      </p>
+    </mat-sidenav>
 
-  <div class="container">
-    <div class="content">
-      <app-audio [source]="currentTrack ? currentTrack.url : ''" #audioComponent></app-audio>
-      <div class="playerContainer">
-        <div class="a1">
-          <div class="controls">
-            <button mat-icon-button class="select-all">
-              <mat-icon>select_all</mat-icon>
-            </button>
-            <mat-form-field floatLabel="never" class="search">
-              <input matInput title="Search">
-              <mat-placeholder>
-                <mat-icon>search</mat-icon>
-                Search
-              </mat-placeholder>
-            </mat-form-field>
-          </div>
-          <mat-divider></mat-divider>
-          <mat-list class="artists">
-            <ng-container *ngFor="let artist of getDisplayedArtists()">
-              <a (click)="selectArtist(artist)" mat-list-item>
-                <mat-checkbox
-                  color="primary"
-                  matListIcon
-                  [checked]="isSelectedArtist(artist)"
-                  (change)="$event.checked ? addArtist(artist) : removeArtist(artist)"
-                  (click)="$event.stopPropagation()"></mat-checkbox>
-                <div matListAvatar class="avatar"></div>
-                <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
-                <span matLine>{{artist.songs}} songs</span>
-                <button mat-icon-button>
-                  <mat-icon>keyboard_arrow_right</mat-icon>
-                </button>
-                <mat-divider></mat-divider>
-              </a>
-            </ng-container>
-          </mat-list>
-        </div>
-        <div class="a2">
-          <div class="controls">
-            <button mat-icon-button class="select-all">
-              <mat-icon>select_all</mat-icon>
-            </button>
-            <mat-form-field floatLabel="never" class="search">
-              <input matInput title="Search">
-              <mat-placeholder>
-                <mat-icon>search</mat-icon>
-                Search
-              </mat-placeholder>
-            </mat-form-field>
-          </div>
-          <mat-divider></mat-divider>
-          <mat-list class="albums">
-            <ng-container *ngFor="let album of getDisplayedAlbums()">
-              <a (click)="selectAlbum(album)" mat-list-item>
-                <mat-checkbox
-                  color="primary"
-                  matListIcon
-                  [checked]="isSelectedAlbum(album)"
-                  (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
-                  (click)="$event.stopPropagation()"></mat-checkbox>
-                <div matListAvatar class="avatar"></div>
-                <span matLine matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
-                <span matLine>{{album.songs}} songs</span>
-                <button mat-icon-button>
-                  <mat-icon>keyboard_arrow_right</mat-icon>
-                </button>
-                <mat-divider></mat-divider>
-              </a>
-            </ng-container>
-          </mat-list>
-        </div>
-        <div class="a3">
-          <div class="controls">
-            <mat-form-field floatLabel="never" class="search">
-              <input matInput title="Search">
-              <mat-placeholder>
-                <mat-icon>search</mat-icon>
-                Search
-              </mat-placeholder>
-            </mat-form-field>
-            <button mat-icon-button class="playlist-add">
-              <mat-icon>playlist_add</mat-icon>
-            </button>
-          </div>
-          <mat-divider></mat-divider>
-          <mat-list class="tracks">
-            <ng-container *ngFor="let track of getDisplayedTracks()">
-              <a (click)="playTrack(track)" mat-list-item>
-                <span matLine matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
-                <span matLine>{{track.metadata.duration | sgTime}}</span>
-                <button mat-icon-button
-                  class="more"
-                  *ngIf="currentTrack != track"
-                  [matMenuTriggerFor]="trackMenu"
-                  (click)="$event.stopPropagation()">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #trackMenu>
-                  <button mat-menu-item>
-                    <mat-icon>play_arrow</mat-icon>
-                    <span>Play</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon>play_arrow</mat-icon>
-                    <span>Play next</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon>replay</mat-icon>
-                    <span>Play repeatedly</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon>playlist_add</mat-icon>
-                    <span>Add to current playlist</span>
-                  </button>
-                  <button mat-menu-item [matMenuTriggerFor]="playlistsMenu">
-                    <mat-icon>playlist_add</mat-icon>
-                    <span>Add to playlist</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon>favorite_border</mat-icon>
-                    <span>Add to favorites</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon>details</mat-icon>
-                    <span>Details</span>
-                  </button>
-                </mat-menu>
-                <mat-menu #playlistsMenu="matMenu">
-                  <button mat-menu-item>
-                    <mat-icon>add</mat-icon>
-                    New playlist
+    <div class="container">
+      <div class="content">
+        <app-audio [source]="currentTrack ? currentTrack.url : ''" #audioComponent></app-audio>
+        <div class="playerContainer">
+          <div class="a1">
+            <div class="controls">
+              <button mat-icon-button class="select-all">
+                <mat-icon>select_all</mat-icon>
+              </button>
+              <mat-form-field floatLabel="never" class="search">
+                <input matInput title="Search">
+                <mat-placeholder>
+                  <mat-icon>search</mat-icon>
+                  Search
+                </mat-placeholder>
+              </mat-form-field>
+            </div>
+            <mat-divider></mat-divider>
+            <mat-list class="artists">
+              <ng-container *ngFor="let artist of getDisplayedArtists()">
+                <a (click)="selectArtist(artist)" mat-list-item>
+                  <mat-checkbox
+                    color="primary"
+                    matListIcon
+                    [checked]="isSelectedArtist(artist)"
+                    (change)="$event.checked ? addArtist(artist) : removeArtist(artist)"
+                    (click)="$event.stopPropagation()"></mat-checkbox>
+                  <div matListAvatar class="avatar"></div>
+                  <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
+                  <span matLine>{{artist.songs}} songs</span>
+                  <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
                   </button>
                   <mat-divider></mat-divider>
-                  <button mat-menu-item>
-                    <mat-icon>album</mat-icon>
-                    Playlist1
+                </a>
+              </ng-container>
+            </mat-list>
+          </div>
+          <div class="a2">
+            <div class="controls">
+              <button mat-icon-button class="select-all">
+                <mat-icon>select_all</mat-icon>
+              </button>
+              <mat-form-field floatLabel="never" class="search">
+                <input matInput title="Search">
+                <mat-placeholder>
+                  <mat-icon>search</mat-icon>
+                  Search
+                </mat-placeholder>
+              </mat-form-field>
+            </div>
+            <mat-divider></mat-divider>
+            <mat-list class="albums">
+              <ng-container *ngFor="let album of getDisplayedAlbums()">
+                <a (click)="selectAlbum(album)" mat-list-item>
+                  <mat-checkbox
+                    color="primary"
+                    matListIcon
+                    [checked]="isSelectedAlbum(album)"
+                    (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
+                    (click)="$event.stopPropagation()"></mat-checkbox>
+                  <div matListAvatar class="avatar"></div>
+                  <span matLine matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
+                  <span matLine>{{album.songs}} songs</span>
+                  <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
                   </button>
-                  <button mat-menu-item>
-                    <mat-icon>album</mat-icon>
-                    Playlist2
+                  <mat-divider></mat-divider>
+                </a>
+              </ng-container>
+            </mat-list>
+          </div>
+          <div class="a3">
+            <div class="controls">
+              <mat-form-field floatLabel="never" class="search">
+                <input matInput title="Search">
+                <mat-placeholder>
+                  <mat-icon>search</mat-icon>
+                  Search
+                </mat-placeholder>
+              </mat-form-field>
+              <button mat-icon-button class="playlist-add">
+                <mat-icon>playlist_add</mat-icon>
+              </button>
+            </div>
+            <mat-divider></mat-divider>
+            <mat-list class="tracks">
+              <ng-container *ngFor="let track of getDisplayedTracks()">
+                <a (click)="playTrack(track)" mat-list-item>
+                  <span matLine matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
+                  <span matLine>{{track.metadata.duration | sgTime}}</span>
+                  <button mat-icon-button
+                    class="more"
+                    *ngIf="currentTrack != track"
+                    [matMenuTriggerFor]="trackMenu"
+                    (click)="$event.stopPropagation()">
+                    <mat-icon>more_vert</mat-icon>
                   </button>
-                </mat-menu>
-                <button mat-icon-button
-                  class = "playPause"
-                  *ngIf="currentTrack == track"
-                  (click)="audio.playing ? audio.pause() : playTrack(track); $event.stopPropagation()">
-                  <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
-                </button>
-                <span class="spinner" *ngIf="currentTrack == track">
-                  <mat-progress-spinner
-                    diameter="40"
-                    [mode]="audio.loading ? 'indeterminate' : 'determinate'"
-                    [value]="audio.currentTime / audio.duration * 100"></mat-progress-spinner>
-                </span>
-                <mat-divider></mat-divider>
-              </a>
-            </ng-container>
-          </mat-list>
-        </div>
-        <div class="a4">
-          <app-player
-            [audio]="audioComponent"
-            [track]="currentTrack"></app-player>
+                  <mat-menu #trackMenu>
+                    <button mat-menu-item>
+                      <mat-icon>play_arrow</mat-icon>
+                      <span>Play</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>play_arrow</mat-icon>
+                      <span>Play next</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>replay</mat-icon>
+                      <span>Play repeatedly</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>playlist_add</mat-icon>
+                      <span>Add to current playlist</span>
+                    </button>
+                    <button mat-menu-item [matMenuTriggerFor]="playlistsMenu">
+                      <mat-icon>playlist_add</mat-icon>
+                      <span>Add to playlist</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>favorite_border</mat-icon>
+                      <span>Add to favorites</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>details</mat-icon>
+                      <span>Details</span>
+                    </button>
+                  </mat-menu>
+                  <mat-menu #playlistsMenu="matMenu">
+                    <button mat-menu-item>
+                      <mat-icon>add</mat-icon>
+                      New playlist
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>
+                      <mat-icon>album</mat-icon>
+                      Playlist1
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>album</mat-icon>
+                      Playlist2
+                    </button>
+                  </mat-menu>
+                  <button mat-icon-button
+                    class = "playPause"
+                    *ngIf="currentTrack == track"
+                    (click)="audio.playing ? audio.pause() : playTrack(track); $event.stopPropagation()">
+                    <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
+                  </button>
+                  <span class="spinner" *ngIf="currentTrack == track">
+                    <mat-progress-spinner
+                      diameter="40"
+                      [mode]="audio.loading ? 'indeterminate' : 'determinate'"
+                      [value]="audio.currentTime / audio.duration * 100"></mat-progress-spinner>
+                  </span>
+                  <mat-divider></mat-divider>
+                </a>
+              </ng-container>
+            </mat-list>
+          </div>
+          <div class="a4">
+            <app-player
+              [audio]="audioComponent"
+              [track]="currentTrack"></app-player>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-</mat-sidenav-container>
+  </mat-sidenav-container>
+</div>

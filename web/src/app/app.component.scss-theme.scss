@@ -1,0 +1,23 @@
+@import '~@angular/material/theming';
+
+// mixin name will be used in main style.scss
+@mixin app-component-theme($theme) {
+
+  // retrieve variables from theme
+  // (all possible variables, use only what you really need)
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, accent);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .a1, .a2, .a3 {
+    &::-webkit-scrollbar-track {
+      background-color: mat-color($background, app-bar);
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: mat-color($foreground, disabled);
+    }
+  }
+
+}

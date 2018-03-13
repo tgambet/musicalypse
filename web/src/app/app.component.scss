@@ -35,15 +35,16 @@ mat-sidenav {
 .a1, .a2, .a3 {
   overflow-y: scroll;
   min-width: 240px;
+  width: 0; // fix to make them all the same width
   flex-grow: 1;
   &::-webkit-scrollbar {
     width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background-color: #f5f5f5;
+    // background-color: #f5f5f5;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
+    // background-color: rgba(0, 0, 0, 0.2);
   }
   &::-webkit-scrollbar-button {
     display: none;
@@ -57,7 +58,7 @@ mat-sidenav {
 }
 
 .a4 {
-  flex-grow: 2;
+  //flex-grow: 2;
   max-width: 600px;
   min-width: 450px;
 }

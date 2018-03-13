@@ -1,5 +1,24 @@
 @import "../../node_modules/minireset.css";
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~@angular/material/_theming.scss';
+
+@include mat-core();
+
+@import 'theme.scss';
+
+@import 'app/app.component.scss-theme';
+
+@mixin custom-components-theme($theme) {
+  @include app-component-theme($theme);
+}
+
+.light-theme {
+  @include angular-material-theme($light-theme);
+  @include custom-components-theme($light-theme);
+}
+.dark-theme {
+  @include angular-material-theme($dark-theme);
+  @include custom-components-theme($dark-theme);
+}
 
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -11,8 +30,11 @@ app-root {
   bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  flex-direction: column;
+  > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 }
 
 .carousel {

@@ -9,6 +9,7 @@ import {AppComponent} from './app.component';
 import {AudioComponent} from './audio/audio.component';
 import {TimePipe} from './time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
+import {LibraryService} from './services/library.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {HttpSocketClientService} from './services/http-socket-client.service';
   providers: [
     MediaMatcher,
     BreakpointObserver,
-    HttpSocketClientService
+    HttpSocketClientService,
+    LibraryService
   ],
   bootstrap: [AppComponent]
 })

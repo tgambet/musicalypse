@@ -35,7 +35,11 @@ export class AudioComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.audioElement.play().then(
       () => { this.loading = false; },
-      e => { console.log(e); }
+      e => {
+        this.loading = false;
+        console.log(e);
+        // TODO deal with errors
+      }
     );
   }
 

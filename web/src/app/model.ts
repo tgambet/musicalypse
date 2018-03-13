@@ -1,40 +1,13 @@
 
 export interface Artist {
-
-  id: string;
-
   name: string;
-
-  songsNumber: number;
-
+  songs: number;
 }
 
 export interface Album {
-
-  id: string;
-
-  artistId: string;
-
-  name: string;
-
-  songsNumber: number;
-
-}
-
-export interface Track {
-
-  id: string;
-
-  albumId: String;
-
-  artistId: string;
-
-  name: string;
-
-  duration: number;
-
-  source: string;
-
+  artist: string;
+  title: string;
+  songs: number;
 }
 
 export interface SocketMessage {
@@ -43,7 +16,7 @@ export interface SocketMessage {
   entity: any;
 }
 
-export interface Track1 {
+export interface Track {
   url: string;
   metadata: TrackMetadata;
 }

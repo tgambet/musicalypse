@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   selectedArtists: Artist[] = [];
   selectedAlbums: Album[] = [];
 
-  currentTrack: Track = this.libraryService.tracks[0];
+  currentTrack: Track;
 
   // isSmallScreen: boolean;
 

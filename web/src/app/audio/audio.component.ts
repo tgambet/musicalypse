@@ -7,17 +7,18 @@ import {Component, ElementRef, Input, OnInit, AfterViewInit, ViewChild} from '@a
 })
 export class AudioComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('audioElement')
-  audioElementRef: ElementRef;
-  audioElement: HTMLMediaElement;
-
-  @Input('source') source: string;
+  @Input('source')
+  source: string;
   volume = 1.0;
   muted = true;
-  currentTime = 0;
-  duration = 1;
+  currentTime;
+  duration;
   loading = false;
   playing = false;
+
+  @ViewChild('audioElement')
+  private audioElementRef: ElementRef;
+  private audioElement: HTMLMediaElement;
 
   constructor() { }
 

@@ -10,12 +10,14 @@ import {AudioComponent} from './audio/audio.component';
 import {TimePipe} from './time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AudioComponent,
-    TimePipe
+    TimePipe,
+    PlayerComponent
   ],
   imports: [
     BrowserModule,

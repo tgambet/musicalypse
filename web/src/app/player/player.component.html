@@ -1,10 +1,4 @@
 <div class="player">
-  <div class="title">
-    <div class="metadata">
-      {{track ? track.metadata.title : '-'}}<br>
-      {{track ? track.metadata.artist : '-'}}
-    </div>
-  </div>
   <div class="volume">
     <button mat-icon-button
             class="mute"
@@ -22,9 +16,19 @@
       step="0.01"
       color="primary"></mat-slider>
   </div>
+  <div class="title">
+    <div class="metadata">
+      {{track ? track.metadata.title : '-'}}<br>
+      {{track ? track.metadata.artist : '-'}}
+    </div>
+  </div>
   <div class="carousel">
     <mat-tab-group [selectedIndex]="1">
-      <mat-tab>
+      <mat-tab label="Playlist">
+        <ng-template mat-tab-label>
+          <mat-icon>playlist_play</mat-icon>
+          <span>Playlist</span>
+        </ng-template>
         <div class="details">
           <mat-form-field>
             <input matInput placeholder="Title" value="The End Of The Line">
@@ -37,12 +41,20 @@
           </mat-form-field>
         </div>
       </mat-tab>
-      <mat-tab>
-        <div class="albumArt" >
+      <mat-tab label="Album cover">
+        <ng-template mat-tab-label>
+          <mat-icon>photo</mat-icon>
+          <span>Cover</span>
+        </ng-template>
+        <div class="albumArt">
           <img src="https://images-na.ssl-images-amazon.com/images/I/91aZBftKeUL._SL1425_.jpg" />
         </div>
       </mat-tab>
-      <mat-tab>
+      <mat-tab label="Lyrics">
+        <ng-template mat-tab-label>
+          <mat-icon>format_align_center</mat-icon>
+          <span>Lyrics</span>
+        </ng-template>
         <div class="lyrics">
           Need
           More and more

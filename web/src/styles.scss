@@ -40,38 +40,65 @@ app-root {
 .carousel {
   .mat-tab-header {
     .mat-tab-labels {
-      justify-content: center;
+      display: flex;
+      flex-direction: row;
       align-items: center;
+      justify-content: center;
     }
     .mat-tab-label {
       min-width: unset;
-      border-radius: 50%;
+      //height: 24px;
+      width: 100px;
+      box-sizing: content-box;
       padding: 0;
-      height: 8px;
-      width: 8px;
-      margin: 0 4px;
-      background-color: rgba(0,0,0,.66) !important;
-      &:focus {
-        background-color: rgba(0,0,0,.66) !important;
+      mat-icon {
+        margin-right: 0.5rem;
       }
     }
-    .mat-tab-label-active {
-      background-color: rgba(0,0,0,.87) !important;
-      height: 10px;
-      width: 10px;
-      margin: 0 3px;
+    .mat-tab-label-content {
+      line-height: 0; // fix
+      display: flex;
+      flex-direction: row;
+      align-items: center;
     }
-
-    .mat-ripple-element {
-      display: none;
-    }
-    border: none;
-    margin-bottom: 1rem;
-  }
-  mat-ink-bar {
-    display: none;
   }
 }
+
+//.carousel {
+//  .mat-tab-header {
+//    .mat-tab-labels {
+//      justify-content: center;
+//      align-items: center;
+//    }
+//    .mat-tab-label {
+//      min-width: unset;
+//      border-radius: 50%;
+//      padding: 0;
+//      height: 8px;
+//      width: 8px;
+//      margin: 0 4px;
+//      background-color: rgba(0,0,0,.66) !important;
+//      &:focus {
+//        background-color: rgba(0,0,0,.66) !important;
+//      }
+//    }
+//    .mat-tab-label-active {
+//      background-color: rgba(0,0,0,.87) !important;
+//      height: 10px;
+//      width: 10px;
+//      margin: 0 3px;
+//    }
+//
+//    .mat-ripple-element {
+//      display: none;
+//    }
+//    border: none;
+//    margin-bottom: 1rem;
+//  }
+//  mat-ink-bar {
+//    display: none;
+//  }
+//}
 
 // Fix search input length
 .search {

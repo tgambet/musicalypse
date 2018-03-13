@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Album, Artist, Track} from '../model';
+import * as _ from 'lodash';
 
 @Injectable()
 export class LibraryService {
@@ -24,7 +25,25 @@ export class LibraryService {
   constructor() { }
 
   addTrack(track: Track): void {
-    this.tracks.push(track);
+    if (!_.includes(this.tracks, track)) {
+      this.tracks.push(track);
+      const artist = track.metadata.artist;
+      const album = track.metadata.album;
+      const artistIndex = _.findIndex(this.artists, a => a.name === artist);
+      const albumIndex = _.findIndex(this.albums, a => a.title === album);
+      if (artistIndex === -1) {
+        console.log('pushing artist');
+        this.artists.push({name: artist, songs: 1});
+      } else {
+        this.artists[artistIndex].songs += 1;
+      }
+      if (albumIndex === -1) {
+        console.log('pushing album ' + album);
+        this.albums.push({title: album, artist: artist, songs: 1});
+      } else {
+        this.albums[albumIndex].songs += 1;
+      }
+    }
   }
 
 }

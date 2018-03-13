@@ -94,6 +94,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   //   this.httpSocketClient.closeSocket();
   // }
 
+  getDisplayedArtists() {
+    return this.libraryService.artists;
+  }
+
   selectArtist(artist: Artist) {
     this.selectedArtists = [artist];
   }
@@ -136,7 +140,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   removeAlbum(album: Album) {
-    _.remove(this.selectedAlbums, a => a.name === album.name);
+    _.remove(this.selectedAlbums, a => a.title === album.title);
   }
 
   isSelectedAlbum(album: Album): boolean {
@@ -144,7 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getTracksOf(albums: Album[]): Track[] {
-    return _.filter(this.libraryService.tracks, track => _.includes(_.map(albums, 'name'), track.metadata.album));
+    return _.filter(this.libraryService.tracks, track => _.includes(_.map(albums, 'title'), track.metadata.album));
   }
 
   getTracksOfArtists(artists: Artist[]): Track[] {

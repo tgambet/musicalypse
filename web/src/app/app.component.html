@@ -39,7 +39,7 @@
           </div>
           <mat-divider></mat-divider>
           <mat-list class="artists">
-            <ng-container *ngFor="let artist of artists">
+            <ng-container *ngFor="let artist of getDisplayedArtists()">
               <a (click)="selectArtist(artist)" mat-list-item>
                 <mat-checkbox
                   color="primary"
@@ -82,7 +82,7 @@
                   (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
                   (click)="$event.stopPropagation()"></mat-checkbox>
                 <div matListAvatar class="avatar"></div>
-                <span matLine matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.name}}</span>
+                <span matLine matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
                 <span matLine>{{album.songs}} songs</span>
                 <button mat-icon-button>
                   <mat-icon>keyboard_arrow_right</mat-icon>

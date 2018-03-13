@@ -26,7 +26,7 @@ class LibraryScannerTest extends SimpleTest {
       implicit val actorSystem: ActorSystem = ActorSystem()
       implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-      val sink = Sink.foreach[AudioMetadata](m => println(m))
+      val sink = Sink.foreach[TrackMetadata](m => println(m))
       val f: Future[Done] = scanner.scanLibrary().runWith(sink)
 
       import scala.concurrent.duration._

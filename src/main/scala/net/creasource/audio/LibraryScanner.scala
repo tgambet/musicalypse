@@ -20,20 +20,20 @@ class LibraryScanner(val libraryFolder: File) {
     })
   }
 
-  private def getMetadata(audioFile: File): AudioMetadata = {
+  private def getMetadata(audioFile: File): TrackMetadata = {
     import com.mpatric.mp3agic.Mp3File
     val mp3file = new Mp3File(audioFile)
 
     if (mp3file.hasId3v2Tag) {
       val tags = mp3file.getId3v2Tag
-      AudioMetadata(
+      TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
         album = Option(tags.getAlbum).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)
     } else {
-      AudioMetadata(
+      TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = None,
         artist = None,
@@ -42,7 +42,7 @@ class LibraryScanner(val libraryFolder: File) {
     }
   }
 
-  def scanLibrary(): Source[AudioMetadata, NotUsed] = {
+  def scanLibrary(): Source[TrackMetadata, NotUsed] = {
     val source = Source(getAudioFiles(libraryFolder))
     source.map(getMetadata)
   }

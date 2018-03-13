@@ -2,7 +2,7 @@ import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import * as Material from '@angular/material';
 import {AudioComponent} from './audio/audio.component';
 // import {BreakpointObserver} from '@angular/cdk/layout';
-import { Artist, Album, Track } from './model';
+import { Artist, Album, Track, SocketMessage, Track1 } from './model';
 import * as _ from 'lodash';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 
@@ -55,6 +55,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   // isSmallScreen: boolean;
 
+  private id = 0;
+
   constructor(
     // private breakpointObserver: BreakpointObserver
     public httpSocketClient: HttpSocketClientService
@@ -71,24 +73,24 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });*/
     this.sidenav.open();
-    this.openSocket();
+    // this.openSocket();
   }
 
   ngAfterViewInit(): void {
 
   }
 
-  openSocket() {
-    this.httpSocketClient.getSocket().subscribe(
-      (next) => console.log(next),
-      error => console.log(error),
-      () => console.log('socket completed')
-    );
-  }
-
-  closeSocket() {
-    this.httpSocketClient.closeSocket();
-  }
+  // openSocket() {
+  //   this.httpSocketClient.openSocket().subscribe(
+  //     (next) => console.log(next),
+  //     error => console.log(error),
+  //     () => console.log('socket completed')
+  //   );
+  // }
+  //
+  // closeSocket() {
+  //   this.httpSocketClient.closeSocket();
+  // }
 
   selectArtist(artist: Artist) {
     this.selectedArtists = [artist];
@@ -171,7 +173,21 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   scanLibrary() {
-    this.httpSocketClient.send({method: 'ScanLibrary', id: 0, entity: null});
+    const currentId = ++this.id;
+    const subscription1 = this.httpSocketClient
+      .openSocket()
+      .filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId)
+      .map((r: SocketMessage) => r.entity)
+      .map((e: Track1) => e.url)
+      .subscribe((next) => console.log(next));
+
+    this.httpSocketClient
+      .openSocket()
+      .filter((r: SocketMessage) => r.method === 'LibraryScanned' && r.id === currentId)
+      .take(1)
+      .subscribe((next) => subscription1.unsubscribe());
+
+    this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
   }
 
 }

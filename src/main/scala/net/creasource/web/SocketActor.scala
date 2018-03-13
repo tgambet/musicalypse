@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import net.creasource.audio.{AudioMetadata, LibraryScanner, Track}
+import net.creasource.audio.{TrackMetadata, LibraryScanner, Track}
 import net.creasource.core.Application
 import spray.json._
 
@@ -76,7 +76,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
           .reduce(_ concat _)
           // stream to client
           .runWith(Sink.foreach(client ! _))
-          // send complete acknowledgment
+          // send completion acknowledgment
           .onComplete(_ => ())
 
     case a @ JsonMessage(_, _, _) =>
@@ -93,7 +93,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
   }
 
-  private def getUrlFromAudioMetadata(metadata: AudioMetadata, libraryFolder: File): String = {
+  private def getUrlFromAudioMetadata(metadata: TrackMetadata, libraryFolder: File): String = {
     "/music/" + libraryFolder.toPath.relativize(new File(metadata.location).toPath).toString.replaceAll("""\\""", "/")
   }
 

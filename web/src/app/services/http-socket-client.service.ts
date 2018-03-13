@@ -15,7 +15,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   constructor(private httpClient: HttpClient) { }
 
-  private socket: Subject<string>;
+  private socket: Subject<Object>;
 
   private id = 0;
 
@@ -48,7 +48,7 @@ export class HttpSocketClientService implements OnDestroy {
     return url;
   }
 
-  getSocket(): Subject<Object> {
+  openSocket(): Observable<Object> {
     if (!this.socket) {
       this.socket = webSocket(HttpSocketClientService.getSocketUrl());
       this.socket.subscribe(
@@ -115,7 +115,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   private sendRequest(request: HttpRequest): Observable<Object> {
     const expectResponse =
-      this.getSocket()
+      this.openSocket()
         .filter((r: HttpResponse) => r.method === 'HttpResponse' && r.id === request.id)
         .map((r: HttpResponse) => {
           const status = r.entity.status;

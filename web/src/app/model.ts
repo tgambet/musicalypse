@@ -36,3 +36,22 @@ export interface Track {
   source: string;
 
 }
+
+export interface SocketMessage {
+  id: number;
+  method: string;
+  entity: any;
+}
+
+export interface Track1 {
+  url: string;
+  metadata: TrackMetadata;
+}
+
+export interface TrackMetadata {
+  location: string;
+  title: string;
+  album: string;
+  artist: string;
+  duration: number;
+}

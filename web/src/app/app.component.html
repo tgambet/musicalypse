@@ -6,16 +6,16 @@
 
 <mat-sidenav-container>
   <mat-sidenav #sidenav [mode]="'over'">
-    <p *ngIf="!httpSocketClient.isSocketOpen()">
-      <a (click)="openSocket()">Open Socket</a>
+    <p>
+      <a (click)="httpSocketClient.openSocket()">Open Socket</a>
       <mat-icon>radio_button_unchecked</mat-icon>
     </p>
-    <p *ngIf="httpSocketClient.isSocketOpen()">
-      <a (click)="closeSocket()">Close Socket</a>
+    <p>
+      <a (click)="httpSocketClient.closeSocket()">Close Socket</a>
       <mat-icon>radio_button_checked</mat-icon>
     </p>
-    <p *ngIf="httpSocketClient.isSocketOpen()">
-      <a (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
+    <p>
+      <a *ngIf="httpSocketClient.isSocketOpen()" (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
       <br>
       <a (click)="scanLibrary()">Request Scan</a>
     </p>

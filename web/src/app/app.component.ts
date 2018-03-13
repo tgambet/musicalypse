@@ -148,11 +148,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getTracksOf(albums: Album[]): Track[] {
-    return _.filter(this.libraryService.tracks, track => _.includes(_.map(albums, 'title'), track.metadata.album));
+    const albumTitles = _.map(albums, 'title');
+    return _.filter(this.libraryService.tracks, track => _.includes(albumTitles, track.metadata.album));
   }
 
   getTracksOfArtists(artists: Artist[]): Track[] {
-    return _.filter(this.libraryService.tracks, track => _.includes(_.map(artists, 'name'), track.metadata.artist));
+    const artistNames = _.map(artists, 'name');
+    return _.filter(this.libraryService.tracks, track => _.includes(artistNames, track.metadata.artist));
   }
 
   getDisplayedTracks() {
@@ -186,7 +188,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       .map((r: SocketMessage) => r.entity)
       .map((e: Track) => e)
       .subscribe((next) => {
-        console.log(next);
+        // console.log(next);
         this.libraryService.addTrack(next);
       });
 

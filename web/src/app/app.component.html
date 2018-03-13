@@ -56,8 +56,10 @@
                     (change)="$event.checked ? addArtist(artist) : removeArtist(artist)"
                     (click)="$event.stopPropagation()"></mat-checkbox>
                   <div matListAvatar class="avatar"></div>
-                  <span matLine matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
-                  <span matLine>{{artist.songs}} songs</span>
+                  <div matLine>
+                    <span matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
+                  </div>
+                  <div matLine>{{artist.songs}} songs</div>
                   <button mat-icon-button>
                     <mat-icon>keyboard_arrow_right</mat-icon>
                   </button>
@@ -90,8 +92,10 @@
                     (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
                     (click)="$event.stopPropagation()"></mat-checkbox>
                   <div matListAvatar class="avatar"></div>
-                  <span matLine matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
-                  <span matLine>{{album.songs}} songs</span>
+                  <div matLine>
+                    <span matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
+                  </div>
+                  <div matLine>{{album.songs}} songs</div>
                   <button mat-icon-button>
                     <mat-icon>keyboard_arrow_right</mat-icon>
                   </button>
@@ -117,8 +121,10 @@
             <mat-list class="tracks">
               <ng-container *ngFor="let track of getDisplayedTracks()">
                 <a (click)="playTrack(track)" mat-list-item>
-                  <span matLine matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
-                  <span matLine>{{track.metadata.duration | sgTime}}</span>
+                  <div matLine>
+                    <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
+                  </div>
+                  <div matLine>{{track.metadata.duration | sgTime}}</div>
                   <button mat-icon-button
                     class="more"
                     *ngIf="currentTrack != track"
@@ -172,9 +178,10 @@
                     </button>
                   </mat-menu>
                   <button mat-icon-button
-                    class = "playPause"
-                    *ngIf="currentTrack == track"
-                    (click)="audio.playing ? audio.pause() : playTrack(track); $event.stopPropagation()">
+                          class = "playPause"
+                          color="primary"
+                          *ngIf="currentTrack == track"
+                          (click)="audio.playing ? audio.pause() : playTrack(track); $event.stopPropagation()">
                     <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
                   </button>
                   <span class="spinner" *ngIf="currentTrack == track">

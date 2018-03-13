@@ -170,6 +170,7 @@
       <mat-icon>skip_previous</mat-icon>
     </button>
     <button mat-icon-button
+            color="primary"
             class="playPause"
             [disabled]="!track"
             (click)="audio.playing ? audio.pause() : audio.play()">

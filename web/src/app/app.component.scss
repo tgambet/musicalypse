@@ -34,9 +34,11 @@ mat-sidenav {
 
 .a1, .a2, .a3 {
   overflow-y: scroll;
-  min-width: 240px;
-  width: 0; // fix to make them all the same width
-  flex-grow: 1;
+  //min-width: 280px;
+  //max-width: 280px;
+  width: 280px;
+  // width: 0; // fix to make them all the same width
+  // flex-grow: 1;
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -59,8 +61,12 @@ mat-sidenav {
 
 .a4 {
   flex-grow: 1;
-  max-width: 600px;
+  // max-width: 800px;
   min-width: 360px;
+}
+
+@media screen and (min-width: 360px) {
+
 }
 
 mat-list {

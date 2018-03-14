@@ -25,23 +25,42 @@
     </div>
   </div>
   <div class="carousel">
-    <mat-tab-group [selectedIndex]="1">
+    <mat-tab-group [selectedIndex]="0">
       <mat-tab label="Playlist">
         <ng-template mat-tab-label>
           <mat-icon>playlist_play</mat-icon>
           <span>Playlist</span>
         </ng-template>
-        <div class="details">
-          <mat-form-field>
-            <input matInput placeholder="Title" value="The End Of The Line">
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Album" value="Death Magnetic">
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Artist" value="Metallica">
-          </mat-form-field>
-        </div>
+        <ul class="playlist">
+          <li>
+            <span class="title c">San</span>
+            <span class="artist c">Orelsan</span>
+            <span class="album c">La fete est finie</span>
+            <span class="year c">2017</span>
+            <span class="duration c">01:45</span>
+          </li>
+          <li>
+            <span class="title c">San</span>
+            <span class="artist c">Orelsan</span>
+            <span class="album c">La fete est finie</span>
+            <span class="year c">2017</span>
+            <span class="duration c">01:45</span>
+          </li>
+          <li>
+            <span class="title c">San</span>
+            <span class="artist c">Orelsan</span>
+            <span class="album c">La fete est finie</span>
+            <span class="year c">2017</span>
+            <span class="duration c">01:45</span>
+          </li>
+          <li>
+            <span class="title c">San</span>
+            <span class="artist c">Orelsan</span>
+            <span class="album c">La fete est finie</span>
+            <span class="year c">2017</span>
+            <span class="duration c">01:45</span>
+          </li>
+        </ul>
       </mat-tab>
       <mat-tab label="Cover">
         <ng-template mat-tab-label>

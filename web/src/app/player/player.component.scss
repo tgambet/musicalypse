@@ -45,11 +45,36 @@
     white-space: pre-line;
     font-size: 80%;
   }
-  .details {
-    display: flex;
-    flex-direction: column;
-    mat-form-field {
-      flex-grow: 1;
+  .playlist {
+    font-size: 0;
+    padding-top: 0;
+    li {
+      height: 36px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0 1rem;
+      border-bottom: 1px solid black;
+    }
+    .c {
+      display: inline-block;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .title {
+      width: 33%;
+    }
+    .artist {
+      width: 33%;
+    }
+    .album {
+      width: 33%;
+    }
+    .year, .duration {
+      width: 5rem;
+      text-align: right;
     }
   }
   .albumArt {

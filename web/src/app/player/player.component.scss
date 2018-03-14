@@ -1,26 +1,27 @@
 .player {
-  padding: 1rem;
+  padding: 10px 0;
   height: 100%;
   display: flex;
   flex-direction: column;
+  //position: relative;
 }
 
-.title {
+.volume {
+  min-height: 40px;
+  height: 40px;
+}
+
+.metadata {
   text-align: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  .metadata {
-    flex-grow: 1;
+  min-height: 34px;
+  .title {}
+  .artist {
+    font-size: 80%;
   }
-  //.filler {
-  //  width: 25px;
-  //  height: 25px;
-  //}
 }
 
 .volume, .progress {
+  padding: 0 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -31,26 +32,14 @@
 }
 
 .volume {
-  a {
-    line-height: 0;
-  }
   mat-slider {
     margin-left: 0;
   }
 }
 
-.progress {
-  height: 3rem;
-  mat-progress-bar {
-    margin: 0 1rem;
-  }
-}
-
 .carousel {
   height: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+  min-height: 300px;
   .lyrics {
     text-align: center;
     white-space: pre-line;
@@ -65,10 +54,21 @@
   }
   .albumArt {
     text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     img {
-      height: 400px;
-      border: 1px solid rgba(0,0,0,.66);
+      align-self: center;
+      max-height: 100%;
     }
+  }
+}
+
+.progress {
+  min-height: 36px;
+  mat-progress-bar {
+    margin: 0 1rem;
   }
 }
 
@@ -77,7 +77,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 0;
+  min-height: 60px;
+  padding: 0 1rem;
   .playPause {
     box-sizing: content-box;
     border: 1px solid #c0c0c0;

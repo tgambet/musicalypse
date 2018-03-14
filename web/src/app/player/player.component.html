@@ -16,9 +16,11 @@
       step="0.01"
       color="primary"></mat-slider>
   </div>
-  <div class="title">
-    <div class="metadata">
-      {{track ? track.metadata.title : '-'}}<br>
+  <div class="metadata">
+    <div class="title">
+      {{track ? track.metadata.title : '-'}}
+    </div>
+    <div class="artist">
       {{track ? track.metadata.artist : '-'}}
     </div>
   </div>
@@ -41,7 +43,7 @@
           </mat-form-field>
         </div>
       </mat-tab>
-      <mat-tab label="Album cover">
+      <mat-tab label="Cover">
         <ng-template mat-tab-label>
           <mat-icon>photo</mat-icon>
           <span>Cover</span>
@@ -245,5 +247,4 @@
       Playlist2
     </button>
   </mat-menu>
-
 </div>

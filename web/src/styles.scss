@@ -47,7 +47,6 @@ app-root {
     }
     .mat-tab-label {
       min-width: unset;
-      //height: 24px;
       width: 100px;
       box-sizing: content-box;
       padding: 0;
@@ -61,6 +60,12 @@ app-root {
       flex-direction: row;
       align-items: center;
     }
+  }
+  .mat-tab-group {
+    height: 100%;
+  }
+  .mat-tab-body-wrapper {
+    height: 100%;
   }
 }
 

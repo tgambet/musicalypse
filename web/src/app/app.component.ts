@@ -55,7 +55,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   currentTrack: Track;
 
-  themeClass = 'light-theme';
+  themeClass = 'dark-theme';
 
   // isSmallScreen: boolean;
 
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.sidenav.open();
       }
     });*/
-    this.sidenav.open();
+    // this.sidenav.open();
     // this.openSocket();
   }
 

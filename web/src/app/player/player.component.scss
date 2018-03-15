@@ -55,22 +55,37 @@
       align-items: center;
       padding: 0 1rem;
       cursor: pointer;
+      mat-icon {
+        line-height: 16px;
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+        margin-right: 0.25rem;
+      }
     }
     .c {
       // display: inline-block;
       font-size: 14px;
+      line-height: 14px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .title {
-      width: 33%;
+      display: flex;
+      align-items: center;
+      width: 40%;
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     .artist {
-      width: 33%;
+      width: 30%;
     }
     .album {
-      width: 33%;
+      width: 30%;
     }
     .year, .duration {
       width: 5rem;
@@ -94,6 +109,9 @@
   min-height: 36px;
   mat-progress-bar {
     margin: 0 1rem;
+  }
+  .time-elapsed, .time-total {
+    width: 2.5rem;
   }
 }
 

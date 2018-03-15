@@ -37,12 +37,14 @@ mat-sidenav {
   min-width: 280px;
   width: 0;
   flex-grow: 1;
+  min-height: 480px;
 }
 
 .a4 {
   flex-grow: 2;
   min-width: 360px;
   width: 0;
+  min-height: 480px;
 }
 
 //@media screen and (min-width: 360px) {

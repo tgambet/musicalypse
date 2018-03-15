@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-audio',
@@ -29,10 +29,10 @@ export class AudioComponent implements OnInit, AfterViewInit {
   }
 
   seekTo(time: number) {
+    this.audioElement.currentTime = time;
     if (!this.isTimeInBuffer(time)) {
       this.loading = true;
     }
-    this.audioElement.currentTime = time;
   }
 
   isTimeInBuffer(time: number): boolean {
@@ -45,13 +45,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
   }
 
   play() {
-    // this.loading = true;
     this.audioElement.play().then(
-      () => {
-        // this.loading = false;
-      },
+      () => {},
       e => {
-        // this.loading = false;
         console.log(e);
         // TODO deal with errors
       }

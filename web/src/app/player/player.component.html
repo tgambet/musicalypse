@@ -32,13 +32,18 @@
           <span>Playlist</span>
         </ng-template>
         <ul class="playlist">
-          <li class="divider" *ngFor="let track of this.library.tracks">
-            <span class="title c">{{track.metadata.title}}</span>
-            <span class="artist c">{{track.metadata.artist}}</span>
-            <span class="album c">{{track.metadata.album}}</span>
-            <span class="year c">{{track.metadata.year}}2017</span>
-            <span class="duration c">{{track.metadata.duration | sgTime}}</span>
-          </li>
+          <ng-container *ngFor="let track of this.library.tracks">
+            <li [class]="track == library.currentTrack ? 'current divider' : 'divider'" (click)="library.playTrack(track)">
+              <span class="title c">
+                <mat-icon *ngIf="track == library.currentTrack">equalizer</mat-icon>
+                <span>{{track.metadata.title}}</span>
+              </span>
+              <span class="artist c">{{track.metadata.artist}}</span>
+              <span class="album c">{{track.metadata.album}}</span>
+              <span class="year c">{{track.metadata.year}}2017</span>
+              <span class="duration c">{{track.metadata.duration | sgTime}}</span>
+            </li>
+          </ng-container>
         </ul>
       </mat-tab>
       <mat-tab label="Cover">
@@ -158,7 +163,7 @@
     </mat-tab-group>
   </div>
   <div class="progress">
-    <span>{{audio.currentTime ? (audio.currentTime | sgTime) : '00:00'}}</span>
+    <span class="time-elapsed">{{audio.currentTime ? (audio.currentTime | sgTime) : '00:00'}}</span>
     <mat-progress-bar
       *ngIf="audio.loading"
       mode="indeterminate" ></mat-progress-bar>
@@ -170,7 +175,7 @@
       [max]="audio.duration"
       [value]="audio.currentTime"
       (change)="audio.seekTo($event.value)"></mat-slider>
-    <span>{{audio.duration ? (audio.duration | sgTime) : '--:--'}}</span>
+    <span class="time-total">{{audio.duration ? (audio.duration | sgTime) : '00:00'}}</span>
   </div>
   <div class="menu">
     <button mat-icon-button class="shuffle">

@@ -54,10 +54,10 @@
       flex-direction: row;
       align-items: center;
       padding: 0 1rem;
-      border-bottom: 1px solid black;
+      cursor: pointer;
     }
     .c {
-      display: inline-block;
+      // display: inline-block;
       font-size: 14px;
       overflow: hidden;
       text-overflow: ellipsis;

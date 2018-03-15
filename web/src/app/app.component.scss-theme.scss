@@ -7,17 +7,25 @@
   // (all possible variables, use only what you really need)
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
-  $warn: map-get($theme, accent);
+  $warn: map-get($theme, warn);
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
-  .a1, .a2, .a3 {
-    &::-webkit-scrollbar-track {
-      background-color: mat-color($background, app-bar);
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: mat-color($foreground, disabled-button);
-    }
+  *::-webkit-scrollbar {
+    width: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background-color: mat-color($background, app-bar);
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: mat-color($foreground, disabled-button);
+  }
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  .divider {
+    border-bottom: 1px solid mat-color($foreground, divider);
   }
 
 }

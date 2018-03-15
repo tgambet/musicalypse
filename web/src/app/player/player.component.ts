@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AudioComponent} from '../audio/audio.component';
 import {Track} from '../model';
+import {LibraryService} from '../services/library.service';
 
 @Component({
   selector: 'app-player',
@@ -14,7 +15,7 @@ export class PlayerComponent implements OnInit {
   @Input('track')
   track: Track;
 
-  constructor() { }
+  constructor(public libraryService: LibraryService) {}
 
   ngOnInit() {
   }

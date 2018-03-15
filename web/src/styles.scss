@@ -6,9 +6,11 @@
 @import 'theme.scss';
 
 @import 'app/app.component.scss-theme';
+@import 'app/player/player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-component-theme($theme);
+  @include player-component-theme($theme)
 }
 
 .light-theme {

@@ -32,33 +32,12 @@
           <span>Playlist</span>
         </ng-template>
         <ul class="playlist">
-          <li>
-            <span class="title c">San</span>
-            <span class="artist c">Orelsan</span>
-            <span class="album c">La fete est finie</span>
-            <span class="year c">2017</span>
-            <span class="duration c">01:45</span>
-          </li>
-          <li>
-            <span class="title c">San</span>
-            <span class="artist c">Orelsan</span>
-            <span class="album c">La fete est finie</span>
-            <span class="year c">2017</span>
-            <span class="duration c">01:45</span>
-          </li>
-          <li>
-            <span class="title c">San</span>
-            <span class="artist c">Orelsan</span>
-            <span class="album c">La fete est finie</span>
-            <span class="year c">2017</span>
-            <span class="duration c">01:45</span>
-          </li>
-          <li>
-            <span class="title c">San</span>
-            <span class="artist c">Orelsan</span>
-            <span class="album c">La fete est finie</span>
-            <span class="year c">2017</span>
-            <span class="duration c">01:45</span>
+          <li class="divider" *ngFor="let track of this.libraryService.tracks">
+            <span class="title c">{{track.metadata.title}}</span>
+            <span class="artist c">{{track.metadata.artist}}</span>
+            <span class="album c">{{track.metadata.album}}</span>
+            <span class="year c">{{track.metadata.year}}2017</span>
+            <span class="duration c">{{track.metadata.duration | sgTime}}</span>
           </li>
         </ul>
       </mat-tab>

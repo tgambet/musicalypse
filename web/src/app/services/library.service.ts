@@ -26,7 +26,13 @@ export class LibraryService {
 
   playlist: Track[] = [];
 
+  oldPlaylist: Track[];
+
   currentTrack: Track;
+
+  repeat = false;
+
+  shuffle = false;
 
   trackPlayed: Observable<Track>;
 
@@ -107,6 +113,7 @@ export class LibraryService {
     }
     if (!this.currentTrack) {
       this.playTrack(this.playlist[0]);
+      return;
     }
     const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
     if (this.playlist[currentTrackIndex + 1]) {
@@ -129,6 +136,28 @@ export class LibraryService {
     } else if (currentTrackIndex - 1 <= 0) {
       this.playTrack(this.playlist[this.playlist.length - 1]);
     }
+  }
+
+  shufflePlaylist() {
+    this.oldPlaylist = this.playlist;
+    this.playlist = _.shuffle(this.playlist);
+    if (this.currentTrack && _.includes(this.playlist, this.currentTrack)) {
+      _.remove(this.playlist, this.currentTrack);
+      this.playlist.splice(0, 0, this.currentTrack);
+    }
+    this.shuffle = true;
+  }
+
+  unshufflePlaylist() {
+    if (this.oldPlaylist) {
+      this.playlist = this.oldPlaylist;
+      this.oldPlaylist = null;
+    }
+    this.shuffle = false;
+  }
+
+  isCurrentTrackLastInPlaylist(): boolean {
+    return _.indexOf(this.playlist, this.currentTrack) === this.playlist.length - 1;
   }
 
 }

@@ -30,7 +30,7 @@
 
     <div class="container">
       <div class="content">
-        <app-audio #audioComponent></app-audio>
+        <app-audio #audioComponent (onPlayEnd)="onPlayEnded()"></app-audio>
         <div class="playerContainer">
           <div class="a1">
             <div class="controls">

@@ -160,4 +160,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
   }
 
+  onPlayEnded() {
+    // if repeat is on or it is not the last song
+    if (this.library.repeat || this.library.isCurrentTrackLastInPlaylist()) {
+      this.library.playNextTrackInPlaylist();
+    } else {
+      this.library.currentTrack = null;
+      this.audio.setSource('');
+    }
+  }
+
 }

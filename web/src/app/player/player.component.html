@@ -178,10 +178,16 @@
     <span class="time-total">{{audio.duration ? (audio.duration | sgTime) : '00:00'}}</span>
   </div>
   <div class="menu">
-    <button mat-icon-button class="shuffle">
+    <button mat-icon-button
+            class="shuffle"
+            [color]="library.shuffle ? 'primary' : ''"
+            (click)="library.shuffle ? library.unshufflePlaylist() : library.shufflePlaylist()">
       <mat-icon>shuffle</mat-icon>
     </button>
-    <button mat-icon-button class="repeat">
+    <button mat-icon-button
+            class="repeat"
+            [color]="library.repeat ? 'primary' : ''"
+            (click)="library.repeat = !library.repeat">
       <mat-icon>repeat</mat-icon>
     </button>
     <button mat-icon-button
@@ -191,10 +197,9 @@
       <mat-icon>skip_previous</mat-icon>
     </button>
     <button mat-icon-button
-
             class="playPause"
-            [disabled]="!library.currentTrack"
-            (click)="audio.playing ? audio.pause() : audio.play()">
+            [disabled]="!library.playlist || library.playlist.length == 0"
+            (click)="audio.playing ? audio.pause() : (library.currentTrack ? audio.play() : library.playNextTrackInPlaylist())">
       <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
     </button>
     <button mat-icon-button

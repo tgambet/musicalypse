@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, AfterViewInit, ViewChild, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-audio',
@@ -13,6 +13,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
   duration;
   loading = false;
   playing = false;
+
+  @Output()
+  onPlayEnd = new EventEmitter<void>();
 
   @ViewChild('audioElement')
   private audioElementRef: ElementRef;
@@ -61,12 +64,12 @@ export class AudioComponent implements OnInit, AfterViewInit {
   setSource(source: string) {
     if (this.source !== source) {
       this.source = source;
-      this.loading = true;
+      if (source !== '') {
+        this.loading = true;
+      } else {
+        this.duration = null;
+      }
     }
-  }
-
-  canPlay() {
-    this.loading = false;
   }
 
 }

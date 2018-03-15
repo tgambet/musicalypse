@@ -28,4 +28,12 @@
     border-bottom: 1px solid mat-color($foreground, divider);
   }
 
+  .artists, .albums, .tracks {
+    .mat-list-item {
+      &:hover {
+        background-color: mat-color($background, hover);
+      }
+    }
+  }
+
 }

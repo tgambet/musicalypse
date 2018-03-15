@@ -49,9 +49,10 @@ mat-sidenav {
 //
 //}
 
-mat-list {
+.artists, .albums, .tracks {
   padding-top: 0;
-  a {
+  .mat-list-item {
+    cursor: pointer;
     text-decoration: none;
     mat-checkbox {
       display: none;

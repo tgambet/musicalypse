@@ -57,20 +57,49 @@ export class LibraryService {
     }
   }
 
-  addTrackToPlaylist(track: Track) {}
+  addTrackToPlaylist(track: Track) {
+    if (!_.includes(this.playlist, track)) {
+      this.playlist.push(track);
+    }
+  }
 
-  addTracksToPlaylist(tracks: Track[]) {}
+  addTracksToPlaylist(tracks: Track[]) {
+    _.forEach(tracks, track => this.addTrackToPlaylist(track));
+  }
 
-  resetPlaylist() {}
+  resetPlaylist() {
+    this.playlist = [];
+  }
 
   playTrack(track: Track) {
     this.currentTrack = track;
     this.trackPlayedSource.next(track);
   }
 
-  playTracks(tracks: Track[], next?: Track[]) {}
+  playTracks(tracks: Track[], next?: Track) {
+    this.playlist = tracks;
+    this.currentTrack = next ? next : this.playlist[0];
+    this.trackPlayedSource.next(this.currentTrack);
+  }
 
-  playTrackNext(next: Track) {}
+  playTrackNext(next: Track) {
+    // if current track isn't set or in playlist and next isn't in playlist
+    if ((!this.currentTrack || !_.includes(this.playlist, this.currentTrack)) && !_.includes(this.playlist, next)) {
+      this.playlist.splice(0, 0, next);
+    } else {
+      // remove next from playlist if present
+      if (_.includes(this.playlist, next)) {
+        _.remove(this.playlist, next);
+      }
+      // find index of currentTrack
+      const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+      // insert next at the correct index
+      this.playlist.splice(currentTrackIndex + 1, 0, next);
+    }
+    if (!this.currentTrack) {
+      this.playTrack(next);
+    }
+  }
 
   playNextTrackInPlaylist() {}
 

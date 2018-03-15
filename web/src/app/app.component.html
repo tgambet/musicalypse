@@ -119,44 +119,44 @@
             <mat-divider></mat-divider>
             <mat-list class="tracks">
               <ng-container *ngFor="let track of getDisplayedTracks()">
-                <a (click)="libraryService.playTrack(track)" mat-list-item>
+                <a (click)="library.playTracks(getDisplayedTracks(), track)" mat-list-item>
                   <div matLine>
                     <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
                   </div>
                   <div matLine>{{track.metadata.duration | sgTime}}</div>
                   <button mat-icon-button
                           class="more"
-                          *ngIf="libraryService.currentTrack != track"
+                          *ngIf="library.currentTrack != track"
                           [matMenuTriggerFor]="trackMenu"
                           (click)="$event.stopPropagation()">
                     <mat-icon>more_vert</mat-icon>
                   </button>
                   <mat-menu #trackMenu>
-                    <button mat-menu-item>
+                    <button mat-menu-item (click)="library.playTracks(getDisplayedTracks(), track)">
                       <mat-icon>play_arrow</mat-icon>
                       <span>Play</span>
                     </button>
-                    <button mat-menu-item>
+                    <button mat-menu-item (click)="library.playTrackNext(track)">
                       <mat-icon>play_arrow</mat-icon>
                       <span>Play next</span>
                     </button>
-                    <button mat-menu-item>
-                      <mat-icon>replay</mat-icon>
-                      <span>Play repeatedly</span>
-                    </button>
-                    <button mat-menu-item>
+                    <!--<button mat-menu-item disabled>-->
+                      <!--<mat-icon>replay</mat-icon>-->
+                      <!--<span>Play repeatedly</span>-->
+                    <!--</button>-->
+                    <button mat-menu-item (click)="library.addTrackToPlaylist(track)">
                       <mat-icon>playlist_add</mat-icon>
                       <span>Add to current playlist</span>
                     </button>
-                    <button mat-menu-item [matMenuTriggerFor]="playlistsMenu">
+                    <button mat-menu-item [matMenuTriggerFor]="playlistsMenu" disabled>
                       <mat-icon>playlist_add</mat-icon>
                       <span>Add to playlist</span>
                     </button>
-                    <button mat-menu-item>
+                    <button mat-menu-item disabled>
                       <mat-icon>favorite_border</mat-icon>
                       <span>Add to favorites</span>
                     </button>
-                    <button mat-menu-item>
+                    <button mat-menu-item disabled>
                       <mat-icon>details</mat-icon>
                       <span>Details</span>
                     </button>
@@ -179,11 +179,11 @@
                   <button mat-icon-button
                           class = "playPause"
                           color="primary"
-                          *ngIf="libraryService.currentTrack == track"
-                          (click)="audio.playing ? audio.pause() : libraryService.playTrack(track); $event.stopPropagation()">
+                          *ngIf="library.currentTrack == track"
+                          (click)="audio.playing ? audio.pause() : library.playTrack(track); $event.stopPropagation()">
                     <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
                   </button>
-                  <span class="spinner" *ngIf="libraryService.currentTrack == track">
+                  <span class="spinner" *ngIf="library.currentTrack == track">
                     <mat-progress-spinner
                         diameter="40"
                         [mode]="audio.loading ? 'indeterminate' : 'determinate'"

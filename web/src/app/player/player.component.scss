@@ -74,7 +74,8 @@
     .title {
       display: flex;
       align-items: center;
-      width: 40%;
+      width: 50%;
+      padding-right: 0.25rem;
       span {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -82,10 +83,10 @@
       }
     }
     .artist {
-      width: 30%;
+      width: 25%;
     }
     .album {
-      width: 30%;
+      width: 25%;
     }
     .year, .duration {
       width: 5rem;

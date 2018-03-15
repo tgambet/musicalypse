@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     // private breakpointObserver: BreakpointObserver
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
-    public libraryService: LibraryService
+    public library: LibraryService
   ) {
     overlayContainer.getContainerElement().classList.add(this.themeClass);
   }
@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getDisplayedArtists() {
-    return this.libraryService.artists;
+    return this.library.artists;
   }
 
   selectArtist(artist: Artist) {
@@ -90,12 +90,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getAlbumsOf(artists: Artist[]): Album[] {
-    return _.filter(this.libraryService.albums, album => _.includes(_.map(artists, 'name'), album.artist));
+    return _.filter(this.library.albums, album => _.includes(_.map(artists, 'name'), album.artist));
   }
 
   getDisplayedAlbums() {
     // if (this.selectedArtists.length === 0) {
-    //   return this.libraryService.albums;
+    //   return this.library.albums;
     // } else {
       return this.getAlbumsOf(this.selectedArtists);
     // }
@@ -121,17 +121,17 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getTracksOf(albums: Album[]): Track[] {
     const albumTitles = _.map(albums, 'title');
-    return _.filter(this.libraryService.tracks, track => _.includes(albumTitles, track.metadata.album));
+    return _.filter(this.library.tracks, track => _.includes(albumTitles, track.metadata.album));
   }
 
-  getTracksOfArtists(artists: Artist[]): Track[] {
-    const artistNames = _.map(artists, 'name');
-    return _.filter(this.libraryService.tracks, track => _.includes(artistNames, track.metadata.artist));
-  }
+  // getTracksOfArtists(artists: Artist[]): Track[] {
+  //   const artistNames = _.map(artists, 'name');
+  //   return _.filter(this.library.tracks, track => _.includes(artistNames, track.metadata.artist));
+  // }
 
   getDisplayedTracks() {
     // if (this.selectedArtists.length === 0 && this.selectedAlbums.length === 0) {
-    //   return this.libraryService.tracks;
+    //   return this.library.tracks;
     // }
     // if (this.selectedAlbums.length === 0) {
     //   return this.getTracksOfArtists(this.selectedArtists);
@@ -148,7 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       .map((e: Track) => e)
       .subscribe(track => {
         // console.log(next);
-        this.libraryService.addTrack(track);
+        this.library.addTrack(track);
       });
 
     this.httpSocketClient

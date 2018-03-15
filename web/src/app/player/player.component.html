@@ -32,7 +32,7 @@
           <span>Playlist</span>
         </ng-template>
         <ul class="playlist">
-          <ng-container *ngFor="let track of this.library.tracks">
+          <ng-container *ngFor="let track of library.playlist">
             <li [class]="track == library.currentTrack ? 'current divider' : 'divider'" (click)="library.playTrack(track)">
               <span class="title c">
                 <mat-icon *ngIf="track == library.currentTrack">equalizer</mat-icon>
@@ -216,6 +216,10 @@
       <span>Details</span>
     </button>
     <mat-divider></mat-divider>
+    <button mat-menu-item>
+      <mat-icon>delete</mat-icon>
+      <span>Clear playlist</span>
+    </button>
     <button mat-menu-item>
       <mat-icon>save</mat-icon>
       <span>Save playlist</span>

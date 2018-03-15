@@ -11,7 +11,7 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
-  *::-webkit-scrollbar {
+  *:not(.mat-drawer-content)::-webkit-scrollbar {
     width: 6px;
   }
   *::-webkit-scrollbar-track {

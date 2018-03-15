@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Album, Artist, Track} from '../model';
 import * as _ from 'lodash';
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class LibraryService {
@@ -16,13 +18,24 @@ export class LibraryService {
     }
   };
 
-  tracks: Track[] = [this.a];
+  tracks: Track[] = [];
 
   artists: Artist[] = [];
 
   albums: Album[] = [];
 
-  constructor() { }
+  playlist: Track[] = [];
+
+  currentTrack: Track;
+
+  trackPlayed: Observable<Track>;
+
+  private trackPlayedSource = new Subject<Track>();
+
+  constructor() {
+    this.addTrack(this.a);
+    this.trackPlayed = this.trackPlayedSource.asObservable();
+  }
 
   addTrack(track: Track): void {
     if (!_.includes(this.tracks, track)) {
@@ -32,18 +45,35 @@ export class LibraryService {
       const artistIndex = _.findIndex(this.artists, a => a.name === artist);
       const albumIndex = _.findIndex(this.albums, a => a.title === album);
       if (artistIndex === -1) {
-        console.log('pushing artist');
         this.artists.push({name: artist, songs: 1});
       } else {
         this.artists[artistIndex].songs += 1;
       }
       if (albumIndex === -1) {
-        console.log('pushing album ' + album);
         this.albums.push({title: album, artist: artist, songs: 1});
       } else {
         this.albums[albumIndex].songs += 1;
       }
     }
   }
+
+  addTrackToPlaylist(track: Track) {}
+
+  addTracksToPlaylist(tracks: Track[]) {}
+
+  resetPlaylist() {}
+
+  playTrack(track: Track) {
+    this.currentTrack = track;
+    this.trackPlayedSource.next(track);
+  }
+
+  playTracks(tracks: Track[], next?: Track[]) {}
+
+  playTrackNext(next: Track) {}
+
+  playNextTrackInPlaylist() {}
+
+  playPreviousTrackInPlaylist() {}
 
 }

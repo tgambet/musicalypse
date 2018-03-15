@@ -18,10 +18,10 @@
   </div>
   <div class="metadata">
     <div class="title">
-      {{track ? track.metadata.title : '-'}}
+      {{library.currentTrack ? library.currentTrack.metadata.title : '-'}}
     </div>
     <div class="artist">
-      {{track ? track.metadata.artist : '-'}}
+      {{library.currentTrack ? library.currentTrack.metadata.artist : '-'}}
     </div>
   </div>
   <div class="carousel">
@@ -32,7 +32,7 @@
           <span>Playlist</span>
         </ng-template>
         <ul class="playlist">
-          <li class="divider" *ngFor="let track of this.libraryService.tracks">
+          <li class="divider" *ngFor="let track of this.library.tracks">
             <span class="title c">{{track.metadata.title}}</span>
             <span class="artist c">{{track.metadata.artist}}</span>
             <span class="album c">{{track.metadata.album}}</span>
@@ -177,19 +177,19 @@
       <mat-icon>shuffle</mat-icon>
     </button>
     <button mat-icon-button
-            [disabled]="!track"
+            [disabled]="!library.currentTrack"
             class="previous">
       <mat-icon>skip_previous</mat-icon>
     </button>
     <button mat-icon-button
             color="primary"
             class="playPause"
-            [disabled]="!track"
+            [disabled]="!library.currentTrack"
             (click)="audio.playing ? audio.pause() : audio.play()">
       <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
     </button>
     <button mat-icon-button
-            [disabled]="!track"
+            [disabled]="!library.currentTrack"
             class="next">
       <mat-icon>skip_next</mat-icon>
     </button>

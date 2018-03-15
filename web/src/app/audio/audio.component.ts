@@ -7,8 +7,6 @@ import {Component, ElementRef, Input, OnInit, AfterViewInit, ViewChild} from '@a
 })
 export class AudioComponent implements OnInit, AfterViewInit {
 
-  @Input('source')
-  source: string;
   volume = 1.0;
   muted = true;
   currentTime;
@@ -20,6 +18,8 @@ export class AudioComponent implements OnInit, AfterViewInit {
   private audioElementRef: ElementRef;
   private audioElement: HTMLMediaElement;
 
+  private source: string;
+
   constructor() { }
 
   ngOnInit() { }
@@ -29,15 +29,29 @@ export class AudioComponent implements OnInit, AfterViewInit {
   }
 
   seekTo(time: number) {
+    if (!this.isTimeInBuffer(time)) {
+      this.loading = true;
+    }
     this.audioElement.currentTime = time;
   }
 
+  isTimeInBuffer(time: number): boolean {
+    for (let i = 0; i < this.audioElement.buffered.length; i++) {
+      if (time >= this.audioElement.buffered.start(i) && time <= this.audioElement.buffered.end(i)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   play() {
-    this.loading = true;
+    // this.loading = true;
     this.audioElement.play().then(
-      () => { this.loading = false; },
+      () => {
+        // this.loading = false;
+      },
       e => {
-        this.loading = false;
+        // this.loading = false;
         console.log(e);
         // TODO deal with errors
       }
@@ -46,6 +60,17 @@ export class AudioComponent implements OnInit, AfterViewInit {
 
   pause() {
     this.audioElement.pause();
+  }
+
+  setSource(source: string) {
+    if (this.source !== source) {
+      this.source = source;
+      this.loading = true;
+    }
+  }
+
+  canPlay() {
+    this.loading = false;
   }
 
 }

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AudioComponent} from '../audio/audio.component';
-import {Track} from '../model';
 import {LibraryService} from '../services/library.service';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-player',
@@ -12,12 +12,24 @@ export class PlayerComponent implements OnInit {
 
   @Input('audio')
   audio: AudioComponent;
-  @Input('track')
-  track: Track;
 
-  constructor(public libraryService: LibraryService) {}
+  constructor(public library: LibraryService) {}
+
+  static getAudioUrl(sourceUrl: string) {
+    if (environment.production) {
+      return encodeURI(sourceUrl);
+    } else {
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
+    }
+  }
 
   ngOnInit() {
+    this.library.trackPlayed.subscribe(
+      track => {
+        this.audio.setSource(PlayerComponent.getAudioUrl(track.url));
+        window.setTimeout(() => this.audio.play(), 0);
+      }
+    );
   }
 
 }

@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import {OverlayContainer} from '@angular/cdk/overlay';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -211,6 +212,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       .subscribe((next) => subscription1.unsubscribe());
 
     this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
+  }
+
+  getAudioUrl() {
+    if (environment.production) {
+      return this.currentTrack.url;
+    } else {
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${this.currentTrack.url}`;
+    }
   }
 
 }

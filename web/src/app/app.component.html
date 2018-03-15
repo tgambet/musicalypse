@@ -30,7 +30,7 @@
 
     <div class="container">
       <div class="content">
-        <app-audio [source]="currentTrack ? currentTrack.url : ''" #audioComponent></app-audio>
+        <app-audio [source]="currentTrack ? getAudioUrl() : ''" #audioComponent></app-audio>
         <div class="playerContainer">
           <div class="a1">
             <div class="controls">

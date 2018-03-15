@@ -181,9 +181,13 @@
     <button mat-icon-button class="shuffle">
       <mat-icon>shuffle</mat-icon>
     </button>
+    <button mat-icon-button class="repeat">
+      <mat-icon>repeat</mat-icon>
+    </button>
     <button mat-icon-button
-            [disabled]="!library.currentTrack"
-            class="previous">
+            class="previous"
+            (click)="library.playPreviousTrackInPlaylist()"
+            [disabled]="!library.currentTrack || library.playlist.length <= 1">
       <mat-icon>skip_previous</mat-icon>
     </button>
     <button mat-icon-button
@@ -194,9 +198,13 @@
       <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
     </button>
     <button mat-icon-button
-            [disabled]="!library.currentTrack"
-            class="next">
+            class="next"
+            (click)="library.playNextTrackInPlaylist()"
+            [disabled]="!library.currentTrack || library.playlist.length <= 1">
       <mat-icon>skip_next</mat-icon>
+    </button>
+    <button mat-icon-button class="favorites">
+      <mat-icon>favorite_border</mat-icon>
     </button>
     <button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>
@@ -207,20 +215,20 @@
       <mat-icon>playlist_add</mat-icon>
       <span>Add to playlist</span>
     </button>
-    <button mat-menu-item>
-      <mat-icon>favorite_border</mat-icon>
-      <span>Add to favorites</span>
-    </button>
-    <button mat-menu-item>
+    <!--<button mat-menu-item>-->
+      <!--<mat-icon>favorite_border</mat-icon>-->
+      <!--<span>Add to favorites</span>-->
+    <!--</button>-->
+    <button mat-menu-item disabled>
       <mat-icon>details</mat-icon>
       <span>Details</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="library.resetPlaylist()">
       <mat-icon>delete</mat-icon>
       <span>Clear playlist</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item disabled>
       <mat-icon>save</mat-icon>
       <span>Save playlist</span>
     </button>
@@ -240,7 +248,7 @@
     </button>
   </mat-menu>
   <mat-menu #playlistsMenu3="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item disabled>
       <mat-icon>add</mat-icon>
       New playlist
     </button>

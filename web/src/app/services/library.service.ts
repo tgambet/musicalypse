@@ -101,8 +101,34 @@ export class LibraryService {
     }
   }
 
-  playNextTrackInPlaylist() {}
+  playNextTrackInPlaylist() {
+    if (this.playlist.length === 0) {
+      return;
+    }
+    if (!this.currentTrack) {
+      this.playTrack(this.playlist[0]);
+    }
+    const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+    if (this.playlist[currentTrackIndex + 1]) {
+      this.playTrack(this.playlist[currentTrackIndex + 1]);
+    } else if (currentTrackIndex + 1 >= this.playlist.length) {
+      this.playTrack(this.playlist[0]);
+    }
+  }
 
-  playPreviousTrackInPlaylist() {}
+  playPreviousTrackInPlaylist() {
+    if (this.playlist.length === 0) {
+      return;
+    }
+    if (!this.currentTrack) {
+      this.playTrack(this.playlist[this.playlist.length - 1]);
+    }
+    const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+    if (this.playlist[currentTrackIndex - 1]) {
+      this.playTrack(this.playlist[currentTrackIndex - 1]);
+    } else if (currentTrackIndex - 1 <= 0) {
+      this.playTrack(this.playlist[this.playlist.length - 1]);
+    }
+  }
 
 }

@@ -140,10 +140,6 @@
                       <mat-icon>play_arrow</mat-icon>
                       <span>Play next</span>
                     </button>
-                    <!--<button mat-menu-item disabled>-->
-                      <!--<mat-icon>replay</mat-icon>-->
-                      <!--<span>Play repeatedly</span>-->
-                    <!--</button>-->
                     <button mat-menu-item (click)="library.addTrackToPlaylist(track)">
                       <mat-icon>playlist_add</mat-icon>
                       <span>Add to current playlist</span>
@@ -178,9 +174,8 @@
                   </mat-menu>
                   <button mat-icon-button
                           class = "playPause"
-                          color="primary"
                           *ngIf="library.currentTrack == track"
-                          (click)="audio.playing ? audio.pause() : library.playTrack(track); $event.stopPropagation()">
+                          (click)="audio.playing ? audio.pause() : audio.play(); $event.stopPropagation()">
                     <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
                   </button>
                   <span class="spinner" *ngIf="library.currentTrack == track">

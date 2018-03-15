@@ -18,10 +18,10 @@
   </div>
   <div class="metadata">
     <div class="title">
-      {{library.currentTrack ? library.currentTrack.metadata.title : '-'}}
+      {{library.currentTrack ? library.currentTrack.metadata.title : ''}}
     </div>
     <div class="artist">
-      {{library.currentTrack ? library.currentTrack.metadata.artist : '-'}}
+      {{library.currentTrack ? library.currentTrack.metadata.artist : ''}}
     </div>
   </div>
   <div class="carousel">
@@ -198,7 +198,7 @@
     </button>
     <button mat-icon-button
             class="playPause"
-            [disabled]="!library.playlist || library.playlist.length == 0"
+            [disabled]="(!library.playlist || library.playlist.length == 0) && !library.currentTrack"
             (click)="audio.playing ? audio.pause() : (library.currentTrack ? audio.play() : library.playNextTrackInPlaylist())">
       <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
     </button>

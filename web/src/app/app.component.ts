@@ -216,9 +216,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getAudioUrl() {
     if (environment.production) {
-      return this.currentTrack.url;
+      return encodeURI(this.currentTrack.url);
     } else {
-      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${this.currentTrack.url}`;
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(this.currentTrack.url)}`;
     }
   }
 

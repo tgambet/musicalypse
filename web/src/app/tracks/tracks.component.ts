@@ -3,6 +3,7 @@ import {Track} from '../model';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../services/library.service';
 import {AudioComponent} from '../audio/audio.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-tracks',
@@ -31,6 +32,14 @@ export class TracksComponent implements OnInit {
     this.library.onTrackAdded.subscribe(() => {
       this.tracks = this.library.getTracksOf(this.albumsComponent.selectedAlbums);
     });
+  }
+
+  sortAlphabetically() {
+    this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
+  }
+
+  sortByFilename() {
+    this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.location);
   }
 
 }

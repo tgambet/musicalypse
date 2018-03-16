@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material';
 import {AudioComponent} from '../audio/audio.component';
 import {LibraryService} from '../services/library.service';
 import {environment} from '../../environments/environment';
@@ -16,7 +17,8 @@ export class PlayerComponent implements OnInit {
 
   constructor(
     public library: LibraryService,
-    public favorites: FavoritesService
+    public favorites: FavoritesService,
+    public snackBar: MatSnackBar
   ) {}
 
   static getAudioUrl(sourceUrl: string) {
@@ -34,6 +36,11 @@ export class PlayerComponent implements OnInit {
         window.setTimeout(() => this.audio.play(), 0);
       }
     );
+  }
+
+  clearPlaylist() {
+    this.library.resetPlaylist();
+    this.snackBar.open('Playlist cleared', '', { duration: 1500 });
   }
 
 }

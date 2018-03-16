@@ -65,7 +65,13 @@ export class TracksComponent implements OnInit {
 
   addAllToPlaylist() {
     this.library.addTracksToPlaylist(this.filteredTracks);
-    this.snackBar.open(this.filteredTracks.length + ' track(s) added to playlist', '', { duration: 1500 });
+    const tracks = this.filteredTracks.length > 1 ? 'tracks' : 'track';
+    this.snackBar.open(`${this.filteredTracks.length} ${tracks} added to playlist`, '', { duration: 1500 });
+  }
+
+  addTrackToPlaylist(track: Track) {
+    this.library.addTrackToPlaylist(track);
+    this.snackBar.open('Track added to playlist', '', { duration: 1500 });
   }
 
 }

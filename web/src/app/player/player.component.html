@@ -230,7 +230,7 @@
       <span>Details</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="library.resetPlaylist()">
+    <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.library.playlist.length == 0">
       <mat-icon>delete</mat-icon>
       <span>Clear playlist</span>
     </button>

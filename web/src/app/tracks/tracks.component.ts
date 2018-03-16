@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Track} from '../model';
+import {Album, Track} from '../model';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../services/library.service';
 import {AudioComponent} from '../audio/audio.component';
@@ -18,28 +18,38 @@ export class TracksComponent implements OnInit {
   @Input('audioComponent')
   audioComponent: AudioComponent;
 
-  tracks: Track[];
+  search = '';
+  tracks: Track[] = [];
+  filteredTracks: Track[] = [];
 
   constructor(private library: LibraryService) { }
 
   ngOnInit() {
-    this.tracks = this.library.getTracksOf(this.albumsComponent.selectedAlbums);
-    this.albumsComponent.onSelectionChange.subscribe(
-      albums => {
-        this.tracks = this.library.getTracksOf(albums);
-      }
-    );
-    this.library.onTrackAdded.subscribe(() => {
-      this.tracks = this.library.getTracksOf(this.albumsComponent.selectedAlbums);
-    });
+    const updateTracks: (albums: Album[]) => void = (albums) => {
+      this.tracks = this.library.getTracksOf(albums);
+      this.sortByFilename();
+    };
+    updateTracks(this.albumsComponent.selectedAlbums);
+    this.albumsComponent.onSelectionChange.subscribe(albums => updateTracks(albums));
+    this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums));
   }
 
   sortAlphabetically() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
+    this.filter();
   }
 
   sortByFilename() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.location);
+    this.filter();
+  }
+
+  filter() {
+    if (this.search !== '') {
+      this.filteredTracks = _.filter(this.tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
+    } else {
+      this.filteredTracks = this.tracks;
+    }
   }
 
   isMultipleAlbumsSelected(): boolean {

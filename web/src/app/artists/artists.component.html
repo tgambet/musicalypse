@@ -1,10 +1,13 @@
 <div class="controls">
   <mat-form-field floatLabel="never" class="search">
-    <input matInput title="Search">
+    <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()">
     <mat-placeholder>
       <mat-icon>search</mat-icon>
       Search
     </mat-placeholder>
+    <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
   <button mat-icon-button
           class="more"
@@ -28,7 +31,7 @@
 </div>
 <mat-divider></mat-divider>
 <mat-list class="artists">
-  <ng-container *ngFor="let artist of artists">
+  <ng-container *ngFor="let artist of filteredArtists">
     <a (click)="selectArtist(artist)" mat-list-item>
       <mat-checkbox
         color="primary"
@@ -38,7 +41,7 @@
         (click)="$event.stopPropagation()"></mat-checkbox>
       <div matListAvatar class="avatar"></div>
       <div matLine>
-        <span matTooltip="{{artist.name}}" matTooltipShowDelay="1000">{{artist.name}}</span>
+        <span matTooltip="{{artist.name}}" matTooltipShowDelay="1000" [innerHtml]="artist.name | sgSearch:search"></span>
       </div>
       <div matLine class="secondary-text">{{artist.songs}} songs</div>
       <button mat-icon-button>

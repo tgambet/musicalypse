@@ -12,8 +12,9 @@ import {Subject} from 'rxjs/Subject';
 })
 export class ArtistsComponent implements OnInit {
 
-  artists: Artist[] = _.clone(this.library.artists);
-
+  search = '';
+  artists: Artist[] = [];
+  filteredArtists: Artist[] = [];
   selectedArtists: Artist[] = [];
 
   onSelectionChange: Observable<Artist[]>;
@@ -25,11 +26,14 @@ export class ArtistsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // subscribe to new tracks and library reset
-    this.library.onTrackAdded.subscribe(() => {
+    const updateArtists: () => void = () => {
       this.artists = _.clone(this.library.artists);
       this.sortAlphabetically();
-    });
+    };
+    // Initialize
+    updateArtists();
+    // subscribe to new tracks and library reset
+    this.library.onTrackAdded.subscribe(() => updateArtists());
   }
 
   isSelectedArtist(artist: Artist): boolean {
@@ -62,10 +66,20 @@ export class ArtistsComponent implements OnInit {
 
   sortAlphabetically() {
     this.artists = _.sortBy(this.artists, 'name');
+    this.filter();
   }
 
   sortBySongs() {
     this.artists = _.sortBy(_.sortBy(this.artists, 'name').reverse(), 'songs').reverse();
+    this.filter();
+  }
+
+  filter() {
+    if (this.search !== '') {
+      this.filteredArtists = _.filter(this.artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
+    } else {
+      this.filteredArtists = this.artists;
+    }
   }
 
 }

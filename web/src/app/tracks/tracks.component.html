@@ -1,10 +1,13 @@
 <div class="controls">
   <mat-form-field floatLabel="never" class="search">
-    <input matInput title="Search">
+    <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()">
     <mat-placeholder>
       <mat-icon>search</mat-icon>
       Search
     </mat-placeholder>
+    <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
   <button mat-icon-button
           class="more"
@@ -28,10 +31,10 @@
 </div>
 <mat-divider></mat-divider>
 <mat-list class="tracks">
-  <ng-container *ngFor="let track of tracks">
+  <ng-container *ngFor="let track of filteredTracks">
     <a (click)="library.playTracks(tracks, track)" mat-list-item>
       <div matLine>
-        <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
+        <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
       </div>
       <div matLine class="secondary-text">
         {{track.metadata.duration | sgTime}}

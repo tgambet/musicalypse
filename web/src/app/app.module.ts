@@ -10,10 +10,12 @@ import {AudioComponent} from './audio/audio.component';
 import {TimePipe} from './time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
-import { PlayerComponent } from './player/player.component';
-import { ArtistsComponent } from './artists/artists.component';
-import { AlbumsComponent } from './albums/albums.component';
-import { TracksComponent } from './tracks/tracks.component';
+import {PlayerComponent} from './player/player.component';
+import {ArtistsComponent} from './artists/artists.component';
+import {AlbumsComponent} from './albums/albums.component';
+import {TracksComponent} from './tracks/tracks.component';
+import {FormsModule} from '@angular/forms';
+import { SearchPipe } from './pipes/search.pipe';
 
 @NgModule({
   declarations: [
@@ -23,11 +25,13 @@ import { TracksComponent } from './tracks/tracks.component';
     PlayerComponent,
     ArtistsComponent,
     AlbumsComponent,
-    TracksComponent
+    TracksComponent,
+    SearchPipe
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
     HttpClientModule,
     Material.MatButtonModule,
     Material.MatProgressSpinnerModule,

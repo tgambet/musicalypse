@@ -74,6 +74,7 @@ export class LibraryService {
     this.tracks = [];
     this.albums = [];
     this.artists = [];
+    this.playlist = [];
     this.onResetSource.next();
   }
 

@@ -7,7 +7,7 @@ import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 
 import {AppComponent} from './app.component';
 import {AudioComponent} from './audio/audio.component';
-import {TimePipe} from './time.pipe';
+import {TimePipe} from './pipes/time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import {PlayerComponent} from './player/player.component';

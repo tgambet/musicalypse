@@ -33,13 +33,17 @@ export class AlbumsComponent implements OnInit {
       artists => {
         const artistsNames = _.map(artists, 'name');
         this.albums = this.library.getAlbumsOf(artists);
+        this.sortAlphabetically();
         this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
         this.onSelectionChangeSource.next(this.selectedAlbums);
       }
     );
     // register to new tracks and library reset
     this.library.onTrackAdded.subscribe(
-      track => this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists)
+      () => {
+        this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
+        this.sortAlphabetically();
+      }
     );
   }
 
@@ -64,6 +68,19 @@ export class AlbumsComponent implements OnInit {
 
   isSelectedAlbum(album: Album): boolean {
     return _.includes(this.selectedAlbums, album);
+  }
+
+  selectAll() {
+    this.selectedAlbums = _.clone(this.albums);
+    this.onSelectionChangeSource.next(this.selectedAlbums);
+  }
+
+  sortAlphabetically() {
+    this.albums = _.sortBy(this.albums, 'title');
+  }
+
+  sortBySongs() {
+    this.albums = _.sortBy(_.sortBy(this.albums, 'title').reverse(), 'songs').reverse();
   }
 
 }

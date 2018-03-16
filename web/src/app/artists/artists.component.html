@@ -12,15 +12,15 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #moreArtistMenu>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="selectAll()">
       <mat-icon>select_all</mat-icon>
       <span>Select all</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="sortAlphabetically()">
       <mat-icon>sort_by_alpha</mat-icon>
       <span>Sort alphabetically</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="sortBySongs()">
       <mat-icon>sort</mat-icon>
       <span>Sort by number of songs</span>
     </button>

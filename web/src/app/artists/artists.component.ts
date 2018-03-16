@@ -26,7 +26,10 @@ export class ArtistsComponent implements OnInit {
 
   ngOnInit() {
     // subscribe to new tracks and library reset
-    this.library.onTrackAdded.subscribe(() => this.artists = _.clone(this.library.artists));
+    this.library.onTrackAdded.subscribe(() => {
+      this.artists = _.clone(this.library.artists);
+      this.sortAlphabetically();
+    });
   }
 
   isSelectedArtist(artist: Artist): boolean {
@@ -50,6 +53,19 @@ export class ArtistsComponent implements OnInit {
       _.remove(this.selectedArtists, a => a.name === artist.name);
       this.onSelectionChangeSource.next(this.selectedArtists);
     }
+  }
+
+  selectAll() {
+    this.selectedArtists = _.clone(this.artists);
+    this.onSelectionChangeSource.next(this.selectedArtists);
+  }
+
+  sortAlphabetically() {
+    this.artists = _.sortBy(this.artists, 'name');
+  }
+
+  sortBySongs() {
+    this.artists = _.sortBy(_.sortBy(this.artists, 'name').reverse(), 'songs').reverse();
   }
 
 }

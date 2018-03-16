@@ -12,7 +12,7 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #Track>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="library.addTracksToPlaylist(tracks)">
       <mat-icon>playlist_add</mat-icon>
       <span>Add all to playlist</span>
     </button>

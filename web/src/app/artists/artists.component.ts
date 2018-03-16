@@ -34,6 +34,7 @@ export class ArtistsComponent implements OnInit {
     updateArtists();
     // subscribe to new tracks and library reset
     this.library.onTrackAdded.subscribe(() => updateArtists());
+    this.library.onReset.subscribe(() => { this.artists = []; this.selectedArtists = []; this.filteredArtists = []; });
   }
 
   isSelectedArtist(artist: Artist): boolean {

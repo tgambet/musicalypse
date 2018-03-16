@@ -36,14 +36,17 @@ export class LibraryService {
 
   onTrackPlayed: Observable<Track>;
   onTrackAdded: Observable<Track>;
+  onReset: Observable<void>;
 
   private onTrackPlayedSource = new Subject<Track>();
   private onTrackAddedSource = new Subject<Track>();
+  private onResetSource = new Subject<void>();
 
   constructor() {
     this.addTrack(this.a);
     this.onTrackPlayed = this.onTrackPlayedSource.asObservable();
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
+    this.onReset = this.onResetSource.asObservable();
   }
 
   addTrack(track: Track): void {
@@ -65,6 +68,13 @@ export class LibraryService {
       }
     }
     this.onTrackAddedSource.next(track);
+  }
+
+  reset() {
+    this.tracks = [];
+    this.albums = [];
+    this.artists = [];
+    this.onResetSource.next();
   }
 
   addTrackToPlaylist(track: Track) {

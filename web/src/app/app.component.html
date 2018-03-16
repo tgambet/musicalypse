@@ -14,7 +14,7 @@
         </a>
         <mat-divider></mat-divider>
         <h3 mat-subheader>Options</h3>
-        <a mat-list-item (click)="scanLibrary()">
+        <a mat-list-item (click)="scanLibrary(); sidenav.close()">
           <mat-icon mat-list-icon>sync</mat-icon>
           <span matLine>Scan library</span>
         </a>

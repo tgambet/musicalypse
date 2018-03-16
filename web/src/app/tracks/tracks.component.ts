@@ -32,6 +32,7 @@ export class TracksComponent implements OnInit {
     updateTracks(this.albumsComponent.selectedAlbums);
     this.albumsComponent.onSelectionChange.subscribe(albums => updateTracks(albums));
     this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums));
+    this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; });
   }
 
   sortAlphabetically() {

@@ -60,6 +60,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   scanLibrary() {
+    this.library.reset();
+
     const currentId = ++this.id;
     const subscription1 = this.httpSocketClient
       .openSocket()

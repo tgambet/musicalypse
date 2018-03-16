@@ -46,6 +46,7 @@ export class AlbumsComponent implements OnInit {
       this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
       this.sortAlphabetically();
     });
+    this.library.onReset.subscribe(() => { this.albums = []; this.selectedAlbums = []; this.filteredAlbums = []; });
   }
 
   selectAlbum(album: Album) {

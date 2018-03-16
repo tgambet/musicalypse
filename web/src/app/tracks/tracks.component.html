@@ -32,7 +32,7 @@
 <mat-divider></mat-divider>
 <mat-list class="tracks">
   <ng-container *ngFor="let track of filteredTracks">
-    <a (click)="library.playTracks(filteredTracks, track)" mat-list-item>
+    <a mat-list-item (click)="library.currentTrack == track && audioComponent.playing ? audioComponent.pause() : library.playTracks(tracks, track)">
       <div matLine>
         <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
       </div>
@@ -48,7 +48,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #trackMenu>
-        <button mat-menu-item (click)="library.playTracks(filteredTracks, track)">
+        <button mat-menu-item (click)="library.playTracks(tracks, track)">
           <mat-icon>play_arrow</mat-icon>
           <span>Play</span>
         </button>

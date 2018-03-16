@@ -39,7 +39,10 @@
       <div matLine>
         <span matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
       </div>
-      <div matLine>{{album.songs}} songs</div>
+      <div matLine class="secondary-text">
+        {{album.songs}} songs
+        <span *ngIf="isMultipleArtistsSelected()">• {{album.artist}}</span>
+      </div>
       <button mat-icon-button>
         <mat-icon>keyboard_arrow_right</mat-icon>
       </button>

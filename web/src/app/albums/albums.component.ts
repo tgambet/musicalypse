@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Album} from '../model';
+import {Album, Artist} from '../model';
 import * as _ from 'lodash';
 import {ArtistsComponent} from '../artists/artists.component';
 import {LibraryService} from '../services/library.service';
@@ -27,18 +27,14 @@ export class AlbumsComponent implements OnInit {
   constructor(private library: LibraryService) { }
 
   ngOnInit() {
+    // Initialize
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
-    this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
+    this.updateAlbumsSelection(this.artistsComponent.selectedArtists);
+    // Subscribe to ArtistsComponent selection changes
     this.artistsComponent.onSelectionChange.subscribe(
-      artists => {
-        const artistsNames = _.map(artists, 'name');
-        this.albums = this.library.getAlbumsOf(artists);
-        this.sortAlphabetically();
-        this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
-        this.onSelectionChangeSource.next(this.selectedAlbums);
-      }
+      artists => this.updateAlbumsSelection(artists)
     );
-    // register to new tracks and library reset
+    // Subscribe to new tracks and library reset
     this.library.onTrackAdded.subscribe(
       () => {
         this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
@@ -81,6 +77,18 @@ export class AlbumsComponent implements OnInit {
 
   sortBySongs() {
     this.albums = _.sortBy(_.sortBy(this.albums, 'title').reverse(), 'songs').reverse();
+  }
+
+  isMultipleArtistsSelected(): boolean {
+    return this.artistsComponent.selectedArtists.length > 1;
+  }
+
+  private updateAlbumsSelection(artists: Artist[]) {
+    this.albums = this.library.getAlbumsOf(artists);
+    this.sortAlphabetically();
+    const artistsNames = _.map(artists, 'name');
+    this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
+    this.onSelectionChangeSource.next(this.selectedAlbums);
   }
 
 }

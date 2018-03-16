@@ -36,4 +36,9 @@
     }
   }
 
+  .secondary-text {
+    color: mat-color($foreground, secondary-text);
+    font-size: 12px !important;
+  }
+
 }

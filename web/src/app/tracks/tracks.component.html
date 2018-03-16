@@ -33,7 +33,10 @@
       <div matLine>
         <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000">{{track.metadata.title}}</span>
       </div>
-      <div matLine>{{track.metadata.duration | sgTime}}</div>
+      <div matLine class="secondary-text">
+        {{track.metadata.duration | sgTime}}
+        <span *ngIf="isMultipleAlbumsSelected()">• {{track.metadata.album}}</span>
+      </div>
       <button mat-icon-button
               class="more"
               *ngIf="library.currentTrack != track"

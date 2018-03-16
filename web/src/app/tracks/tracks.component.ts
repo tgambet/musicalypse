@@ -42,4 +42,8 @@ export class TracksComponent implements OnInit {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.location);
   }
 
+  isMultipleAlbumsSelected(): boolean {
+    return this.albumsComponent.selectedAlbums.length > 1;
+  }
+
 }

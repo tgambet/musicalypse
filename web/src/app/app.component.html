@@ -34,9 +34,6 @@
         <div class="playerContainer">
           <div class="a1">
             <div class="controls">
-              <button mat-icon-button class="select-all">
-                <mat-icon>select_all</mat-icon>
-              </button>
               <mat-form-field floatLabel="never" class="search">
                 <input matInput title="Search">
                 <mat-placeholder>
@@ -44,6 +41,25 @@
                   Search
                 </mat-placeholder>
               </mat-form-field>
+              <button mat-icon-button
+                      class="more"
+                      [matMenuTriggerFor]="moreArtistMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #moreArtistMenu>
+                <button mat-menu-item>
+                  <mat-icon>select_all</mat-icon>
+                  <span>Select all</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort_by_alpha</mat-icon>
+                  <span>Sort alphabetically</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort</mat-icon>
+                  <span>Sort by number of songs</span>
+                </button>
+              </mat-menu>
             </div>
             <mat-divider></mat-divider>
             <mat-list class="artists">
@@ -70,9 +86,6 @@
           </div>
           <div class="a2">
             <div class="controls">
-              <button mat-icon-button class="select-all">
-                <mat-icon>select_all</mat-icon>
-              </button>
               <mat-form-field floatLabel="never" class="search">
                 <input matInput title="Search">
                 <mat-placeholder>
@@ -80,6 +93,25 @@
                   Search
                 </mat-placeholder>
               </mat-form-field>
+              <button mat-icon-button
+                      class="more"
+                      [matMenuTriggerFor]="moreAlbumMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #moreAlbumMenu>
+                <button mat-menu-item>
+                  <mat-icon>select_all</mat-icon>
+                  <span>Select all</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort_by_alpha</mat-icon>
+                  <span>Sort alphabetically</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort</mat-icon>
+                  <span>Sort by number of songs</span>
+                </button>
+              </mat-menu>
             </div>
             <mat-divider></mat-divider>
             <mat-list class="albums">
@@ -112,9 +144,25 @@
                   Search
                 </mat-placeholder>
               </mat-form-field>
-              <button mat-icon-button class="playlist-add">
-                <mat-icon>playlist_add</mat-icon>
+              <button mat-icon-button
+                      class="more"
+                      [matMenuTriggerFor]="Track">
+                <mat-icon>more_vert</mat-icon>
               </button>
+              <mat-menu #Track>
+                <button mat-menu-item>
+                  <mat-icon>playlist_add</mat-icon>
+                  <span>Add all to playlist</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort_by_alpha</mat-icon>
+                  <span>Sort alphabetically</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>sort</mat-icon>
+                  <span>Sort by file name</span>
+                </button>
+              </mat-menu>
             </div>
             <mat-divider></mat-divider>
             <mat-list class="tracks">

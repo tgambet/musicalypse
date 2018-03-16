@@ -75,6 +75,7 @@ export class LibraryService {
 
   resetPlaylist() {
     this.playlist = [];
+    this.oldPlaylist = null;
   }
 
   playTrack(track: Track) {

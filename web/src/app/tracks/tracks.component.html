@@ -15,7 +15,7 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #Track>
-    <button mat-menu-item (click)="library.addTracksToPlaylist(tracks)">
+    <button mat-menu-item (click)="library.addTracksToPlaylist(filteredTracks)">
       <mat-icon>playlist_add</mat-icon>
       <span>Add all to playlist</span>
     </button>
@@ -32,7 +32,7 @@
 <mat-divider></mat-divider>
 <mat-list class="tracks">
   <ng-container *ngFor="let track of filteredTracks">
-    <a (click)="library.playTracks(tracks, track)" mat-list-item>
+    <a (click)="library.playTracks(filteredTracks, track)" mat-list-item>
       <div matLine>
         <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
       </div>
@@ -48,7 +48,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #trackMenu>
-        <button mat-menu-item (click)="library.playTracks(tracks, track)">
+        <button mat-menu-item (click)="library.playTracks(filteredTracks, track)">
           <mat-icon>play_arrow</mat-icon>
           <span>Play</span>
         </button>

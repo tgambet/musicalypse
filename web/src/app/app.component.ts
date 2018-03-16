@@ -1,11 +1,11 @@
 import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
-import * as Material from '@angular/material';
+import {MatSidenav, MatSnackBar} from '@angular/material';
+import {OverlayContainer} from '@angular/cdk/overlay';
 import {AudioComponent} from './audio/audio.component';
 // import {BreakpointObserver} from '@angular/cdk/layout';
 import { Track, SocketMessage } from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
-import {OverlayContainer} from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ import {OverlayContainer} from '@angular/cdk/overlay';
 export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild('sidenav')
-  sidenav: Material.MatSidenav;
+  sidenav: MatSidenav;
 
   @ViewChild(AudioComponent)
   audio: AudioComponent;
@@ -30,7 +30,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     // private breakpointObserver: BreakpointObserver
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
-    public library: LibraryService
+    public library: LibraryService,
+    public snackBar: MatSnackBar
   ) {
     overlayContainer.getContainerElement().classList.add(this.themeClass);
   }
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   scanLibrary() {
     this.library.reset();
-
+    const snackBar = this.snackBar.open('Scanning library...');
     const currentId = ++this.id;
     const subscription1 = this.httpSocketClient
       .openSocket()
@@ -77,7 +78,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       .openSocket()
       .filter((r: SocketMessage) => r.method === 'LibraryScanned' && r.id === currentId)
       .take(1)
-      .subscribe((next) => subscription1.unsubscribe());
+      .subscribe(() => {
+        snackBar.dismiss();
+        subscription1.unsubscribe();
+      });
 
     this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
   }

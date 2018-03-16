@@ -77,7 +77,13 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
           // stream to client
           .runWith(Sink.foreach(client ! _))
           // send completion acknowledgment
-          .onComplete(_ => ())
+          .onComplete(_ => {
+            client ! JsonMessage(
+              method = "LibraryScanned",
+              id = id,
+              entity = JsNull
+            ).toJson
+          })
 
     case a @ JsonMessage(_, _, _) =>
       logger.info("test")

@@ -34,6 +34,7 @@ import {FavoritesService} from './services/favorites.service';
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    Material.MatSnackBarModule,
     Material.MatButtonModule,
     Material.MatProgressSpinnerModule,
     Material.MatProgressBarModule,

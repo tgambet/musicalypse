@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material';
 import {Album, Track} from '../model';
 import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
@@ -25,7 +26,8 @@ export class TracksComponent implements OnInit {
 
   constructor(
     public library: LibraryService,
-    public favorites: FavoritesService
+    public favorites: FavoritesService,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -59,6 +61,11 @@ export class TracksComponent implements OnInit {
 
   isMultipleAlbumsSelected(): boolean {
     return this.albumsComponent.selectedAlbums.length > 1;
+  }
+
+  addAllToPlaylist() {
+    this.library.addTracksToPlaylist(this.filteredTracks);
+    this.snackBar.open(this.filteredTracks.length + ' track(s) added to playlist', '', { duration: 1500 });
   }
 
 }

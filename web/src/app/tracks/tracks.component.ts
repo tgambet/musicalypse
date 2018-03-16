@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Album, Track} from '../model';
+import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../services/library.service';
-import {AudioComponent} from '../audio/audio.component';
+import {FavoritesService} from '../services/favorites.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -22,7 +23,10 @@ export class TracksComponent implements OnInit {
   tracks: Track[] = [];
   filteredTracks: Track[] = [];
 
-  constructor(private library: LibraryService) { }
+  constructor(
+    public library: LibraryService,
+    public favorites: FavoritesService
+  ) { }
 
   ngOnInit() {
     const updateTracks: (albums: Album[]) => void = (albums) => {

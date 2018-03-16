@@ -34,6 +34,7 @@
     <ng-container *ngFor="let track of filteredTracks">
       <a mat-list-item (click)="library.currentTrack == track && audioComponent.playing ? audioComponent.pause() : library.playTracks(tracks, track)">
         <div matLine>
+          <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
         </div>
         <div matLine class="secondary-text">
@@ -64,9 +65,13 @@
             <mat-icon>playlist_add</mat-icon>
             <span>Add to playlist</span>
           </button>
-          <button mat-menu-item disabled>
+          <button mat-menu-item (click)="favorites.addToFavorites(track)" *ngIf="!favorites.isFavorite(track)">
             <mat-icon>favorite_border</mat-icon>
             <span>Add to favorites</span>
+          </button>
+          <button mat-menu-item (click)="favorites.removeFromFavorites(track)" *ngIf="favorites.isFavorite(track)">
+            <mat-icon>favorite</mat-icon>
+            <span>Remove from favorites</span>
           </button>
           <button mat-menu-item disabled>
             <mat-icon>details</mat-icon>

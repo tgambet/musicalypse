@@ -15,7 +15,8 @@ import {ArtistsComponent} from './artists/artists.component';
 import {AlbumsComponent} from './albums/albums.component';
 import {TracksComponent} from './tracks/tracks.component';
 import {FormsModule} from '@angular/forms';
-import { SearchPipe } from './pipes/search.pipe';
+import {SearchPipe} from './pipes/search.pipe';
+import {FavoritesService} from './services/favorites.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { SearchPipe } from './pipes/search.pipe';
     MediaMatcher,
     BreakpointObserver,
     HttpSocketClientService,
-    LibraryService
+    LibraryService,
+    FavoritesService
   ],
   bootstrap: [AppComponent]
 })

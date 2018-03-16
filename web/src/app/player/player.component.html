@@ -208,8 +208,12 @@
             [disabled]="!library.currentTrack || library.playlist.length <= 1">
       <mat-icon>skip_next</mat-icon>
     </button>
-    <button mat-icon-button class="favorites">
-      <mat-icon>favorite_border</mat-icon>
+    <button mat-icon-button
+            class="favorites"
+            [color]="favorites.isFavorite(library.currentTrack) ? 'warn' : ''"
+            (click)="favorites.isFavorite(library.currentTrack) ?
+                     favorites.removeFromFavorites(library.currentTrack) : favorites.addToFavorites(library.currentTrack)">
+      <mat-icon>{{favorites.isFavorite(library.currentTrack) ? 'favorite' : 'favorite_border'}}</mat-icon>
     </button>
     <button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>

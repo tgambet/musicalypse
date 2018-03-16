@@ -63,19 +63,4 @@
   }
 }
 
-.tracks {
-  .mat-list-item {
-    .spinner {
-      display: inline-block;
-      height: 40px;
-      width: 40px;
-      position: absolute;
-      right: 1rem;
-      z-index: 1;
-    }
-    .playPause {
-      position: relative;
-      z-index: 2;
-    }
-  }
-}
+

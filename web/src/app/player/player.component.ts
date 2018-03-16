@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {AudioComponent} from '../audio/audio.component';
 import {LibraryService} from '../services/library.service';
 import {environment} from '../../environments/environment';
+import {FavoritesService} from '../services/favorites.service';
 
 @Component({
   selector: 'app-player',
@@ -13,7 +14,10 @@ export class PlayerComponent implements OnInit {
   @Input('audio')
   audio: AudioComponent;
 
-  constructor(public library: LibraryService) {}
+  constructor(
+    public library: LibraryService,
+    public favorites: FavoritesService
+  ) {}
 
   static getAudioUrl(sourceUrl: string) {
     if (environment.production) {

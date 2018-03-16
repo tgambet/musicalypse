@@ -38,6 +38,7 @@ import { SearchPipe } from './pipes/search.pipe';
     Material.MatProgressBarModule,
     Material.MatTabsModule,
     Material.MatFormFieldModule,
+    Material.MatSelectModule,
     Material.MatInputModule,
     Material.MatSliderModule,
     Material.MatListModule,

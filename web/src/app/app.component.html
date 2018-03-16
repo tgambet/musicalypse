@@ -7,25 +7,33 @@
 
   <mat-sidenav-container>
     <mat-sidenav #sidenav [mode]="'over'">
-      <p>
-        <a (click)="httpSocketClient.openSocket()">Open Socket</a>
-        <mat-icon>radio_button_unchecked</mat-icon>
-      </p>
-      <p>
-        <a (click)="httpSocketClient.closeSocket()">Close Socket</a>
-        <mat-icon>radio_button_checked</mat-icon>
-      </p>
-      <p>
-        <a *ngIf="httpSocketClient.isSocketOpen()" (click)="httpSocketClient.send({test: 'test'})">Send test message</a>
-        <br>
-        <a (click)="scanLibrary()">Request Scan</a>
-      </p>
-      <p>
-        <a (click)="changeTheme('dark-theme')">Dark theme</a>
-      </p>
-      <p>
-        <a (click)="changeTheme('light-theme')">Light theme</a>
-      </p>
+      <mat-list>
+        <h3 mat-subheader>Navigation</h3>
+        <a mat-list-item>
+          About
+        </a>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Options</h3>
+        <mat-list-item>
+          <mat-icon matListIcon>color_lens</mat-icon>
+          <mat-form-field matLine floatLabel="never">
+            <mat-select placeholder="Theme" #theme (change)="changeTheme(theme.value)">
+              <mat-option value="dark-theme">Dark Theme</mat-option>
+              <mat-option value="light-theme">Light Theme</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-list-item>
+        <a mat-list-item
+           (click)="httpSocketClient.isSocketOpen() ? httpSocketClient.closeSocket() : httpSocketClient.openSocket()">
+          <mat-icon mat-list-icon>{{httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked'}}</mat-icon>
+          <span matLine>Socket {{httpSocketClient.isSocketOpen() ? 'open' : 'closed'}}</span>
+        </a>
+        <a mat-list-item (click)="scanLibrary()">
+          <mat-icon mat-list-icon>sync</mat-icon>
+          <span matLine>Scan library</span>
+        </a>
+        <mat-divider></mat-divider>
+      </mat-list>
     </mat-sidenav>
 
     <div class="container">

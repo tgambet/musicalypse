@@ -16,9 +16,9 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #Track>
-      <button mat-menu-item (click)="addAllToPlaylist()">
+      <button mat-menu-item (click)="addAllToPlaylist()" [disabled]="filteredTracks.length == 0">
         <mat-icon>playlist_add</mat-icon>
-        <span>Add all to playlist</span>
+        <span>Add all to current playlist</span>
       </button>
       <button mat-menu-item (click)="sortAlphabetically()">
         <mat-icon>sort_by_alpha</mat-icon>

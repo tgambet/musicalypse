@@ -1,4 +1,6 @@
 .artists, .albums, .tracks {
+  overflow-y: scroll;
+  height: 100%;
   padding-top: 0;
   .mat-list-item {
     cursor: pointer;
@@ -32,13 +34,22 @@
   }
 }
 
+.wrapper {
+  padding-top: 66px;
+  height: 100%;
+}
+
 .controls {
-  height: 60px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 66px;
   padding: 0 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;
-  //position: fixed;
   .search {
     flex-grow: 1;
     mat-placeholder {

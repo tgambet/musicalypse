@@ -32,19 +32,20 @@ mat-sidenav {
   flex-direction: row;
 }
 
-.a1, .a2, .a3 {
-  overflow-y: scroll;
-  min-width: 280px;
+.column {
   width: 0;
-  flex-grow: 1;
+  position: relative;
   min-height: 480px;
+}
+
+.a1, .a2, .a3 {
+  flex-grow: 1;
+  min-width: 280px;
 }
 
 .a4 {
   flex-grow: 2;
   min-width: 360px;
-  width: 0;
-  min-height: 480px;
 }
 
 //@media screen and (min-width: 360px) {

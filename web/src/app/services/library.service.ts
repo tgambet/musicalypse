@@ -85,6 +85,9 @@ export class LibraryService {
   playTracks(tracks: Track[], next?: Track) {
     this.playlist = tracks;
     this.currentTrack = next ? next : this.playlist[0];
+    if (this.shuffle) {
+      this.shufflePlaylist();
+    }
     this.trackPlayedSource.next(this.currentTrack);
   }
 

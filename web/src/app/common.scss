@@ -1,0 +1,70 @@
+.artists, .albums, .tracks {
+  padding-top: 0;
+  .mat-list-item {
+    cursor: pointer;
+    text-decoration: none;
+    mat-checkbox {
+      display: none;
+      padding: 8px;
+      position: relative;
+      left: 2px;
+      bottom: 3px;
+    }
+    .mat-checkbox-checked {
+      display: block;
+    }
+    .mat-checkbox-checked ~ .avatar {
+      display: none;
+    }
+    .avatar {
+      background-color: black;
+      width: 40px;
+      height: 40px;
+    }
+    &:hover {
+      mat-checkbox {
+        display: block;
+      }
+      .avatar {
+        display: none;
+      }
+    }
+  }
+}
+
+.controls {
+  height: 60px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  //position: fixed;
+  .search {
+    flex-grow: 1;
+    mat-placeholder {
+      mat-icon {
+        vertical-align: bottom;
+      }
+    }
+  }
+  .more {
+    margin-left: 0.5rem;
+  }
+}
+
+.tracks {
+  .mat-list-item {
+    .spinner {
+      display: inline-block;
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      right: 1rem;
+      z-index: 1;
+    }
+    .playPause {
+      position: relative;
+      z-index: 2;
+    }
+  }
+}

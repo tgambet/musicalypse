@@ -24,7 +24,7 @@ export class PlayerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.library.trackPlayed.subscribe(
+    this.library.onTrackPlayed.subscribe(
       track => {
         this.audio.setSource(PlayerComponent.getAudioUrl(track.url));
         window.setTimeout(() => this.audio.play(), 0);

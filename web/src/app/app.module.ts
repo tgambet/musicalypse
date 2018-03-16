@@ -11,13 +11,19 @@ import {TimePipe} from './time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import { PlayerComponent } from './player/player.component';
+import { ArtistsComponent } from './artists/artists.component';
+import { AlbumsComponent } from './albums/albums.component';
+import { TracksComponent } from './tracks/tracks.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AudioComponent,
     TimePipe,
-    PlayerComponent
+    PlayerComponent,
+    ArtistsComponent,
+    AlbumsComponent,
+    TracksComponent
   ],
   imports: [
     BrowserModule,

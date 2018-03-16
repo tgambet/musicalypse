@@ -1,0 +1,49 @@
+<div class="controls">
+  <mat-form-field floatLabel="never" class="search">
+    <input matInput title="Search">
+    <mat-placeholder>
+      <mat-icon>search</mat-icon>
+      Search
+    </mat-placeholder>
+  </mat-form-field>
+  <button mat-icon-button
+          class="more"
+          [matMenuTriggerFor]="moreAlbumMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #moreAlbumMenu>
+    <button mat-menu-item>
+      <mat-icon>select_all</mat-icon>
+      <span>Select all</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>sort_by_alpha</mat-icon>
+      <span>Sort alphabetically</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>sort</mat-icon>
+      <span>Sort by number of songs</span>
+    </button>
+  </mat-menu>
+</div>
+<mat-divider></mat-divider>
+<mat-list class="albums">
+  <ng-container *ngFor="let album of albums">
+    <a (click)="selectAlbum(album)" mat-list-item>
+      <mat-checkbox matListIcon
+                    color="primary"
+                    [checked]="isSelectedAlbum(album)"
+                    (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
+                    (click)="$event.stopPropagation()"></mat-checkbox>
+      <div matListAvatar class="avatar"></div>
+      <div matLine>
+        <span matTooltip="{{album.title}}" matTooltipShowDelay="1000">{{album.title}}</span>
+      </div>
+      <div matLine>{{album.songs}} songs</div>
+      <button mat-icon-button>
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+      <mat-divider></mat-divider>
+    </a>
+  </ng-container>
+</mat-list>

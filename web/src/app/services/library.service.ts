@@ -11,7 +11,7 @@ export class LibraryService {
     url: '/music/Metallica - The Black Album/01 - Enter Sandman.mp3',
     metadata: {
       album: 'La Fête est Finie',
-      artist: 'Orelsan',
+      artist: 'Metallica',
       duration: 243,
       location: 'C:\\Users\\Thomas\\Workspace\\musicalypse\\web\\src\\assets\\music\\1 - San.mp3',
       title: 'San'
@@ -34,13 +34,16 @@ export class LibraryService {
 
   shuffle = false;
 
-  trackPlayed: Observable<Track>;
+  onTrackPlayed: Observable<Track>;
+  onTrackAdded: Observable<Track>;
 
-  private trackPlayedSource = new Subject<Track>();
+  private onTrackPlayedSource = new Subject<Track>();
+  private onTrackAddedSource = new Subject<Track>();
 
   constructor() {
     this.addTrack(this.a);
-    this.trackPlayed = this.trackPlayedSource.asObservable();
+    this.onTrackPlayed = this.onTrackPlayedSource.asObservable();
+    this.onTrackAdded = this.onTrackAddedSource.asObservable();
   }
 
   addTrack(track: Track): void {
@@ -61,6 +64,7 @@ export class LibraryService {
         this.albums[albumIndex].songs += 1;
       }
     }
+    this.onTrackAddedSource.next(track);
   }
 
   addTrackToPlaylist(track: Track) {
@@ -80,7 +84,7 @@ export class LibraryService {
 
   playTrack(track: Track) {
     this.currentTrack = track;
-    this.trackPlayedSource.next(track);
+    this.onTrackPlayedSource.next(track);
   }
 
   playTracks(tracks: Track[], next?: Track) {
@@ -89,7 +93,7 @@ export class LibraryService {
     if (this.shuffle) {
       this.shufflePlaylist();
     }
-    this.trackPlayedSource.next(this.currentTrack);
+    this.onTrackPlayedSource.next(this.currentTrack);
   }
 
   playTrackNext(next: Track) {
@@ -152,7 +156,7 @@ export class LibraryService {
     this.shuffle = true;
   }
 
-  unshufflePlaylist() {
+  unShufflePlaylist() {
     if (this.oldPlaylist) {
       this.playlist = this.oldPlaylist;
       this.oldPlaylist = null;
@@ -162,6 +166,17 @@ export class LibraryService {
 
   isCurrentTrackLastInPlaylist(): boolean {
     return _.indexOf(this.playlist, this.currentTrack) === this.playlist.length - 1;
+  }
+
+  getAlbumsOf(artists: Artist[]): Album[] {
+    const artistsNames = _.map(artists, 'name');
+    return _.filter(this.albums, album => _.includes(artistsNames, album.artist));
+  }
+
+  getTracksOf(albums: Album[]): Track[] {
+    // TODO check this in case two artists have the same album value (e.g. Unknown Album or '')
+    const albumTitles = _.map(albums, 'title');
+    return _.filter(this.tracks, track => _.includes(albumTitles, track.metadata.album));
   }
 
 }

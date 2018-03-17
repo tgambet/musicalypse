@@ -108,8 +108,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.httpSocketClient.post('/api/libraries/', result).subscribe(
-        r => console.log(r),
-        error => console.log(error)
+        () => {
+          this.libraries.push(result);
+          this.snackBar.open('Folder ' + result + ' added to library', '', { duration: 1500 });
+        },
+        error => this.snackBar.open('An error occurred: ' + error, '', { duration: 1500 })
       );
     });
   }

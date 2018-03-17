@@ -60,14 +60,6 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
         client ! JsonMessage("HttpResponse", id, response.toJson).toJson
       }
 
-    case JsonMessage("AddLibrary", id, JsString(folder)) =>
-      (app.libraryActor ? AddLibrary(folder))(askTimeout).mapTo[LibraryAdditionResult].foreach{
-        case LibraryAdded =>
-          client ! JsonMessage(method = "LibraryAdded", id = id, entity = JsNull).toJson
-        case LibraryAdditionFailed(reason) =>
-          client ! JsonMessage(method = "LibraryAdditionFailed", id = id, entity = JsString(reason)).toJson
-      }
-
     case JsonMessage("ScanLibrary", id, _) =>
       logger.info("scanning libraries")
 

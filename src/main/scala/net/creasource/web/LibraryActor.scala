@@ -16,7 +16,7 @@ object LibraryActor {
 
   case class AddLibrary(library: String)
   sealed trait LibraryAdditionResult
-  case object LibraryAdded extends LibraryAdditionResult
+  case object LibraryAdditionSuccess extends LibraryAdditionResult
   case class LibraryAdditionFailed(reason: String) extends LibraryAdditionResult
 
   def props()(implicit application: Application): Props = Props(new LibraryActor())
@@ -31,18 +31,17 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(configLibraries)
+    case GetLibraries => sender ! Libraries(configLibraries ++ additionalLibraries)
 
-    case AddLibrary(library) => Try(new File(library)) match {
-      case Success(file) =>
-        if (file.isDirectory) {
-          additionalLibraries +:= file.toString
-          sender() ! LibraryAdded
-        } else {
-          sender() ! LibraryAdditionFailed(s"The library $file is not a directory")
-        }
-      case Failure(reason) => sender() ! LibraryAdditionFailed(s"An error occurred while adding a library: ${reason.getMessage}")
-    }
+    case AddLibrary(library) =>
+      val file = new File(library)
+      // TODO manage exception, e.g. read access denied
+      if (file.isDirectory) {
+        additionalLibraries +:= file.toString
+        sender() ! LibraryAdditionSuccess
+      } else {
+        sender() ! LibraryAdditionFailed(s"'$file' is not a directory")
+      }
 
   }
 

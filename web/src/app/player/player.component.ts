@@ -5,7 +5,7 @@ import {LibraryService} from '../services/library.service';
 import {environment} from '../../environments/environment';
 import {FavoritesService} from '../services/favorites.service';
 import {Track} from '../model';
-import {DetailsDialogComponent} from '../details-dialog/details-dialog.component';
+import {DetailsComponent} from '../dialogs/details/details.component';
 
 @Component({
   selector: 'app-player',
@@ -47,13 +47,13 @@ export class PlayerComponent implements OnInit {
   }
 
   openDetailsDialog(track: Track) {
-    const dialogRef = this.dialog.open(DetailsDialogComponent, {
+    const dialogRef = this.dialog.open(DetailsComponent, {
       // maxWidth: '500px',
       data: { track: track }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
       console.log(result);
       // this.animal = result;
     });

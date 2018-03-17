@@ -1,16 +1,16 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Component({
-  selector: 'app-details-dialog',
-  templateUrl: './details-dialog.component.html',
-  styleUrls: ['./details-dialog.component.scss']
+  selector: 'app-details',
+  templateUrl: './details.component.html',
+  styleUrls: ['./details.component.scss']
 })
-export class DetailsDialogComponent implements OnInit {
+export class DetailsComponent implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<DetailsDialogComponent>,
+    public dialogRef: MatDialogRef<DetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
@@ -31,7 +31,8 @@ export class DetailsDialogComponent implements OnInit {
 
   download() {
     // TODO move getAudioComponent elsewhere. refactor with PlayerComponent.getAudioUrl
-    window.open(DetailsDialogComponent.getAudioUrl(this.data.track.url), '_blank');
+    window.open(DetailsComponent.getAudioUrl(this.data.track.url), '_blank');
   }
 
 }
+

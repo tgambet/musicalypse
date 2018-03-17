@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MatSnackBar, MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../model';
 import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
-import {DetailsDialogComponent} from '../details-dialog/details-dialog.component';
 import {LibraryService} from '../services/library.service';
 import {FavoritesService} from '../services/favorites.service';
+import {DetailsComponent} from '../dialogs/details/details.component';
 import * as _ from 'lodash';
 
 @Component({
@@ -77,7 +77,7 @@ export class TracksComponent implements OnInit {
   }
 
   openDetailsDialog(track: Track) {
-    const dialogRef = this.dialog.open(DetailsDialogComponent, {
+    const dialogRef = this.dialog.open(DetailsComponent, {
       // maxWidth: '500px',
       data: { track: track }
     });

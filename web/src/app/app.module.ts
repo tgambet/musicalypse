@@ -17,7 +17,7 @@ import {TracksComponent} from './tracks/tracks.component';
 import {FormsModule} from '@angular/forms';
 import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
-import {DetailsDialogComponent} from './details-dialog/details-dialog.component';
+import {DetailsComponent} from './dialogs/details/details.component';
 
 @NgModule({
   declarations: [
@@ -29,10 +29,10 @@ import {DetailsDialogComponent} from './details-dialog/details-dialog.component'
     AlbumsComponent,
     TracksComponent,
     SearchPipe,
-    DetailsDialogComponent
+    DetailsComponent
   ],
   entryComponents: [
-    DetailsDialogComponent
+    DetailsComponent
   ],
   imports: [
     BrowserModule,

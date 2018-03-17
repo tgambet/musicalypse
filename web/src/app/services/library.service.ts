@@ -8,15 +8,15 @@ import {Observable} from 'rxjs/Observable';
 export class LibraryService {
 
   a: Track = {
-    url: '/music/Metallica - The Black Album/01 - Enter Sandman.mp3',
+    url: '/music/404.mp3',
     metadata: {
-      album: 'La Fête est Finie',
-      artist: 'Metallica',
-      albumArtist: 'Metallica t',
-      year: '2012',
-      duration: 243,
-      location: 'C:\\Users\\Thomas\\Workspace\\musicalypse\\web\\src\\assets\\music\\1 - San.mp3',
-      title: 'San'
+      album: 'Some Album',
+      artist: 'Some Artists',
+      albumArtist: 'Some Artist',
+      year: '2018',
+      duration: 120,
+      location: '/some/path',
+      title: 'Some Title'
     }
   };
 

@@ -1,4 +1,5 @@
 import {Component, ElementRef, OnInit, AfterViewInit, ViewChild, Output, EventEmitter} from '@angular/core';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-audio',
@@ -22,7 +23,7 @@ export class AudioComponent implements OnInit, AfterViewInit {
   private audioElementRef: ElementRef;
   private audioElement: HTMLMediaElement;
 
-  constructor() { }
+  constructor(public snackBar: MatSnackBar) { }
 
   ngOnInit() { }
 
@@ -49,9 +50,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
   play() {
     this.audioElement.play().then(
       () => {},
-      e => {
-        console.log(e);
-        // TODO deal with errors
+      (e: Error) => {
+        this.snackBar.open('An error occurred: ' + e.message, '', { duration: 2000 });
+        this.loading = false;
       }
     );
   }

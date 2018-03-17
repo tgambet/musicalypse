@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>Add a library folder</h3>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Path to folder" [(ngModel)]="folder">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button [mat-dialog-close]="folder" [disabled]="!folder">Save</button>
+</div>

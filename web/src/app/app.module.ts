@@ -18,6 +18,7 @@ import {FormsModule} from '@angular/forms';
 import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
 import {DetailsComponent} from './dialogs/details/details.component';
+import { FolderComponent } from './dialogs/folder/folder.component';
 
 @NgModule({
   declarations: [
@@ -29,10 +30,12 @@ import {DetailsComponent} from './dialogs/details/details.component';
     AlbumsComponent,
     TracksComponent,
     SearchPipe,
-    DetailsComponent
+    DetailsComponent,
+    FolderComponent
   ],
   entryComponents: [
-    DetailsComponent
+    DetailsComponent,
+    FolderComponent
   ],
   imports: [
     BrowserModule,

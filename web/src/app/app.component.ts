@@ -1,11 +1,12 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatSidenav, MatSnackBar} from '@angular/material';
+import {MatDialog, MatSidenav, MatSnackBar} from '@angular/material';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {AudioComponent} from './audio/audio.component';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {SocketMessage, Track} from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
+import {FolderComponent} from './dialogs/folder/folder.component';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
     public library: LibraryService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {
     overlayContainer.getContainerElement().classList.add(this.themeClass);
   }
@@ -40,7 +42,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.breakpointObserver.observe('(max-width: 1440px)').subscribe(result => {
       this.isSmallScreen = result.matches;
     });
-    // this.sidenav.open();
+    this.sidenav.open();
     // this.openSocket();
   }
 
@@ -92,6 +94,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.library.currentTrack = null;
       this.audio.setSource('');
     }
+  }
+
+  openFolderDialog() {
+    const dialogRef = this.dialog.open(FolderComponent, {
+      minWidth: '400px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.httpSocketClient.post('/api/libraries/', JSON.stringify(result)).subscribe(
+        r => console.log(r),
+        error => console.log(error)
+      );
+    });
   }
 
 }

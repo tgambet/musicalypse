@@ -12,7 +12,7 @@ class AudioLibraryRoutes(application: Application) {
   def routes: Route =
     pathPrefix("music") {
       //onSuccess(application.libraryActor ? GetLibraries) { libraries =>
-      configLibraries.map(getFromBrowseableDirectory).reduce(_ ~ _)
+      configLibraries.map(getFromBrowseableDirectory).fold(reject())(_ ~ _)
     }
 
 }

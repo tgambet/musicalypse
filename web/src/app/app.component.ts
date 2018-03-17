@@ -101,7 +101,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       minWidth: '400px'
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.httpSocketClient.post('/api/libraries/', JSON.stringify(result)).subscribe(
+      this.httpSocketClient.post('/api/libraries/', result).subscribe(
         r => console.log(r),
         error => console.log(error)
       );

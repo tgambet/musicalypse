@@ -73,7 +73,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
               entity = track.toJson
             ).toJson))
           // reduce to a single source
-          .reduce(_ concat _)
+          .fold(Source.empty)(_ concat _)
           // stream to client
           .runWith(Sink.foreach(client ! _))
           // send completion acknowledgment

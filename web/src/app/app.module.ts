@@ -17,6 +17,7 @@ import {TracksComponent} from './tracks/tracks.component';
 import {FormsModule} from '@angular/forms';
 import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
+import {DetailsDialogComponent} from './details-dialog/details-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,13 +28,18 @@ import {FavoritesService} from './services/favorites.service';
     ArtistsComponent,
     AlbumsComponent,
     TracksComponent,
-    SearchPipe
+    SearchPipe,
+    DetailsDialogComponent
+  ],
+  entryComponents: [
+    DetailsDialogComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    Material.MatDialogModule,
     Material.MatSnackBarModule,
     Material.MatButtonModule,
     Material.MatProgressSpinnerModule,

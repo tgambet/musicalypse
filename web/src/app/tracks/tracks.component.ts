@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatDialog} from '@angular/material';
 import {Album, Track} from '../model';
 import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
+import {DetailsDialogComponent} from '../details-dialog/details-dialog.component';
 import {LibraryService} from '../services/library.service';
 import {FavoritesService} from '../services/favorites.service';
 import * as _ from 'lodash';
@@ -27,7 +28,8 @@ export class TracksComponent implements OnInit {
   constructor(
     public library: LibraryService,
     public favorites: FavoritesService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -72,6 +74,19 @@ export class TracksComponent implements OnInit {
   addTrackToPlaylist(track: Track) {
     this.library.addTrackToPlaylist(track);
     this.snackBar.open('Track added to current playlist', '', { duration: 1500 });
+  }
+
+  openDetailsDialog(track: Track) {
+    const dialogRef = this.dialog.open(DetailsDialogComponent, {
+      maxWidth: '500px',
+      data: { track: track }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result);
+      // this.animal = result;
+    });
   }
 
 }

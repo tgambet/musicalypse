@@ -73,7 +73,7 @@
             <mat-icon>favorite</mat-icon>
             <span>Remove from favorites</span>
           </button>
-          <button mat-menu-item disabled>
+          <button mat-menu-item (click)="openDetailsDialog(track)">
             <mat-icon>details</mat-icon>
             <span>Details</span>
           </button>

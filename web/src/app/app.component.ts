@@ -22,8 +22,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   audio: AudioComponent;
 
   themeClass = 'dark-theme';
-
   isSmallScreen: boolean;
+  libraries: string[] = [];
 
   private id = 0;
 
@@ -43,7 +43,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.isSmallScreen = result.matches;
     });
     this.sidenav.open();
-    // this.openSocket();
+    // this.httpSocketClient.openSocket();
+
+    this.httpSocketClient.get('/api/libraries').subscribe(
+      (result: string[]) => this.libraries = result,
+      error => console.log(error),
+      () => console.log('complete')
+    );
   }
 
   ngAfterViewInit(): void {

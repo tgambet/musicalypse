@@ -2,20 +2,24 @@ package net.creasource.web
 
 import java.io.File
 
+import akka.NotUsed
 import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
+import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import net.creasource.audio.{TrackMetadata, LibraryScanner, Track}
+import net.creasource.audio.{LibraryScanner, Track, TrackMetadata}
 import net.creasource.core.Application
+import net.creasource.web.LibraryActor._
 import spray.json._
 
-import scala.collection.immutable.Seq
 import scala.collection.JavaConverters._
+import scala.collection.immutable.Seq
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object SocketActor {
   def props(xhrRoutes: Route)(implicit materializer: ActorMaterializer, app: Application): Props = Props(new SocketActor(xhrRoutes))
@@ -37,6 +41,8 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
   val audioLibraries: List[String] = app.config.getStringList("music.libraries").asScala.toList
 
+  val askTimeout: akka.util.Timeout = 2.seconds
+
   override def receive: Receive = {
 
     case value: JsValue =>
@@ -54,36 +60,34 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
         client ! JsonMessage("HttpResponse", id, response.toJson).toJson
       }
 
+    case JsonMessage("AddLibrary", id, JsString(folder)) =>
+      (app.libraryActor ? AddLibrary(folder))(askTimeout).mapTo[LibraryAdditionResult].foreach{
+        case LibraryAdded =>
+          client ! JsonMessage(method = "LibraryAdded", id = id, entity = JsNull).toJson
+        case LibraryAdditionFailed(reason) =>
+          client ! JsonMessage(method = "LibraryAdditionFailed", id = id, entity = JsString(reason)).toJson
+      }
+
     case JsonMessage("ScanLibrary", id, _) =>
       logger.info("scanning libraries")
-      audioLibraries
-          // get a scanner per library
-          .map(s => new LibraryScanner(new File(s)))
-          // scan
-          .map(s => s.scanLibrary()
-            // create a track per metadata
-            .map(metadata => Track(
-              url = getUrlFromAudioMetadata(metadata, s.libraryFolder),
-              metadata = metadata
-            ))
-            // encapsulate the track into a JsonMessage
-            .map(track => JsonMessage(
-              method = "TrackAdded",
-              id = id,
-              entity = track.toJson
-            ).toJson))
-          // reduce to a single source
-          .fold(Source.empty)(_ concat _)
-          // stream to client
-          .runWith(Sink.foreach(client ! _))
-          // send completion acknowledgment
-          .onComplete(_ => {
-            client ! JsonMessage(
-              method = "LibraryScanned",
-              id = id,
-              entity = JsNull
-            ).toJson
-          })
+
+      val scan: LibraryScanner => Source[JsValue, NotUsed] = s =>
+        s.scanLibrary()
+          .map(metadata => Track(url = getUrlFromAudioMetadata(metadata, s.libraryFolder), metadata = metadata))
+          .map(track => JsonMessage("TrackAdded", id, track.toJson).toJson)
+
+      val scanFuture: Future[Unit] = for {
+        l <- (app.libraryActor ? GetLibraries)(askTimeout).mapTo[Libraries]
+        _ <- l.libraries
+              .map(f => new LibraryScanner(new File(f)))
+              .map(scan(_))
+              .fold(Source.empty)(_ concat _)
+              .runWith(Sink.foreach(client ! _))
+      } yield ()
+
+      scanFuture.onComplete(_ => client ! JsonMessage("LibraryScanned", id, JsNull).toJson)
+
+      scanFuture.failed.foreach(t => client ! JsonMessage("LibraryScannedFailed", id, JsString(t.getMessage)).toJson)
 
     case a @ JsonMessage(_, _, _) =>
       logger.info("test")

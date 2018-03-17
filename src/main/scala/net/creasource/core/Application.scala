@@ -1,8 +1,9 @@
 package net.creasource.core
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.ActorMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
+import net.creasource.web.LibraryActor
 
 import scala.concurrent.Await
 
@@ -23,6 +24,8 @@ class Application {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   system.log.info("Application starting.")
+
+  val libraryActor: ActorRef = system.actorOf(LibraryActor.props()(this), "library")
 
   def shutdown() {
     system.log.info("Shutting down Akka materializer and system.")

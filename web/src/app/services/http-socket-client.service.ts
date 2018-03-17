@@ -98,7 +98,11 @@ export class HttpSocketClientService implements OnDestroy {
 
   post(path: string, entity: Object): Observable<Object> {
     if (!this.socket) {
-      return this.httpClient.post(HttpSocketClientService.getAPIUrl(path), entity, { headers: {'Content-Type': 'application/json'} });
+      return this.httpClient.post(
+        HttpSocketClientService.getAPIUrl(path),
+        JSON.stringify(entity),
+        { headers: {'Content-Type': 'application/json'}}
+      );
     } else {
       const request: HttpRequest = {
         method: 'HttpRequest',

@@ -225,7 +225,7 @@
       <mat-icon>playlist_add</mat-icon>
       <span>Add to playlist</span>
     </button>
-    <button mat-menu-item disabled>
+    <button mat-menu-item [disabled]="!library.currentTrack" (click)="openDetailsDialog(library.currentTrack)">
       <mat-icon>details</mat-icon>
       <span>Details</span>
     </button>

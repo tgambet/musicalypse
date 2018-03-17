@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="controls divider">
     <mat-form-field floatLabel="never" class="search">
-      <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()">
+      <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
         Search

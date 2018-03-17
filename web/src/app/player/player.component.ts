@@ -1,9 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {AudioComponent} from '../audio/audio.component';
 import {LibraryService} from '../services/library.service';
 import {environment} from '../../environments/environment';
 import {FavoritesService} from '../services/favorites.service';
+import {Track} from '../model';
+import {DetailsDialogComponent} from '../details-dialog/details-dialog.component';
 
 @Component({
   selector: 'app-player',
@@ -18,7 +20,8 @@ export class PlayerComponent implements OnInit {
   constructor(
     public library: LibraryService,
     public favorites: FavoritesService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {}
 
   static getAudioUrl(sourceUrl: string) {
@@ -41,6 +44,19 @@ export class PlayerComponent implements OnInit {
   clearPlaylist() {
     this.library.resetPlaylist();
     this.snackBar.open('Playlist cleared', '', { duration: 1500 });
+  }
+
+  openDetailsDialog(track: Track) {
+    const dialogRef = this.dialog.open(DetailsDialogComponent, {
+      // maxWidth: '500px',
+      data: { track: track }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result);
+      // this.animal = result;
+    });
   }
 
 }

@@ -1,23 +1,40 @@
-<!--<h1 mat-dialog-title>Details</h1>-->
+<h3 mat-dialog-title>Details of {{data.track.metadata.title}}</h3>
 <div mat-dialog-content>
-  <mat-form-field>
-    <input matInput placeholder="Title" [(ngModel)]="data.track.metadata.title">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Album" [(ngModel)]="data.track.metadata.album">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Artists" [(ngModel)]="data.track.metadata.artist">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Album Artist" [(ngModel)]="data.track.metadata.artist">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Year" [(ngModel)]="data.track.metadata.artist">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Location" disabled [value]="data.track.metadata.location">
-  </mat-form-field>
+  <mat-grid-list cols="2" rowHeight="fit" gutterSize="1rem">
+    <mat-grid-tile colspan="2">
+      <mat-form-field>
+        <input matInput placeholder="Title" [(ngModel)]="data.track.metadata.title" spellcheck="false">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <input matInput placeholder="Artists" [(ngModel)]="data.track.metadata.artist" spellcheck="false">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <input matInput placeholder="Album" [(ngModel)]="data.track.metadata.album" spellcheck="false">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <input matInput placeholder="Album Artist" [(ngModel)]="data.track.metadata.artist" spellcheck="false">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <input matInput placeholder="Year" [(ngModel)]="data.track.metadata.artist">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2">
+      <mat-form-field>
+        <input class="location" matInput placeholder="Location" disabled [value]="data.track.metadata.location">
+        <button mat-button matSuffix mat-icon-button (click)="download()">
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </mat-form-field>
+    </mat-grid-tile>
+  </mat-grid-list>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>

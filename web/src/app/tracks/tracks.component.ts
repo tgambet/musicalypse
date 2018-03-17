@@ -78,7 +78,7 @@ export class TracksComponent implements OnInit {
 
   openDetailsDialog(track: Track) {
     const dialogRef = this.dialog.open(DetailsDialogComponent, {
-      maxWidth: '500px',
+      // maxWidth: '500px',
       data: { track: track }
     });
 

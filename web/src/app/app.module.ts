@@ -39,6 +39,7 @@ import {DetailsDialogComponent} from './details-dialog/details-dialog.component'
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    Material.MatGridListModule,
     Material.MatDialogModule,
     Material.MatSnackBarModule,
     Material.MatButtonModule,

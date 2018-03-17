@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {PlayerComponent} from '../player/player.component';
 
 @Component({
   selector: 'app-details-dialog',
@@ -18,6 +19,11 @@ export class DetailsDialogComponent implements OnInit {
 
   cancel() {
     this.dialogRef.close();
+  }
+
+  download() {
+    // TODO move PlayerComponent.getAudioComponent elsewhere
+    window.open(PlayerComponent.getAudioUrl(this.data.track.url), '_blank');
   }
 
 }

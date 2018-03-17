@@ -15,10 +15,12 @@ case class TrackMetadata(
     location: String,
     title: Option[String],
     artist: Option[String],
+    albumArtist: Option[String],
     album: Option[String],
+    year: Option[String],
     duration: Int)
 
 object TrackMetadata {
-  implicit val formatter: RootJsonFormat[TrackMetadata] = jsonFormat5(TrackMetadata.apply)
+  implicit val formatter: RootJsonFormat[TrackMetadata] = jsonFormat7(TrackMetadata.apply)
 }
 

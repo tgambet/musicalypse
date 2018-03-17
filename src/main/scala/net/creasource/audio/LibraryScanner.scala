@@ -30,14 +30,18 @@ class LibraryScanner(val libraryFolder: File) {
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
+        albumArtist = Option(tags.getAlbumArtist).orElse(Option(tags.getArtist)).map(_.trim),
         album = Option(tags.getAlbum).map(_.trim),
+        year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)
     } else {
       TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = None,
         artist = None,
+        albumArtist = None,
         album = None,
+        year = None,
         duration = mp3file.getLengthInSeconds.toInt)
     }
   }

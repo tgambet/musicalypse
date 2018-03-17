@@ -12,6 +12,8 @@ export class LibraryService {
     metadata: {
       album: 'La Fête est Finie',
       artist: 'Metallica',
+      albumArtist: 'Metallica t',
+      year: '2012',
       duration: 243,
       location: 'C:\\Users\\Thomas\\Workspace\\musicalypse\\web\\src\\assets\\music\\1 - San.mp3',
       title: 'San'
@@ -52,7 +54,7 @@ export class LibraryService {
   addTrack(track: Track): void {
     if (!_.includes(this.tracks, track)) {
       this.tracks.push(track);
-      const artist = track.metadata.artist;
+      const artist = track.metadata.albumArtist;
       const album = track.metadata.album;
       const artistIndex = _.findIndex(this.artists, a => a.name === artist);
       const albumIndex = _.findIndex(this.albums, a => a.title === album);

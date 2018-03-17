@@ -26,5 +26,7 @@ export interface TrackMetadata {
   title: string;
   album: string;
   artist: string;
+  albumArtist: string;
+  year: string;
   duration: number;
 }

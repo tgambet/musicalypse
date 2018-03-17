@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {PlayerComponent} from '../player/player.component';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-details-dialog',
@@ -14,6 +14,14 @@ export class DetailsDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
+  static getAudioUrl(sourceUrl: string) {
+    if (environment.production) {
+      return encodeURI(sourceUrl);
+    } else {
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
+    }
+  }
+
   ngOnInit() {
   }
 
@@ -22,8 +30,8 @@ export class DetailsDialogComponent implements OnInit {
   }
 
   download() {
-    // TODO move PlayerComponent.getAudioComponent elsewhere
-    window.open(PlayerComponent.getAudioUrl(this.data.track.url), '_blank');
+    // TODO move getAudioComponent elsewhere. refactor with PlayerComponent.getAudioUrl
+    window.open(DetailsDialogComponent.getAudioUrl(this.data.track.url), '_blank');
   }
 
 }

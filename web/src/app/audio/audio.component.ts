@@ -7,6 +7,7 @@ import {Component, ElementRef, OnInit, AfterViewInit, ViewChild, Output, EventEm
 })
 export class AudioComponent implements OnInit, AfterViewInit {
 
+  source: string;
   volume = 1.0;
   muted = true;
   currentTime;
@@ -20,8 +21,6 @@ export class AudioComponent implements OnInit, AfterViewInit {
   @ViewChild('audioElement')
   private audioElementRef: ElementRef;
   private audioElement: HTMLMediaElement;
-
-  private source: string;
 
   constructor() { }
 

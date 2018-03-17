@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/akka-http-angular -Dhttp.port=${PORT} -Dhttp.stop-on-return=false
+web: target/universal/stage/bin/musicalypse -Dhttp.port=${PORT} -Dhttp.stop-on-return=false

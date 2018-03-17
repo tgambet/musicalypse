@@ -1,9 +1,9 @@
-import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav, MatSnackBar} from '@angular/material';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {AudioComponent} from './audio/audio.component';
-// import {BreakpointObserver} from '@angular/cdk/layout';
-import { Track, SocketMessage } from './model';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {SocketMessage, Track} from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 
@@ -22,12 +22,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   themeClass = 'dark-theme';
 
-  // isSmallScreen: boolean;
+  isSmallScreen: boolean;
 
   private id = 0;
 
   constructor(
-    // private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
     public library: LibraryService,
@@ -37,15 +37,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-/*    this.breakpointObserver.observe('(max-width: 960px)').subscribe(result => {
-      if (result.matches) {
-        this.isSmallScreen = true;
-        this.sidenav.close();
-      } else {
-        this.isSmallScreen = false;
-        this.sidenav.open();
-      }
-    });*/
+    this.breakpointObserver.observe('(max-width: 1440px)').subscribe(result => {
+      this.isSmallScreen = result.matches;
+    });
     // this.sidenav.open();
     // this.openSocket();
   }

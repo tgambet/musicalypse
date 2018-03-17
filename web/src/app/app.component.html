@@ -1,12 +1,13 @@
 <div [class]="themeClass">
   <mat-toolbar class="header">
-    <a *ngIf="!sidenav.opened" (click)="sidenav.open()" class="icon"><mat-icon>menu</mat-icon></a>
-    <a *ngIf="sidenav.opened" (click)="sidenav.close()" class="icon"><mat-icon>close</mat-icon></a>
+    <button mat-icon-button (click)="sidenav.toggle()" class="icon">
+      <mat-icon>{{sidenav.opened ? 'close' : 'menu'}}</mat-icon>
+    </button>
     Musicalypse
   </mat-toolbar>
 
   <mat-sidenav-container>
-    <mat-sidenav #sidenav [mode]="'over'">
+    <mat-sidenav #sidenav [mode]="isSmallScreen ? 'over' : 'side'">
       <mat-list>
         <h3 mat-subheader>Navigation</h3>
         <a mat-list-item>
@@ -33,6 +34,19 @@
           </mat-form-field>
         </mat-list-item>
         <mat-divider></mat-divider>
+        <h3 mat-subheader>Library folders</h3>
+        <a mat-list-item >
+          <mat-icon mat-list-icon>folder_open</mat-icon>
+          <span matLine>D:\Musique\Metallica</span>
+        </a>
+        <a mat-list-item >
+          <mat-icon mat-list-icon>folder_open</mat-icon>
+          <span matLine>D:\Musique\Megadeth</span>
+        </a>
+        <a mat-list-item >
+          <mat-icon mat-list-icon>create_new_folder</mat-icon>
+          <span matLine>Add a folder</span>
+        </a>
       </mat-list>
     </mat-sidenav>
 

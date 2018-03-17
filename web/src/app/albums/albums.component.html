@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <div class="controls divider">
+  <div class="controls divider fake-scroll-y">
     <mat-form-field floatLabel="never" class="search">
       <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
@@ -32,7 +32,7 @@
   </div>
   <mat-list class="albums">
     <ng-container *ngFor="let album of filteredAlbums">
-      <a (click)="selectAlbum(album)" mat-list-item>
+      <a class="hover" (click)="selectAlbum(album)" mat-list-item>
         <mat-checkbox matListIcon
                       color="primary"
                       [checked]="isSelectedAlbum(album)"

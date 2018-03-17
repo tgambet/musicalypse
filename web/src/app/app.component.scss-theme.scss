@@ -29,12 +29,12 @@
     border-bottom: 1px solid mat-color($foreground, divider);
   }
 
-  .artists, .albums, .tracks {
-    .mat-list-item {
-      &:hover {
-        background-color: mat-color($background, hover);
-      }
-    }
+  .fake-scroll-y {
+    border-right: 6px solid mat-color($background, app-bar);
+  }
+
+  .hover:hover {
+    background-color: mat-color($background, hover);
   }
 
   .secondary-text {

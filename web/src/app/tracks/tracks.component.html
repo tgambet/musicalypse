@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <div class="controls divider">
+  <div class="controls divider fake-scroll-y">
     <mat-form-field floatLabel="never" class="search">
       <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
@@ -32,7 +32,7 @@
   </div>
   <mat-list class="tracks">
     <ng-container *ngFor="let track of filteredTracks">
-      <a mat-list-item (click)="library.currentTrack == track && audioComponent.playing ? audioComponent.pause() : library.playTracks(tracks, track)">
+      <a class="hover" mat-list-item (click)="library.currentTrack == track && audioComponent.playing ? audioComponent.pause() : library.playTracks(tracks, track)">
         <div matLine>
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>

@@ -7,7 +7,6 @@ import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
 
 import scala.collection.JavaConverters._
-import scala.util.{Failure, Success, Try}
 
 object LibraryActor {
 
@@ -34,13 +33,17 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     case GetLibraries => sender ! Libraries(configLibraries ++ additionalLibraries)
 
     case AddLibrary(library) =>
-      val file = new File(library)
-      // TODO manage exception, e.g. read access denied
-      if (file.isDirectory) {
-        additionalLibraries +:= file.toString
-        sender() ! LibraryAdditionSuccess
+      if ((configLibraries ++ additionalLibraries).contains(library)) {
+        sender() ! LibraryAdditionFailed(s"'$library' is already a library folder")
       } else {
-        sender() ! LibraryAdditionFailed(s"'$file' is not a directory")
+        val file = new File(library)
+        // TODO manage exception, e.g. read access denied
+        if (file.isDirectory) {
+          additionalLibraries +:= file.toString
+          sender() ! LibraryAdditionSuccess
+        } else {
+          sender() ! LibraryAdditionFailed(s"'$file' is not a directory")
+        }
       }
 
   }

@@ -69,10 +69,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       .filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId)
       .map((r: SocketMessage) => r.entity)
       .map((e: Track) => e)
-      .subscribe(track => {
-        // console.log(next);
-        this.library.addTrack(track);
-      });
+      .subscribe(
+        track => this.library.addTrack(track),
+        error => {
+          console.log(error);
+          snackBar.dismiss();
+          this.snackBar.open('An error occurred');
+        }
+      );
 
     this.httpSocketClient
       .openSocket()

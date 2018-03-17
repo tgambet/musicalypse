@@ -112,7 +112,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.libraries.push(result);
           this.snackBar.open('Folder ' + result + ' added to library', '', { duration: 1500 });
         },
-        error => this.snackBar.open('An error occurred: ' + error, '', { duration: 1500 })
+        error => {
+          console.log(error);
+          this.snackBar.open('An error occurred: ' + error.error, '', { duration: 1500 });
+        }
       );
     });
   }

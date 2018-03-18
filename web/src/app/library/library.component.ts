@@ -17,6 +17,9 @@ export class LibraryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (this.library.currentTrack) {
+      this.audio.setSource(LibraryService.getAudioUrl(this.library.currentTrack.url));
+    }
   }
 
   onPlayEnded() {

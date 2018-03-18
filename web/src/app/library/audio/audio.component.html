@@ -9,4 +9,5 @@
        (abort)="playing = false"
        (ended)="playing = false; onPlayEnd.emit()"
        (canplay)="loading = false"
+       (error)="source ? onError($event) : {}"
 ></audio>

@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Album, Artist, Track} from '../model';
+import {environment} from '../../environments/environment';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
@@ -49,6 +50,14 @@ export class LibraryService {
     this.onTrackPlayed = this.onTrackPlayedSource.asObservable();
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
+  }
+
+  static getAudioUrl(sourceUrl: string) {
+    if (environment.production) {
+      return encodeURI(sourceUrl);
+    } else {
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
+    }
   }
 
   addTrack(track: Track): void {

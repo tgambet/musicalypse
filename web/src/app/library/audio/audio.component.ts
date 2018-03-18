@@ -72,4 +72,9 @@ export class AudioComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onError(e) {
+    this.snackBar.open('An error occurred: ' + e.target.error.message, '', { duration: 2000 });
+    this.loading = false;
+  }
+
 }

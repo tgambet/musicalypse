@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AudioComponent} from '../audio/audio.component';
 import {LibraryService} from '../../services/library.service';
@@ -13,7 +13,6 @@ import {DetailsComponent} from '../../dialogs/details/details.component';
 })
 export class PlayerComponent implements OnInit {
 
-  @Input('audio')
   audio: AudioComponent;
 
   constructor(
@@ -24,12 +23,7 @@ export class PlayerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.library.onTrackPlayed.subscribe(
-      track => {
-        this.audio.setSource(LibraryService.getAudioUrl(track.url));
-        window.setTimeout(() => this.audio.play(), 0);
-      }
-    );
+    this.audio = this.library.audio;
   }
 
   clearPlaylist() {

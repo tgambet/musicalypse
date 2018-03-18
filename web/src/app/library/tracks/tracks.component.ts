@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
-import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -17,9 +16,6 @@ export class TracksComponent implements OnInit {
 
   @Input('albumsComponent')
   albumsComponent: AlbumsComponent;
-
-  @Input('audioComponent')
-  audioComponent: AudioComponent;
 
   search = '';
   tracks: Track[] = [];

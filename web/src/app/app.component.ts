@@ -6,6 +6,7 @@ import {SocketMessage, Track} from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import {FolderComponent} from './dialogs/folder/folder.component';
+import {AudioComponent} from './library/audio/audio.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   @ViewChild('sidenav')
   sidenav: MatSidenav;
+
+  @ViewChild('audio')
+  audio: AudioComponent;
 
   themeClass = 'dark-theme';
   isSmallScreen: boolean;
@@ -46,6 +50,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       error => console.log(error),
       () => {}
     );
+
+    this.library.setAudioComponent(this.audio);
   }
 
   ngAfterViewInit(): void {

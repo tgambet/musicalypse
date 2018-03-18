@@ -1,5 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {AudioComponent} from './audio/audio.component';
+import {Component, OnInit} from '@angular/core';
 import {LibraryService} from '../services/library.service';
 
 @Component({
@@ -9,27 +8,10 @@ import {LibraryService} from '../services/library.service';
 })
 export class LibraryComponent implements OnInit {
 
-  @ViewChild(AudioComponent)
-  audio: AudioComponent;
-
   constructor(
     public library: LibraryService
   ) { }
 
-  ngOnInit() {
-    if (this.library.currentTrack) {
-      this.audio.setSource(LibraryService.getAudioUrl(this.library.currentTrack.url));
-    }
-  }
-
-  onPlayEnded() {
-    // if repeat is on or it is not the last song
-    if (this.library.playlist.length > 0 && (this.library.repeat || !this.library.isCurrentTrackLastInPlaylist())) {
-      this.library.playNextTrackInPlaylist();
-    } else {
-      this.library.currentTrack = null;
-      this.audio.setSource('');
-    }
-  }
+  ngOnInit() {}
 
 }

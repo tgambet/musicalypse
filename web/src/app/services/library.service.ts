@@ -4,6 +4,7 @@ import {environment} from '../../environments/environment';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
+import {AudioComponent} from '../library/audio/audio.component';
 
 @Injectable()
 export class LibraryService {
@@ -21,33 +22,26 @@ export class LibraryService {
     }
   };
 
-  tracks: Track[] = [];
-
-  artists: Artist[] = [];
-
-  albums: Album[] = [];
-
-  playlist: Track[] = [];
-
-  oldPlaylist: Track[];
+  audio: AudioComponent;
 
   currentTrack: Track;
+  tracks: Track[] = [];
+  artists: Artist[] = [];
+  albums: Album[] = [];
+  playlist: Track[] = [];
+  oldPlaylist: Track[];
 
   repeat = false;
-
   shuffle = false;
 
-  onTrackPlayed: Observable<Track>;
   onTrackAdded: Observable<Track>;
   onReset: Observable<void>;
 
-  private onTrackPlayedSource = new Subject<Track>();
   private onTrackAddedSource = new Subject<Track>();
   private onResetSource = new Subject<void>();
 
   constructor() {
     this.addTrack(this.a);
-    this.onTrackPlayed = this.onTrackPlayedSource.asObservable();
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
   }
@@ -58,6 +52,23 @@ export class LibraryService {
     } else {
       return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
     }
+  }
+
+  setAudioComponent(audioComponent: AudioComponent) {
+    if (this.audio) {
+      throw Error('AudioComponent already set!');
+    }
+    this.audio = audioComponent;
+    this.audio.onPlayEnd.asObservable().subscribe(
+      () => {
+        if (this.playlist.length > 0 && (this.repeat || !this.isCurrentTrackLastInPlaylist())) {
+          this.playNextTrackInPlaylist();
+        } else {
+          this.currentTrack = null;
+          this.audio.setSource('');
+        }
+      }
+    );
   }
 
   addTrack(track: Track): void {
@@ -106,7 +117,7 @@ export class LibraryService {
 
   playTrack(track: Track) {
     this.currentTrack = track;
-    this.onTrackPlayedSource.next(track);
+    this._playTrack(track);
   }
 
   playTracks(tracks: Track[], next?: Track) {
@@ -115,7 +126,7 @@ export class LibraryService {
     if (this.shuffle) {
       this.shufflePlaylist();
     }
-    this.onTrackPlayedSource.next(this.currentTrack);
+    this._playTrack(this.currentTrack);
   }
 
   playTrackNext(next: Track) {
@@ -199,6 +210,11 @@ export class LibraryService {
     // TODO check this in case two artists have the same album value (e.g. Unknown Album or '')
     const albumTitles = _.map(albums, 'title');
     return _.filter(this.tracks, track => _.includes(albumTitles, track.metadata.album));
+  }
+
+  private _playTrack(track: Track) {
+    this.audio.setSource(LibraryService.getAudioUrl(track.url));
+    window.setTimeout(() => this.audio.play(), 0);
   }
 
 }

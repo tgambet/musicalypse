@@ -35,7 +35,7 @@
           <ng-container *ngFor="let track of library.playlist">
             <li [class]="track == library.currentTrack ? 'current divider' : 'divider'" (click)="library.playTrack(track)">
               <span class="title c">
-                <mat-icon *ngIf="track == library.currentTrack">equalizer</mat-icon>
+                <mat-icon *ngIf="track == library.currentTrack && library.audio.playing">equalizer</mat-icon>
                 <span>{{track.metadata.title}}</span>
               </span>
               <span class="artist c">{{track.metadata.artist}}</span>

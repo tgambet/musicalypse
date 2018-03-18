@@ -32,7 +32,7 @@
   </div>
   <mat-list class="tracks">
     <ng-container *ngFor="let track of filteredTracks">
-      <a class="hover" mat-list-item (click)="library.currentTrack == track && audioComponent.playing ? audioComponent.pause() : library.playTracks(tracks, track)">
+      <a class="hover" mat-list-item (click)="library.currentTrack == track && library.audio.playing ? library.audio.pause() : library.playTracks(tracks, track)">
         <div matLine>
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
@@ -96,13 +96,13 @@
         <button mat-icon-button
                 class = "playPause"
                 *ngIf="library.currentTrack == track"
-                (click)="audioComponent.playing ? audioComponent.pause() : audioComponent.play(); $event.stopPropagation()">
-          <mat-icon>{{audioComponent.playing ? 'pause' : 'play_arrow'}}</mat-icon>
+                (click)="library.audio.playing ? library.audio.pause() : library.audio.play(); $event.stopPropagation()">
+          <mat-icon>{{library.audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
         </button>
         <span class="spinner" *ngIf="library.currentTrack == track">
           <mat-progress-spinner diameter="40"
-                                [mode]="audioComponent.loading ? 'indeterminate' : 'determinate'"
-                                [value]="audioComponent.currentTime / audioComponent.duration * 100"></mat-progress-spinner>
+                                [mode]="library.audio.loading ? 'indeterminate' : 'determinate'"
+                                [value]="library.audio.currentTime / library.audio.duration * 100"></mat-progress-spinner>
         </span>
         <mat-divider></mat-divider>
       </a>

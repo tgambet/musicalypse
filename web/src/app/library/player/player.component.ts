@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AudioComponent} from '../audio/audio.component';
-import {LibraryService} from '../services/library.service';
-import {environment} from '../../environments/environment';
-import {FavoritesService} from '../services/favorites.service';
-import {Track} from '../model';
-import {DetailsComponent} from '../dialogs/details/details.component';
+import {LibraryService} from '../../services/library.service';
+import {environment} from '../../../environments/environment';
+import {FavoritesService} from '../../services/favorites.service';
+import {Track} from '../../model';
+import {DetailsComponent} from '../../dialogs/details/details.component';
 
 @Component({
   selector: 'app-player',

@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {Album, Track} from '../model';
+import {Album, Track} from '../../model';
 import {AudioComponent} from '../audio/audio.component';
 import {AlbumsComponent} from '../albums/albums.component';
-import {LibraryService} from '../services/library.service';
-import {FavoritesService} from '../services/favorites.service';
-import {DetailsComponent} from '../dialogs/details/details.component';
+import {LibraryService} from '../../services/library.service';
+import {FavoritesService} from '../../services/favorites.service';
+import {DetailsComponent} from '../../dialogs/details/details.component';
 import * as _ from 'lodash';
 
 @Component({

@@ -1,12 +1,16 @@
 @import "../../node_modules/minireset.css";
 @import '~@angular/material/_theming.scss';
 
-@include mat-core();
+$lato: mat-typography-config(
+  $font-family: 'Lato, sans-serif'
+);
+
+@include mat-core($lato);
 
 @import 'theme.scss';
 
 @import 'app/app.component.scss-theme';
-@import 'app/player/player.component.scss-theme';
+@import 'app/library/player/player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-component-theme($theme);
@@ -23,7 +27,8 @@
 }
 
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  // font-family: Roboto, "Helvetica Neue", sans-serif;
+  // font-family: 'Lato', sans-serif !important;
 }
 
 app-root {

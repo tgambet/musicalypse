@@ -1,0 +1,17 @@
+<app-audio #audioComponent (onPlayEnd)="onPlayEnded()"></app-audio>
+
+<div class="container">
+  <div class="column a1">
+    <app-artists #artistsComponent></app-artists>
+  </div>
+  <div class="column a2">
+    <app-albums #albumsComponent [artistsComponent]="artistsComponent"></app-albums>
+  </div>
+  <div class="column a3">
+    <app-tracks #tracksComponent [albumsComponent]="albumsComponent" [audioComponent]="audioComponent"></app-tracks>
+  </div>
+  <div class="column a4">
+    <app-player #player [audio]="audioComponent"></app-player>
+  </div>
+</div>
+

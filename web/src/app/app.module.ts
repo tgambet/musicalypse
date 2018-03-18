@@ -6,19 +6,29 @@ import * as Material from '@angular/material';
 import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 
 import {AppComponent} from './app.component';
-import {AudioComponent} from './audio/audio.component';
+import {AudioComponent} from './library/audio/audio.component';
 import {TimePipe} from './pipes/time.pipe';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
-import {PlayerComponent} from './player/player.component';
-import {ArtistsComponent} from './artists/artists.component';
-import {AlbumsComponent} from './albums/albums.component';
-import {TracksComponent} from './tracks/tracks.component';
+import {PlayerComponent} from './library/player/player.component';
+import {ArtistsComponent} from './library/artists/artists.component';
+import {AlbumsComponent} from './library/albums/albums.component';
+import {TracksComponent} from './library/tracks/tracks.component';
 import {FormsModule} from '@angular/forms';
 import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
 import {DetailsComponent} from './dialogs/details/details.component';
-import { FolderComponent } from './dialogs/folder/folder.component';
+import {FolderComponent} from './dialogs/folder/folder.component';
+import {RouterModule, Routes} from '@angular/router';
+import {LibraryComponent} from './library/library.component';
+import {AboutComponent} from './about/about.component';
+import {SettingsComponent} from './settings/settings.component';
+
+const appRoutes: Routes = [
+  { path: '', component: LibraryComponent },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'about', component: AboutComponent },
+];
 
 @NgModule({
   declarations: [
@@ -31,13 +41,17 @@ import { FolderComponent } from './dialogs/folder/folder.component';
     TracksComponent,
     SearchPipe,
     DetailsComponent,
-    FolderComponent
+    FolderComponent,
+    LibraryComponent,
+    AboutComponent,
+    SettingsComponent
   ],
   entryComponents: [
     DetailsComponent,
     FolderComponent
   ],
   imports: [
+    RouterModule.forRoot(appRoutes/*, { enableTracing: true }*/),
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,

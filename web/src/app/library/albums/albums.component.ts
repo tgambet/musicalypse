@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Album, Artist} from '../model';
+import {Album, Artist} from '../../model';
 import * as _ from 'lodash';
 import {ArtistsComponent} from '../artists/artists.component';
-import {LibraryService} from '../services/library.service';
+import {LibraryService} from '../../services/library.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 

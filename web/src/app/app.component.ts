@@ -42,6 +42,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
       this.showSidenav = result.matches;
+      if (!this.showSidenav) {
+        this.sidenav.close();
+      }
     });
     // this.sidenav.open();
     // this.httpSocketClient.openSocket();

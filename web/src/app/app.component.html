@@ -1,12 +1,13 @@
 <div ngClass="mat-typography" [class]="themeClass">
   <mat-toolbar>
-    <button mat-icon-button (click)="sidenav.toggle()" class="menu">
+    <button mat-icon-button (click)="sidenav.toggle()" class="menu" *ngIf="showSidenav">
       <mat-icon>{{sidenav.opened ? 'close' : 'menu'}}</mat-icon>
     </button>
     <h1>
       Musicalypse
     </h1>
-    <nav>
+    <div class="filler"></div>
+    <nav *ngIf="!showSidenav">
       <ul>
         <li><a routerLink="/" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">Library</a></li>
         <li><a routerLink="/settings" routerLinkActive="warn" class="link">Settings</a></li>
@@ -54,7 +55,7 @@
   </mat-toolbar>
 
   <mat-sidenav-container>
-    <mat-sidenav #sidenav [mode]="isSmallScreen ? 'over' : 'side'">
+    <mat-sidenav #sidenav [mode]="'over'">
       <mat-list>
         <h3 mat-subheader>Navigation</h3>
         <a mat-list-item routerLink="/" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }">

@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   themeChooser = false;
   themeClass = 'dark-theme';
-  isSmallScreen: boolean;
+  showSidenav: boolean;
   libraries: string[] = [];
 
   private id = 0;
@@ -40,10 +40,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.breakpointObserver.observe('(max-width: 1440px)').subscribe(result => {
-      this.isSmallScreen = result.matches;
+    this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
+      this.showSidenav = result.matches;
     });
-    this.sidenav.open();
+    // this.sidenav.open();
     // this.httpSocketClient.openSocket();
 
     this.httpSocketClient.get('/api/libraries').subscribe(

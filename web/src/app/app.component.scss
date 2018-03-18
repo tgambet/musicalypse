@@ -10,7 +10,11 @@ mat-sidenav {
 }
 
 .menu {
-  margin-right: 0.5rem;
+  margin-right: 5px;
+}
+
+.filler {
+  flex-grow: 1;
 }
 
 nav {
@@ -32,8 +36,8 @@ nav {
 $theme-chooser-height: 80px;
 $theme-chooser-width: 80px;
 $theme-chooser-scale: 0.6;
-$theme-chooser-top: 16px;
-$theme-chooser-right: 16px;
+$theme-chooser-top: 10px;
+$theme-chooser-right: 10px;
 
 .theme-chooser {
   position: absolute;
@@ -105,9 +109,11 @@ $theme-chooser-right: 16px;
 
 
 
-//@media screen and (min-width: 360px) {
-//
-//}
+@media screen and (max-width: 599px) {
+  mat-toolbar {
+    padding-left: 5px;
+  }
+}
 
 
 

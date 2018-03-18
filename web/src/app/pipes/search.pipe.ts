@@ -11,7 +11,7 @@ export class SearchPipe implements PipeTransform {
     }
     const search = args;
     const reg = RegExp(search, 'gi');
-    return value.replace(reg, (sub, arg) => `<span class="emphasize">${value.slice(arg, arg + search.length)}</span>`);
+    return value.replace(reg, (sub, arg) => `<span class="accent">${value.slice(arg, arg + search.length)}</span>`);
   }
 
 }

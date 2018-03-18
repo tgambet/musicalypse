@@ -1,26 +1,71 @@
 <div ngClass="mat-typography" [class]="themeClass">
   <mat-toolbar>
-    <button mat-icon-button (click)="sidenav.toggle()">
+    <button mat-icon-button (click)="sidenav.toggle()" class="menu">
       <mat-icon>{{sidenav.opened ? 'close' : 'menu'}}</mat-icon>
     </button>
-    Musicalypse
-
-    Library Settings About
+    <h1>
+      Musicalypse
+    </h1>
+    <nav>
+      <ul>
+        <li><a routerLink="/" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">Library</a></li>
+        <li><a routerLink="/settings" routerLinkActive="warn" class="link">Settings</a></li>
+        <li><a routerLink="/about" routerLinkActive="warn" class="link">About</a></li>
+      </ul>
+    </nav>
+    <button mat-button mat-icon-button class="theme" (click)="themeChooser = true">
+      <mat-icon>format_color_fill</mat-icon>
+    </button>
+    <div class="theme-chooser-backdrop" *ngIf="themeChooser" (click)="themeChooser = false"></div>
+    <div class="theme-chooser" [ngClass]="themeChooser ? 'visible' : ''" (click)="themeChooser = false">
+      <ol>
+        <li>
+          <button mat-icon-button (click)="changeTheme('light-theme')" class="light-theme-chooser">
+            <mat-icon *ngIf="themeClass == 'light-theme'">check_circle</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button mat-icon-button (click)="changeTheme('dark-theme')" class="dark-theme-chooser">
+            <mat-icon *ngIf="themeClass == 'dark-theme'">check_circle</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button mat-icon-button>
+            <!--<mat-icon>check_circle</mat-icon>-->
+          </button>
+        </li>
+        <li>
+          <button mat-icon-button>
+            <!--<mat-icon>check_circle</mat-icon>-->
+          </button>
+        </li>
+      </ol>
+    </div>
+    <mat-menu #Themes>
+      <button mat-menu-item (click)="changeTheme('dark-theme')">
+        <!--<mat-icon>color_lens</mat-icon>-->
+        <span>Dark Theme</span>
+      </button>
+      <button mat-menu-item (click)="changeTheme('light-theme')">
+        <!--<mat-icon>color_lens</mat-icon>-->
+        <span>Light Theme</span>
+      </button>
+    </mat-menu>
   </mat-toolbar>
 
   <mat-sidenav-container>
     <mat-sidenav #sidenav [mode]="isSmallScreen ? 'over' : 'side'">
       <mat-list>
         <h3 mat-subheader>Navigation</h3>
-        <a mat-list-item routerLink="/" routerLinkActive="active">
+        <a mat-list-item routerLink="/" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>home</mat-icon>
           <span matLine>Library</span>
         </a>
-        <a mat-list-item routerLink="/settings" routerLinkActive="active">
+        <a mat-list-item routerLink="/settings" routerLinkActive="warn">
           <mat-icon mat-list-icon>settings</mat-icon>
           <span matLine>Settings</span>
         </a>
-        <a mat-list-item routerLink="/about" routerLinkActive="active">
+        <a mat-list-item routerLink="/about" routerLinkActive="warn">
           <mat-icon mat-list-icon>info</mat-icon>
           <span matLine>About</span>
         </a>

@@ -21,6 +21,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('audio')
   audio: AudioComponent;
 
+  themeChooser = false;
   themeClass = 'dark-theme';
   isSmallScreen: boolean;
   libraries: string[] = [];

@@ -37,13 +37,35 @@
     background-color: mat-color($background, hover);
   }
 
+  .link {
+    text-decoration: none;
+    color: mat-color($foreground, text);
+  }
+
+  .accent {
+    color: mat-color($accent);
+  }
+
+  .warn {
+    color: mat-color($warn);
+  }
+
   .secondary-text {
     color: mat-color($foreground, secondary-text);
     font-size: 12px !important;
   }
 
-  .emphasize {
+  .mat-list-item.accent .mat-line {
     color: mat-color($accent);
+  }
+
+  .mat-list-item.warn .mat-line {
+    color: mat-color($warn);
+  }
+
+  .theme-chooser {
+    background-color: mat-color($background, dialog);
+    border: 1px solid mat-color($background, status-bar);
   }
 
 }

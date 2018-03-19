@@ -1,11 +1,11 @@
 @import "../../node_modules/minireset.css";
 @import '~@angular/material/_theming.scss';
 
-$lato: mat-typography-config(
-  $font-family: 'Lato, sans-serif'
+$typo: mat-typography-config(
+  $font-family: 'Roboto, sans-serif'
 );
 
-@include mat-core($lato);
+@include mat-core($typo);
 
 @import 'theme.scss';
 

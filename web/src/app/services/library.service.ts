@@ -4,7 +4,7 @@ import {environment} from '../../environments/environment';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
-import {AudioComponent} from '../library/audio/audio.component';
+import {AudioComponent} from '../audio/audio.component';
 
 @Injectable()
 export class LibraryService {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {AudioComponent} from '../audio/audio.component';
+import {AudioComponent} from '../../audio/audio.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {Track} from '../../model';

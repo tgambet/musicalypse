@@ -6,7 +6,7 @@ import {SocketMessage, Track} from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import {FolderComponent} from './dialogs/folder/folder.component';
-import {AudioComponent} from './library/audio/audio.component';
+import {AudioComponent} from './audio/audio.component';
 
 @Component({
   selector: 'app-root',

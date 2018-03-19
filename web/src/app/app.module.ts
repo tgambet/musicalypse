@@ -23,6 +23,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {LibraryComponent} from './library/library.component';
 import {AboutComponent} from './about/about.component';
 import {SettingsComponent} from './settings/settings.component';
+import {FileSizePipe} from './pipes/file-size.pipe';
 
 const appRoutes: Routes = [
   { path: '', component: LibraryComponent },
@@ -44,7 +45,8 @@ const appRoutes: Routes = [
     FolderComponent,
     LibraryComponent,
     AboutComponent,
-    SettingsComponent
+    SettingsComponent,
+    FileSizePipe
   ],
   entryComponents: [
     DetailsComponent,

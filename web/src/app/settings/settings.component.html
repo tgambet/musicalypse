@@ -3,14 +3,14 @@
     <div class="column c1">
       <h3 class="secondary-text">Library</h3>
       <mat-list>
-        <mat-list-item class="hover" *ngFor="let folder of libraryFolders">
+        <mat-list-item class="hover" *ngFor="let folder of settings.libraryFolders">
           <mat-icon mat-list-icon>folder_open</mat-icon>
           <span matLine>{{folder}}</span>
           <button mat-button mat-icon-button>
             <mat-icon>close</mat-icon>
           </button>
         </mat-list-item>
-        <a mat-list-item class="hover" tabindex="0">
+        <a mat-list-item class="hover" tabindex="0" (click)="openFolderAddDialog()">
           <mat-icon mat-list-icon>create_new_folder</mat-icon>
           <span matLine>Add a new folder</span>
         </a>

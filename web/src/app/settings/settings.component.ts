@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import * as _ from 'lodash';
 import {SettingsService} from '../services/settings.service';
+import {FolderComponent} from '../dialogs/folder/folder.component';
 
 @Component({
   selector: 'app-settings',
@@ -9,14 +11,13 @@ import {SettingsService} from '../services/settings.service';
 })
 export class SettingsComponent implements OnInit {
 
-  libraryFolders: string[] = [
-    'D:/Musique/Metallica',
-    'D:/Musique/Megadeth'
-  ];
-
   files: File[] = [];
 
-  constructor(public settings: SettingsService) { }
+  constructor(
+    public settings: SettingsService,
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
   }
@@ -32,6 +33,20 @@ export class SettingsComponent implements OnInit {
 
   cancel() {
     this.files = [];
+  }
+
+  openFolderAddDialog() {
+    const dialogRef = this.dialog.open(FolderComponent, {
+      minWidth: '400px'
+    });
+    dialogRef.afterClosed().subscribe(folder => {
+      if (folder) {
+        this.settings.addLibraryFolder(folder).then(
+          () => this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 1500}),
+          (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
+        );
+      }
+    });
   }
 
 }

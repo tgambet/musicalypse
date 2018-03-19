@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Album, Artist, Track} from '../model';
+import {Album, Artist, SocketMessage, Track} from '../model';
 import {environment} from '../../environments/environment';
 import * as _ from 'lodash';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import {AudioComponent} from '../audio/audio.component';
+import {HttpSocketClientService} from './http-socket-client.service';
 
 @Injectable()
 export class LibraryService {
@@ -40,7 +41,9 @@ export class LibraryService {
   private onTrackAddedSource = new Subject<Track>();
   private onResetSource = new Subject<void>();
 
-  constructor() {
+  constructor(
+    private httpSocketClient: HttpSocketClientService
+  ) {
     this.addTrack(this.a);
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
@@ -210,6 +213,33 @@ export class LibraryService {
     // TODO check this in case two artists have the same album value (e.g. Unknown Album or '')
     const albumTitles = _.map(albums, 'title');
     return _.filter(this.tracks, track => _.includes(albumTitles, track.metadata.album));
+  }
+
+  scanLibrary(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.reset();
+      const currentId = ++this.httpSocketClient.id;
+      const subscription1 = this.httpSocketClient
+        .openSocket()
+        .filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId)
+        .map((r: SocketMessage) => r.entity)
+        .map((e: Track) => e)
+        .subscribe(
+          track => this.addTrack(track),
+          error => reject(error)
+        );
+
+      this.httpSocketClient
+        .openSocket()
+        .filter((r: SocketMessage) => r.method === 'LibraryScanned' && r.id === currentId)
+        .take(1)
+        .subscribe(() => {
+          subscription1.unsubscribe();
+          resolve();
+        });
+
+      this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
+    });
   }
 
   private _playTrack(track: Track) {

@@ -15,9 +15,9 @@ export class HttpSocketClientService implements OnDestroy {
 
   constructor(private httpClient: HttpClient) { }
 
-  private socket: Subject<Object>;
+  public id = 0;
 
-  private id = 0;
+  private socket: Subject<Object>;
 
   private static getSocketUrl() {
     let socketUrl = '';

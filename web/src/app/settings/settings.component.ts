@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import * as _ from 'lodash';
 import {SettingsService} from '../services/settings.service';
 import {FolderComponent} from '../dialogs/folder/folder.component';
+import {LibraryService} from '../services/library.service';
+import {HttpSocketClientService} from '../services/http-socket-client.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,8 +18,11 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     public settings: SettingsService,
+    public httpSocketClient: HttpSocketClientService,
     public dialog: MatDialog,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public library: LibraryService,
+    public router: Router
   ) { }
 
   ngOnInit() {
@@ -47,6 +53,19 @@ export class SettingsComponent implements OnInit {
         );
       }
     });
+  }
+
+  requestLibraryScan() {
+    this.router.navigate(['/']);
+    const snackBar = this.snackBar.open('Scanning library...');
+    this.library.scanLibrary().then(
+      () => snackBar.dismiss(),
+      (error) => {
+        console.log(error);
+        snackBar.dismiss();
+        this.snackBar.open('An error occurred');
+      }
+    );
   }
 
 }

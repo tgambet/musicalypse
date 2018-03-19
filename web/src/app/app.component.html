@@ -55,36 +55,6 @@
           <mat-icon mat-list-icon>info</mat-icon>
           <span matLine>About</span>
         </a>
-        <!--<mat-divider></mat-divider>-->
-        <!--<h3 mat-subheader>Options</h3>-->
-        <!--<a mat-list-item (click)="scanLibrary(); sidenav.close()">-->
-          <!--<mat-icon mat-list-icon>sync</mat-icon>-->
-          <!--<span matLine>Scan library</span>-->
-        <!--</a>-->
-        <!--<a mat-list-item-->
-           <!--(click)="httpSocketClient.isSocketOpen() ? httpSocketClient.closeSocket() : httpSocketClient.openSocket()">-->
-          <!--<mat-icon mat-list-icon>{{httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked'}}</mat-icon>-->
-          <!--<span matLine>Socket {{httpSocketClient.isSocketOpen() ? 'open' : 'closed'}}</span>-->
-        <!--</a>-->
-        <!--<mat-list-item>-->
-          <!--<mat-icon matListIcon>color_lens</mat-icon>-->
-          <!--<mat-form-field matLine floatLabel="never">-->
-            <!--<mat-select placeholder="Theme" #theme (change)="changeTheme(theme.value); sidenav.close()">-->
-              <!--<mat-option value="dark-theme">Dark Theme</mat-option>-->
-              <!--<mat-option value="light-theme">Light Theme</mat-option>-->
-            <!--</mat-select>-->
-          <!--</mat-form-field>-->
-        <!--</mat-list-item>-->
-        <!--<mat-divider></mat-divider>-->
-        <!--<h3 mat-subheader>Library folders</h3>-->
-        <!--<a mat-list-item *ngFor="let lib of libraries" class="lib">-->
-          <!--<mat-icon mat-list-icon>folder_open</mat-icon>-->
-          <!--<span matLine>{{lib}}</span>-->
-        <!--</a>-->
-        <!--<a mat-list-item (click)="openFolderDialog()">-->
-          <!--<mat-icon mat-list-icon>create_new_folder</mat-icon>-->
-          <!--<span matLine>Add a folder</span>-->
-        <!--</a>-->
       </mat-list>
     </mat-sidenav>
     <router-outlet></router-outlet>

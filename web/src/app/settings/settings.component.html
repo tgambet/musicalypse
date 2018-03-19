@@ -14,7 +14,7 @@
           <mat-icon mat-list-icon>create_new_folder</mat-icon>
           <span matLine>Add a new folder</span>
         </a>
-        <a mat-list-item class="hover" tabindex="0">
+        <a mat-list-item class="hover" tabindex="0" (click)="requestLibraryScan()">
           <mat-icon mat-list-icon>sync</mat-icon>
           <span matLine>Scan Library</span>
         </a>
@@ -60,8 +60,8 @@
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Misc</h3>
       <p>
-        <button mat-button>
-          <mat-icon>radio_button_checked</mat-icon>
+        <button mat-button (click)="httpSocketClient.isSocketOpen() ? httpSocketClient.closeSocket() : httpSocketClient.openSocket()">
+          <mat-icon>{{httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked'}}</mat-icon>
           <span>WebSocket</span>
         </button>
       </p>

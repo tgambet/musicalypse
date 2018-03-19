@@ -52,7 +52,6 @@
 
   .secondary-text {
     color: mat-color($foreground, secondary-text);
-    font-size: 12px !important;
   }
 
   .mat-list-item.accent .mat-line {
@@ -66,6 +65,14 @@
   .theme-chooser {
     background-color: mat-color($background, dialog);
     border: 1px solid mat-color($background, status-bar);
+  }
+
+  .hover-background {
+    background-color: mat-color($background, hover);
+  }
+
+  .drop {
+    border: 2px dashed mat-color($foreground, icon);
   }
 
 }

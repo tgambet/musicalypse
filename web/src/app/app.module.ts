@@ -56,6 +56,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    Material.MatRadioModule,
+    Material.MatSlideToggleModule,
     Material.MatGridListModule,
     Material.MatDialogModule,
     Material.MatSnackBarModule,

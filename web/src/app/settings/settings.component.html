@@ -1,3 +1,85 @@
-<p>
-  settings works!
-</p>
+<div class="wrapper">
+  <div class="settings">
+    <div class="column c1">
+      <h3 class="secondary-text">Library</h3>
+      <mat-list>
+        <mat-list-item class="hover">
+          <mat-icon mat-list-icon>folder_open</mat-icon>
+          <span matLine>D:/Musique/Metallica</span>
+          <button mat-button mat-icon-button>
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-list-item class="hover">
+          <mat-icon mat-list-icon>folder_open</mat-icon>
+          <span matLine>D:/Musique/Megadeth</span>
+          <button mat-button mat-icon-button>
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+        <a mat-list-item class="hover" tabindex="0">
+          <mat-icon mat-list-icon>create_new_folder</mat-icon>
+          <span matLine>Add a new folder</span>
+        </a>
+        <a mat-list-item class="hover" tabindex="0">
+          <mat-icon mat-list-icon>sync</mat-icon>
+          <span matLine>Scan Library</span>
+        </a>
+      </mat-list>
+      <!--<p>-->
+        <!--<button mat-button class="setting-button">-->
+          <!--<mat-icon>create_new_folder</mat-icon>-->
+          <!--<span>Add a new folder</span>-->
+        <!--</button>-->
+        <!--<button mat-button class="setting-button">-->
+          <!--<mat-icon>sync</mat-icon>-->
+          <!--<span>Scan Library</span>-->
+        <!--</button>-->
+      <!--</p>-->
+
+      <mat-divider></mat-divider>
+      <h3 class="secondary-text">Upload</h3>
+      <p>Upload files to the server by drag and dropping them in the zone below.</p>
+      <div class="drop hover-background">
+        <mat-icon>file_upload</mat-icon>
+      </div>
+      <button mat-button>
+        Upload files
+      </button>
+      <button mat-button>
+        Cancel
+      </button>
+      <mat-divider></mat-divider>
+    </div>
+    <div class="column c2">
+      <h3 class="secondary-text">Themes</h3>
+      <p>
+        <mat-radio-group>
+          <mat-radio-button value="1">Dark Theme</mat-radio-button>
+          <mat-radio-button value="2">Light Theme</mat-radio-button>
+          <mat-radio-button value="3">TBD</mat-radio-button>
+          <mat-radio-button value="4">TBD</mat-radio-button>
+        </mat-radio-group>
+      </p>
+      <!--<h3>Fonts</h3>-->
+      <!--<p>-->
+        <!--<mat-radio-group>-->
+          <!--<mat-radio-button value="1">Roboto</mat-radio-button>-->
+          <!--<mat-radio-button value="2">Lato</mat-radio-button>-->
+        <!--</mat-radio-group>-->
+      <!--</p>-->
+      <mat-divider></mat-divider>
+      <h3 class="secondary-text">Misc</h3>
+      <p>
+        <button mat-button class="setting-button">
+          <mat-icon>radio_button_checked</mat-icon>
+          <span>WebSocket</span>
+        </button>
+      </p>
+      <p>
+        <mat-slide-toggle>Watch library folders</mat-slide-toggle>
+      </p>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+</div>

@@ -17,7 +17,7 @@
     flex-grow: 1;
   }
   .c2 {
-    flex-grow: 3;
+    flex-grow: 1;
   }
 }
 
@@ -33,31 +33,49 @@ mat-divider {
   margin: 1rem 0;
 }
 
-.setting-button {
-  //font-size: 16px;
-  //min-width: 160px;
-  // text-align: left;
-}
-
 @media screen and (max-width: 599px){
   .settings {
     flex-wrap: wrap;
+    .c2 {
+      padding-top: 0;
+    }
   }
 }
 
 .drop {
-  height: 150px;
-  // border: 2px dashed red;
+  padding: 1rem;
+  min-height: 150px;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  mat-icon {
+  cursor: pointer;
+  user-select: none;
+  button {
+    padding: 5px;
+    box-sizing: content-box;
+  }
+  button, mat-icon  {
     height: 40px;
     width: 40px;
     font-size: 40px;
+    line-height: 40px;
   }
+  .file {
+    display: flex;
+    width: 100%;
+    span:first-child {
+      flex-grow: 1;
+    }
+  }
+}
+
+.upload-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 mat-radio-button {

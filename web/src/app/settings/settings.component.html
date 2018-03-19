@@ -26,29 +26,30 @@
           <span matLine>Scan Library</span>
         </a>
       </mat-list>
-      <!--<p>-->
-        <!--<button mat-button class="setting-button">-->
-          <!--<mat-icon>create_new_folder</mat-icon>-->
-          <!--<span>Add a new folder</span>-->
-        <!--</button>-->
-        <!--<button mat-button class="setting-button">-->
-          <!--<mat-icon>sync</mat-icon>-->
-          <!--<span>Scan Library</span>-->
-        <!--</button>-->
-      <!--</p>-->
-
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Upload</h3>
-      <p>Upload files to the server by drag and dropping them in the zone below.</p>
-      <div class="drop hover-background">
-        <mat-icon>file_upload</mat-icon>
+      <p>
+        Drag and drop files in the zone below to upload them to the server.<br>
+        Click it to choose files to upload from the explorer.
+      </p>
+      <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
+      <div class="drop hover-background" (click)="file.click()">
+        <button mat-button mat-icon-button *ngIf="files.length == 0">
+          <mat-icon>file_upload</mat-icon>
+        </button>
+        <div *ngFor="let file of files" class="file">
+          <span>{{file.name}}</span>
+          <span>{{file.size}}</span>
+        </div>
       </div>
-      <button mat-button>
-        Upload files
-      </button>
-      <button mat-button>
-        Cancel
-      </button>
+      <div class="upload-actions">
+        <button mat-button [disabled]="files.length == 0">
+          Upload files
+        </button>
+        <button mat-button (click)="cancel()" [disabled]="files.length == 0">
+          Cancel
+        </button>
+      </div>
       <mat-divider></mat-divider>
     </div>
     <div class="column c2">
@@ -61,23 +62,25 @@
           <mat-radio-button value="4">TBD</mat-radio-button>
         </mat-radio-group>
       </p>
-      <!--<h3>Fonts</h3>-->
-      <!--<p>-->
-        <!--<mat-radio-group>-->
-          <!--<mat-radio-button value="1">Roboto</mat-radio-button>-->
-          <!--<mat-radio-button value="2">Lato</mat-radio-button>-->
-        <!--</mat-radio-group>-->
-      <!--</p>-->
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Misc</h3>
       <p>
-        <button mat-button class="setting-button">
+        <button mat-button>
           <mat-icon>radio_button_checked</mat-icon>
           <span>WebSocket</span>
         </button>
       </p>
       <p>
         <mat-slide-toggle>Watch library folders</mat-slide-toggle>
+      </p>
+      <p>
+        <mat-slide-toggle>Misc 1</mat-slide-toggle>
+      </p>
+      <p>
+        <mat-slide-toggle>Misc 2</mat-slide-toggle>
+      </p>
+      <p>
+        <mat-slide-toggle>Misc 3</mat-slide-toggle>
       </p>
       <mat-divider></mat-divider>
     </div>

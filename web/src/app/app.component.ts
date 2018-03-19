@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialog, MatSidenav, MatSnackBar} from '@angular/material';
-import {OverlayContainer} from '@angular/cdk/overlay';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {SocketMessage, Track} from './model';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {LibraryService} from './services/library.service';
 import {FolderComponent} from './dialogs/folder/folder.component';
 import {AudioComponent} from './audio/audio.component';
+import {SettingsService} from './services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   audio: AudioComponent;
 
   themeChooser = false;
-  themeClass = 'dark-theme';
   showSidenav: boolean;
   libraries: string[] = [];
 
@@ -30,13 +29,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
     public library: LibraryService,
     public snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public settings: SettingsService
   ) {
-    overlayContainer.getContainerElement().classList.add(this.themeClass);
   }
 
   ngOnInit(): void {
@@ -60,12 +58,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
 
-  }
-
-  changeTheme(theme: string) {
-    this.overlayContainer.getContainerElement().classList.remove(this.themeClass);
-    this.overlayContainer.getContainerElement().classList.add(theme);
-    this.themeClass = theme;
   }
 
   scanLibrary() {

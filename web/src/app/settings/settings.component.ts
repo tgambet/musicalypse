@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
+import {SettingsService} from '../services/settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -8,9 +9,14 @@ import * as _ from 'lodash';
 })
 export class SettingsComponent implements OnInit {
 
+  libraryFolders: string[] = [
+    'D:/Musique/Metallica',
+    'D:/Musique/Megadeth'
+  ];
+
   files: File[] = [];
 
-  constructor() { }
+  constructor(public settings: SettingsService) { }
 
   ngOnInit() {
   }

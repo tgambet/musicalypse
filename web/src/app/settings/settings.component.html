@@ -3,16 +3,9 @@
     <div class="column c1">
       <h3 class="secondary-text">Library</h3>
       <mat-list>
-        <mat-list-item class="hover">
+        <mat-list-item class="hover" *ngFor="let folder of libraryFolders">
           <mat-icon mat-list-icon>folder_open</mat-icon>
-          <span matLine>D:/Musique/Metallica</span>
-          <button mat-button mat-icon-button>
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-list-item>
-        <mat-list-item class="hover">
-          <mat-icon mat-list-icon>folder_open</mat-icon>
-          <span matLine>D:/Musique/Megadeth</span>
+          <span matLine>{{folder}}</span>
           <button mat-button mat-icon-button>
             <mat-icon>close</mat-icon>
           </button>
@@ -56,10 +49,12 @@
       <h3 class="secondary-text">Themes</h3>
       <p>
         <mat-radio-group>
-          <mat-radio-button value="1">Dark Theme</mat-radio-button>
-          <mat-radio-button value="2">Light Theme</mat-radio-button>
-          <mat-radio-button value="3">TBD</mat-radio-button>
-          <mat-radio-button value="4">TBD</mat-radio-button>
+          <mat-radio-button *ngFor="let theme of settings.themes"
+                            [value]="theme.cssClass"
+                            [checked]="settings.currentTheme == theme"
+                            (change)="settings.changeTheme(theme)">
+            {{theme.name}}
+          </mat-radio-button>
         </mat-radio-group>
       </p>
       <mat-divider></mat-divider>

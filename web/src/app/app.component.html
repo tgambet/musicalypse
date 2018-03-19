@@ -1,4 +1,4 @@
-<div ngClass="mat-typography" [class]="themeClass">
+<div ngClass="mat-typography" [class]="settings.currentTheme.cssClass">
   <mat-toolbar>
     <button mat-icon-button (click)="sidenav.toggle()" class="menu" *ngIf="showSidenav">
       <mat-icon>{{sidenav.opened ? 'close' : 'menu'}}</mat-icon>
@@ -20,24 +20,9 @@
     <div class="theme-chooser-backdrop" *ngIf="themeChooser" (click)="themeChooser = false"></div>
     <div class="theme-chooser" [ngClass]="themeChooser ? 'visible' : ''" (click)="themeChooser = false">
       <ol>
-        <li>
-          <button mat-icon-button (click)="changeTheme('light-theme')" class="light-theme-chooser">
-            <mat-icon *ngIf="themeClass == 'light-theme'">check_circle</mat-icon>
-          </button>
-        </li>
-        <li>
-          <button mat-icon-button (click)="changeTheme('dark-theme')" class="dark-theme-chooser">
-            <mat-icon *ngIf="themeClass == 'dark-theme'">check_circle</mat-icon>
-          </button>
-        </li>
-        <li>
-          <button mat-icon-button>
-            <!--<mat-icon>check_circle</mat-icon>-->
-          </button>
-        </li>
-        <li>
-          <button mat-icon-button>
-            <!--<mat-icon>check_circle</mat-icon>-->
+        <li *ngFor="let theme of settings.featuredThemes">
+          <button mat-icon-button (click)="settings.changeTheme(theme)" ngClass="{{theme.cssClass}}-chooser">
+            <mat-icon *ngIf="settings.currentTheme == theme">check_circle</mat-icon>
           </button>
         </li>
       </ol>

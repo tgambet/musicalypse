@@ -9,7 +9,11 @@
     <div class="filler"></div>
     <nav *ngIf="!showSidenav">
       <ul>
-        <li><a routerLink="/" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">Library</a></li>
+        <li>
+          <a routerLink="/" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon> Library
+          </a>
+        </li>
         <li><a routerLink="/settings" routerLinkActive="warn" class="link">Settings</a></li>
         <li><a routerLink="/about" routerLinkActive="warn" class="link">About</a></li>
       </ul>
@@ -45,7 +49,10 @@
         <h3 mat-subheader>Navigation</h3>
         <a mat-list-item routerLink="/" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon mat-list-icon>home</mat-icon>
-          <span matLine>Library</span>
+          <span matLine>
+            <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon>
+            Library
+          </span>
         </a>
         <a mat-list-item routerLink="/settings" routerLinkActive="warn">
           <mat-icon mat-list-icon>settings</mat-icon>

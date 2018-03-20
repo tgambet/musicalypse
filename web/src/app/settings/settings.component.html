@@ -23,7 +23,7 @@
       <h3 class="secondary-text">Upload</h3>
       <p>
         Drag and drop files in the zone below to upload them to the server.<br>
-        Click it to choose files to upload from the explorer.
+        Or click it to choose files to upload from the explorer.
       </p>
       <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
       <div class="drop hover-background" (click)="file.click()">

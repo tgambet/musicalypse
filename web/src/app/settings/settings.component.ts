@@ -42,6 +42,13 @@ export class SettingsComponent implements OnInit {
     this.files = [];
   }
 
+  uploadFiles() {
+    this.httpSocketClient.postFiles('/api/upload', this.files).subscribe(
+      result => console.log(result),
+      error => console.log(error)
+    );
+  }
+
   addFolderDialog() {
     const dialogRef = this.dialog.open(FolderComponent, {
       minWidth: '400px'

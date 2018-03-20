@@ -19,7 +19,6 @@ object LibraryActor {
   case object LibraryChangeSuccess extends LibraryChangeResult
   case class LibraryChangeFailed(reason: String) extends LibraryChangeResult
 
-
   def props()(implicit application: Application): Props = Props(new LibraryActor())
 
 }
@@ -28,9 +27,11 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
 
+  var uploadFolder: String = application.config.getString("music.uploadFolder")
+
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(libraries)
+    case GetLibraries => sender ! Libraries(libraries :+ uploadFolder)
 
     case AddLibrary(library) =>
       if (libraries.contains(library)) {
@@ -51,7 +52,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         libraries = libraries diff List(library)
         sender() ! LibraryChangeSuccess
       } else {
-        sender() ! LibraryChangeFailed(s"$library is not a known library folder.")
+        sender() ! LibraryChangeFailed(s"$library is not a known library folder or cannot be deleted.")
       }
 
   }

@@ -26,7 +26,7 @@
         Or click it to choose files to upload from the explorer.
       </p>
       <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
-      <div class="drop hover-background" (click)="file.click()">
+      <div class="drop hover-background" (click)="file.click(); $event.preventDefault()">
         <button mat-button mat-icon-button *ngIf="files.length == 0">
           <mat-icon>file_upload</mat-icon>
         </button>
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="upload-actions">
-        <button mat-button [disabled]="files.length == 0">
+        <button mat-button [disabled]="files.length == 0" (click)="uploadFiles()">
           Upload files
         </button>
         <button mat-button (click)="cancel()" [disabled]="files.length == 0">

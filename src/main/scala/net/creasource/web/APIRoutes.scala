@@ -1,10 +1,13 @@
 package net.creasource.web
 
+import java.io.File
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{HttpHeader, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.directives.FileInfo
 import akka.http.scaladsl.settings.RoutingSettings
 import akka.pattern.ask
 import net.creasource.core.Application
@@ -25,6 +28,18 @@ class APIRoutes(application: Application) {
   implicit val settings: RoutingSettings = RoutingSettings.apply(application.config)
 
   val askTimeout: akka.util.Timeout = 2.seconds
+
+  val uploadFolder: String = application.config.getString("music.uploadFolder")
+
+  val uploadFolderFile = new File(uploadFolder)
+
+  if(!uploadFolderFile.exists()) {
+    uploadFolderFile.mkdir()
+  }
+
+  if (!uploadFolderFile.isDirectory) {
+    throw new IllegalArgumentException(s"Config music.uploadFolder ($uploadFolder) is not a folder!")
+  }
 
   def librariesRoutes: Route =
     pathPrefix("libraries") {
@@ -54,12 +69,35 @@ class APIRoutes(application: Application) {
       }
     }
 
+  def uploadDestination(fileInfo: FileInfo): File = {
+    new File(s"$uploadFolder/${fileInfo.fileName}")
+  }
+
+  def filesUpload: Route =
+    path("upload") {
+      withSizeLimit(20000000) {
+        storeUploadedFiles("file", uploadDestination) { files =>
+          val finalStatus = files.foldLeft[StatusCode](StatusCodes.OK) {
+            case (status, (metadata, file)) =>
+              if (metadata.contentType.toString() != "audio/mp3") {
+                file.delete()
+                StatusCodes.NotAcceptable
+              } else {
+                status
+              }
+          }
+          complete(finalStatus)
+        }
+      }
+    }
+
 
   def routes: Route = {
     pathPrefix("api") {
       respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
         Route.seal(concat(
           librariesRoutes,
+          filesUpload,
           options {
             val corsHeaders: Seq[HttpHeader] = Seq(
               RawHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"),

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/concat';
+import * as _ from 'lodash';
 
 @Injectable()
 export class HttpSocketClientService implements OnDestroy {
@@ -115,6 +116,17 @@ export class HttpSocketClientService implements OnDestroy {
       };
       return this.sendRequest(request);
     }
+  }
+
+  postFiles(path: string, files: File[]): Observable<Object> {
+    const formData = new FormData();
+    _.forEach(files, file => {
+      formData.append('file', file, file.name);
+    });
+    return this.httpClient.post(
+      HttpSocketClientService.getAPIUrl(path),
+      formData
+    );
   }
 
   _delete(path: string): Observable<Object> {

@@ -7,10 +7,12 @@
 .settings {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   max-width: 960px;
   width: 100%;
   .column {
     //width: auto;
+    max-width: 100%;
     padding: 1rem 1rem 0 1rem;
   }
   .c1 {
@@ -18,6 +20,15 @@
   }
   .c2 {
     flex-grow: 1;
+  }
+}
+
+@media screen and (max-width: 599px){
+  .settings {
+    // flex-wrap: wrap;
+    .c2 {
+      padding-top: 0;
+    }
   }
 }
 
@@ -31,15 +42,6 @@ mat-list {
 
 mat-divider {
   margin: 1rem 0;
-}
-
-@media screen and (max-width: 599px){
-  .settings {
-    flex-wrap: wrap;
-    .c2 {
-      padding-top: 0;
-    }
-  }
 }
 
 .drop {

@@ -34,7 +34,7 @@ class APIRoutes(application: Application) {
   val uploadFolderFile = new File(uploadFolder)
 
   if(!uploadFolderFile.exists()) {
-    uploadFolderFile.mkdir()
+    uploadFolderFile.mkdirs()
   }
 
   if (!uploadFolderFile.isDirectory) {

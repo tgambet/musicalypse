@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="settings">
     <div class="column c1">
-      <h3 class="secondary-text">Library</h3>
+      <h3 class="secondary-text">Library folders</h3>
       <mat-list>
         <mat-list-item class="hover" *ngFor="let folder of settings.libraryFolders">
           <mat-icon mat-list-icon>folder_open</mat-icon>
@@ -10,14 +10,14 @@
             <mat-icon>close</mat-icon>
           </button>
         </mat-list-item>
-        <a mat-list-item class="hover" tabindex="0" (click)="addFolderDialog()">
+        <button mat-menu-item tabindex="0" (click)="addFolderDialog()">
           <mat-icon mat-list-icon>create_new_folder</mat-icon>
           <span matLine>Add a new folder</span>
-        </a>
-        <a mat-list-item class="hover" tabindex="0" (click)="requestLibraryScan()">
+        </button>
+        <button mat-menu-item [disabled]="settings.libraryFolders.length == 0" tabindex="0" (click)="settings.libraryFolders.length > 0 ? requestLibraryScan() : {}">
           <mat-icon mat-list-icon>sync</mat-icon>
           <span matLine>Scan Library</span>
-        </a>
+        </button>
       </mat-list>
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Upload</h3>

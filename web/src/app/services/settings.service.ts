@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 @Injectable()
 export class SettingsService {
 
-  libraryFolders: string[];
+  libraryFolders: string[] = [];
 
   themes: Theme[] = [
     {name: 'Dark Theme', cssClass: 'dark-theme'},

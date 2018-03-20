@@ -26,43 +26,47 @@ class APIRoutes(application: Application) {
 
   val askTimeout: akka.util.Timeout = 2.seconds
 
+  def librariesRoutes: Route =
+    pathPrefix("libraries") {
+      pathEndOrSingleSlash {
+        get {
+          onSuccess((application.libraryActor ? GetLibraries) (askTimeout).mapTo[Libraries]) {
+            case Libraries(libraries) => complete(libraries)
+          }
+        } ~
+        post {
+          entity(as[JsValue]) { json =>
+            val lib = json.convertTo[String]
+            onSuccess((application.libraryActor ? AddLibrary(lib)) (askTimeout).mapTo[LibraryChangeResult]) {
+              case LibraryChangeSuccess => complete(StatusCodes.OK, JsString("OK"))
+              case LibraryChangeFailed(reason) => complete(StatusCodes.BadRequest, reason)
+            }
+          }
+        }
+      } ~
+      path(Segment) { lib =>
+        delete {
+          onSuccess((application.libraryActor ? RemoveLibrary(lib))(askTimeout).mapTo[LibraryChangeResult]) {
+            case LibraryChangeSuccess => complete(StatusCodes.OK, JsString("OK"))
+            case LibraryChangeFailed(reason) => complete(StatusCodes.BadRequest, reason)
+          }
+        }
+      }
+    }
+
+
   def routes: Route = {
     pathPrefix("api") {
       respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
         Route.seal(concat(
-          get {
-            pathPrefix("libraries") {
-              onSuccess((application.libraryActor ? GetLibraries)(askTimeout).mapTo[Libraries]) {
-                case Libraries(libraries) => complete(libraries)
-              }
-            }
-          },
-          post {
-            entity(as[JsValue]) { json =>
-              pathPrefix("libraries") {
-                val lib = json.convertTo[String]
-                onSuccess((application.libraryActor ? AddLibrary(lib))(askTimeout).mapTo[LibraryAdditionResult]) {
-                  case LibraryAdditionSuccess => complete(StatusCodes.OK, JsString("OK"))
-                  case LibraryAdditionFailed(reason) => complete(StatusCodes.BadRequest, reason)
-                }
-              }
-            }
-          },
-          put {
-            entity(as[JsValue]) { json =>
-              complete(JsString("OK PUT"))
-            }
-          },
-          delete {
-            complete(StatusCodes.OK)
-          },
+          librariesRoutes,
           options {
             val corsHeaders: Seq[HttpHeader] = Seq(
               RawHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"),
               RawHeader("Access-Control-Allow-Headers", "Content-Type")
             )
             respondWithHeaders(corsHeaders) {
-              complete(StatusCodes.OK)
+              complete(StatusCodes.OK, "")
             }
           }
         ))

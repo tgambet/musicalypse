@@ -14,9 +14,11 @@ object LibraryActor {
   case class Libraries(libraries: List[String])
 
   case class AddLibrary(library: String)
-  sealed trait LibraryAdditionResult
-  case object LibraryAdditionSuccess extends LibraryAdditionResult
-  case class LibraryAdditionFailed(reason: String) extends LibraryAdditionResult
+  case class RemoveLibrary(library: String)
+  sealed trait LibraryChangeResult
+  case object LibraryChangeSuccess extends LibraryChangeResult
+  case class LibraryChangeFailed(reason: String) extends LibraryChangeResult
+
 
   def props()(implicit application: Application): Props = Props(new LibraryActor())
 
@@ -24,26 +26,32 @@ object LibraryActor {
 
 class LibraryActor()(implicit application: Application) extends Actor with Stash with JsonSupport {
 
-  val configLibraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
-
-  var additionalLibraries: List[String] = List.empty
+  var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
 
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(configLibraries ++ additionalLibraries)
+    case GetLibraries => sender ! Libraries(libraries)
 
     case AddLibrary(library) =>
-      if ((configLibraries ++ additionalLibraries).contains(library)) {
-        sender() ! LibraryAdditionFailed(s"'$library' is already a library folder")
+      if (libraries.contains(library)) {
+        sender() ! LibraryChangeFailed(s"'$library' is already a library folder")
       } else {
         val file = new File(library)
         // TODO manage exception, e.g. read access denied
         if (file.isDirectory) {
-          additionalLibraries +:= file.toString
-          sender() ! LibraryAdditionSuccess
+          libraries +:= file.toString
+          sender() ! LibraryChangeSuccess
         } else {
-          sender() ! LibraryAdditionFailed(s"'$file' is not a directory")
+          sender() ! LibraryChangeFailed(s"'$file' is not a directory")
         }
+      }
+
+    case RemoveLibrary(library) =>
+      if (libraries.contains(library)) {
+        libraries = libraries diff List(library)
+        sender() ! LibraryChangeSuccess
+      } else {
+        sender() ! LibraryChangeFailed(s"$library is not a known library folder.")
       }
 
   }

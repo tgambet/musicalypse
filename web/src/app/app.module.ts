@@ -25,6 +25,7 @@ import {AboutComponent} from './about/about.component';
 import {SettingsComponent} from './settings/settings.component';
 import {FileSizePipe} from './pipes/file-size.pipe';
 import {SettingsService} from './services/settings.service';
+import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
 const appRoutes: Routes = [
   { path: '', component: LibraryComponent },
@@ -47,11 +48,13 @@ const appRoutes: Routes = [
     LibraryComponent,
     AboutComponent,
     SettingsComponent,
-    FileSizePipe
+    FileSizePipe,
+    ConfirmComponent
   ],
   entryComponents: [
     DetailsComponent,
-    FolderComponent
+    FolderComponent,
+    ConfirmComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes/*, { enableTracing: true }*/),

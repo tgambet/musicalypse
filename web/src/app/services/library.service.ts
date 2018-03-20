@@ -100,6 +100,8 @@ export class LibraryService {
     this.albums = [];
     this.artists = [];
     this.playlist = [];
+    this.currentTrack = null;
+    this.audio.setSource('');
     this.onResetSource.next();
   }
 

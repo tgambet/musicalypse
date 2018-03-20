@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {HttpSocketClientService} from './http-socket-client.service';
+import * as _ from 'lodash';
 
 @Injectable()
 export class SettingsService {
@@ -37,9 +38,24 @@ export class SettingsService {
 
   addLibraryFolder(folder: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.httpSocketClient.post('/api/libraries/', folder).subscribe(
+      this.httpSocketClient.post('/api/libraries', folder).subscribe(
         () => {
           this.libraryFolders.push(folder);
+          resolve();
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  removeLibraryFolder(folder: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.httpSocketClient._delete('/api/libraries/' + encodeURIComponent(folder)).subscribe(
+        () => {
+          this.libraryFolders = _.filter(this.libraryFolders, lib => lib !== folder);
           resolve();
         },
         error => {

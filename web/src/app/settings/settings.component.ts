@@ -6,6 +6,7 @@ import {SettingsService} from '../services/settings.service';
 import {FolderComponent} from '../dialogs/folder/folder.component';
 import {LibraryService} from '../services/library.service';
 import {HttpSocketClientService} from '../services/http-socket-client.service';
+import {ConfirmComponent} from '../dialogs/confirm/confirm.component';
 
 @Component({
   selector: 'app-settings',
@@ -41,7 +42,7 @@ export class SettingsComponent implements OnInit {
     this.files = [];
   }
 
-  openFolderAddDialog() {
+  addFolderDialog() {
     const dialogRef = this.dialog.open(FolderComponent, {
       minWidth: '400px'
     });
@@ -49,6 +50,21 @@ export class SettingsComponent implements OnInit {
       if (folder) {
         this.settings.addLibraryFolder(folder).then(
           () => this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 1500}),
+          (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
+        );
+      }
+    });
+  }
+
+  removeFolderDialog(folder: string) {
+    const dialogRef = this.dialog.open(ConfirmComponent, {
+      minWidth: '400px',
+      data: { title: 'Please confirm', message: 'Are you sure you want to remove the folder "' + folder + '" from the library?' }
+    });
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.settings.removeLibraryFolder(folder).then(
+          () => this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500}),
           (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
         );
       }

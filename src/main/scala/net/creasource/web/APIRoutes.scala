@@ -76,17 +76,13 @@ class APIRoutes(application: Application) {
   def filesUpload: Route =
     path("upload") {
       withSizeLimit(20000000) {
-        storeUploadedFiles("file", uploadDestination) { files =>
-          val finalStatus = files.foldLeft[StatusCode](StatusCodes.OK) {
-            case (status, (metadata, file)) =>
-              if (metadata.contentType.toString() != "audio/mp3") {
-                file.delete()
-                StatusCodes.NotAcceptable
-              } else {
-                status
-              }
+        storeUploadedFile("file", uploadDestination) { (metadata, file) =>
+          if (metadata.contentType.toString() != "audio/mp3") {
+            file.delete()
+            complete(StatusCodes.NotAcceptable)
+          } else {
+            complete(StatusCodes.OK)
           }
-          complete(finalStatus)
         }
       }
     }

@@ -71,8 +71,8 @@
     background-color: mat-color($background, hover);
   }
 
-  .drop {
-    border: 2px dashed mat-color($foreground, icon);
+  .outline-dashed {
+    outline: 2px dashed mat-color($foreground, icon);
   }
 
 }

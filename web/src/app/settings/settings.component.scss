@@ -38,6 +38,9 @@ mat-list {
   a {
     cursor: pointer;
   }
+  .mat-menu-item {
+    padding-left: 20px;
+  }
 }
 
 mat-divider {
@@ -47,13 +50,15 @@ mat-divider {
 .drop {
   padding: 1rem;
   min-height: 150px;
-  border-radius: 5px;
+  //border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   align-items: center;
   cursor: pointer;
   user-select: none;
+  &.empty {
+    justify-content: space-around;
+  }
   button {
     padding: 5px;
     box-sizing: content-box;
@@ -71,8 +76,24 @@ mat-divider {
   .file {
     display: flex;
     width: 100%;
-    span:first-child {
+    mat-progress-bar {
+      width: auto;
+    }
+    .name {
+      flex-grow: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 50%;
+      overflow: hidden;
+    }
+    .progress {
       flex-grow: 1;
+      margin: 8px 8px 0 8px;
+    }
+    .size {
+      flex-grow: 0;
+      min-width: 60px;
+      text-align: right;
     }
   }
 }

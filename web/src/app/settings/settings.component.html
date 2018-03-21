@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="settings">
     <div class="column c1">
-      <h3 class="secondary-text">Library folders</h3>
+      <h3 class="secondary-text">Library</h3>
       <mat-list>
         <mat-list-item class="hover" *ngFor="let folder of settings.libraryFolders">
           <mat-icon mat-list-icon>folder_open</mat-icon>
@@ -27,21 +27,27 @@
         Or click it to choose files to upload from the explorer.
       </p>
       <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
-      <div class="drop hover-background" (click)="file.click(); $event.preventDefault()">
+      <div [class.empty]="files.length == 0"
+           class="drop hover-background"
+           (click)="isUploading() ? {} : file.click(); $event.preventDefault()">
         <button mat-button mat-icon-button *ngIf="files.length == 0">
-          <mat-icon>file_upload</mat-icon>
+          <mat-icon>cloud_upload</mat-icon>
         </button>
         <div *ngFor="let file of files" class="file">
-          <span>{{file.name}}</span>
-          <span>{{file.size | sgFileSize}}</span>
+          <span class="name">{{file._file.name}}</span>
+          <span class="progress">
+            <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
+          </span>
+          <span class="size">{{file._file.size | sgFileSize}}</span>
         </div>
       </div>
       <div class="upload-actions">
-        <button mat-button [disabled]="files.length == 0" (click)="uploadFiles()">
-          Upload files
+        <button mat-button [disabled]="files.length == 0 || isUploading()" (click)="uploadFiles()">
+          <mat-icon>file_upload</mat-icon>
+          Upload
         </button>
-        <button mat-button (click)="cancel()" [disabled]="files.length == 0">
-          Cancel
+        <button mat-button (click)="isUploading() ? cancel() : clear()" [disabled]="files.length == 0">
+          {{isUploading() ? 'Cancel' : 'Clear'}}
         </button>
       </div>
       <mat-divider></mat-divider>

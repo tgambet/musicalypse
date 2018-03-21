@@ -79,9 +79,9 @@ class APIRoutes(application: Application) {
         storeUploadedFile("file", uploadDestination) { (metadata, file) =>
           if (metadata.contentType.toString() != "audio/mp3") {
             file.delete()
-            complete(StatusCodes.NotAcceptable)
+            complete(StatusCodes.NotAcceptable, "")
           } else {
-            complete(StatusCodes.OK)
+            complete(StatusCodes.OK, "")
           }
         }
       }

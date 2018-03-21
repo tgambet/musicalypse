@@ -39,11 +39,16 @@ export class SettingsComponent implements OnInit {
     return this.uploadSubscription != null;
   }
 
+  drop(event) {
+    this.addFiles(event.dataTransfer.files);
+    event.preventDefault();
+  }
+
   addFiles(files: FileList) {
     if (!this.isUploading()) {
       const names = _.map(this.files, f => f._file.name);
       _.forEach(files, (file: File) => {
-        if (!_.includes(names, file.name)) {
+        if (!_.includes(names, file.name) && file.name.endsWith('.mp3')) {
           this.files.push({_file: file, progress: 0});
         }
       });
@@ -90,7 +95,6 @@ export class SettingsComponent implements OnInit {
         this.files = [];
       },
       () => {
-        console.log('complete');
         this.uploadSubscription.unsubscribe();
         this.uploadSubscription = null;
         this.snackBar.open(`${this.files.length} file(s) uploaded successfully.`, '', {duration: 2000});

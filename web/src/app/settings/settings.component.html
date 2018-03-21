@@ -28,8 +28,13 @@
       </p>
       <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
       <div [class.empty]="files.length == 0"
+           [class.outline-dashed]="dragOver"
            class="drop hover-background"
-           (click)="isUploading() ? {} : file.click(); $event.preventDefault()">
+           (click)="isUploading() ? {} : file.click(); $event.preventDefault()"
+           (dragover)="$event.preventDefault()"
+           (drop)="drop($event)"
+           (dragenter)="dragOver = true"
+           (dragleave)="dragOver = false">
         <button mat-button mat-icon-button *ngIf="files.length == 0">
           <mat-icon>cloud_upload</mat-icon>
         </button>

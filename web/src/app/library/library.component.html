@@ -1,15 +1,16 @@
 <div class="container">
+  <div class="content" [ngClass]="contentClass">
   <div class="column a1">
-    <app-artists #artistsComponent></app-artists>
+    <app-artists #artistsComponent (onNext)="contentClass = 't1'"></app-artists>
   </div>
   <div class="column a2">
-    <app-albums #albumsComponent [artistsComponent]="artistsComponent"></app-albums>
+    <app-albums #albumsComponent [artistsComponent]="artistsComponent" (onNext)="contentClass = 't2'" (onPrevious)="contentClass = 't0'"></app-albums>
   </div>
   <div class="column a3">
-    <app-tracks #tracksComponent [albumsComponent]="albumsComponent"></app-tracks>
+    <app-tracks #tracksComponent [albumsComponent]="albumsComponent" (onNext)="contentClass = 't3'" (onPrevious)="contentClass = 't1'"></app-tracks>
   </div>
   <div class="column a4">
-    <app-player></app-player>
+    <app-player (onPrevious)="contentClass = 't2'"></app-player>
+  </div>
   </div>
 </div>
-

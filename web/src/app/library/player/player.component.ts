@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AudioComponent} from '../../audio/audio.component';
 import {LibraryService} from '../../services/library.service';
@@ -12,6 +12,9 @@ import {DetailsComponent} from '../../dialogs/details/details.component';
   styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent implements OnInit {
+
+  @Output()
+  onPrevious: EventEmitter<void> = new EventEmitter();
 
   audio: AudioComponent;
 

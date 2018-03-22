@@ -1,6 +1,19 @@
 <div class="player">
+  <div class="back-metadata">
+    <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="metadata">
+      <div class="title">
+        {{library.currentTrack ? library.currentTrack.metadata.title : ''}}
+      </div>
+      <div class="artist">
+        {{library.currentTrack ? library.currentTrack.metadata.artist : ''}}
+      </div>
+    </div>
+  </div>
   <div class="volume">
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="mute"
             (click)="audio.muted = !audio.muted">
       <mat-icon *ngIf="!audio.muted && audio.volume > 0.50">volume_up</mat-icon>
@@ -15,14 +28,6 @@
       max="1"
       step="0.01"
       color="primary"></mat-slider>
-  </div>
-  <div class="metadata">
-    <div class="title">
-      {{library.currentTrack ? library.currentTrack.metadata.title : ''}}
-    </div>
-    <div class="artist">
-      {{library.currentTrack ? library.currentTrack.metadata.artist : ''}}
-    </div>
   </div>
   <div class="carousel">
     <mat-tab-group [selectedIndex]="0">

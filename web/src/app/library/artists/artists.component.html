@@ -10,7 +10,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="moreArtistMenu">
       <mat-icon>more_vert</mat-icon>
@@ -44,7 +44,8 @@
           <span matTooltip="{{artist.name}}" matTooltipShowDelay="1000" [innerHtml]="artist.name | sgSearch:search"></span>
         </div>
         <div matLine class="secondary-text">{{artist.songs}} songs</div>
-        <button mat-icon-button>
+        <button mat-button mat-icon-button
+                (click)="addArtist(artist); onNext.emit(); $event.stopPropagation()">
           <mat-icon>keyboard_arrow_right</mat-icon>
         </button>
         <mat-divider></mat-divider>

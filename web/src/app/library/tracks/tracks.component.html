@@ -1,5 +1,8 @@
 <div class="wrapper">
   <div class="controls divider fake-scroll-y">
+    <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
     <mat-form-field floatLabel="never" class="search">
       <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
@@ -10,7 +13,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="Track">
       <mat-icon>more_vert</mat-icon>
@@ -32,7 +35,9 @@
   </div>
   <mat-list class="tracks">
     <ng-container *ngFor="let track of filteredTracks">
-      <a class="hover" mat-list-item (click)="library.currentTrack == track && library.audio.playing ? library.audio.pause() : library.playTracks(tracks, track)">
+      <a mat-list-item
+         class="hover"
+         (click)="play(track)">
         <div matLine>
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>
@@ -41,7 +46,7 @@
           {{track.metadata.duration | sgTime}}
           <span *ngIf="isMultipleAlbumsSelected()">• {{track.metadata.album}}</span>
         </div>
-        <button mat-icon-button
+        <button mat-button mat-icon-button
                 class="more"
                 *ngIf="library.currentTrack != track"
                 [matMenuTriggerFor]="trackMenu"
@@ -93,7 +98,7 @@
             Playlist2
           </button>
         </mat-menu>
-        <button mat-icon-button
+        <button mat-button mat-icon-button
                 class = "playPause"
                 *ngIf="library.currentTrack == track"
                 (click)="library.audio.playing ? library.audio.pause() : library.audio.play(); $event.stopPropagation()">

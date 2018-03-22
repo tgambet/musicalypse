@@ -1,9 +1,8 @@
 .player {
-  padding: 12px 0;
+  padding-top: 12px;
   height: 100%;
   display: flex;
   flex-direction: column;
-  //position: relative;
 }
 
 .volume {
@@ -11,10 +10,21 @@
   height: 40px;
 }
 
+.back-metadata {
+  display: flex;
+  flex-direction: row;
+  min-height: 45px;
+  .back {
+    margin-left: 1rem;
+  }
+}
+
 .metadata {
+  flex-grow: 1;
   text-align: center;
   min-height: 34px;
   margin-bottom: 3px;
+  margin-right: 56px;
   .title {}
   .artist {
     font-size: 80%;
@@ -29,12 +39,6 @@
   mat-slider {
     flex-grow: 1;
     margin: 0 0.5rem;
-  }
-}
-
-.volume {
-  mat-slider {
-    margin-left: 0;
   }
 }
 
@@ -121,8 +125,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  min-height: 60px;
-  padding: 0 1rem;
+  min-height: 76px;
+  padding: 0 1rem 1rem 1rem;
   .playPause {
     box-sizing: content-box;
     border: 1px solid #c0c0c0;
@@ -148,5 +152,8 @@
       width: 2rem;
       line-height: 2rem;
     }
+  }
+  .repeat, .favorites {
+    display: none;
   }
 }

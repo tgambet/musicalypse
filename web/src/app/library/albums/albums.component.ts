@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Album, Artist} from '../../model';
 import * as _ from 'lodash';
 import {ArtistsComponent} from '../artists/artists.component';
@@ -12,6 +12,11 @@ import {Subject} from 'rxjs/Subject';
   styleUrls: ['./albums.component.scss', '../common.scss']
 })
 export class AlbumsComponent implements OnInit {
+
+  @Output()
+  onNext: EventEmitter<void> = new EventEmitter();
+  @Output()
+  onPrevious: EventEmitter<void> = new EventEmitter();
 
   @Input('artistsComponent')
   artistsComponent: ArtistsComponent;
@@ -52,6 +57,7 @@ export class AlbumsComponent implements OnInit {
   selectAlbum(album: Album) {
     this.selectedAlbums = [album];
     this.onSelectionChangeSource.next([album]);
+    this.onNext.emit();
   }
 
   addAlbum(album: Album) {

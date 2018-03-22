@@ -8,6 +8,8 @@ import {LibraryService} from '../services/library.service';
 })
 export class LibraryComponent implements OnInit {
 
+  contentClass: string;
+
   constructor(
     public library: LibraryService
   ) { }

@@ -1,5 +1,8 @@
 <div class="wrapper">
   <div class="controls divider fake-scroll-y">
+    <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
     <mat-form-field floatLabel="never" class="search">
       <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
@@ -10,7 +13,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="moreAlbumMenu">
       <mat-icon>more_vert</mat-icon>
@@ -46,7 +49,8 @@
           {{album.songs}} songs
           <span *ngIf="isMultipleArtistsSelected()">• {{album.artist}}</span>
         </div>
-        <button mat-icon-button>
+        <button mat-button mat-icon-button
+                (click)="addAlbum(album); onNext.emit(); $event.stopPropagation()">
           <mat-icon>keyboard_arrow_right</mat-icon>
         </button>
         <mat-divider></mat-divider>

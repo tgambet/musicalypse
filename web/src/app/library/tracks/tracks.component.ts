@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
 import {AlbumsComponent} from '../albums/albums.component';
@@ -13,6 +13,11 @@ import * as _ from 'lodash';
   styleUrls: ['./tracks.component.scss', '../common.scss']
 })
 export class TracksComponent implements OnInit {
+
+  @Output()
+  onNext: EventEmitter<void> = new EventEmitter();
+  @Output()
+  onPrevious: EventEmitter<void> = new EventEmitter();
 
   @Input('albumsComponent')
   albumsComponent: AlbumsComponent;
@@ -37,6 +42,12 @@ export class TracksComponent implements OnInit {
     this.albumsComponent.onSelectionChange.subscribe(albums => updateTracks(albums));
     this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums));
     this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; });
+  }
+
+  play(track: Track) {
+    this.library.currentTrack === track && this.library.audio.playing ?
+      this.library.audio.pause() : this.library.playTracks(this.tracks, track);
+    this.onNext.emit();
   }
 
   sortAlphabetically() {

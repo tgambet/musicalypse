@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Artist} from '../../model';
 import * as _ from 'lodash';
 import {LibraryService} from '../../services/library.service';
@@ -11,6 +11,9 @@ import {Subject} from 'rxjs/Subject';
   styleUrls: ['./artists.component.scss', '../common.scss']
 })
 export class ArtistsComponent implements OnInit {
+
+  @Output()
+  onNext: EventEmitter<void> = new EventEmitter();
 
   search = '';
   artists: Artist[] = [];
@@ -44,6 +47,7 @@ export class ArtistsComponent implements OnInit {
   selectArtist(artist: Artist) {
     this.selectedArtists = [artist];
     this.onSelectionChangeSource.next([artist]);
+    this.onNext.emit();
   }
 
   addArtist(artist: Artist) {

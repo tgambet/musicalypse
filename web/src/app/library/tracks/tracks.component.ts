@@ -44,12 +44,6 @@ export class TracksComponent implements OnInit {
     this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; });
   }
 
-  play(track: Track) {
-    this.library.currentTrack === track && this.library.audio.playing ?
-      this.library.audio.pause() : this.library.playTracks(this.tracks, track);
-    this.onNext.emit();
-  }
-
   sortAlphabetically() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
     this.filter();

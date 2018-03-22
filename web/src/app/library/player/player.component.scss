@@ -27,7 +27,7 @@
   margin-right: 56px;
   .title {}
   .artist {
-    font-size: 80%;
+    font-size: 12px;
   }
 }
 
@@ -53,49 +53,73 @@
   .playlist {
     font-size: 0;
     padding-top: 0;
-    li {
-      height: 36px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 0 1rem;
+    .mat-list-item {
+      height: 60px;
       cursor: pointer;
+    }
+    .title {
+      font-size: 14px;
       mat-icon {
-        line-height: 16px;
         font-size: 16px;
         height: 16px;
         width: 16px;
-        margin-right: 0.25rem;
+        line-height: 16px;
+        vertical-align: text-top;
       }
     }
-    .c {
-      font-size: 14px;
-      line-height: 1.5;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .meta {
+      font-size: 12px;
     }
-    .title {
-      display: flex;
-      align-items: center;
-      width: 50%;
-      padding-right: 0.25rem;
-      span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-    .artist {
-      width: 25%;
-    }
-    .album {
-      width: 25%;
+    .year {
+      margin: 0 1rem;
     }
     .year, .duration {
-      width: 5rem;
-      text-align: right;
+      font-size: 14px;
     }
+
+    //li {
+    //  height: 36px;
+    //  display: flex;
+    //  flex-direction: row;
+    //  align-items: center;
+    //  padding: 0 1rem;
+    //  cursor: pointer;
+    //  mat-icon {
+    //    line-height: 16px;
+    //    font-size: 16px;
+    //    height: 16px;
+    //    width: 16px;
+    //    margin-right: 0.25rem;
+    //  }
+    //}
+    //.c {
+    //  font-size: 14px;
+    //  line-height: 1.5;
+    //  overflow: hidden;
+    //  text-overflow: ellipsis;
+    //  white-space: nowrap;
+    //}
+    //.title {
+    //  display: flex;
+    //  align-items: center;
+    //  width: 50%;
+    //  padding-right: 0.25rem;
+    //  span {
+    //    overflow: hidden;
+    //    text-overflow: ellipsis;
+    //    white-space: nowrap;
+    //  }
+    //}
+    //.artist {
+    //  width: 25%;
+    //}
+    //.album {
+    //  width: 25%;
+    //}
+    //.year, .duration {
+    //  width: 5rem;
+    //  text-align: right;
+    //}
   }
   .albumArt {
     text-align: center;

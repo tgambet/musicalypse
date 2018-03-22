@@ -77,11 +77,11 @@ class APIRoutes(application: Application) {
     path("upload") {
       withSizeLimit(20000000) {
         storeUploadedFile("file", uploadDestination) { (metadata, file) =>
-          if (metadata.contentType.toString() != "audio/mp3") {
+          if (metadata.contentType.mediaType == MediaTypes.`audio/mpeg` || metadata.contentType.toString() == "audio/mp3") {
+            complete(StatusCodes.OK, "")
+          } else {
             file.delete()
             complete(StatusCodes.NotAcceptable, "")
-          } else {
-            complete(StatusCodes.OK, "")
           }
         }
       }

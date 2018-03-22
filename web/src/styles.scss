@@ -36,11 +36,6 @@ app-root {
   bottom: 0;
   left: 0;
   right: 0;
-  > div {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
 }
 
 .carousel {

@@ -31,7 +31,7 @@
            [class.outline-dashed]="dragOver"
            class="drop hover-background"
            (click)="isUploading() ? {} : file.click(); $event.preventDefault()"
-           (dragover)="$event.preventDefault()"
+           (dragover)="dragOver = true; $event.preventDefault()"
            (drop)="drop($event)"
            (dragenter)="dragOver = true"
            (dragleave)="dragOver = false">

@@ -41,6 +41,7 @@ export class SettingsComponent implements OnInit {
 
   drop(event) {
     this.addFiles(event.dataTransfer.files);
+    this.dragOver = false;
     event.preventDefault();
   }
 

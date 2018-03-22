@@ -220,7 +220,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>
-  <mat-menu #playerMenu="matMenu">
+  <mat-menu #playerMenu="matMenu" [overlapTrigger]="false">
     <button mat-menu-item [matMenuTriggerFor]="playlistsMenu3">
       <mat-icon>playlist_add</mat-icon>
       <span>Add to playlist</span>

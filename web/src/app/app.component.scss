@@ -1,7 +1,7 @@
-.main-wrapper {
-  min-height: 100vh;
-  position: relative;
-}
+//.main-wrapper {
+//  min-height: 100vh;
+//  position: relative;
+//}
 
 mat-toolbar h1 {
   font-family: 'Cookie', cursive;
@@ -9,7 +9,7 @@ mat-toolbar h1 {
 }
 
 mat-sidenav-container {
-  height: 100%;
+  height: 100vh;
 }
 
 mat-sidenav {

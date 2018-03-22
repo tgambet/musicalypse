@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {SettingsService} from '../services/settings.service';
@@ -7,7 +6,6 @@ import {FolderComponent} from '../dialogs/folder/folder.component';
 import {LibraryService} from '../services/library.service';
 import {HttpSocketClientService} from '../services/http-socket-client.service';
 import {ConfirmComponent} from '../dialogs/confirm/confirm.component';
-import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 @Component({
@@ -17,11 +15,7 @@ import * as _ from 'lodash';
 })
 export class SettingsComponent implements OnInit {
 
-  files: { _file: File, progress: number }[] = [];
-
   dragOver = false;
-
-  uploadSubscription: Subscription;
 
   constructor(
     public settings: SettingsService,
@@ -35,10 +29,6 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
   }
 
-  isUploading(): boolean {
-    return this.uploadSubscription != null;
-  }
-
   drop(event) {
     this.addFiles(event.dataTransfer.files);
     this.dragOver = false;
@@ -46,62 +36,14 @@ export class SettingsComponent implements OnInit {
   }
 
   addFiles(files: FileList) {
-    if (!this.isUploading()) {
-      const names = _.map(this.files, f => f._file.name);
+    if (!this.settings.isUploading()) {
+      const names = _.map(this.settings.files, f => f._file.name);
       _.forEach(files, (file: File) => {
         if (!_.includes(names, file.name) && file.name.endsWith('.mp3')) {
-          this.files.push({_file: file, progress: 0});
+          this.settings.files.push({_file: file, progress: 0});
         }
       });
     }
-  }
-
-  cancel() {
-    this.uploadSubscription.unsubscribe();
-    this.uploadSubscription = null;
-    this.files = [];
-    this.snackBar.open('Upload has been canceled.', '', {duration: 2000});
-  }
-
-  clear() {
-    this.files = [];
-  }
-
-  // TODO: refactor out inside the settings service
-  uploadFiles() {
-    const files: File[] = _.map(this.files, '_file');
-    this.uploadSubscription = this.httpSocketClient.postFiles('/api/upload', files).subscribe(
-      (next: { event: HttpEvent<any>, file?: File } | null) => {
-        switch (next.event.type) {
-          case HttpEventType.Sent:
-            break;
-          case HttpEventType.UploadProgress:
-            const currentFile: { _file: File, progress: number } =
-              _.filter(this.files, f => f._file === next.file)[0];
-            currentFile.progress = next.event.loaded / next.event.total * 100;
-            break;
-          case HttpEventType.ResponseHeader:
-            break;
-          case HttpEventType.DownloadProgress:
-            break;
-          case HttpEventType.Response:
-            break;
-        }
-      },
-      error => {
-        this.snackBar.open(`An error occurred!`, '', {duration: 2000});
-        console.log(error);
-        this.uploadSubscription.unsubscribe();
-        this.uploadSubscription = null;
-        this.files = [];
-      },
-      () => {
-        this.uploadSubscription.unsubscribe();
-        this.uploadSubscription = null;
-        this.snackBar.open(`${this.files.length} file(s) uploaded successfully.`, '', {duration: 2000});
-        this.files = [];
-      }
-    );
   }
 
   addFolderDialog() {

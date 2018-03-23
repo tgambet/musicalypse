@@ -7,6 +7,7 @@ import {LibraryService} from '../services/library.service';
 import {HttpSocketClientService} from '../services/http-socket-client.service';
 import {ConfirmComponent} from '../dialogs/confirm/confirm.component';
 import * as _ from 'lodash';
+import {LoaderService} from '../services/loader.service';
 
 @Component({
   selector: 'app-settings',
@@ -23,6 +24,7 @@ export class SettingsComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     public library: LibraryService,
+    public loader: LoaderService,
     public router: Router
   ) { }
 
@@ -76,13 +78,18 @@ export class SettingsComponent implements OnInit {
   }
 
   requestLibraryScan() {
+    this.loader.load();
     this.router.navigate(['/']).then(() => {
       const snackBar = this.snackBar.open('Scanning library...');
       this.library.scanLibrary().then(
-        () => snackBar.dismiss(),
+        () => {
+          snackBar.dismiss();
+          this.loader.unload();
+        },
         (error) => {
           console.log(error);
           snackBar.dismiss();
+          this.loader.unload();
           this.snackBar.open('An error occurred');
         }
       );

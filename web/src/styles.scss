@@ -113,5 +113,25 @@ app-root {
   }
 }
 
+@media screen and (min-width: 599px) {
+  .a3 .controls .back {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 959px) {
+  .a3 .controls .back {
+    display: block;
+  }
+  .a2 .controls .back, .player .back {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1319px) {
+  .a3 .controls .back {
+    display: none;
+  }
+}
 
 

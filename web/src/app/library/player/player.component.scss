@@ -75,50 +75,55 @@
     .year, .duration {
       font-size: 14px;
     }
+  }
+  .playlist-long {
 
-    //li {
-    //  height: 36px;
-    //  display: flex;
-    //  flex-direction: row;
-    //  align-items: center;
-    //  padding: 0 1rem;
-    //  cursor: pointer;
-    //  mat-icon {
-    //    line-height: 16px;
-    //    font-size: 16px;
-    //    height: 16px;
-    //    width: 16px;
-    //    margin-right: 0.25rem;
-    //  }
-    //}
-    //.c {
-    //  font-size: 14px;
-    //  line-height: 1.5;
-    //  overflow: hidden;
-    //  text-overflow: ellipsis;
-    //  white-space: nowrap;
-    //}
-    //.title {
-    //  display: flex;
-    //  align-items: center;
-    //  width: 50%;
-    //  padding-right: 0.25rem;
-    //  span {
-    //    overflow: hidden;
-    //    text-overflow: ellipsis;
-    //    white-space: nowrap;
-    //  }
-    //}
-    //.artist {
-    //  width: 25%;
-    //}
-    //.album {
-    //  width: 25%;
-    //}
-    //.year, .duration {
-    //  width: 5rem;
-    //  text-align: right;
-    //}
+    display: none;
+
+    li {
+      height: 36px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0 1rem;
+      cursor: pointer;
+      mat-icon {
+        line-height: 16px;
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+        margin-right: 0.25rem;
+      }
+    }
+    .c {
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      width: 50%;
+      padding-right: 0.25rem;
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .artist {
+      width: 25%;
+      padding-right: 0.25rem;
+    }
+    .album {
+      width: 25%;
+    }
+    .year, .duration {
+      width: 62px;
+      text-align: right;
+    }
   }
   .albumArt {
     text-align: center;
@@ -178,5 +183,21 @@
   }
   .repeat, .favorites {
     display: none;
+  }
+}
+
+@media screen and (min-width: 599px) {
+  .menu {
+    .repeat, .favorites {
+      display: block;
+    }
+  }
+  .carousel {
+    .playlist {
+      display: none;
+    }
+    .playlist-long {
+      display: block;
+    }
   }
 }

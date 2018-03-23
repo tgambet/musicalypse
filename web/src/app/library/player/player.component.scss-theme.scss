@@ -19,9 +19,9 @@
         background: mat-color($background, hover);
       }
     }
-    .current {
-      color: mat-color($primary);
-    }
+  }
+  .current {
+    color: mat-color($primary) !important;
   }
 
 }

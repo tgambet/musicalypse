@@ -8,9 +8,7 @@ import akka.stream.scaladsl.{Source, StreamConverters}
 
 import scala.concurrent.Future
 
-class LibraryScanner(val libraryFolder: File) {
-
-  assert(libraryFolder.isDirectory, s"Library folder $libraryFolder is not a directory")
+object LibraryScanner {
 
   private def getMetadata(audioFile: File): TrackMetadata = {
     import com.mpatric.mp3agic.Mp3File
@@ -38,10 +36,11 @@ class LibraryScanner(val libraryFolder: File) {
     }
   }
 
-  def scanLibrary(): Source[TrackMetadata, NotUsed] = {
+  def scan(folder: File): Source[TrackMetadata, NotUsed] = {
+    assert(folder.isDirectory, s"Library folder $folder is not a directory")
     import scala.concurrent.ExecutionContext.Implicits.global
     StreamConverters
-      .fromJavaStream(() => Files.walk(libraryFolder.toPath))
+      .fromJavaStream(() => Files.walk(folder.toPath))
       .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
       //.map(path => getMetadata(path.toFile))
       .mapAsync(4)(path => Future(getMetadata(path.toFile)))

@@ -62,12 +62,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
 
     case ScanLibrary =>
-      val scan: LibraryScanner => Source[Track, NotUsed] = s =>
-        s.scanLibrary().map(metadata => Track(url = getUrlFromAudioMetadata(metadata, s.libraryFolder), metadata = metadata))
       val source: Source[Track, NotUsed] =
         (libraries :+ uploadFolder)
-          .map(f => new LibraryScanner(new File(f)))
-          .map(scan(_))
+          .map(new File(_))
+          .map(f => LibraryScanner.scan(f).map(metadata => Track(url = getUrlFromAudioMetadata(metadata, f), metadata = metadata)))
           .fold(Source.empty)(_ concat _)
       sender() ! source
 

@@ -4,7 +4,7 @@ import java.io.File
 
 import akka.NotUsed
 import akka.actor.{Actor, Props, Stash}
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{Flow, Source}
 import net.creasource.audio.{LibraryScanner, Track, TrackMetadata}
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
@@ -31,9 +31,13 @@ object LibraryActor {
 
 class LibraryActor()(implicit application: Application) extends Actor with Stash with JsonSupport {
 
+  private case class AddTrack(track: Track)
+
   var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
 
   var uploadFolder: String = application.config.getString("music.uploadFolder")
+
+  var tracks: Seq[Track] = Seq.empty
 
   def receive: Receive = {
 
@@ -62,13 +66,24 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
 
     case ScanLibrary =>
-      val source: Source[Track, NotUsed] =
-        (libraries :+ uploadFolder)
-          .map(new File(_))
-          .map(f => LibraryScanner.scan(f).map(metadata => Track(url = getUrlFromAudioMetadata(metadata, f), metadata = metadata)))
-          .fold(Source.empty)(_ concat _)
-      sender() ! source
+      tracks = Seq.empty
+      sender() ! getTrackSource
 
+    case GetTracks =>
+      sender() ! tracks
+
+    case AddTrack(track) =>
+      if (!tracks.contains(track)) tracks +:= track
+
+  }
+
+  private def getTrackSource: Source[Track, NotUsed] = {
+    val updateTracksFlow: Flow[Track, Track, NotUsed] = Flow[Track].map(t => { self ! AddTrack(t); t })
+    (libraries :+ uploadFolder)
+      .map(new File(_))
+      .map(f => LibraryScanner.scan(f).map(metadata => Track(url = getUrlFromAudioMetadata(metadata, f), metadata = metadata)))
+      .fold(Source.empty)(_ concat _)
+      .via(updateTracksFlow)
   }
 
   private def getUrlFromAudioMetadata(metadata: TrackMetadata, libraryFolder: File): String = {

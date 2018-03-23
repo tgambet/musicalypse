@@ -10,8 +10,10 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.FileInfo
 import akka.http.scaladsl.settings.RoutingSettings
 import akka.pattern.ask
+import net.creasource.audio.Track
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
+import spray.json._
 import spray.json.DefaultJsonProtocol._
 import spray.json.{JsString, JsValue}
 
@@ -43,16 +45,25 @@ class APIRoutes(application: Application) {
 
   def librariesRoutes: Route =
     pathPrefix("libraries") {
+      path("tracks") {
+        encodeResponse {
+          get {
+            onSuccess((application.libraryActor ? GetTracks) (askTimeout).mapTo[Seq[Track]]) {
+              tracks => complete(StatusCodes.OK, tracks.toJson)
+            }
+          }
+        }
+      } ~
       pathEndOrSingleSlash {
         get {
-          onSuccess((application.libraryActor ? GetLibraries) (askTimeout).mapTo[Libraries]) {
+          onSuccess((application.libraryActor ? GetLibraries)(askTimeout).mapTo[Libraries]) {
             case Libraries(libraries) => complete(libraries)
           }
         } ~
         post {
           entity(as[JsValue]) { json =>
             val lib = json.convertTo[String]
-            onSuccess((application.libraryActor ? AddLibrary(lib)) (askTimeout).mapTo[LibraryChangeResult]) {
+            onSuccess((application.libraryActor ? AddLibrary(lib))(askTimeout).mapTo[LibraryChangeResult]) {
               case LibraryChangeSuccess => complete(StatusCodes.OK, JsString("OK"))
               case LibraryChangeFailed(reason) => complete(StatusCodes.BadRequest, reason)
             }

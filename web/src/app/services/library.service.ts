@@ -44,7 +44,7 @@ export class LibraryService {
   constructor(
     private httpSocketClient: HttpSocketClientService
   ) {
-    this.addTrack(this.a);
+    // this.addTrack(this.a);
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
   }
@@ -75,7 +75,7 @@ export class LibraryService {
   }
 
   addTrack(track: Track): void {
-    if (!_.includes(this.tracks, track)) {
+    if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {
       this.tracks.push(track);
       const artist = track.metadata.albumArtist;
       const album = track.metadata.album;
@@ -253,6 +253,22 @@ export class LibraryService {
 
       this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
     });
+  }
+
+  updateTracks(): Promise<void> {
+    // this.reset();
+    return new Promise((resolve, reject) => {
+      this.httpSocketClient.get('/api/libraries/tracks').subscribe(
+        (tracks: Track[]) => {
+          _.forEach(tracks, track => this.addTrack(track));
+          resolve();
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+
   }
 
   private _playTrack(track: Track) {

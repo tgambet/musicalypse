@@ -1,17 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Album, Artist} from '../../model';
-import * as _ from 'lodash';
 import {ArtistsComponent} from '../artists/artists.component';
 import {LibraryService} from '../../services/library.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
+import {Subscription} from 'rxjs/Subscription';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
   styleUrls: ['./albums.component.scss', '../common.scss']
 })
-export class AlbumsComponent implements OnInit {
+export class AlbumsComponent implements OnInit, OnDestroy {
 
   @Output()
   onNext: EventEmitter<void> = new EventEmitter();
@@ -30,6 +31,8 @@ export class AlbumsComponent implements OnInit {
 
   private onSelectionChangeSource: Subject<Album[]> = new Subject();
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private library: LibraryService) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
@@ -47,11 +50,21 @@ export class AlbumsComponent implements OnInit {
     // Subscribe to ArtistsComponent selection changes
     this.artistsComponent.onSelectionChange.subscribe(artists => updateAlbumsSelection(artists));
     // Subscribe to new tracks and library reset
-    this.library.onTrackAdded.subscribe(() => {
-      this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
-      this.sortAlphabetically();
-    });
-    this.library.onReset.subscribe(() => { this.albums = []; this.selectedAlbums = []; this.filteredAlbums = []; });
+    this.subscriptions.push(
+      this.library.onTrackAdded.subscribe(() => {
+        this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
+        this.sortAlphabetically();
+      })
+    );
+    this.subscriptions.push(
+      this.library.onReset.subscribe(() => { this.albums = []; this.selectedAlbums = []; this.filteredAlbums = []; })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.onSelectionChangeSource.complete();
+    this.onSelectionChangeSource.unsubscribe();
+    _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   selectAlbum(album: Album) {

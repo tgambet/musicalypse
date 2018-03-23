@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '../../dialogs/details/details.component';
+import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 @Component({
@@ -12,7 +13,7 @@ import * as _ from 'lodash';
   templateUrl: './tracks.component.html',
   styleUrls: ['./tracks.component.scss', '../common.scss']
 })
-export class TracksComponent implements OnInit {
+export class TracksComponent implements OnInit, OnDestroy {
 
   @Output()
   onNext: EventEmitter<void> = new EventEmitter();
@@ -25,6 +26,8 @@ export class TracksComponent implements OnInit {
   search = '';
   tracks: Track[] = [];
   filteredTracks: Track[] = [];
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     public library: LibraryService,
@@ -40,8 +43,16 @@ export class TracksComponent implements OnInit {
     };
     updateTracks(this.albumsComponent.selectedAlbums);
     this.albumsComponent.onSelectionChange.subscribe(albums => updateTracks(albums));
-    this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums));
-    this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; });
+    this.subscriptions.push(
+      this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums))
+    );
+    this.subscriptions.push(
+      this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; })
+    );
+  }
+
+  ngOnDestroy(): void {
+    _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   sortAlphabetically() {

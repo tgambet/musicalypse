@@ -1,16 +1,17 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Artist} from '../../model';
 import * as _ from 'lodash';
 import {LibraryService} from '../../services/library.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-artists',
   templateUrl: './artists.component.html',
   styleUrls: ['./artists.component.scss', '../common.scss']
 })
-export class ArtistsComponent implements OnInit {
+export class ArtistsComponent implements OnInit, OnDestroy {
 
   @Output()
   onNext: EventEmitter<void> = new EventEmitter();
@@ -24,6 +25,8 @@ export class ArtistsComponent implements OnInit {
 
   private onSelectionChangeSource: Subject<Artist[]> = new Subject();
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private library: LibraryService) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
@@ -36,8 +39,18 @@ export class ArtistsComponent implements OnInit {
     // Initialize
     updateArtists();
     // subscribe to new tracks and library reset
-    this.library.onTrackAdded.subscribe(() => updateArtists());
-    this.library.onReset.subscribe(() => { this.artists = []; this.selectedArtists = []; this.filteredArtists = []; });
+    this.subscriptions.push(
+      this.library.onTrackAdded.subscribe(() => updateArtists())
+    );
+    this.subscriptions.push(
+      this.library.onReset.subscribe(() => { this.artists = []; this.selectedArtists = []; this.filteredArtists = []; })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.onSelectionChangeSource.complete();
+    this.onSelectionChangeSource.unsubscribe();
+    _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   isSelectedArtist(artist: Artist): boolean {

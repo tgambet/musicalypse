@@ -76,16 +76,17 @@ export class SettingsComponent implements OnInit {
   }
 
   requestLibraryScan() {
-    this.router.navigate(['/']);
-    const snackBar = this.snackBar.open('Scanning library...');
-    this.library.scanLibrary().then(
-      () => snackBar.dismiss(),
-      (error) => {
-        console.log(error);
-        snackBar.dismiss();
-        this.snackBar.open('An error occurred');
-      }
-    );
+    this.router.navigate(['/']).then(() => {
+      const snackBar = this.snackBar.open('Scanning library...');
+      this.library.scanLibrary().then(
+        () => snackBar.dismiss(),
+        (error) => {
+          console.log(error);
+          snackBar.dismiss();
+          this.snackBar.open('An error occurred');
+        }
+      );
+    });
   }
 
 }

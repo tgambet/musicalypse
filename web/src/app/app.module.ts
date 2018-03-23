@@ -1,9 +1,10 @@
 import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
+import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
+import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HttpClientModule} from '@angular/common/http';
 import * as Material from '@angular/material';
-import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 
 import {AppComponent} from './app.component';
 import {AudioComponent} from './audio/audio.component';
@@ -14,7 +15,6 @@ import {PlayerComponent} from './library/player/player.component';
 import {ArtistsComponent} from './library/artists/artists.component';
 import {AlbumsComponent} from './library/albums/albums.component';
 import {TracksComponent} from './library/tracks/tracks.component';
-import {FormsModule} from '@angular/forms';
 import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
 import {DetailsComponent} from './dialogs/details/details.component';
@@ -25,7 +25,8 @@ import {AboutComponent} from './about/about.component';
 import {SettingsComponent} from './settings/settings.component';
 import {FileSizePipe} from './pipes/file-size.pipe';
 import {SettingsService} from './services/settings.service';
-import { ConfirmComponent } from './dialogs/confirm/confirm.component';
+import {ConfirmComponent} from './dialogs/confirm/confirm.component';
+import {LoaderService} from './services/loader.service';
 
 const appRoutes: Routes = [
   { path: '', component: LibraryComponent },
@@ -89,7 +90,8 @@ const appRoutes: Routes = [
     HttpSocketClientService,
     LibraryService,
     FavoritesService,
-    SettingsService
+    SettingsService,
+    LoaderService
   ],
   bootstrap: [AppComponent]
 })

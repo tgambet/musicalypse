@@ -4,6 +4,7 @@ import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material';
 import {HttpSocketClientService} from './http-socket-client.service';
 import {Subscription} from 'rxjs/Subscription';
+import {LoaderService} from './loader.service';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -27,14 +28,16 @@ export class SettingsService implements OnDestroy {
   constructor(
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public loader: LoaderService
   ) {
     overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
 
+    this.loader.load();
     this.httpSocketClient.get('/api/libraries').subscribe(
       (result: string[]) => this.libraryFolders = result,
-      error => console.log(error),
-      () => {}
+      error => { this.loader.unload(); console.log(error); },
+      () => { this.loader.unload(); }
     );
   }
 

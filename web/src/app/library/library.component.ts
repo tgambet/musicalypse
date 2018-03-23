@@ -8,12 +8,27 @@ import {LibraryService} from '../services/library.service';
 })
 export class LibraryComponent implements OnInit {
 
-  contentClass: string;
+  contentClass = 't0';
 
   constructor(
-    public library: LibraryService
-  ) { }
+    public library: LibraryService,
+    // private location: Location,
+    // private router: Router
+  ) {
 
-  ngOnInit() {}
+  }
+
+  translateContent(n: number) {
+    this.contentClass = 't' + n;
+  }
+
+  ngOnInit() {
+    // this.location.subscribe(
+    //   next => {
+    //     console.log(next);
+    //
+    //   }
+    // )
+  }
 
 }

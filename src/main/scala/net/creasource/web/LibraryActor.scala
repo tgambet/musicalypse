@@ -2,7 +2,10 @@ package net.creasource.web
 
 import java.io.File
 
+import akka.NotUsed
 import akka.actor.{Actor, Props, Stash}
+import akka.stream.scaladsl.Source
+import net.creasource.audio.{LibraryScanner, Track, TrackMetadata}
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
 
@@ -18,6 +21,9 @@ object LibraryActor {
   sealed trait LibraryChangeResult
   case object LibraryChangeSuccess extends LibraryChangeResult
   case class LibraryChangeFailed(reason: String) extends LibraryChangeResult
+
+  case object ScanLibrary
+  case object GetTracks
 
   def props()(implicit application: Application): Props = Props(new LibraryActor())
 
@@ -55,6 +61,20 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         sender() ! LibraryChangeFailed(s"$library is not a known library folder or cannot be deleted.")
       }
 
+    case ScanLibrary =>
+      val scan: LibraryScanner => Source[Track, NotUsed] = s =>
+        s.scanLibrary().map(metadata => Track(url = getUrlFromAudioMetadata(metadata, s.libraryFolder), metadata = metadata))
+      val source: Source[Track, NotUsed] =
+        (libraries :+ uploadFolder)
+          .map(f => new LibraryScanner(new File(f)))
+          .map(scan(_))
+          .fold(Source.empty)(_ concat _)
+      sender() ! source
+
+  }
+
+  private def getUrlFromAudioMetadata(metadata: TrackMetadata, libraryFolder: File): String = {
+    "/music/" + libraryFolder.toPath.relativize(new File(metadata.location).toPath).toString.replaceAll("""\\""", "/")
   }
 
 }

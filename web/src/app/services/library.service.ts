@@ -231,13 +231,24 @@ export class LibraryService {
           error => reject(error)
         );
 
-      this.httpSocketClient
+      const subscription2 = this.httpSocketClient
         .openSocket()
         .filter((r: SocketMessage) => r.method === 'LibraryScanned' && r.id === currentId)
         .take(1)
         .subscribe(() => {
           subscription1.unsubscribe();
+          subscription3.unsubscribe();
           resolve();
+        });
+
+      const subscription3 = this.httpSocketClient
+        .openSocket()
+        .filter((r: SocketMessage) => r.method === 'LibraryScannedFailed' && r.id === currentId)
+        .take(1)
+        .subscribe(error => {
+          subscription1.unsubscribe();
+          subscription2.unsubscribe();
+          reject(error);
         });
 
       this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});

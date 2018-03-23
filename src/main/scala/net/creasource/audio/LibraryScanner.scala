@@ -43,6 +43,7 @@ class LibraryScanner(val libraryFolder: File) {
     StreamConverters
       .fromJavaStream(() => Files.walk(libraryFolder.toPath))
       .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
+      //.map(path => getMetadata(path.toFile))
       .mapAsync(4)(path => Future(getMetadata(path.toFile)))
   }
 

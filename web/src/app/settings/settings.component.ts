@@ -90,7 +90,7 @@ export class SettingsComponent implements OnInit {
           console.log(error);
           snackBar.dismiss();
           this.loader.unload();
-          this.snackBar.open('An error occurred');
+          this.snackBar.open('An error occurred', '', {duration: 2000});
         }
       );
     });

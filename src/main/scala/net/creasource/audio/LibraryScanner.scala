@@ -1,24 +1,16 @@
 package net.creasource.audio
 
 import java.io.File
+import java.nio.file.Files
 
 import akka.NotUsed
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{Source, StreamConverters}
+
+import scala.concurrent.Future
 
 class LibraryScanner(val libraryFolder: File) {
 
   assert(libraryFolder.isDirectory, s"Library folder $libraryFolder is not a directory")
-
-  private def getAudioFiles(folder: File): List[File] = {
-    folder.listFiles().toList.flatMap(file => {
-      if (file.isDirectory)
-        getAudioFiles(file)
-      else if (file.getName.endsWith(".mp3"))
-        List(file)
-      else
-        List()
-    })
-  }
 
   private def getMetadata(audioFile: File): TrackMetadata = {
     import com.mpatric.mp3agic.Mp3File
@@ -47,8 +39,11 @@ class LibraryScanner(val libraryFolder: File) {
   }
 
   def scanLibrary(): Source[TrackMetadata, NotUsed] = {
-    val source = Source(getAudioFiles(libraryFolder))
-    source.map(getMetadata)
+    import scala.concurrent.ExecutionContext.Implicits.global
+    StreamConverters
+      .fromJavaStream(() => Files.walk(libraryFolder.toPath))
+      .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
+      .mapAsync(4)(path => Future(getMetadata(path.toFile)))
   }
 
 

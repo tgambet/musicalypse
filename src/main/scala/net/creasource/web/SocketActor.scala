@@ -49,7 +49,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
       handleMessages.applyOrElse(value, (v: JsValue) => logger.warning("Unhandled Json message:\n{}", v.prettyPrint))
 
     case value =>
-      logger.error("UserActor should only receive Json Messages: {}", value.toString)
+      logger.error("SocketActor should only receive Json Messages: {}", value.toString)
 
   }
 

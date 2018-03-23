@@ -123,8 +123,11 @@ app-root {
   .a3 .controls .back {
     display: block;
   }
-  .a2 .controls .back, .player .back {
+  .a2 .controls .back {
     display: none;
+  }
+  .player .back {
+    visibility: hidden;
   }
 }
 

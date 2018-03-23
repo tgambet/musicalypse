@@ -199,37 +199,37 @@
     <span class="time-total">{{audio.duration ? (audio.duration | sgTime) : '00:00'}}</span>
   </div>
   <div class="menu">
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="shuffle"
             [color]="library.shuffle ? 'primary' : ''"
             (click)="library.shuffle ? library.unShufflePlaylist() : library.shufflePlaylist()">
       <mat-icon>shuffle</mat-icon>
     </button>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="repeat"
             [color]="library.repeat ? 'primary' : ''"
             (click)="library.repeat = !library.repeat">
       <mat-icon>repeat</mat-icon>
     </button>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="previous"
             (click)="library.playPreviousTrackInPlaylist()"
             [disabled]="!library.currentTrack || library.playlist.length <= 1">
       <mat-icon>skip_previous</mat-icon>
     </button>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="playPause"
             [disabled]="(!library.playlist || library.playlist.length == 0) && !library.currentTrack"
             (click)="audio.playing ? audio.pause() : (library.currentTrack ? audio.play() : library.playNextTrackInPlaylist())">
       <mat-icon>{{audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
     </button>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="next"
             (click)="library.playNextTrackInPlaylist()"
             [disabled]="!library.currentTrack || library.playlist.length <= 1">
       <mat-icon>skip_next</mat-icon>
     </button>
-    <button mat-icon-button
+    <button mat-button mat-icon-button
             class="favorites"
             [disabled]="!library.currentTrack"
             [color]="favorites.isFavorite(library.currentTrack) ? 'warn' : ''"
@@ -237,7 +237,7 @@
                      favorites.removeFromFavorites(library.currentTrack) : favorites.addToFavorites(library.currentTrack)">
       <mat-icon>{{favorites.isFavorite(library.currentTrack) ? 'favorite' : 'favorite_border'}}</mat-icon>
     </button>
-    <button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
+    <button mat-button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>

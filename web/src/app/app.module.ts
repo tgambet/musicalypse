@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 import {FormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import * as Material from '@angular/material';
 
@@ -34,6 +34,13 @@ const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'about', component: AboutComponent },
 ];
+
+export class MyHammerConfig extends HammerGestureConfig {
+  overrides = <any> {
+    'pinch': { enable: false },
+    'rotate': { enable: false }
+  };
+}
 
 @NgModule({
   declarations: [
@@ -87,6 +94,10 @@ const appRoutes: Routes = [
     Material.MatIconModule
   ],
   providers: [
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: MyHammerConfig
+    },
     MediaMatcher,
     BreakpointObserver,
     HttpSocketClientService,

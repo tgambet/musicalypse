@@ -1,13 +1,26 @@
-$my-theme-warn: mat-palette($mat-deep-orange, A200);
+@import '~@angular/material/theming';
 
-$light-theme: mat-light-theme(
-    mat-palette($mat-blue),
-    mat-palette($mat-orange),
-    $my-theme-warn
-);
+@mixin app-theme($theme) {
 
-$dark-theme: mat-dark-theme(
-    mat-palette($mat-light-green),
-    mat-palette($mat-light-blue),
-    $my-theme-warn
-)
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  @media screen and (max-width: 599px) {
+    .carousel {
+      .mat-tab-header {
+        .mat-tab-label {
+          background-color: mat-color($foreground, disabled) !important;
+          &:focus {
+            background-color: mat-color($foreground, text) !important;
+          }
+        }
+        .mat-tab-label-active {
+          background-color: mat-color($foreground, text) !important;
+        }
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ export class AudioComponent implements OnInit, AfterViewInit {
 
   source: string;
   volume = 1.0;
-  muted = true;
+  muted = false;
   currentTime;
   duration;
   loading = false;

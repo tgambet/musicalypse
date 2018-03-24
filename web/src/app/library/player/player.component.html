@@ -11,6 +11,14 @@
         {{library.currentTrack ? library.currentTrack.metadata.artist : ''}}
       </div>
     </div>
+    <button mat-button mat-icon-button
+            class="mute"
+            (click)="audio.muted = !audio.muted">
+      <mat-icon *ngIf="!audio.muted && audio.volume > 0.50">volume_up</mat-icon>
+      <mat-icon *ngIf="!audio.muted && audio.volume > 0 && audio.volume <= 0.50">volume_down</mat-icon>
+      <mat-icon *ngIf="!audio.muted && audio.volume == 0">volume_mute</mat-icon>
+      <mat-icon *ngIf="audio.muted">volume_off</mat-icon>
+    </button>
   </div>
   <div class="volume">
     <button mat-button mat-icon-button
@@ -30,7 +38,7 @@
       color="primary"></mat-slider>
   </div>
   <div class="carousel">
-    <mat-tab-group #carousel [(selectedIndex)]="selectedCarouselIndex" class="divider">
+    <mat-tab-group #carousel [(selectedIndex)]="selectedCarouselIndex">
       <mat-tab label="Playlist">
         <ng-template mat-tab-label>
           <mat-icon>playlist_play</mat-icon>
@@ -81,8 +89,7 @@
           <mat-icon>format_align_center</mat-icon>
           <span>Lyrics</span>
         </ng-template>
-        <div class="lyrics" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          Need
+        <div class="lyrics" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">Need
           More and more
           Tainted misery
 

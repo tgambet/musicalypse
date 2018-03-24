@@ -7,13 +7,27 @@ $typo: mat-typography-config(
 
 @include mat-core($typo);
 
-@import 'theme.scss';
+$my-theme-warn: mat-palette($mat-deep-orange, A200);
 
+$light-theme: mat-light-theme(
+    mat-palette($mat-blue),
+    mat-palette($mat-orange),
+    $my-theme-warn
+);
+
+$dark-theme: mat-dark-theme(
+    mat-palette($mat-light-green),
+    mat-palette($mat-light-blue),
+    $my-theme-warn
+);
+
+@import 'theme';
 @import 'app/app.component.scss-theme';
 @import 'app/library/player/player.component.scss-theme';
 @import 'app/library/mini-player/mini-player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
+  @include app-theme($theme);
   @include app-component-theme($theme);
   @include player-component-theme($theme);
   @include mini-player-component-theme($theme);
@@ -71,42 +85,42 @@ app-root {
     height: 100%;
   }
 }
+@media screen and (max-width: 599px) {
+  .carousel {
+    .mat-tab-header {
+      .mat-tab-labels {
+        justify-content: center;
+        align-items: center;
+      }
+      .mat-tab-label {
+        font-size: 0;
+        min-width: unset;
+        border-radius: 50%;
+        padding: 0;
+        height: 8px;
+        width: 8px;
+        margin: 0 4px;
+        mat-icon {
+          font-size: 0;
+        }
+      }
+      .mat-tab-label-active {
+        height: 10px;
+        width: 10px;
+        margin: 0 3px;
+      }
 
-//.carousel {
-//  .mat-tab-header {
-//    .mat-tab-labels {
-//      justify-content: center;
-//      align-items: center;
-//    }
-//    .mat-tab-label {
-//      min-width: unset;
-//      border-radius: 50%;
-//      padding: 0;
-//      height: 8px;
-//      width: 8px;
-//      margin: 0 4px;
-//      background-color: rgba(0,0,0,.66) !important;
-//      &:focus {
-//        background-color: rgba(0,0,0,.66) !important;
-//      }
-//    }
-//    .mat-tab-label-active {
-//      background-color: rgba(0,0,0,.87) !important;
-//      height: 10px;
-//      width: 10px;
-//      margin: 0 3px;
-//    }
-//
-//    .mat-ripple-element {
-//      display: none;
-//    }
-//    border: none;
-//    margin-bottom: 1rem;
-//  }
-//  mat-ink-bar {
-//    display: none;
-//  }
-//}
+      .mat-ripple-element {
+        display: none;
+      }
+      border: none;
+      padding: 0.5rem 0;
+    }
+    mat-ink-bar {
+      display: none;
+    }
+  }
+}
 
 // Fix search input length
 .search {
@@ -115,12 +129,13 @@ app-root {
   }
 }
 
+
+// Hide some controls.
 @media screen and (min-width: 599px) {
   .a3 .controls .back {
     display: none;
   }
 }
-
 @media screen and (min-width: 959px) {
   .a3 .controls .back {
     display: block;
@@ -132,7 +147,6 @@ app-root {
     visibility: hidden;
   }
 }
-
 @media screen and (min-width: 1319px) {
   .a3 .controls .back {
     display: none;

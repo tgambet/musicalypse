@@ -27,10 +27,11 @@ import {FileSizePipe} from './pipes/file-size.pipe';
 import {SettingsService} from './services/settings.service';
 import {ConfirmComponent} from './dialogs/confirm/confirm.component';
 import {LoaderService} from './services/loader.service';
-import { MiniPlayerComponent } from './library/mini-player/mini-player.component';
+import {MiniPlayerComponent} from './library/mini-player/mini-player.component';
 
 const appRoutes: Routes = [
-  { path: '', component: LibraryComponent },
+  { path: '',   redirectTo: '/library', pathMatch: 'full' },
+  { path: 'library', component: LibraryComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'about', component: AboutComponent },
 ];
@@ -104,7 +105,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     LibraryService,
     FavoritesService,
     SettingsService,
-    LoaderService
+    LoaderService,
   ],
   bootstrap: [AppComponent]
 })

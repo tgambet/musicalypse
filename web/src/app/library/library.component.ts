@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {LibraryService} from '../services/library.service';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
 @Component({
   selector: 'app-library',
@@ -12,23 +13,26 @@ export class LibraryComponent implements OnInit {
 
   constructor(
     public library: LibraryService,
-    // private location: Location,
-    // private router: Router
+    public route: ActivatedRoute,
+    private router: Router
   ) {
+
+  }
+
+  ngOnInit() {
+    this.route.paramMap.subscribe((next: ParamMap) => {
+      if (next.has('t')) {
+        this.contentClass = 't' + next.get('t');
+      } else {
+        this.contentClass = 't0';
+      }
+    });
 
   }
 
   translateContent(n: number) {
     this.contentClass = 't' + n;
-  }
-
-  ngOnInit() {
-    // this.location.subscribe(
-    //   next => {
-    //     console.log(next);
-    //
-    //   }
-    // )
+    this.router.navigate(['/library', { t: n }]);
   }
 
 }

@@ -1,5 +1,5 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {MatDialog, MatSnackBar, MatTabGroup} from '@angular/material';
 import {AudioComponent} from '../../audio/audio.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -16,6 +16,11 @@ export class PlayerComponent implements OnInit {
   @Output()
   onPrevious: EventEmitter<void> = new EventEmitter();
 
+  @ViewChild('carousel')
+  carousel: MatTabGroup;
+
+  selectedCarouselIndex = 0;
+
   audio: AudioComponent;
 
   constructor(
@@ -27,6 +32,18 @@ export class PlayerComponent implements OnInit {
 
   ngOnInit() {
     this.audio = this.library.audio;
+  }
+
+  swipeLeft() {
+    if (this.selectedCarouselIndex < 2) {
+      this.selectedCarouselIndex += 1;
+    }
+  }
+
+  swipeRight() {
+    if (this.selectedCarouselIndex > 0) {
+      this.selectedCarouselIndex -= 1;
+    }
   }
 
   clearPlaylist() {

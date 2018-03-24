@@ -30,13 +30,13 @@
       color="primary"></mat-slider>
   </div>
   <div class="carousel">
-    <mat-tab-group [selectedIndex]="0" class="divider">
+    <mat-tab-group #carousel [(selectedIndex)]="selectedCarouselIndex" class="divider">
       <mat-tab label="Playlist">
         <ng-template mat-tab-label>
           <mat-icon>playlist_play</mat-icon>
           <span>Playlist</span>
         </ng-template>
-        <mat-list class="playlist">
+        <mat-list class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           <mat-list-item *ngFor="let track of library.playlist"
                          class="divider hover"
                          [class.current]="track == library.currentTrack"
@@ -52,7 +52,7 @@
             <span class="duration">{{track.metadata.duration | sgTime}}</span>
           </mat-list-item>
         </mat-list>
-        <ul class="playlist-long">
+        <ul class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           <ng-container *ngFor="let track of library.playlist">
             <li [class.current]="track == library.currentTrack" class="divider" (click)="library.playTrack(track)">
               <span class="title c">
@@ -72,16 +72,16 @@
           <mat-icon>photo</mat-icon>
           <span>Cover</span>
         </ng-template>
-        <div class="albumArt">
+        <div class="albumArt" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           <img src="https://images-na.ssl-images-amazon.com/images/I/91aZBftKeUL._SL1425_.jpg" />
         </div>
       </mat-tab>
-      <mat-tab label="Lyrics">
+      <mat-tab label="Lyrics" >
         <ng-template mat-tab-label>
           <mat-icon>format_align_center</mat-icon>
           <span>Lyrics</span>
         </ng-template>
-        <div class="lyrics">
+        <div class="lyrics" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           Need
           More and more
           Tainted misery

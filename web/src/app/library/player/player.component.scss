@@ -53,8 +53,11 @@
     font-size: 0;
     padding-top: 0;
     .mat-list-item {
-      height: 60px;
+      height: 55px;
       cursor: pointer;
+    }
+    .mat-list-item:last-child {
+      border-bottom: none;
     }
     .title {
       font-size: 14px;

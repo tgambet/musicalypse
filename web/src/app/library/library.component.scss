@@ -2,7 +2,7 @@
   position: relative;
   width: 100vw;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .content {
@@ -28,6 +28,7 @@
 .column {
   position: relative;
   width: 100vw;
+  overflow-y: hidden;
 }
 
 app-mini-player {

@@ -2,7 +2,7 @@
   position: relative;
   width: 100vw;
   height: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .content {
@@ -28,6 +28,30 @@
 .column {
   position: relative;
   width: 100vw;
+}
+
+app-mini-player {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 72px;
+  transition-property: transform;
+  transition-duration: 0.4s;
+  transition-timing-function: ease;
+}
+
+.a3 {
+  padding-bottom: 72px;
+  transition-property: padding-bottom;
+  transition-duration: 0.4s;
+  transition-timing-function: ease;
+}
+
+.hide-player {
+  padding-bottom: 0;
+  app-mini-player {
+    transform: translate(0, 72px);
+  }
 }
 
 
@@ -67,11 +91,23 @@
     }
     &.t3 {
       transform: translateX(-66.6vw);
+      app-mini-player {
+        transform: translate(0, 72px);
+      }
+      .a3 {
+        padding-bottom: 0;
+      }
     }
   }
 }
 
 @media screen and (min-width: 1319px) {
+  app-mini-player {
+    display: none;
+  }
+  .a3 {
+    padding-bottom: 0;
+  }
   .column {
     width: 20vw;
     &.a4 {

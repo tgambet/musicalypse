@@ -27,6 +27,7 @@ import {FileSizePipe} from './pipes/file-size.pipe';
 import {SettingsService} from './services/settings.service';
 import {ConfirmComponent} from './dialogs/confirm/confirm.component';
 import {LoaderService} from './services/loader.service';
+import { MiniPlayerComponent } from './library/mini-player/mini-player.component';
 
 const appRoutes: Routes = [
   { path: '', component: LibraryComponent },
@@ -50,7 +51,8 @@ const appRoutes: Routes = [
     AboutComponent,
     SettingsComponent,
     FileSizePipe,
-    ConfirmComponent
+    ConfirmComponent,
+    MiniPlayerComponent
   ],
   entryComponents: [
     DetailsComponent,

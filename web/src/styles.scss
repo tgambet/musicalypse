@@ -11,10 +11,12 @@ $typo: mat-typography-config(
 
 @import 'app/app.component.scss-theme';
 @import 'app/library/player/player.component.scss-theme';
+@import 'app/library/mini-player/mini-player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-component-theme($theme);
-  @include player-component-theme($theme)
+  @include player-component-theme($theme);
+  @include mini-player-component-theme($theme);
 }
 
 .light-theme {

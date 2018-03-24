@@ -1,16 +1,17 @@
 <div class="container">
   <div class="content" [ngClass]="contentClass">
-  <div class="column a1">
-    <app-artists #artistsComponent (onNext)="translateContent(1)"></app-artists>
-  </div>
-  <div class="column a2">
-    <app-albums #albumsComponent [artistsComponent]="artistsComponent" (onNext)="translateContent(2)" (onPrevious)="translateContent(0)"></app-albums>
-  </div>
-  <div class="column a3">
-    <app-tracks #tracksComponent [albumsComponent]="albumsComponent" (onNext)="translateContent(3)" (onPrevious)="translateContent(1)"></app-tracks>
-  </div>
-  <div class="column a4">
-    <app-player (onPrevious)="translateContent(2)"></app-player>
-  </div>
+    <div class="column a1">
+      <app-artists #artistsComponent (onNext)="translateContent(1)"></app-artists>
+    </div>
+    <div class="column a2">
+      <app-albums #albumsComponent [artistsComponent]="artistsComponent" (onNext)="translateContent(2)" (onPrevious)="translateContent(0)"></app-albums>
+    </div>
+    <div class="column a3" [class.hide-player]="!library.currentTrack">
+      <app-tracks #tracksComponent [albumsComponent]="albumsComponent" (onNext)="translateContent(3)" (onPrevious)="translateContent(1)"></app-tracks>
+      <app-mini-player (onNext)="translateContent(3)"></app-mini-player>
+    </div>
+    <div class="column a4">
+      <app-player (onPrevious)="translateContent(2)"></app-player>
+    </div>
   </div>
 </div>

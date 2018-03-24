@@ -14,10 +14,10 @@
   transition-property: transform;
   transition-duration: 0.4s;
   transition-timing-function: ease;
+  overflow-y: hidden;
   .column {
     position: relative;
     width: 100vw;
-    overflow-y: hidden;
   }
   .a1, .a2, .a3 {
     padding-bottom: 72px;

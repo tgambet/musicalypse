@@ -14,108 +14,139 @@
   transition-property: transform;
   transition-duration: 0.4s;
   transition-timing-function: ease;
+  .column {
+    position: relative;
+    width: 100vw;
+    overflow-y: hidden;
+  }
+  .a1, .a2, .a3 {
+    padding-bottom: 72px;
+    transition-property: padding-bottom;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+  }
+  app-mini-player {
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    height: 72px;
+    transition-property: transform;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+  }
   &.t1 {
     transform: translateX(-100vw);
+    app-mini-player {
+      transform: translateX(100vw);
+    }
   }
   &.t2 {
     transform: translateX(-200vw);
+    app-mini-player {
+      transform: translateX(200vw);
+    }
   }
   &.t3 {
     transform: translateX(-300vw);
-  }
-}
-
-.column {
-  position: relative;
-  width: 100vw;
-  overflow-y: hidden;
-}
-
-app-mini-player {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 72px;
-  transition-property: transform;
-  transition-duration: 0.4s;
-  transition-timing-function: ease;
-}
-
-.a3 {
-  padding-bottom: 72px;
-  transition-property: padding-bottom;
-  transition-duration: 0.4s;
-  transition-timing-function: ease;
-}
-
-.hide-player {
-  padding-bottom: 0;
-  app-mini-player {
-    transform: translate(0, 72px);
-  }
-}
-
-
-@media screen and (min-width: 599px) {
-  .column {
-    width: 50vw;
-    &.a4 {
-      width: 100vw;
+    app-mini-player {
+      transform: translateX(200vw);
     }
   }
+  &.no-track {
+    .a1, .a2, .a3 {
+      padding-bottom: 0;
+    }
+    app-mini-player {
+      transform: translate(200vw, 72px);
+    }
+  }
+}
+
+@media screen and (min-width: 599px) {
   .content {
+    .column {
+      width: 50vw;
+      &.a4 {
+        width: 100vw;
+      }
+    }
     &.t1 {
       transform: translateX(-50vw);
+      app-mini-player {
+        transform: translateX(50vw);
+      }
     }
     &.t2 {
       transform: translateX(-50vw);
+      app-mini-player {
+        transform: translateX(50vw);
+      }
     }
     &.t3 {
       transform: translateX(-150vw);
+      app-mini-player {
+        transform: translateX(50vw);
+      }
+    }
+    &.no-track {
+      app-mini-player {
+        transform: translate(50vw, 72px);
+      }
     }
   }
 }
 
 @media screen and (min-width: 959px) {
-  .column {
-    width: 33.3vw;
-    &.a4 {
-      width: 66.6vw;
-    }
-  }
   .content {
+    .column {
+      width: 33.33vw;
+      &.a4 {
+        width: 66.66vw;
+      }
+    }
     &.t1 {
       transform: translateX(0);
+      app-mini-player {
+        transform: translateX(0vw);
+      }
     }
     &.t2 {
       transform: translateX(0);
+      app-mini-player {
+        transform: translateX(0vw);
+      }
     }
     &.t3 {
       transform: translateX(-66.6vw);
       app-mini-player {
         transform: translate(0, 72px);
       }
-      .a3 {
+      .a1, .a2, .a3 {
         padding-bottom: 0;
+      }
+    }
+    &.no-track {
+      app-mini-player {
+        transform: translate(0, 72px);
       }
     }
   }
 }
 
 @media screen and (min-width: 1319px) {
-  app-mini-player {
-    display: none;
-  }
-  .a3 {
-    padding-bottom: 0;
-  }
-  .column {
-    width: 20vw;
-    &.a4 {
-      width: 40vw;
-    }
-  }
   .content {
+    .column {
+      width: 20vw;
+      &.a4 {
+        width: 40vw;
+      }
+    }
+    .a1, .a2, .a3 {
+      padding-bottom: 0;
+    }
+    app-mini-player {
+      transform: translate(0, 72px) !important;
+    }
     &.t1 {
       transform: translateX(0);
     }
@@ -127,32 +158,3 @@ app-mini-player {
     }
   }
 }
-
-//@media screen and (min-width: 410px) {
-//  .container {
-//    position: absolute;
-//    min-width: 100vw;
-//    height: 100%;
-//  }
-//
-//  .content {
-//    // overflow-x: hidden;
-//  }
-//
-//  .column {
-//    width: 0;
-//    position: relative;
-//    min-height: 480px;
-//  }
-//
-//  .a1, .a2, .a3 {
-//    flex-grow: 1;
-//    min-width: 280px;
-//  }
-//
-//  .a4 {
-//    flex-grow: 2;
-//    min-width: 360px;
-//  }
-//
-//}

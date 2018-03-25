@@ -30,7 +30,7 @@
       </button>
     </mat-menu>
   </div>
-  <mat-list class="artists">
+  <mat-list class="artists" dense>
     <ng-container *ngFor="let artist of filteredArtists">
       <a class="hover" (click)="selectArtist(artist)" mat-list-item>
         <mat-checkbox
@@ -40,7 +40,7 @@
           (change)="$event.checked ? addArtist(artist) : removeArtist(artist)"
           (click)="$event.stopPropagation()"></mat-checkbox>
         <div matListAvatar class="avatar"></div>
-        <div matLine>
+        <div matLine class="primary-text">
           <span matTooltip="{{artist.name}}" matTooltipShowDelay="1000" [innerHtml]="artist.name | sgSearch:search"></span>
         </div>
         <div matLine class="secondary-text">{{artist.songs}} songs</div>

@@ -9,7 +9,7 @@
   flex-direction: row;
   min-height: 40px;
   box-sizing: content-box;
-  padding: 1rem 1rem 0 1rem;
+  padding: 9px 1rem 0 1rem;
 }
 
 .metadata {
@@ -34,8 +34,8 @@
 }
 
 .volume {
-  min-height: 40px;
-  height: 40px;
+  min-height: 22px;
+  height: 22px;
   display: none;
 }
 
@@ -152,7 +152,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  min-height: 76px;
+  box-sizing: content-box;
+  min-height: 60px;
   padding: 0 1rem 1rem 1rem;
   .playPause {
     box-sizing: content-box;

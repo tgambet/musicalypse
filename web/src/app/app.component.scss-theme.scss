@@ -65,6 +65,12 @@
   .theme-chooser {
     background-color: mat-color($background, dialog);
     border: 1px solid mat-color($background, status-bar);
+    button {
+      border: 1px solid mat-color($foreground, divider);
+      mat-icon {
+        color: mat-color($warn);
+      }
+    }
   }
 
   .hover-background {

@@ -28,7 +28,7 @@
       <ol>
         <li *ngFor="let theme of settings.featuredThemes">
           <button mat-icon-button (click)="settings.changeTheme(theme)" ngClass="{{theme.cssClass}}-chooser">
-            <mat-icon *ngIf="settings.currentTheme == theme">check_circle</mat-icon>
+            <mat-icon *ngIf="settings.currentTheme == theme">check</mat-icon>
           </button>
         </li>
       </ol>

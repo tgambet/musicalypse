@@ -1,5 +1,5 @@
 <div class="mini-player" (click)="onNext.emit()">
-  <mat-progress-bar [value]="audio.currentTime / audio.duration * 100"></mat-progress-bar>
+  <mat-progress-bar [mode]="audio.loading ? 'indeterminate' : 'determinate'" [value]="audio.currentTime / audio.duration * 100"></mat-progress-bar>
   <div class="avatar"></div>
   <div class="meta">
     <span class="title">{{library.currentTrack ? library.currentTrack.metadata.title : ''}}</span>

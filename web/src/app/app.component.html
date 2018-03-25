@@ -12,7 +12,7 @@
     <nav *ngIf="!showSidenav">
       <ul>
         <li>
-          <a routerLink="/" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/library" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon> Library
           </a>
         </li>
@@ -39,7 +39,7 @@
     <mat-sidenav #sidenav [mode]="'over'">
       <mat-list>
         <h3 mat-subheader>Navigation</h3>
-        <a mat-list-item routerLink="/" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
+        <a mat-list-item routerLink="/library" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
           <mat-icon mat-list-icon>home</mat-icon>
           <span matLine>
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon>

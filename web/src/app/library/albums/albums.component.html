@@ -35,7 +35,7 @@
   </div>
   <mat-list class="albums" dense>
     <ng-container *ngFor="let album of filteredAlbums">
-      <a class="hover" (click)="selectAlbum(album)" mat-list-item>
+      <a class="hover" (click)="selectAlbum(album); onNext.emit()" mat-list-item>
         <mat-checkbox matListIcon
                       color="primary"
                       [checked]="isSelectedAlbum(album)"

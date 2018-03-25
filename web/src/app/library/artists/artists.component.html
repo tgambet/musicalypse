@@ -32,7 +32,7 @@
   </div>
   <mat-list class="artists" dense>
     <ng-container *ngFor="let artist of filteredArtists">
-      <a class="hover" (click)="selectArtist(artist)" mat-list-item>
+      <a class="hover" (click)="selectArtist(artist); onNext.emit();" mat-list-item>
         <mat-checkbox
           color="primary"
           matListIcon

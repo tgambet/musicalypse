@@ -60,7 +60,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   selectArtist(artist: Artist) {
     this.selectedArtists = [artist];
     this.onSelectionChangeSource.next([artist]);
-    this.onNext.emit();
   }
 
   addArtist(artist: Artist) {

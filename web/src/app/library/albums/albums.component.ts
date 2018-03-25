@@ -70,7 +70,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   selectAlbum(album: Album) {
     this.selectedAlbums = [album];
     this.onSelectionChangeSource.next([album]);
-    this.onNext.emit();
   }
 
   addAlbum(album: Album) {

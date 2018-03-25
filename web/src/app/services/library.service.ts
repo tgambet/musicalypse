@@ -96,10 +96,13 @@ export class LibraryService {
   }
 
   reset() {
+    this.repeat = false;
+    this.shuffle = false;
     this.tracks = [];
     this.albums = [];
     this.artists = [];
     this.playlist = [];
+    this.oldPlaylist = null;
     this.currentTrack = null;
     this.audio.setSource('');
     this.onResetSource.next();
@@ -108,6 +111,9 @@ export class LibraryService {
   addTrackToPlaylist(track: Track) {
     if (!_.includes(this.playlist, track)) {
       this.playlist.push(track);
+    }
+    if (this.shuffle && !_.includes(this.oldPlaylist, track)) {
+      this.oldPlaylist.push(track);
     }
   }
 
@@ -121,6 +127,7 @@ export class LibraryService {
   }
 
   playTrack(track: Track) {
+    this.addTrackToPlaylist(track);
     this.currentTrack = track;
     this._playTrack(track);
   }

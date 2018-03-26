@@ -34,10 +34,10 @@
     </mat-menu>
   </div>
   <mat-list class="tracks" dense>
-    <ng-container *ngFor="let track of filteredTracks.slice(0, 199); trackBy: trackByURL">
+    <ng-container *ngFor="let track of filteredTracks.slice(0, 499); trackBy: trackByURL">
       <a mat-list-item
          class="hover"
-         (click)="library.playTracks(this.tracks.slice(0, 199), track); onNext.emit()">
+         (click)="library.playTracks(this.tracks.slice(0, 499), track); onNext.emit()">
         <div matLine class="primary-text">
           <mat-icon *ngIf="track.warn" color="warn" matTooltip="Unset tags!">warning</mat-icon>
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>

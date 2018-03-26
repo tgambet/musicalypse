@@ -45,12 +45,20 @@ export class LibraryComponent implements OnInit {
             this.contentTranslation = 0;
           }
           if (next.has('artists')) {
-            this.artistsComponent.selectArtistsByName(next.get('artists').split(',').map(v => v.replace('%c', ',')));
+            const artists = next
+              .get('artists')
+              .split(',')
+              .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+            this.artistsComponent.selectArtistsByName(artists);
           } else {
             this.artistsComponent.deselectAll();
           }
           if (next.has('albums')) {
-            this.albumsComponent.selectAlbumsByName(next.get('albums').split(',').map(v => v.replace('%c', ',')));
+            const artists = next
+              .get('albums')
+              .split(',')
+              .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+            this.albumsComponent.selectAlbumsByName(artists);
           } else {
             this.albumsComponent.deselectAll();
           }
@@ -64,7 +72,7 @@ export class LibraryComponent implements OnInit {
       if (artists.length === 0) {
         delete this.urlData['artists'];
       } else {
-        const artistsData = _.map(artists, artist => artist.name.replace(',', '%c'));
+        const artistsData = _.map(artists, artist => artist.name.replace(',', '%c%').replace('&', '%a%'));
         this.urlData['artists'] = _.sortBy(artistsData);
       }
       if (oldData['artists'] !== this.urlData['artists']) {
@@ -76,7 +84,7 @@ export class LibraryComponent implements OnInit {
       if (albums.length === 0) {
         delete this.urlData['albums'];
       } else {
-        const albumData = _.map(albums, album => album.title.replace(',', '%c'));
+        const albumData = _.map(albums, album => album.title.replace(',', '%c%').replace('&', '%a%'));
         this.urlData['albums'] = _.sortBy(albumData);
       }
       if (oldData['albums'] !== this.urlData['albums']) {

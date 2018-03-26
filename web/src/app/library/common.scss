@@ -26,6 +26,13 @@
     }
     .primary-text {
       font-size: 14px;
+      mat-icon {
+        height: 14px;
+        width: 14px;
+        font-size: 14px;
+        line-height: 14px;
+        vertical-align: text-bottom;
+      }
     }
     .secondary-text {
       font-size: 12px;

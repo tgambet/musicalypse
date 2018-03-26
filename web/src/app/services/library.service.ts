@@ -78,15 +78,19 @@ export class LibraryService {
     if (track.metadata.title === undefined || track.metadata.title === '') {
       const components = track.url.split('/');
       track.metadata.title = components[components.length - 1];
+      track.warn = true;
     }
     if (track.metadata.albumArtist === undefined || track.metadata.albumArtist === '') {
       track.metadata.albumArtist = 'Unknown Album Artist';
+      track.warn = true;
     }
     if (track.metadata.album === undefined || track.metadata.album === '') {
       track.metadata.album = 'Unknown Album';
+      track.warn = true;
     }
     if (track.metadata.artist === undefined || track.metadata.artist === '') {
       track.metadata.artist = 'Unknown Artist';
+      track.warn = true;
     }
     if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {
       this.tracks.push(track);
@@ -95,13 +99,19 @@ export class LibraryService {
       const artistIndex = _.findIndex(this.artists, a => a.name === artist);
       const albumIndex = _.findIndex(this.albums, a => a.title === album && a.artist === artist);
       if (artistIndex === -1) {
-        this.artists.push({name: artist, songs: 1});
+        const newArtist: Artist = {name: artist, songs: 1};
+        if (track.warn) { newArtist.warn = true; }
+        this.artists.push(newArtist);
       } else {
+        if (track.warn) { this.artists[artistIndex].warn = true; }
         this.artists[artistIndex].songs += 1;
       }
       if (albumIndex === -1) {
-        this.albums.push({title: album, artist: artist, songs: 1});
+        const newAlbum: Album = {title: album, artist: artist, songs: 1};
+        if (track.warn) { newAlbum.warn = true; }
+        this.albums.push(newAlbum);
       } else {
+        if (track.warn) { this.albums[albumIndex].warn = true; }
         this.albums[albumIndex].songs += 1;
       }
     }

@@ -34,6 +34,10 @@ export class PlayerComponent implements OnInit {
     this.audio = this.library.audio;
   }
 
+  trackByURL(index: number, track: Track) {
+    return track.url;
+  }
+
   swipeLeft() {
     if (this.selectedCarouselIndex < 2) {
       this.selectedCarouselIndex += 1;

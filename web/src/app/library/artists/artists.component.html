@@ -31,7 +31,7 @@
     </mat-menu>
   </div>
   <mat-list class="artists" dense>
-    <ng-container *ngFor="let artist of filteredArtists">
+    <ng-container *ngFor="let artist of filteredArtists; trackBy: trackByName">
       <a class="hover" (click)="selectArtist(artist); onNext.emit();" mat-list-item>
         <mat-checkbox
           color="primary"

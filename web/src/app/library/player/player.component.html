@@ -45,7 +45,7 @@
           <span>Playlist</span>
         </ng-template>
         <mat-list class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <mat-list-item *ngFor="let track of library.playlist"
+          <mat-list-item *ngFor="let track of library.playlist; trackBy: trackByURL"
                          class="divider hover"
                          [class.current]="track == library.currentTrack"
                          (click)="library.playTrack(track)">
@@ -61,7 +61,7 @@
           </mat-list-item>
         </mat-list>
         <ul class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <ng-container *ngFor="let track of library.playlist">
+          <ng-container *ngFor="let track of library.playlist; trackBy: trackByURL">
             <li [class.current]="track == library.currentTrack" class="divider" (click)="library.playTrack(track)">
               <span class="title c">
                 <mat-icon *ngIf="track == library.currentTrack && library.audio.playing">equalizer</mat-icon>

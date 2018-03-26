@@ -53,6 +53,10 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
+  trackByName(index: number, artist: Artist) {
+    return artist.name;
+  }
+
   isSelectedArtist(artist: Artist): boolean {
     return _.includes(this.selectedArtists, artist);
   }

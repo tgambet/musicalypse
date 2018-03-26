@@ -70,6 +70,10 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
+  trackByTitle(index: number, album: Album) {
+    return album.title;
+  }
+
   selectAlbum(album: Album) {
     if (!_.isEqual(this.selectedAlbums, [album])) {
       this.selectedAlbums = [album];

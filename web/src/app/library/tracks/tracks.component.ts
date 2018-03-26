@@ -55,6 +55,10 @@ export class TracksComponent implements OnInit, OnDestroy {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
+  trackByURL(index: number, track: Track) {
+    return track.url;
+  }
+
   sortAlphabetically() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
     this.filter();

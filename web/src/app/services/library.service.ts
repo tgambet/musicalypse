@@ -75,12 +75,27 @@ export class LibraryService {
   }
 
   addTrack(track: Track): void {
+    if (track.metadata.album && track.metadata.album.startsWith('One') && track.metadata.artist === 'Bob Marley') {
+      console.log(track);
+    }
+    if (track.metadata.title === undefined || track.metadata.title === '') {
+      track.metadata.title = 'Unknown Title';
+    }
+    if (track.metadata.albumArtist === undefined || track.metadata.albumArtist === '') {
+      track.metadata.albumArtist = 'Unknown Album Artist';
+    }
+    if (track.metadata.album === undefined || track.metadata.album === '') {
+      track.metadata.album = 'Unknown Album';
+    }
+    if (track.metadata.artist === undefined || track.metadata.artist === '') {
+      track.metadata.artist = 'Unknown Artist';
+    }
     if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {
       this.tracks.push(track);
       const artist = track.metadata.albumArtist;
       const album = track.metadata.album;
       const artistIndex = _.findIndex(this.artists, a => a.name === artist);
-      const albumIndex = _.findIndex(this.albums, a => a.title === album);
+      const albumIndex = _.findIndex(this.albums, a => a.title === album && a.artist === artist);
       if (artistIndex === -1) {
         this.artists.push({name: artist, songs: 1});
       } else {
@@ -215,13 +230,18 @@ export class LibraryService {
 
   getAlbumsOf(artists: Artist[]): Album[] {
     const artistsNames = _.map(artists, 'name');
-    return _.filter(this.albums, album => _.includes(artistsNames, album.artist));
+    return _.filter(this.albums, (album: Album) => _.includes(artistsNames, album.artist));
   }
 
   getTracksOf(albums: Album[]): Track[] {
-    // TODO check this in case two artists have the same album value (e.g. Unknown Album or '')
-    const albumTitles = _.map(albums, 'title');
-    return _.filter(this.tracks, track => _.includes(albumTitles, track.metadata.album));
+    return _.filter(this.tracks, track => {
+      for (let i = 0; i < albums.length; i++) {
+        if (albums[i].artist === track.metadata.albumArtist && albums[i].title === track.metadata.album) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   scanLibrary(): Promise<void> {

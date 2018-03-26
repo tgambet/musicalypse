@@ -45,12 +45,12 @@ export class LibraryComponent implements OnInit {
             this.contentTranslation = 0;
           }
           if (next.has('artists')) {
-            this.artistsComponent.selectArtistsByName(next.get('artists'));
+            this.artistsComponent.selectArtistsByName(next.get('artists').split(',').map(v => v.replace('%c', ',')));
           } else {
             this.artistsComponent.deselectAll();
           }
           if (next.has('albums')) {
-            this.albumsComponent.selectAlbumsByName(next.get('albums'));
+            this.albumsComponent.selectAlbumsByName(next.get('albums').split(',').map(v => v.replace('%c', ',')));
           } else {
             this.albumsComponent.deselectAll();
           }
@@ -64,7 +64,8 @@ export class LibraryComponent implements OnInit {
       if (artists.length === 0) {
         delete this.urlData['artists'];
       } else {
-        this.urlData['artists'] = _.sortBy(_.map(artists, 'name'));
+        const artistsData = _.map(artists, artist => artist.name.replace(',', '%c'));
+        this.urlData['artists'] = _.sortBy(artistsData);
       }
       if (oldData['artists'] !== this.urlData['artists']) {
         this.updateUrl();
@@ -75,7 +76,8 @@ export class LibraryComponent implements OnInit {
       if (albums.length === 0) {
         delete this.urlData['albums'];
       } else {
-        this.urlData['albums'] = _.sortBy(_.map(albums, 'title'));
+        const albumData = _.map(albums, album => album.title.replace(',', '%c'));
+        this.urlData['albums'] = _.sortBy(albumData);
       }
       if (oldData['albums'] !== this.urlData['albums']) {
         this.updateUrl();

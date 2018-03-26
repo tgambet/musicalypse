@@ -34,7 +34,7 @@
     </mat-menu>
   </div>
   <mat-list class="tracks" dense>
-    <ng-container *ngFor="let track of filteredTracks">
+    <ng-container *ngFor="let track of filteredTracks.slice(0, 99)">
       <a mat-list-item
          class="hover"
          (click)="library.playTracks(this.tracks, track); onNext.emit()">

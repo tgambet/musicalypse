@@ -64,7 +64,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectArtistsByName(names: string[] | string) {
+  selectArtistsByName(names: string[]) {
     const oldSelection = this.selectedArtists;
     this.selectedArtists = _.filter(this.artists, artist => _.includes(names, artist.name));
     if (!_.isEqual(oldSelection, this.selectedArtists)) {

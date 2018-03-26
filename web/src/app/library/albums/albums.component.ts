@@ -53,8 +53,10 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     // Subscribe to new tracks and library reset
     this.subscriptions.push(
       this.library.onTrackAdded.subscribe(() => {
-        this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
-        this.sortAlphabetically();
+        if (!_.isEqual(this.artistsComponent.selectedArtists, [])) {
+          this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
+          this.sortAlphabetically();
+        }
       })
     );
     this.subscriptions.push(
@@ -75,7 +77,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectAlbumsByName(names: string[] | string) {
+  selectAlbumsByName(names: string[]) {
     const oldSelection = this.selectedAlbums;
     this.selectedAlbums = _.filter(this.albums, album => _.includes(names, album.title));
     if (!_.isEqual(oldSelection, this.selectedAlbums)) {

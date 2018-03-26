@@ -5,13 +5,12 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SearchPipe implements PipeTransform {
 
-  transform(value: string, args?: string): any {
-    if (!args) {
+  transform(value: string, search?: string): any {
+    if (!search) {
       return value;
     }
-    const search = args;
     const reg = RegExp(search, 'gi');
-    return value.replace(reg, (sub, arg) => `<span class="accent">${value.slice(arg, arg + search.length)}</span>`);
+    return value.replace(reg, (sub, arg) => `<span class="accent">${sub}</span>`);
   }
 
 }

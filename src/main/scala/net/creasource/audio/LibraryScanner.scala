@@ -20,7 +20,7 @@ object LibraryScanner {
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
-        albumArtist = Option(tags.getAlbumArtist).orElse(Option(tags.getArtist)).map(_.trim),
+        albumArtist = Option(tags.getAlbumArtist).map(_.trim),
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)

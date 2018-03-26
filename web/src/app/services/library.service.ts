@@ -81,15 +81,15 @@ export class LibraryService {
       track.warn = true;
     }
     if (track.metadata.albumArtist === undefined || track.metadata.albumArtist === '') {
-      track.metadata.albumArtist = 'Unknown Album Artist';
-      track.warn = true;
-    }
-    if (track.metadata.album === undefined || track.metadata.album === '') {
-      track.metadata.album = 'Unknown Album';
+      track.metadata.albumArtist = track.metadata.artist || 'Unknown Album Artist';
       track.warn = true;
     }
     if (track.metadata.artist === undefined || track.metadata.artist === '') {
       track.metadata.artist = 'Unknown Artist';
+      track.warn = true;
+    }
+    if (track.metadata.album === undefined || track.metadata.album === '') {
+      track.metadata.album = 'Unknown Album';
       track.warn = true;
     }
     if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {

@@ -34,10 +34,10 @@
     </mat-menu>
   </div>
   <mat-list class="tracks" dense>
-    <ng-container *ngFor="let track of filteredTracks.slice(0, 99)">
+    <ng-container *ngFor="let track of filteredTracks.slice(0, 199)">
       <a mat-list-item
          class="hover"
-         (click)="library.playTracks(this.tracks, track); onNext.emit()">
+         (click)="library.playTracks(this.tracks.slice(0, 199), track); onNext.emit()">
         <div matLine class="primary-text">
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span matTooltip="{{track.metadata.title}}" matTooltipShowDelay="1000" [innerHtml]="track.metadata.title | sgSearch:search"></span>

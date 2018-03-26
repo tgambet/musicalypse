@@ -76,7 +76,8 @@ export class LibraryService {
 
   addTrack(track: Track): void {
     if (track.metadata.title === undefined || track.metadata.title === '') {
-      track.metadata.title = 'Unknown Title';
+      const components = track.url.split('/');
+      track.metadata.title = components[components.length - 1];
     }
     if (track.metadata.albumArtist === undefined || track.metadata.albumArtist === '') {
       track.metadata.albumArtist = 'Unknown Album Artist';

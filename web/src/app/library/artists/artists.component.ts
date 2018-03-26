@@ -101,7 +101,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   }
 
   sortAlphabetically() {
-    this.artists = _.sortBy(this.artists, 'name');
+    this.artists = _.sortBy(this.artists, artist => artist.name.toLowerCase());
     this.filter();
   }
 

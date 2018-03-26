@@ -118,7 +118,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   }
 
   sortAlphabetically() {
-    this.albums = _.sortBy(this.albums, 'title');
+    this.albums = _.sortBy(this.albums, album => album.title.toLowerCase());
     this.filter();
   }
 

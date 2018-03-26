@@ -1,10 +1,10 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Artist} from '../../model';
-import * as _ from 'lodash';
 import {LibraryService} from '../../services/library.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-artists',
@@ -58,8 +58,18 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   }
 
   selectArtist(artist: Artist) {
-    this.selectedArtists = [artist];
-    this.onSelectionChangeSource.next([artist]);
+    if (!_.isEqual(this.selectedArtists, [artist])) {
+      this.selectedArtists = [artist];
+      this.onSelectionChangeSource.next([artist]);
+    }
+  }
+
+  selectArtistsByName(names: string[] | string) {
+    const oldSelection = this.selectedArtists;
+    this.selectedArtists = _.filter(this.artists, artist => _.includes(names, artist.name));
+    if (!_.isEqual(oldSelection, this.selectedArtists)) {
+      this.onSelectionChangeSource.next(this.selectedArtists);
+    }
   }
 
   addArtist(artist: Artist) {
@@ -79,6 +89,15 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   selectAll() {
     this.selectedArtists = _.clone(this.artists);
     this.onSelectionChangeSource.next(this.selectedArtists);
+  }
+
+  deselectAll() {
+    if (this.selectedArtists === []) {
+      return;
+    } else {
+      this.selectedArtists = [];
+      this.onSelectionChangeSource.next([]);
+    }
   }
 
   sortAlphabetically() {

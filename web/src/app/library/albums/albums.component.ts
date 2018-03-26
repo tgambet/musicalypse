@@ -42,11 +42,12 @@ export class AlbumsComponent implements OnInit, OnDestroy {
       this.albums = this.library.getAlbumsOf(artists);
       this.sortAlphabetically();
       const artistsNames = _.map(artists, 'name');
+      const oldSelection = this.selectedAlbums;
       this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
-      this.onSelectionChangeSource.next(this.selectedAlbums);
+      if (!_.isEqual(oldSelection, this.selectedAlbums)) {
+        this.onSelectionChangeSource.next(this.selectedAlbums);
+      }
     };
-    // Initialize
-    updateAlbumsSelection(this.artistsComponent.selectedArtists);
     // Subscribe to ArtistsComponent selection changes
     this.artistsComponent.onSelectionChange.subscribe(artists => updateAlbumsSelection(artists));
     // Subscribe to new tracks and library reset
@@ -68,8 +69,18 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   }
 
   selectAlbum(album: Album) {
-    this.selectedAlbums = [album];
-    this.onSelectionChangeSource.next([album]);
+    if (!_.isEqual(this.selectedAlbums, [album])) {
+      this.selectedAlbums = [album];
+      this.onSelectionChangeSource.next([album]);
+    }
+  }
+
+  selectAlbumsByName(names: string[] | string) {
+    const oldSelection = this.selectedAlbums;
+    this.selectedAlbums = _.filter(this.albums, album => _.includes(names, album.title));
+    if (!_.isEqual(oldSelection, this.selectedAlbums)) {
+      this.onSelectionChangeSource.next(this.selectedAlbums);
+    }
   }
 
   addAlbum(album: Album) {
@@ -93,6 +104,15 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   selectAll() {
     this.selectedAlbums = _.clone(this.albums);
     this.onSelectionChangeSource.next(this.selectedAlbums);
+  }
+
+  deselectAll() {
+    if (this.selectedAlbums === []) {
+      return;
+    } else {
+      this.selectedAlbums = [];
+      this.onSelectionChangeSource.next([]);
+    }
   }
 
   sortAlphabetically() {

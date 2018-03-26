@@ -75,9 +75,6 @@ export class LibraryService {
   }
 
   addTrack(track: Track): void {
-    if (track.metadata.album && track.metadata.album.startsWith('One') && track.metadata.artist === 'Bob Marley') {
-      console.log(track);
-    }
     if (track.metadata.title === undefined || track.metadata.title === '') {
       track.metadata.title = 'Unknown Title';
     }

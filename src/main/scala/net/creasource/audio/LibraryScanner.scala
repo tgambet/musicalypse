@@ -24,6 +24,17 @@ object LibraryScanner {
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)
+    } else if (mp3file.hasId3v1Tag) {
+      println("WARN - IDv1 tags found for file " + audioFile)
+      val tags = mp3file.getId3v1Tag
+      TrackMetadata(
+        location = audioFile.getAbsolutePath,
+        title = Option(tags.getTitle).map(_.trim),
+        artist = Option(tags.getArtist).map(_.trim),
+        albumArtist = Option(tags.getArtist).map(_.trim),
+        album = Option(tags.getAlbum).map(_.trim),
+        year = Option(tags.getYear).map(_.trim),
+        duration = mp3file.getLengthInSeconds.toInt)
     } else {
       TrackMetadata(
         location = audioFile.getAbsolutePath,

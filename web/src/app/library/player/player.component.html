@@ -21,6 +21,13 @@
     </button>
   </div>
   <div class="volume">
+    <mat-slider
+      [disabled]="audio.muted"
+      [value]="audio.volume"
+      (input)="audio.volume = $event.value"
+      max="1"
+      step="0.01"
+      color="primary"></mat-slider>
     <button mat-button mat-icon-button
             class="mute"
             (click)="audio.muted = !audio.muted">
@@ -29,13 +36,6 @@
       <mat-icon *ngIf="!audio.muted && audio.volume == 0">volume_mute</mat-icon>
       <mat-icon *ngIf="audio.muted">volume_off</mat-icon>
     </button>
-    <mat-slider
-      [disabled]="audio.muted"
-      [value]="audio.volume"
-      (input)="audio.volume = $event.value"
-      max="1"
-      step="0.01"
-      color="primary"></mat-slider>
   </div>
   <div class="carousel">
     <mat-tab-group #carousel [(selectedIndex)]="selectedCarouselIndex">

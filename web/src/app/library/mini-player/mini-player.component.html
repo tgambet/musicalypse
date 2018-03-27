@@ -7,6 +7,12 @@
   </div>
   <div class="controls">
     <button mat-button mat-icon-button
+            class="previous"
+            (click)="library.playPreviousTrackInPlaylist()"
+            [disabled]="!library.currentTrack || library.playlist.length <= 1">
+      <mat-icon>skip_previous</mat-icon>
+    </button>
+    <button mat-button mat-icon-button
             class="playPause"
             [disabled]="!library.currentTrack"
             (click)="audio.playing ? audio.pause() : audio.play(); $event.stopPropagation()">

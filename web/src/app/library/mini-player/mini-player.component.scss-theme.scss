@@ -15,7 +15,7 @@
       .playPause {
         background-color: mat-color($background, focused-button);
       }
-      .next {
+      .next, .previous {
         border: 1px solid mat-color($foreground, divider);
       }
     }

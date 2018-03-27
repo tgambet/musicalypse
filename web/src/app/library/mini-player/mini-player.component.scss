@@ -43,7 +43,7 @@
     }
 
     .playPause {
-      margin-right: 0.5rem;
+      margin: 0 0.5rem;
       .mat-icon {
         font-size: 30px;
         height: 30px;
@@ -52,7 +52,7 @@
       }
     }
 
-    .next {
+    .next, .previous {
       height: 30px;
       width: 30px;
       line-height: 30px;
@@ -64,7 +64,20 @@
       }
     }
 
+    .previous {
+      display: none;
+    }
+
   }
 
 }
 
+@media screen and (min-width: 599px) {
+  .mini-player {
+    .controls {
+      .previous {
+        display: inline-block;
+      }
+    }
+  }
+}

@@ -30,7 +30,7 @@
     bottom: 0;
     width: 100vw;
     height: 72px;
-    transition-property: transform, visibility, height;
+    transition-property: transform, height;
     transition-duration: 0.4s;
     transition-timing-function: ease;
     overflow: hidden;
@@ -51,8 +51,6 @@
     transform: translateX(-300vw);
     app-mini-player {
       transform: translate(200vw, 72px);
-      visibility: hidden;
-      height: 0;
     }
     .a1, .a2, .a3 {
       padding-bottom: 0;
@@ -64,7 +62,6 @@
     }
     app-mini-player {
       transform: translate(200vw, 72px);
-      visibility: hidden;
       height: 0;
     }
   }
@@ -93,7 +90,7 @@
     &.t3 {
       transform: translateX(-150vw);
       app-mini-player {
-        transform: translateX(50vw);
+        transform: translate(50vw, 72px);
       }
     }
     &.no-track {
@@ -102,7 +99,6 @@
       }
       app-mini-player {
         transform: translate(50vw, 72px);
-        visibility: hidden;
         height: 0;
       }
     }
@@ -120,21 +116,19 @@
     &.t1 {
       transform: translateX(0);
       app-mini-player {
-        transform: translateX(0vw);
+        transform: translateX(0);
       }
     }
     &.t2 {
       transform: translateX(0);
       app-mini-player {
-        transform: translateX(0vw);
+        transform: translateX(0);
       }
     }
     &.t3 {
       transform: translateX(-66.6vw);
       app-mini-player {
         transform: translate(0, 72px);
-        visibility: hidden;
-        height: 0;
       }
       .a1, .a2, .a3 {
         padding-bottom: 0;
@@ -143,7 +137,6 @@
     &.no-track {
       app-mini-player {
         transform: translate(0, 72px);
-        visibility: hidden;
         height: 0;
       }
     }
@@ -162,9 +155,7 @@
       padding-bottom: 0;
     }
     app-mini-player {
-      transform: translate(0, 72px) !important;
-      visibility: hidden;
-      height: 0;
+      display: none;
     }
     &.t1 {
       transform: translateX(0);

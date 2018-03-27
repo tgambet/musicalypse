@@ -55,6 +55,7 @@
 .wrapper {
   padding-top: 60px;
   height: 100%;
+  box-sizing: border-box;
   .alphabet {
     user-select: none;
     height: calc(100% - 132px);

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar, MatTabGroup} from '@angular/material';
+import {BreakpointObserver} from '@angular/cdk/layout';
 import {AudioComponent} from '../../audio/audio.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -23,7 +24,10 @@ export class PlayerComponent implements OnInit {
 
   audio: AudioComponent;
 
+  smallScreen: boolean;
+
   constructor(
+    private breakpointObserver: BreakpointObserver,
     public library: LibraryService,
     public favorites: FavoritesService,
     public snackBar: MatSnackBar,
@@ -32,6 +36,10 @@ export class PlayerComponent implements OnInit {
 
   ngOnInit() {
     this.audio = this.library.audio;
+
+    this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
+      this.smallScreen = result.matches;
+    });
   }
 
   trackByURL(index: number, track: Track) {

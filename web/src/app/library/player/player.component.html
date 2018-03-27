@@ -44,7 +44,7 @@
           <mat-icon>playlist_play</mat-icon>
           <span>Playlist</span>
         </ng-template>
-        <mat-list class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
+        <mat-list *ngIf="smallScreen" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           <mat-list-item *ngFor="let track of library.playlist; trackBy: trackByURL"
                          class="divider hover"
                          [class.current]="track == library.currentTrack"
@@ -60,7 +60,7 @@
             <span class="duration">{{track.metadata.duration | sgTime}}</span>
           </mat-list-item>
         </mat-list>
-        <ul class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
+        <ul *ngIf="!smallScreen" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
           <ng-container *ngFor="let track of library.playlist; trackBy: trackByURL">
             <li [class.current]="track == library.currentTrack" class="divider" (click)="library.playTrack(track)">
               <span class="title c">

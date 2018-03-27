@@ -81,7 +81,6 @@
     }
   }
   .playlist-long {
-    display: none;
     height: 100%;
     li {
       height: 36px;
@@ -200,14 +199,6 @@
   }
   .menu {
     .repeat, .favorites {
-      display: block;
-    }
-  }
-  .carousel {
-    .playlist {
-      display: none;
-    }
-    .playlist-long {
       display: block;
     }
   }

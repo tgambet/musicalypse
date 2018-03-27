@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Album, Artist} from '../../model';
 import {ArtistsComponent} from '../artists/artists.component';
 import {LibraryService} from '../../services/library.service';
@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
-  styleUrls: ['./albums.component.scss', '../common.scss']
+  styleUrls: ['./albums.component.scss', '../library.component.common.scss']
 })
 export class AlbumsComponent implements OnInit, OnDestroy {
 
@@ -19,6 +19,39 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   onNext: EventEmitter<void> = new EventEmitter();
   @Output()
   onPrevious: EventEmitter<void> = new EventEmitter();
+
+  @ViewChild('list')
+  list: ElementRef;
+
+  alphabet = [
+    '#',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ];
 
   @Input('artistsComponent')
   artistsComponent: ArtistsComponent;
@@ -145,6 +178,20 @@ export class AlbumsComponent implements OnInit, OnDestroy {
 
   isMultipleArtistsSelected(): boolean {
     return this.artistsComponent.selectedArtists.length > 1;
+  }
+
+  scrollTo(letter: string) {
+    const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+    if (letter === '#') {
+      this.list.nativeElement.getElementsByClassName('album')[0].scrollIntoView(scrollOptions);
+      return;
+    }
+    const elem = _.find(this.list.nativeElement.getElementsByClassName('album'), artist => {
+      return artist.getElementsByClassName('album-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    });
+    if (elem) {
+      elem.scrollIntoView(scrollOptions);
+    }
   }
 
 }

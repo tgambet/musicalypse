@@ -23,12 +23,14 @@ $dark-theme: mat-dark-theme(
 
 @import 'theme';
 @import 'app/app.component.scss-theme';
+@import 'app/library/library.component.scss-theme';
 @import 'app/library/player/player.component.scss-theme';
 @import 'app/library/mini-player/mini-player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-theme($theme);
   @include app-component-theme($theme);
+  @include library-component-theme($theme);
   @include player-component-theme($theme);
   @include mini-player-component-theme($theme);
 }
@@ -150,6 +152,13 @@ app-root {
 @media screen and (min-width: 1319px) {
   .a3 .controls .back {
     display: none;
+  }
+}
+
+// Fix padding right on mat-list-items
+.artists, .albums, .tracks {
+  .mat-list-item-content {
+    padding-right: 0.5rem !important;
   }
 }
 

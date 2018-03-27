@@ -33,85 +33,92 @@
       </button>
     </mat-menu>
   </div>
-  <mat-list class="tracks" dense>
-    <ng-container *ngFor="let track of filteredTracks.slice(0, 499); trackBy: trackByURL">
-      <a mat-list-item
-         class="hover"
-         (click)="library.playTracks(this.tracks.slice(0, 499), track); onNext.emit()">
-        <div matLine class="primary-text">
-          <mat-icon *ngIf="track.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
-          <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
-          <span [innerHtml]="track.metadata.title | sgSearch:search"></span>
-        </div>
-        <div matLine class="secondary-text">
-          {{track.metadata.duration | sgTime}}
-          <span *ngIf="isMultipleAlbumsSelected()">• {{track.metadata.album}}</span>
-        </div>
-        <button mat-button mat-icon-button
-                class="more"
-                *ngIf="library.currentTrack != track"
-                [matMenuTriggerFor]="trackMenu"
-                (click)="$event.stopPropagation()">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #trackMenu>
-          <button mat-menu-item (click)="library.playTrack(track)">
-            <mat-icon>play_arrow</mat-icon>
-            <span>Play</span>
+  <div #list class="list-wrapper">
+    <mat-list class="tracks" dense>
+      <ng-container *ngFor="let track of filteredTracks.slice(0, 499); trackBy: trackByURL">
+        <a mat-list-item
+           class="track hover"
+           (click)="library.playTracks(this.tracks.slice(0, 499), track); onNext.emit()">
+          <div matLine class="primary-text">
+            <mat-icon *ngIf="track.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
+            <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
+            <span class="track-name" [innerHtml]="track.metadata.title | sgSearch:search"></span>
+          </div>
+          <div matLine class="secondary-text">
+            {{track.metadata.duration | sgTime}}
+            <span *ngIf="isMultipleAlbumsSelected()">• {{track.metadata.album}}</span>
+          </div>
+          <button mat-button mat-icon-button
+                  class="more"
+                  *ngIf="library.currentTrack != track"
+                  [matMenuTriggerFor]="trackMenu"
+                  (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
           </button>
-          <button mat-menu-item (click)="library.playTrackNext(track)">
-            <mat-icon>play_arrow</mat-icon>
-            <span>Play next</span>
+          <mat-menu #trackMenu>
+            <button mat-menu-item (click)="library.playTrack(track)">
+              <mat-icon>play_arrow</mat-icon>
+              <span>Play</span>
+            </button>
+            <button mat-menu-item (click)="library.playTrackNext(track)">
+              <mat-icon>play_arrow</mat-icon>
+              <span>Play next</span>
+            </button>
+            <button mat-menu-item (click)="addTrackToPlaylist(track)">
+              <mat-icon>playlist_add</mat-icon>
+              <span>Add to current playlist</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="playlistsMenu" disabled>
+              <mat-icon>playlist_add</mat-icon>
+              <span>Add to playlist</span>
+            </button>
+            <button mat-menu-item (click)="favorites.addToFavorites(track)" *ngIf="!favorites.isFavorite(track)">
+              <mat-icon>favorite_border</mat-icon>
+              <span>Add to favorites</span>
+            </button>
+            <button mat-menu-item (click)="favorites.removeFromFavorites(track)" *ngIf="favorites.isFavorite(track)">
+              <mat-icon>favorite</mat-icon>
+              <span>Remove from favorites</span>
+            </button>
+            <button mat-menu-item (click)="openDetailsDialog(track)">
+              <mat-icon>details</mat-icon>
+              <span>Details</span>
+            </button>
+          </mat-menu>
+          <mat-menu #playlistsMenu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>add</mat-icon>
+              New playlist
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item>
+              <mat-icon>album</mat-icon>
+              Playlist1
+            </button>
+            <button mat-menu-item>
+              <mat-icon>album</mat-icon>
+              Playlist2
+            </button>
+          </mat-menu>
+          <button mat-button mat-icon-button
+                  class = "playPause"
+                  *ngIf="library.currentTrack == track"
+                  (click)="library.audio.playing ? library.audio.pause() : library.audio.play(); $event.stopPropagation()">
+            <mat-icon>{{library.audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
           </button>
-          <button mat-menu-item (click)="addTrackToPlaylist(track)">
-            <mat-icon>playlist_add</mat-icon>
-            <span>Add to current playlist</span>
-          </button>
-          <button mat-menu-item [matMenuTriggerFor]="playlistsMenu" disabled>
-            <mat-icon>playlist_add</mat-icon>
-            <span>Add to playlist</span>
-          </button>
-          <button mat-menu-item (click)="favorites.addToFavorites(track)" *ngIf="!favorites.isFavorite(track)">
-            <mat-icon>favorite_border</mat-icon>
-            <span>Add to favorites</span>
-          </button>
-          <button mat-menu-item (click)="favorites.removeFromFavorites(track)" *ngIf="favorites.isFavorite(track)">
-            <mat-icon>favorite</mat-icon>
-            <span>Remove from favorites</span>
-          </button>
-          <button mat-menu-item (click)="openDetailsDialog(track)">
-            <mat-icon>details</mat-icon>
-            <span>Details</span>
-          </button>
-        </mat-menu>
-        <mat-menu #playlistsMenu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>add</mat-icon>
-            New playlist
-          </button>
+          <span class="spinner" *ngIf="library.currentTrack == track">
+            <mat-progress-spinner diameter="40"
+                                  [mode]="library.audio.loading ? 'indeterminate' : 'determinate'"
+                                  [value]="library.audio.currentTime / library.audio.duration * 100"></mat-progress-spinner>
+          </span>
           <mat-divider></mat-divider>
-          <button mat-menu-item>
-            <mat-icon>album</mat-icon>
-            Playlist1
-          </button>
-          <button mat-menu-item>
-            <mat-icon>album</mat-icon>
-            Playlist2
-          </button>
-        </mat-menu>
-        <button mat-button mat-icon-button
-                class = "playPause"
-                *ngIf="library.currentTrack == track"
-                (click)="library.audio.playing ? library.audio.pause() : library.audio.play(); $event.stopPropagation()">
-          <mat-icon>{{library.audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
-        </button>
-        <span class="spinner" *ngIf="library.currentTrack == track">
-          <mat-progress-spinner diameter="40"
-                                [mode]="library.audio.loading ? 'indeterminate' : 'determinate'"
-                                [value]="library.audio.currentTime / library.audio.duration * 100"></mat-progress-spinner>
-        </span>
-        <mat-divider></mat-divider>
-      </a>
-    </ng-container>
-  </mat-list>
+        </a>
+      </ng-container>
+    </mat-list>
+  </div>
+  <div class="alphabet" (click)="$event.stopPropagation()">
+    <ol>
+      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{letter}}</li>
+    </ol>
+  </div>
 </div>

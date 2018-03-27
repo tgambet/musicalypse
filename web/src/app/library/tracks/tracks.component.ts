@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
 import {AlbumsComponent} from '../albums/albums.component';
@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
-  styleUrls: ['./tracks.component.scss', '../common.scss']
+  styleUrls: ['./tracks.component.scss', '../library.component.common.scss']
 })
 export class TracksComponent implements OnInit, OnDestroy {
 
@@ -23,6 +23,39 @@ export class TracksComponent implements OnInit, OnDestroy {
 
   @Input('albumsComponent')
   albumsComponent: AlbumsComponent;
+
+  @ViewChild('list')
+  list: ElementRef;
+
+  alphabet = [
+    '#',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ];
 
   search = '';
   tracks: Track[] = [];
@@ -105,6 +138,20 @@ export class TracksComponent implements OnInit, OnDestroy {
       console.log(result);
       // this.animal = result;
     });
+  }
+
+  scrollTo(letter: string) {
+    const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+    if (letter === '#') {
+      this.list.nativeElement.getElementsByClassName('track')[0].scrollIntoView(scrollOptions);
+      return;
+    }
+    const elem = _.find(this.list.nativeElement.getElementsByClassName('track'), artist => {
+      return artist.getElementsByClassName('track-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    });
+    if (elem) {
+      elem.scrollIntoView(scrollOptions);
+    }
   }
 
 }

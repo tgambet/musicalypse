@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Artist} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
@@ -10,12 +10,45 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-artists',
   templateUrl: './artists.component.html',
-  styleUrls: ['./artists.component.scss', '../common.scss']
+  styleUrls: ['./artists.component.scss', '../library.component.common.scss']
 })
 export class ArtistsComponent implements OnInit, OnDestroy {
 
   @Output()
   onNext: EventEmitter<void> = new EventEmitter();
+
+  @ViewChild('list')
+  list: ElementRef;
+
+  alphabet = [
+    '#',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ];
 
   search = '';
   artists: Artist[] = [];
@@ -122,6 +155,20 @@ export class ArtistsComponent implements OnInit, OnDestroy {
       this.filteredArtists = _.filter(this.artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
     } else {
       this.filteredArtists = this.artists;
+    }
+  }
+
+  scrollTo(letter: string) {
+    const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+    if (letter === '#') {
+      this.list.nativeElement.getElementsByClassName('artist')[0].scrollIntoView(scrollOptions);
+      return;
+    }
+    const elem = _.find(this.list.nativeElement.getElementsByClassName('artist'), artist => {
+      return artist.getElementsByClassName('artist-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    });
+    if (elem) {
+      elem.scrollIntoView(scrollOptions);
     }
   }
 

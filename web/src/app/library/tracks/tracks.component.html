@@ -39,7 +39,7 @@
          class="hover"
          (click)="library.playTracks(this.tracks.slice(0, 499), track); onNext.emit()">
         <div matLine class="primary-text">
-          <mat-icon *ngIf="track.warn" color="warn" matTooltip="Unset tags!">warning</mat-icon>
+          <mat-icon *ngIf="track.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
           <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>
           <span [innerHtml]="track.metadata.title | sgSearch:search"></span>
         </div>

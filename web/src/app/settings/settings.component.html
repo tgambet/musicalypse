@@ -77,18 +77,21 @@
           <span>WebSocket</span>
         </button>
       </div>
+      <!--<div>-->
+        <!--<mat-slide-toggle>Watch library folders</mat-slide-toggle>-->
+      <!--</div>-->
       <div>
-        <mat-slide-toggle>Watch library folders</mat-slide-toggle>
+        <mat-slide-toggle matTooltip="Displays a warning icon next to artists, albums, tracks that have missing or incomplete tags."
+                          [(ngModel)]="settings.warnOnMissingTags">
+          Warn on missing tags
+        </mat-slide-toggle>
       </div>
-      <div>
-        <mat-slide-toggle matTooltip="Displays a warning icon next to artists, albums, tracks that have missing or incomplete tags.">Warn on missing tags</mat-slide-toggle>
-      </div>
-      <div>
-        <mat-slide-toggle>Misc 2</mat-slide-toggle>
-      </div>
-      <div>
-        <mat-slide-toggle>Misc 3</mat-slide-toggle>
-      </div>
+      <!--<div>-->
+        <!--<mat-slide-toggle>Misc 2</mat-slide-toggle>-->
+      <!--</div>-->
+      <!--<div>-->
+        <!--<mat-slide-toggle>Misc 3</mat-slide-toggle>-->
+      <!--</div>-->
       <mat-divider></mat-divider>
     </div>
   </div>

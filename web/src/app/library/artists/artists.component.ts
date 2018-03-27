@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Artist} from '../../model';
 import {LibraryService} from '../../services/library.service';
+import {SettingsService} from '../../services/settings.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
@@ -27,7 +28,9 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private library: LibraryService) {
+  constructor(
+    private library: LibraryService,
+    public settings: SettingsService) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
 

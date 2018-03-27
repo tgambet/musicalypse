@@ -3,6 +3,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
 import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../../services/library.service';
+import {SettingsService} from '../../services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '../../dialogs/details/details.component';
 import {Subscription} from 'rxjs/Subscription';
@@ -33,7 +34,8 @@ export class TracksComponent implements OnInit, OnDestroy {
     public library: LibraryService,
     public favorites: FavoritesService,
     public snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public settings: SettingsService
   ) { }
 
   ngOnInit() {

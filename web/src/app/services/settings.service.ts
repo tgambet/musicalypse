@@ -25,6 +25,8 @@ export class SettingsService implements OnDestroy {
 
   files: { _file: File, progress: number }[] = [];
 
+  warnOnMissingTags = false;
+
   constructor(
     private overlayContainer: OverlayContainer,
     public httpSocketClient: HttpSocketClientService,

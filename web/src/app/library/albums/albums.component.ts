@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {Album, Artist} from '../../model';
 import {ArtistsComponent} from '../artists/artists.component';
 import {LibraryService} from '../../services/library.service';
+import {SettingsService} from '../../services/settings.service';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
@@ -33,7 +34,10 @@ export class AlbumsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private library: LibraryService) {
+  constructor(
+    private library: LibraryService,
+    public settings: SettingsService
+  ) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
 

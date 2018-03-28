@@ -18,6 +18,7 @@
   .column {
     position: relative;
     width: 100vw;
+    min-height: 420px; // TODO figure out what to do if screen size is below
   }
   .a1, .a2, .a3 {
     padding-bottom: 72px;

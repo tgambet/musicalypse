@@ -29,6 +29,12 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loader.load();
+    this.httpSocketClient.get('/api/libraries').subscribe(
+      (result: string[]) => this.settings.libraryFolders = result,
+      error => { this.loader.unload(); console.log(error); },
+      () => { this.loader.unload(); }
+    );
   }
 
   drop(event) {

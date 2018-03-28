@@ -34,13 +34,6 @@ export class SettingsService implements OnDestroy {
     public loader: LoaderService
   ) {
     overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
-
-    this.loader.load();
-    this.httpSocketClient.get('/api/libraries').subscribe(
-      (result: string[]) => this.libraryFolders = result,
-      error => { this.loader.unload(); console.log(error); },
-      () => { this.loader.unload(); }
-    );
   }
 
   ngOnDestroy(): void {

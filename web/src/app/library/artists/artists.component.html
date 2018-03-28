@@ -30,7 +30,7 @@
       </button>
     </mat-menu>
   </div>
-  <div #list class="list-wrapper">
+  <div #list class="list-wrapper" (swipeleft)="onNext.emit()">
     <mat-list class="artists" dense>
       <ng-container *ngFor="let artist of filteredArtists; trackBy: trackByName">
         <a class="artist hover" (click)="selectArtist(artist); onNext.emit();" mat-list-item>

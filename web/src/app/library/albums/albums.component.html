@@ -33,7 +33,7 @@
       </button>
     </mat-menu>
   </div>
-  <div #list class="list-wrapper">
+  <div #list class="list-wrapper" (swiperight)="onPrevious.emit()" (swipeleft)="onNext.emit()">
     <mat-list class="albums" dense>
       <ng-container *ngFor="let album of filteredAlbums; trackBy: trackByTitle">
         <a class="album hover" (click)="selectAlbum(album); onNext.emit()" mat-list-item>

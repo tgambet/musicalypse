@@ -65,6 +65,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
   swipeRight() {
     if (this.selectedCarouselIndex > 0) {
       this.selectedCarouselIndex -= 1;
+    } else {
+      this.onPrevious.emit();
     }
   }
 

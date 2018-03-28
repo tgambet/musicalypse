@@ -34,7 +34,7 @@
     </mat-menu>
   </div>
   <div #list class="list-wrapper">
-    <mat-list class="tracks" dense>
+    <mat-list class="tracks" [class.sorted-alpha]="sortedAlphabetically" dense>
       <ng-container *ngFor="let track of filteredTracks.slice(0, 499); trackBy: trackByURL">
         <a mat-list-item
            class="track hover"
@@ -116,7 +116,7 @@
       </ng-container>
     </mat-list>
   </div>
-  <div class="alphabet" (click)="$event.stopPropagation()">
+  <div *ngIf="sortedAlphabetically" class="alphabet" (click)="$event.stopPropagation()">
     <ol>
       <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{letter}}</li>
     </ol>

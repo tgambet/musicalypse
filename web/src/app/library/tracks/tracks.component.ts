@@ -27,6 +27,8 @@ export class TracksComponent implements OnInit, OnDestroy {
   @ViewChild('list')
   list: ElementRef;
 
+  sortedAlphabetically = false;
+
   alphabet = [
     '#',
     'A',
@@ -97,11 +99,13 @@ export class TracksComponent implements OnInit, OnDestroy {
   sortAlphabetically() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
     this.filter();
+    this.sortedAlphabetically = true;
   }
 
   sortByFilename() {
     this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.location);
     this.filter();
+    this.sortedAlphabetically = false;
   }
 
   filter() {

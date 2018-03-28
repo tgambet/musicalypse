@@ -5,7 +5,6 @@
 
 .artists, .albums, .tracks {
   padding-top: 0;
-  padding-right: 1rem;
   .mat-list-item {
     cursor: pointer;
     text-decoration: none;
@@ -50,6 +49,10 @@
       }
     }
   }
+}
+
+.artists, .albums, .tracks.sorted-alpha {
+  padding-right: 1rem;
 }
 
 .wrapper {

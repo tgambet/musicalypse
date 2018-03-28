@@ -1,3 +1,4 @@
+<mat-progress-bar class="main-loader" mode="indeterminate" *ngIf="loader.isLoading()"></mat-progress-bar>
 <div class="container">
   <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack">
     <div class="column a1">

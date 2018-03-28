@@ -162,4 +162,12 @@ app-root {
   }
 }
 
+// Main Loader, common to several main components
+.main-wrapper .main-loader {
+  position: absolute;
+  z-index: 1;
+  height: 3px;
+}
+
+
 

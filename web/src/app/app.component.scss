@@ -125,23 +125,8 @@ $theme-chooser-right: 10px;
   }
 }
 
-.main-loader {
-  position: absolute;
-  z-index: 1;
-  height: 3px;
-}
-
-
 @media screen and (max-width: 599px) {
   mat-toolbar {
     padding-left: 5px;
   }
 }
-
-
-
-
-
-
-
-

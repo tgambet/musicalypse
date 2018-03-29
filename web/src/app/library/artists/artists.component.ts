@@ -1,4 +1,5 @@
 import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
@@ -64,7 +65,9 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   constructor(
     private library: LibraryService,
-    public settings: SettingsService) {
+    public settings: SettingsService,
+    private sanitizer: DomSanitizer
+  ) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
 
@@ -92,6 +95,10 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   trackByName(index: number, artist: Artist) {
     return artist.name;
+  }
+
+  getAvatarStyle(artist: Artist) {
+    return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url(${artist.avatarUrl})`) : '';
   }
 
   isSelectedArtist(artist: Artist): boolean {

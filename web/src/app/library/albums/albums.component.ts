@@ -1,4 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 import {Album, Artist} from '../../model';
 import {ArtistsComponent} from '../artists/artists.component';
 import {LibraryService} from '../../services/library.service';
@@ -70,7 +71,8 @@ export class AlbumsComponent implements OnInit, OnDestroy {
 
   constructor(
     private library: LibraryService,
-    public settings: SettingsService
+    public settings: SettingsService,
+    private sanitizer: DomSanitizer
   ) {
     this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
@@ -110,6 +112,10 @@ export class AlbumsComponent implements OnInit, OnDestroy {
 
   trackByTitle(index: number, album: Album) {
     return album.title;
+  }
+
+  getAvatarStyle(album: Album) {
+    return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url(${album.avatarUrl})`) : '';
   }
 
   selectAlbum(album: Album) {

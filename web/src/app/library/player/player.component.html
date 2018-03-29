@@ -81,7 +81,7 @@
           <span>Cover</span>
         </ng-template>
         <div class="albumArt" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <img src="https://images-na.ssl-images-amazon.com/images/I/91aZBftKeUL._SL1425_.jpg" />
+          <img *ngIf="library.currentTrack && library.currentTrack.coverUrl" src="{{library.currentTrack.coverUrl}}" />
         </div>
       </mat-tab>
       <mat-tab label="Lyrics" >

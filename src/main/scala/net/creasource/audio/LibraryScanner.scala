@@ -10,13 +10,14 @@ import scala.concurrent.Future
 
 object LibraryScanner {
 
-  private def getMetadata(audioFile: File): TrackMetadata = {
+  type AlbumCover = Option[(Array[Byte], String)]
+
+  private def getMetadata(audioFile: File): (TrackMetadata, AlbumCover) = {
     import com.mpatric.mp3agic.Mp3File
     val mp3file = new Mp3File(audioFile)
-
     if (mp3file.hasId3v2Tag) {
       val tags = mp3file.getId3v2Tag
-      TrackMetadata(
+      val metadata = TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
@@ -24,10 +25,16 @@ object LibraryScanner {
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)
+      val albumCover = if (tags.getAlbumImage != null) {
+        Some(tags.getAlbumImage, tags.getAlbumImageMimeType)
+      } else {
+        None
+      }
+      (metadata, albumCover)
     } else if (mp3file.hasId3v1Tag) {
       println("WARN - IDv1 tags found for file " + audioFile)
       val tags = mp3file.getId3v1Tag
-      TrackMetadata(
+      val metadata = TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = Option(tags.getTitle).map(_.trim),
         artist = Option(tags.getArtist).map(_.trim),
@@ -35,8 +42,9 @@ object LibraryScanner {
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt)
+      (metadata, None)
     } else {
-      TrackMetadata(
+      val metadata = TrackMetadata(
         location = audioFile.getAbsolutePath,
         title = None,
         artist = None,
@@ -44,10 +52,22 @@ object LibraryScanner {
         album = None,
         year = None,
         duration = mp3file.getLengthInSeconds.toInt)
+      (metadata, None)
     }
   }
 
-  def scan(folder: File): Source[TrackMetadata, NotUsed] = {
+  private def getAlbumCover(audioFile: File): AlbumCover = {
+    import com.mpatric.mp3agic.Mp3File
+    val mp3file = new Mp3File(audioFile)
+    if (mp3file.hasId3v2Tag) {
+      val tags = mp3file.getId3v2Tag
+      Some(tags.getAlbumImage, tags.getAlbumImageMimeType)
+    } else {
+      None
+    }
+  }
+
+  def scan(folder: File): Source[(TrackMetadata, AlbumCover), NotUsed] = {
     assert(folder.isDirectory, s"Library folder $folder is not a directory")
     import scala.concurrent.ExecutionContext.Implicits.global
     StreamConverters

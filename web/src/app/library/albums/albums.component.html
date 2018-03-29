@@ -60,7 +60,7 @@
                         [checked]="isSelectedAlbum(album)"
                         (change)="$event.checked ? addAlbum(album) : removeAlbum(album)"
                         (click)="$event.stopPropagation()"></mat-checkbox>
-          <div matListAvatar class="avatar"></div>
+          <div matListAvatar class="avatar" [style]="getAvatarStyle(album)"></div>
           <div matLine class="primary-text">
             <mat-icon *ngIf="album.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
             <span class="album-name" [innerHtml]="album.title | sgSearch:search"></span>

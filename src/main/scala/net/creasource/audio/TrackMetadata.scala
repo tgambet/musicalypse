@@ -5,10 +5,11 @@ import spray.json.DefaultJsonProtocol._
 
 case class Track(
     url: String,
-    metadata: TrackMetadata)
+    metadata: TrackMetadata,
+    coverUrl: Option[String])
 
 object Track {
-  implicit val formatter: RootJsonFormat[Track] = jsonFormat2(Track.apply)
+  implicit val formatter: RootJsonFormat[Track] = jsonFormat3(Track.apply)
 }
 
 case class TrackMetadata(

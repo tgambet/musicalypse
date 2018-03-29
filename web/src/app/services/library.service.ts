@@ -94,6 +94,9 @@ export class LibraryService {
       track.metadata.album = 'Unknown Album';
       track.warn = true;
     }
+    if (track.coverUrl) {
+      track.coverUrl = LibraryService.getAudioUrl(track.coverUrl);
+    }
     if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {
       this.tracks.push(track);
       const artist = track.metadata.albumArtist;
@@ -103,17 +106,21 @@ export class LibraryService {
       if (artistIndex === -1) {
         const newArtist: Artist = {name: artist, songs: 1};
         if (track.warn) { newArtist.warn = true; }
+        if (track.coverUrl) { newArtist.avatarUrl = track.coverUrl; }
         this.artists.push(newArtist);
       } else {
         if (track.warn) { this.artists[artistIndex].warn = true; }
+        if (track.coverUrl) { this.artists[artistIndex].avatarUrl = track.coverUrl; }
         this.artists[artistIndex].songs += 1;
       }
       if (albumIndex === -1) {
         const newAlbum: Album = {title: album, artist: artist, songs: 1};
         if (track.warn) { newAlbum.warn = true; }
+        if (track.coverUrl) { newAlbum.avatarUrl = track.coverUrl; }
         this.albums.push(newAlbum);
       } else {
         if (track.warn) { this.albums[albumIndex].warn = true; }
+        if (track.coverUrl) { this.albums[albumIndex].avatarUrl = track.coverUrl; }
         this.albums[albumIndex].songs += 1;
       }
     }

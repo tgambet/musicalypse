@@ -15,11 +15,15 @@ class AudioLibraryRoutes(application: Application) {
 
   implicit val askTimeout: akka.util.Timeout = 2.seconds
 
+  var cacheFolder: String = application.config.getString("music.cacheFolder")
+
   def routes: Route =
     pathPrefix("music") {
       onSuccess((application.libraryActor ? GetLibraries).mapTo[Libraries]) { libraries =>
         Route.seal(libraries.libraries.map(getFromBrowseableDirectory).fold(reject())(_ ~ _))
       }
+    } ~ pathPrefix("cache") {
+      getFromBrowseableDirectory(cacheFolder)
     }
 
 }

@@ -23,14 +23,14 @@ class LibraryScannerTest extends SimpleTest {
       //val metas = scanner.scanLibrary(new File("D:\\Musique\\Metallica"))
       //metas.foreach(println)
 
-      implicit val actorSystem: ActorSystem = ActorSystem()
-      implicit val materializer: ActorMaterializer = ActorMaterializer()
-
-      val sink = Sink.foreach[TrackMetadata](m => println(m))
-      val f: Future[Done] = LibraryScanner.scan(new File("D:\\Musique\\Metallica")).runWith(sink)
-
-      import scala.concurrent.duration._
-      Await.result(f, 10.seconds)
+//      implicit val actorSystem: ActorSystem = ActorSystem()
+//      implicit val materializer: ActorMaterializer = ActorMaterializer()
+//
+//      val sink = Sink.foreach[TrackMetadata](m => println(m))
+//      val f: Future[Done] = LibraryScanner.scan(new File("D:\\Musique\\Metallica")).runWith(sink)
+//
+//      import scala.concurrent.duration._
+//      Await.result(f, 10.seconds)
 
     }
 

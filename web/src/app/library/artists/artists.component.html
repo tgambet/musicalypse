@@ -13,7 +13,8 @@
     <div class="controls-meta" [class.show]="!showSearch">
       <span *ngIf="selectedArtists.length == 0">Select an artist</span>
       <mat-chip-list>
-        <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)">
+        <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
+                  (click)="scrollTo(artist.name)">
           <span class="chip-text">{{artist.name}}</span>
           <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
         </mat-chip>

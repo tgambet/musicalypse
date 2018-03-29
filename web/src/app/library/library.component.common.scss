@@ -135,6 +135,9 @@
         text-overflow: ellipsis;
       }
     }
+    .mat-chip:not(.chip-more) {
+      cursor: pointer;
+    }
     .mat-chip:only-child {
       max-width: 100%;
     }

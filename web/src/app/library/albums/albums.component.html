@@ -16,11 +16,12 @@
     <div class="controls-meta" [class.show]="!showSearch">
       <span *ngIf="selectedAlbums.length == 0">Select an album</span>
       <mat-chip-list>
-        <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)">
+        <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
+                  (click)="scrollTo(album.title)">
           <span class="chip-text">{{album.title}}</span>
           <mat-icon matChipRemove (click)="deselectAlbum(album)">cancel</mat-icon>
         </mat-chip>
-        <mat-chip *ngIf="selectedAlbums.length > 2">
+        <mat-chip *ngIf="selectedAlbums.length > 2" class="chip-more">
           {{selectedAlbums.length - 1}} more…
         </mat-chip>
       </mat-chip-list>

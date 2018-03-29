@@ -74,7 +74,7 @@
       li {
         text-align: center;
         cursor: pointer;
-        line-height: calc((100vh - 192px) / 27 );
+        line-height: calc((100vh - 192px) / 27);
       }
     }
   }
@@ -93,7 +93,7 @@
       height: calc(100% - 60px);
       ol {
         li {
-          line-height: calc((100vh - 120px) / 27 );
+          line-height: calc((100vh - 120px) / 27);
         }
       }
     }
@@ -162,7 +162,7 @@
     // margin-left: 1rem;
   }
   .back {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     position: relative;
     z-index: 1;
   }

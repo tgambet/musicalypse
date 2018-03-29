@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 import {Album, Artist, SocketMessage, Track} from '../model';
 import {environment} from '../../environments/environment';
-import * as _ from 'lodash';
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
 import {AudioComponent} from '../audio/audio.component';
 import {HttpSocketClientService} from './http-socket-client.service';
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
+import * as _ from 'lodash';
 
 @Injectable()
 export class LibraryService {
@@ -42,7 +43,8 @@ export class LibraryService {
   private onResetSource = new Subject<void>();
 
   constructor(
-    private httpSocketClient: HttpSocketClientService
+    private httpSocketClient: HttpSocketClientService,
+    private titleService: Title
   ) {
     // this.addTrack(this.a);
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
@@ -307,6 +309,7 @@ export class LibraryService {
   }
 
   private _playTrack(track: Track) {
+    this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`);
     this.audio.setSource(LibraryService.getAudioUrl(track.url));
     window.setTimeout(() => this.audio.play(), 0);
   }

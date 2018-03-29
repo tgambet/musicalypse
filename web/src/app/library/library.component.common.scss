@@ -101,18 +101,57 @@
 }
 
 .controls {
-  //overflow-y: scroll;
+  overflow-y: hidden;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 60px;
-  padding: 0 1rem;
+  padding: 0 0.5rem 0 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;
+  .controls-meta {
+    overflow: auto;
+    white-space: nowrap;
+    height: 60px;
+    width: calc(100% - 80px - 1.5rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    left: 1rem;
+    transform: translateY(60px);
+    transition-property: transform;
+    transition-timing-function: ease;
+    transition-duration: 0.4s;
+    .mat-chip {
+      font-size: 12px;
+      padding: 5px 10px;
+      max-width: calc(50% - 4px);
+      .chip-text {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .mat-chip:only-child {
+      max-width: 100%;
+    }
+    &.show {
+      transform: translateY(0);
+    }
+  }
+
   .search {
     flex-grow: 1;
+    transform: translateY(-60px);
+    transition-property: transform;
+    transition-timing-function: ease;
+    transition-duration: 0.4s;
+    &.show{
+      transform: translateY(0);
+    }
     mat-placeholder {
       mat-icon {
         vertical-align: bottom;
@@ -120,10 +159,15 @@
     }
   }
   .more {
-    margin-left: 1rem;
+    // margin-left: 1rem;
   }
   .back {
     margin-right: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .searchButton {
+    margin-left: 0.5rem;
   }
 }
 

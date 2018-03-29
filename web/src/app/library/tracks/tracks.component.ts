@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
-  styleUrls: ['./tracks.component.scss', '../library.component.common.scss']
+  styleUrls: ['../library.component.common.scss', './tracks.component.scss']
 })
 export class TracksComponent implements OnInit, OnDestroy {
 
@@ -59,6 +59,7 @@ export class TracksComponent implements OnInit, OnDestroy {
     'Z'
   ];
 
+  showSearch = false;
   search = '';
   tracks: Track[] = [];
   filteredTracks: Track[] = [];

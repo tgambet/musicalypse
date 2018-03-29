@@ -1,15 +1,32 @@
 <div class="wrapper">
   <div class="controls divider fake-scroll-y">
-    <mat-form-field floatLabel="never" class="search">
-      <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
+    <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
+      <input #searchInput matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
-        Search
+        Search an artist
       </mat-placeholder>
       <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
+    <div class="controls-meta" [class.show]="!showSearch">
+      <span *ngIf="selectedArtists.length == 0">Select an artist</span>
+      <mat-chip-list>
+        <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)">
+          <span class="chip-text">{{artist.name}}</span>
+          <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
+        </mat-chip>
+        <mat-chip *ngIf="selectedArtists.length > 2">
+          {{selectedArtists.length - 1}} more…
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <button mat-button mat-icon-button
+            (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"
+            class="searchButton">
+      <mat-icon>search</mat-icon>
+    </button>
     <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="moreArtistMenu">

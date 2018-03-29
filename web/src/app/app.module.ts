@@ -73,6 +73,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    Material.MatChipsModule,
     Material.MatRadioModule,
     Material.MatSlideToggleModule,
     Material.MatGridListModule,

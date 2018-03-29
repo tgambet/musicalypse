@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-artists',
   templateUrl: './artists.component.html',
-  styleUrls: ['./artists.component.scss', '../library.component.common.scss']
+  styleUrls: ['../library.component.common.scss', './artists.component.scss']
 })
 export class ArtistsComponent implements OnInit, OnDestroy {
 
@@ -50,6 +50,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     'Z'
   ];
 
+  showSearch = false;
   search = '';
   artists: Artist[] = [];
   filteredArtists: Artist[] = [];
@@ -101,6 +102,13 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     if (!_.isEqual(this.selectedArtists, [artist])) {
       this.selectedArtists = [artist];
       this.onSelectionChangeSource.next([artist]);
+    }
+  }
+
+  deselectArtist(artist: Artist) {
+    if (_.includes(this.selectedArtists, artist)) {
+      this.selectedArtists = _.filter(this.selectedArtists, a => a !== artist);
+      this.onSelectionChangeSource.next(this.selectedArtists);
     }
   }
 

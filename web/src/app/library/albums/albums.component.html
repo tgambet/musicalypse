@@ -3,16 +3,33 @@
     <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-form-field floatLabel="never" class="search">
-      <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
+    <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
+      <input matInput #searchInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
-        Search
+        Search an album
       </mat-placeholder>
       <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
+    <div class="controls-meta" [class.show]="!showSearch">
+      <span *ngIf="selectedAlbums.length == 0">Select an album</span>
+      <mat-chip-list>
+        <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)">
+          <span class="chip-text">{{album.title}}</span>
+          <mat-icon matChipRemove (click)="deselectAlbum(album)">cancel</mat-icon>
+        </mat-chip>
+        <mat-chip *ngIf="selectedAlbums.length > 2">
+          {{selectedAlbums.length - 1}} more…
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <button mat-button mat-icon-button
+            (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"
+            class="searchButton">
+      <mat-icon>search</mat-icon>
+    </button>
     <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="moreAlbumMenu">

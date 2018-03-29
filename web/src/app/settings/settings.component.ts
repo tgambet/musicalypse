@@ -6,8 +6,8 @@ import {FolderComponent} from '../dialogs/folder/folder.component';
 import {LibraryService} from '../services/library.service';
 import {HttpSocketClientService} from '../services/http-socket-client.service';
 import {ConfirmComponent} from '../dialogs/confirm/confirm.component';
-import * as _ from 'lodash';
 import {LoaderService} from '../services/loader.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-settings',

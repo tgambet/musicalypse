@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
-  styleUrls: ['./albums.component.scss', '../library.component.common.scss']
+  styleUrls: ['../library.component.common.scss', './albums.component.scss']
 })
 export class AlbumsComponent implements OnInit, OnDestroy {
 
@@ -56,6 +56,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   @Input('artistsComponent')
   artistsComponent: ArtistsComponent;
 
+  showSearch = false;
   search = '';
   albums: Album[] = [];
   filteredAlbums: Album[] = [];
@@ -115,6 +116,13 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     if (!_.isEqual(this.selectedAlbums, [album])) {
       this.selectedAlbums = [album];
       this.onSelectionChangeSource.next([album]);
+    }
+  }
+
+  deselectAlbum(album: Album) {
+    if (_.includes(this.selectedAlbums, album)) {
+      this.selectedAlbums = _.filter(this.selectedAlbums, a => a !== album);
+      this.onSelectionChangeSource.next(this.selectedAlbums);
     }
   }
 

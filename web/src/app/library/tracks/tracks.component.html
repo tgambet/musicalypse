@@ -3,16 +3,24 @@
     <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-form-field floatLabel="never" class="search">
-      <input matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
+    <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
+      <input matInput #searchInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
-        Search
+        Search a track
       </mat-placeholder>
       <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
+    <div class="controls-meta" [class.show]="!showSearch">
+      Total tracks: {{tracks.length}}
+    </div>
+    <button mat-button mat-icon-button
+            (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"
+            class="searchButton">
+      <mat-icon>search</mat-icon>
+    </button>
     <button mat-button mat-icon-button
             class="more"
             [matMenuTriggerFor]="Track">

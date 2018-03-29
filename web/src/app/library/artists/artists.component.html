@@ -18,7 +18,7 @@
           <span class="chip-text">{{artist.name}}</span>
           <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
         </mat-chip>
-        <mat-chip *ngIf="selectedArtists.length > 2">
+        <mat-chip *ngIf="selectedArtists.length > 2" class="chip-more">
           {{selectedArtists.length - 1}} more…
         </mat-chip>
       </mat-chip-list>

@@ -110,6 +110,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       .via(updateTracksFlow)
   }
 
+  // https://github.com/mpatric/mp3agic-examples/blob/master/src/main/java/com/mpatric/mp3agic/app/Mp3Pics.java
+
   private def writeCoverToCacheFile(cover: Array[Byte], mimeType: String, metadata: TrackMetadata): File = {
 
     assert(metadata.artist.isDefined, "No artist tag found! Cannot create an image for this file. " + metadata.location)
@@ -135,7 +137,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
       new File(cacheFolder)
         .toPath
-        .resolve(toCompressedString(metadata.artist.get) + "-" + toCompressedString(metadata.album.get) + extension)
+        .resolve(toCompressedString(metadata.albumArtist.getOrElse(metadata.artist.get)) + "-" + toCompressedString(metadata.album.get) + extension)
         .toAbsolutePath
         .toFile
     }

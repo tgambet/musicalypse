@@ -19,14 +19,16 @@ trait SPAWebServer extends WebServer { self: WebServer =>
             RejectionHandler.newBuilder()
               .handleNotFound {
                 if (accept.contains("text/html") || accept.contains("*/*")) {
-                  getFromResource("dist/index.html")
+                  respondWithHeader(RawHeader("Cache-Control", "no-cache")) {
+                    getFromResource("dist/index.html")
+                  }
                 } else {
                   complete(StatusCodes.NotFound, "The requested resource could not be found.")
                 }
               }
               .result()
-          respondWithHeader(RawHeader("Cache-Control", "max-age=86400")) {
-            handleRejections(serveIndexIfNotFound) {
+          handleRejections(serveIndexIfNotFound) {
+            respondWithHeader(RawHeader("Cache-Control", "max-age=86400")) {
               getFromResourceDirectory("dist")
             }
           }

@@ -2,6 +2,7 @@ package net.creasource.web
 
 import java.io.File
 
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.settings.RoutingSettings
@@ -35,7 +36,11 @@ class AudioLibraryRoutes(application: Application) {
         Route.seal(libraries.libraries.map(getFromBrowseableDirectory).fold(reject())(_ ~ _))
       }
     } ~ pathPrefix("cache") {
-      getFromBrowseableDirectory(cacheFolder)
+      respondWithHeader(RawHeader("Cache-Control", "max-age=604800")) {
+        encodeResponse {
+          getFromBrowseableDirectory(cacheFolder)
+        }
+      }
     }
 
 }

@@ -1,6 +1,7 @@
 package net.creasource.http
 
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 
@@ -24,8 +25,10 @@ trait SPAWebServer extends WebServer { self: WebServer =>
                 }
               }
               .result()
-          handleRejections(serveIndexIfNotFound) {
-            getFromResourceDirectory("dist")
+          respondWithHeader(RawHeader("Cache-Control", "max-age=86400")) {
+            handleRejections(serveIndexIfNotFound) {
+              getFromResourceDirectory("dist")
+            }
           }
         }
       } ~ super.routes

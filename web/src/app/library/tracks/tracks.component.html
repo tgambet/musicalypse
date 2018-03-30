@@ -31,11 +31,11 @@
         <mat-icon>playlist_add</mat-icon>
         <span>Add all to current playlist</span>
       </button>
-      <button mat-menu-item (click)="sortAlphabetically()">
+      <button mat-menu-item (click)="sortAlphabetically()" [disabled]="sortedAlphabetically">
         <mat-icon>sort_by_alpha</mat-icon>
         <span>Sort alphabetically</span>
       </button>
-      <button mat-menu-item (click)="sortByFilename()">
+      <button mat-menu-item (click)="sortByFilename()" [disabled]="!sortedAlphabetically">
         <mat-icon>sort</mat-icon>
         <span>Sort by file name</span>
       </button>

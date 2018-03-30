@@ -22,7 +22,7 @@ $dark-theme: mat-dark-theme(
 $blue-theme:  (
   primary: mat-palette($mat-orange, 600),
   accent: mat-palette($mat-light-blue),
-  warn: mat-palette($mat-red),
+  warn: mat-palette($mat-deep-orange, A200),
   is-dark: true,
   foreground: (
     base:              white,

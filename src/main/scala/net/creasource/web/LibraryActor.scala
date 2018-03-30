@@ -1,9 +1,9 @@
 package net.creasource.web
 
-import java.io.{File, FileWriter, RandomAccessFile}
+import java.io.{File, RandomAccessFile}
 
 import akka.NotUsed
-import akka.actor.{Actor, ActorLogging, Props, Stash}
+import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
 import akka.stream.scaladsl.{Flow, Source}
 import net.creasource.audio.LibraryScanner.AlbumCover

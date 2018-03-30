@@ -69,12 +69,10 @@ object LibraryScanner {
 
   def scan(folder: File): Source[(TrackMetadata, AlbumCover), NotUsed] = {
     assert(folder.isDirectory, s"Library folder $folder is not a directory")
-    import scala.concurrent.ExecutionContext.Implicits.global
     StreamConverters
       .fromJavaStream(() => Files.walk(folder.toPath))
       .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
-      //.map(path => getMetadata(path.toFile))
-      .mapAsync(4)(path => Future(getMetadata(path.toFile)))
+      .map(path => getMetadata(path.toFile))
   }
 
 

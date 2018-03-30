@@ -1,5 +1,7 @@
 package net.creasource.web
 
+import java.io.File
+
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.settings.RoutingSettings
@@ -16,6 +18,16 @@ class AudioLibraryRoutes(application: Application) {
   implicit val askTimeout: akka.util.Timeout = 2.seconds
 
   var cacheFolder: String = application.config.getString("music.cacheFolder")
+
+  val cacheFolderFile = new File(cacheFolder)
+
+  if(!cacheFolderFile.exists()) {
+    cacheFolderFile.mkdirs()
+  }
+
+  if (!cacheFolderFile.isDirectory) {
+    throw new IllegalArgumentException(s"Config music.cacheFolder ($cacheFolder) is not a folder!")
+  }
 
   def routes: Route =
     pathPrefix("music") {

@@ -23,7 +23,10 @@
       display: none;
     }
     .avatar {
-      background-color: black;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
       background-size: cover;
       width: 40px;
       height: 40px;

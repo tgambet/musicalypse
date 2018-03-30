@@ -14,7 +14,8 @@
   .artists, .albums, .tracks {
     .mat-list-item {
       .avatar {
-        background-color: black;
+        background-color: mat-color($background, hover);
+        color: mat-color($foreground, disabled-text);
       }
     }
   }

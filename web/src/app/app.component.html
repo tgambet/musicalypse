@@ -40,7 +40,7 @@
       <mat-list>
         <h3 mat-subheader>Navigation</h3>
         <a mat-list-item routerLink="/library" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
-          <mat-icon mat-list-icon>home</mat-icon>
+          <mat-icon mat-list-icon>library_music</mat-icon>
           <span matLine>
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon>
             Library

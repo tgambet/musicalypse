@@ -115,7 +115,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   }
 
   getAvatarStyle(album: Album) {
-    return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url(${album.avatarUrl})`) : '';
+    return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
   }
 
   selectAlbum(album: Album) {

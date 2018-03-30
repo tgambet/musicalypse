@@ -98,7 +98,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   }
 
   getAvatarStyle(artist: Artist) {
-    return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url(${artist.avatarUrl})`) : '';
+    return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
   }
 
   isSelectedArtist(artist: Artist): boolean {

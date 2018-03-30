@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 import {LibraryService} from '../../services/library.service';
 import {AudioComponent} from '../../audio/audio.component';
+import {Track} from '../../model';
 
 @Component({
   selector: 'app-mini-player',
@@ -15,11 +17,16 @@ export class MiniPlayerComponent implements OnInit {
   audio: AudioComponent;
 
   constructor(
-    public library: LibraryService
+    public library: LibraryService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
     this.audio = this.library.audio;
+  }
+
+  getAvatarStyle(track: Track) {
+    return track && track.coverUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${track.coverUrl}")`) : '';
   }
 
 }

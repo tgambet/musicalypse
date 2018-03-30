@@ -20,9 +20,13 @@
     box-sizing: content-box;
     width: 40px;
     height: 40px;
-    background-color: black;
     margin-right: 1rem;
     border-radius: 50%;
+    background-size: cover;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 
   .meta {

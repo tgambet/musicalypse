@@ -81,4 +81,10 @@
     outline: 2px dashed mat-color($foreground, icon);
   }
 
+  mat-nav-list, nav {
+    .active {
+      color: mat-color($warn);
+    }
+  }
+
 }

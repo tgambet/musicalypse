@@ -1,6 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
+import {DomSanitizer} from '@angular/platform-browser';
 import {MatSnackBar} from '@angular/material';
 import {HttpSocketClientService} from './http-socket-client.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -13,8 +14,10 @@ export class SettingsService implements OnDestroy {
   libraryFolders: string[] = [];
 
   themes: Theme[] = [
-    {name: 'Dark Theme', cssClass: 'dark-theme'},
-    {name: 'Light Theme', cssClass: 'light-theme'}
+    {name: 'Dark Theme', cssClass: 'dark-theme', color: '#212121'},
+    {name: 'Light Theme', cssClass: 'light-theme', color: '#F5F5F5'},
+    {name: 'Blue Theme', cssClass: 'blue-theme', color: '#263238'},
+    {name: 'Pink Theme', cssClass: 'pink-theme', color: '#F8BBD0'}
   ];
 
   featuredThemes: Theme[] = this.themes;
@@ -29,6 +32,7 @@ export class SettingsService implements OnDestroy {
 
   constructor(
     private overlayContainer: OverlayContainer,
+    private sanitizer: DomSanitizer,
     public httpSocketClient: HttpSocketClientService,
     public snackBar: MatSnackBar,
     public loader: LoaderService
@@ -40,6 +44,10 @@ export class SettingsService implements OnDestroy {
     if (this.uploadSubscription) {
       this.uploadSubscription.unsubscribe();
     }
+  }
+
+  getThemeStyle(theme: Theme) {
+    return this.sanitizer.bypassSecurityTrustStyle(`background-color: ${theme.color}`);
   }
 
   isUploading(): boolean {
@@ -142,4 +150,5 @@ export class SettingsService implements OnDestroy {
 export class Theme {
   name: string;
   cssClass: string;
+  color: string;
 }

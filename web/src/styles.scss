@@ -7,18 +7,94 @@ $typo: mat-typography-config(
 
 @include mat-core($typo);
 
-$my-theme-warn: mat-palette($mat-deep-orange, A200);
-
 $light-theme: mat-light-theme(
-    mat-palette($mat-blue),
+    mat-palette($mat-blue, 600, 100, 900),
     mat-palette($mat-orange),
-    $my-theme-warn
+    mat-palette($mat-deep-orange, A200)
 );
 
 $dark-theme: mat-dark-theme(
     mat-palette($mat-light-green),
     mat-palette($mat-light-blue),
-    $my-theme-warn
+    mat-palette($mat-deep-orange, A200)
+);
+
+$blue-theme:  (
+  primary: mat-palette($mat-orange, 600),
+  accent: mat-palette($mat-light-blue),
+  warn: mat-palette($mat-red),
+  is-dark: true,
+  foreground: (
+    base:              white,
+    divider:           $light-dividers,
+    dividers:          $light-dividers,
+    disabled:          $light-disabled-text,
+    disabled-button:   rgba(white, 0.3),
+    disabled-text:     $light-disabled-text,
+    hint-text:         $light-disabled-text,
+    secondary-text:    $light-secondary-text,
+    icon:              white,
+    icons:             white,
+    text:              white,
+    slider-min:        white,
+    slider-off:        rgba(white, 0.3),
+    slider-off-active: rgba(white, 0.3),
+  ),
+  background: (
+    status-bar: black,
+    app-bar:    map_get($mat-blue-grey, 900),
+    background: map_get($mat-blue-grey, 800),
+    hover:      rgba(white, 0.04),
+    card:       map_get($mat-blue-grey, 800),
+    dialog:     map_get($mat-blue-grey, 800),
+    disabled-button: rgba(white, 0.12),
+    raised-button: map-get($mat-blue-grey, 800),
+    focused-button: $light-focused,
+    selected-button: map_get($mat-blue-grey, 900),
+    selected-disabled-button: map_get($mat-blue-grey, 800),
+    disabled-button-toggle: black,
+    unselected-chip: map_get($mat-blue-grey, 700),
+    disabled-list-option: black,
+  ),
+);
+
+$pink-theme:  (
+  primary: mat-palette($mat-pink),
+  accent: mat-palette($mat-light-blue),
+  warn: mat-palette($mat-red),
+  is-dark: false,
+  foreground: (
+    base:              black,
+    divider:           $dark-dividers,
+    dividers:          $dark-dividers,
+    disabled:          $dark-disabled-text,
+    disabled-button:   rgba(black, 0.26),
+    disabled-text:     $dark-disabled-text,
+    hint-text:         $dark-disabled-text,
+    secondary-text:    $dark-secondary-text,
+    icon:              rgba(black, 0.54),
+    icons:             rgba(black, 0.54),
+    text:              rgba(black, 0.87),
+    slider-min:        rgba(black, 0.87),
+    slider-off:        rgba(black, 0.26),
+    slider-off-active: rgba(black, 0.38),
+  ),
+  background: (
+    status-bar: map_get($mat-pink, 300),
+    app-bar:    map_get($mat-pink, 100),
+    background: map_get($mat-pink, 50),
+    hover:      rgba(black, 0.04),
+    card:       white,
+    dialog:     white,
+    disabled-button: rgba(black, 0.12),
+    raised-button: white,
+    focused-button: $dark-focused,
+    selected-button: map_get($mat-pink, 300),
+    selected-disabled-button: map_get($mat-pink, 400),
+    disabled-button-toggle: map_get($mat-pink, 200),
+    unselected-chip: map_get($mat-pink, 200),
+    disabled-list-option: map_get($mat-pink, 200),
+  ),
 );
 
 @import 'theme';
@@ -42,6 +118,14 @@ $dark-theme: mat-dark-theme(
 .dark-theme {
   @include angular-material-theme($dark-theme);
   @include custom-components-theme($dark-theme);
+}
+.blue-theme {
+  @include angular-material-theme($blue-theme);
+  @include custom-components-theme($blue-theme);
+}
+.pink-theme {
+  @include angular-material-theme($pink-theme);
+  @include custom-components-theme($pink-theme);
 }
 
 body {

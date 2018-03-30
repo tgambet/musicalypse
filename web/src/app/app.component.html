@@ -12,12 +12,12 @@
     <nav *ngIf="!showSidenav">
       <ul>
         <li>
-          <a routerLink="/library" routerLinkActive="warn" class="link" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/library" routerLinkActive="active" class="link" [routerLinkActiveOptions]="{ exact: true }">
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon> Library
           </a>
         </li>
-        <li><a routerLink="/settings" routerLinkActive="warn" class="link">Settings</a></li>
-        <li><a routerLink="/about" routerLinkActive="warn" class="link">About</a></li>
+        <li><a routerLink="/settings" routerLinkActive="active" class="link">Settings</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" class="link">About</a></li>
       </ul>
     </nav>
     <button mat-button mat-icon-button class="theme" (click)="themeChooser = true">
@@ -27,8 +27,8 @@
     <div class="theme-chooser" [ngClass]="themeChooser ? 'visible' : ''" (click)="themeChooser = false">
       <ol>
         <li *ngFor="let theme of settings.featuredThemes">
-          <button mat-icon-button (click)="settings.changeTheme(theme)" ngClass="{{theme.cssClass}}-chooser">
-            <mat-icon *ngIf="settings.currentTheme == theme">check</mat-icon>
+          <button mat-icon-button (click)="settings.changeTheme(theme)" [style]="settings.getThemeStyle(theme)">
+            <mat-icon *ngIf="settings.currentTheme == theme" color="primary">check</mat-icon>
           </button>
         </li>
       </ol>
@@ -37,24 +37,24 @@
 
   <mat-sidenav-container>
     <mat-sidenav #sidenav [mode]="'over'">
-      <mat-list>
+      <mat-nav-list>
         <h3 mat-subheader>Navigation</h3>
-        <a mat-list-item routerLink="/library" routerLinkActive="warn" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
+        <a mat-list-item routerLink="/library" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
           <mat-icon mat-list-icon>library_music</mat-icon>
           <span matLine>
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon>
             Library
           </span>
         </a>
-        <a mat-list-item routerLink="/settings" routerLinkActive="warn" (click)="sidenav.close()">
+        <a mat-list-item routerLink="/settings" routerLinkActive="active" (click)="sidenav.close()">
           <mat-icon mat-list-icon>settings</mat-icon>
           <span matLine>Settings</span>
         </a>
-        <a mat-list-item routerLink="/about" routerLinkActive="warn" (click)="sidenav.close()">
+        <a mat-list-item routerLink="/about" routerLinkActive="active" (click)="sidenav.close()">
           <mat-icon mat-list-icon>info</mat-icon>
           <span matLine>About</span>
         </a>
-      </mat-list>
+      </mat-nav-list>
     </mat-sidenav>
     <router-outlet></router-outlet>
   </mat-sidenav-container>

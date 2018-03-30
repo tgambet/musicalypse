@@ -14,7 +14,7 @@
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
-      Total tracks: {{tracks.length}}
+      <span>Total tracks: {{tracks.length}}</span>
     </div>
     <button mat-button mat-icon-button
             (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"

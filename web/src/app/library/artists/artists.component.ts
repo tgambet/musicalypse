@@ -160,11 +160,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     this.filter();
   }
 
-  sortBySongs() {
-    this.artists = _.sortBy(_.sortBy(this.artists, 'name').reverse(), 'songs').reverse();
-    this.filter();
-  }
-
   filter() {
     if (this.search !== '') {
       this.filteredArtists = _.filter(this.artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));

@@ -1,6 +1,6 @@
 .controls .controls-meta {
-  left: calc(40px + 1.5rem);
-  width: calc(100% - 120px - 2rem);
+  left: calc(40px + 2rem);
+  width: calc(100% - 120px - 2.5rem);
 }
 
 @media screen and (min-width: 599px){
@@ -12,8 +12,8 @@
 
 @media screen and (min-width: 959px){
   .controls .controls-meta {
-    left: calc(40px + 1.5rem);
-    width: calc(100% - 120px - 2rem);
+    left: calc(40px + 2rem);
+    width: calc(100% - 120px - 2.5rem);
   }
 }
 

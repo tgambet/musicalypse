@@ -11,7 +11,7 @@
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
-      <span *ngIf="selectedArtists.length == 0">Select an artist</span>
+      <span class="select-text" *ngIf="selectedArtists.length == 0">Select an artist (or <a (click)="selectAll()">select all</a>)</span>
       <mat-chip-list>
         <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                   (click)="scrollTo(artist.name)">
@@ -28,25 +28,25 @@
             class="searchButton">
       <mat-icon>search</mat-icon>
     </button>
-    <button mat-button mat-icon-button
-            class="more"
-            [matMenuTriggerFor]="moreArtistMenu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #moreArtistMenu>
-      <button mat-menu-item (click)="selectAll()">
-        <mat-icon>select_all</mat-icon>
-        <span>Select all</span>
-      </button>
-      <button mat-menu-item (click)="sortAlphabetically()">
-        <mat-icon>sort_by_alpha</mat-icon>
-        <span>Sort alphabetically</span>
-      </button>
-      <button mat-menu-item (click)="sortBySongs()">
-        <mat-icon>sort</mat-icon>
-        <span>Sort by number of songs</span>
-      </button>
-    </mat-menu>
+    <!--<button mat-button mat-icon-button-->
+            <!--class="more"-->
+            <!--[matMenuTriggerFor]="moreArtistMenu">-->
+      <!--<mat-icon>more_vert</mat-icon>-->
+    <!--</button>-->
+    <!--<mat-menu #moreArtistMenu>-->
+      <!--<button mat-menu-item (click)="selectAll()">-->
+        <!--<mat-icon>select_all</mat-icon>-->
+        <!--<span>Select all</span>-->
+      <!--</button>-->
+      <!--<button mat-menu-item (click)="sortAlphabetically()">-->
+        <!--<mat-icon>sort_by_alpha</mat-icon>-->
+        <!--<span>Sort alphabetically</span>-->
+      <!--</button>-->
+      <!--<button mat-menu-item (click)="sortBySongs()">-->
+        <!--<mat-icon>sort</mat-icon>-->
+        <!--<span>Sort by number of songs</span>-->
+      <!--</button>-->
+    <!--</mat-menu>-->
   </div>
   <div #list class="list-wrapper" (swipeleft)="onNext.emit()">
     <mat-list class="artists" dense>

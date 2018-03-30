@@ -177,11 +177,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     this.filter();
   }
 
-  sortBySongs() {
-    this.albums = _.sortBy(_.sortBy(this.albums, 'title').reverse(), 'songs').reverse();
-    this.filter();
-  }
-
   filter() {
     if (this.search !== '') {
       this.filteredAlbums = _.filter(this.albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));

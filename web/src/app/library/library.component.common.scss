@@ -119,7 +119,7 @@
     overflow: auto;
     white-space: nowrap;
     height: 60px;
-    width: calc(100% - 80px - 1.5rem);
+    width: calc(100% - 40px - 2rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -129,6 +129,10 @@
     transition-property: transform;
     transition-timing-function: ease;
     transition-duration: 0.4s;
+    a {
+      text-decoration: underline;
+      cursor: pointer;
+    }
     .mat-chip {
       font-size: 12px;
       padding: 5px 10px;
@@ -169,12 +173,12 @@
     // margin-left: 1rem;
   }
   .back {
-    margin-right: 0.5rem;
+    margin-right: 1rem;
     position: relative;
     z-index: 1;
   }
   .searchButton {
-    margin-left: 0.5rem;
+    margin-left: 1rem;
   }
 }
 

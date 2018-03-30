@@ -3,7 +3,7 @@
 # compiled output
 /resources/dist
 /tmp
-/out-tsc
+dist/out-tsc
 
 # dependencies
 /node_modules

@@ -148,9 +148,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     img {
-      align-self: center;
       max-height: 100%;
+    }
+    mat-icon {
+      font-size: 130px;
+      height: 130px;
+      width: 130px;
+      line-height: 130px;
     }
   }
 }

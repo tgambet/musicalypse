@@ -7,6 +7,7 @@ import {HttpSocketClientService} from './http-socket-client.service';
 import {Subscription} from 'rxjs/Subscription';
 import {LoaderService} from './loader.service';
 import * as _ from 'lodash';
+import {PersistenceService} from './persistence.service';
 
 @Injectable()
 export class SettingsService implements OnDestroy {
@@ -14,10 +15,10 @@ export class SettingsService implements OnDestroy {
   libraryFolders: string[] = [];
 
   themes: Theme[] = [
-    {name: 'Dark Theme', cssClass: 'dark-theme', color: '#212121'},
-    {name: 'Light Theme', cssClass: 'light-theme', color: '#F5F5F5'},
-    {name: 'Blue Theme', cssClass: 'blue-theme', color: '#263238'},
-    {name: 'Pink Theme', cssClass: 'pink-theme', color: '#F8BBD0'}
+    {name: 'Dark/Green', cssClass: 'dark-theme', color: '#212121'},
+    {name: 'Light/Blue', cssClass: 'light-theme', color: '#F5F5F5'},
+    {name: 'Blue/Orange', cssClass: 'blue-theme', color: '#263238'},
+    {name: 'Pink', cssClass: 'pink-theme', color: '#F8BBD0'}
   ];
 
   featuredThemes: Theme[] = this.themes;
@@ -38,6 +39,15 @@ export class SettingsService implements OnDestroy {
     public loader: LoaderService
   ) {
     overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
+    const theme = PersistenceService.load('theme');
+    if (theme) {
+      this.changeTheme(JSON.parse(theme));
+    }
+    window.addEventListener('storage', e => {
+      if (e.key === 'theme') {
+        this.changeTheme(JSON.parse(e.newValue));
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -113,6 +123,11 @@ export class SettingsService implements OnDestroy {
     this.overlayContainer.getContainerElement().classList.remove(this.currentTheme.cssClass);
     this.overlayContainer.getContainerElement().classList.add(theme.cssClass);
     this.currentTheme = theme;
+    PersistenceService.save('theme', JSON.stringify(theme));
+  }
+
+  isCurrentTheme(theme: Theme): boolean {
+    return _.isEqual(this.currentTheme, theme);
   }
 
   addLibraryFolder(folder: string): Promise<void> {

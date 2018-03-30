@@ -28,7 +28,7 @@
       <ol>
         <li *ngFor="let theme of settings.featuredThemes">
           <button mat-icon-button (click)="settings.changeTheme(theme)" [style]="settings.getThemeStyle(theme)">
-            <mat-icon *ngIf="settings.currentTheme == theme" color="primary">check</mat-icon>
+            <mat-icon *ngIf="settings.isCurrentTheme(theme)" color="primary">check</mat-icon>
           </button>
         </li>
       </ol>

@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  white-space: nowrap;
 
   mat-progress-bar {
     position: absolute;
@@ -33,14 +34,19 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-
+    overflow: hidden;
+    .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .artist {
+      overflow: hidden;
+      text-overflow: ellipsis;
       font-size: 12px;
     }
   }
 
   .controls {
-
     button {
       box-sizing: content-box;
       // border: 1px solid black;

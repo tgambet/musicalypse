@@ -28,6 +28,9 @@
       // border: 1px solid mat-color($foreground, divider);
       background-color: mat-color($background, focused-button);
     }
+    .albumArt {
+      color: mat-color($foreground, disabled-text);
+    }
   }
 
 }

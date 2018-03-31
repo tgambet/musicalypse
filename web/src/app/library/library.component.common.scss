@@ -104,6 +104,35 @@
   }
 }
 
+.mat-chip-list.full-list {
+  padding: 0.5rem 0 0 0.5rem;
+  position: absolute;
+  z-index: 2;
+  top: 60px;
+  width: 100%;
+  display: none;
+  max-height: 0;
+  overflow-y: scroll;
+  .mat-chip {
+    cursor: pointer;
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+    margin-bottom: 0.5rem;
+    max-width: calc(50% - 0.5rem);
+    white-space: nowrap;
+    .chip-text {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.mat-chip-list.full-list.show {
+  display: block;
+  max-height: 50%;
+}
+
 .controls {
   overflow-y: hidden;
   position: absolute;
@@ -115,8 +144,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
   .controls-meta {
-    overflow: auto;
+    overflow: hidden;
     white-space: nowrap;
     height: 60px;
     width: calc(100% - 40px - 2rem);
@@ -137,6 +167,7 @@
       font-weight: 300;
     }
     .mat-chip {
+      cursor: pointer;
       font-size: 12px;
       padding: 5px 10px;
       max-width: calc(50% - 4px);
@@ -146,12 +177,10 @@
         text-overflow: ellipsis;
       }
     }
-    .mat-chip:not(.chip-more) {
-      cursor: pointer;
-    }
     .mat-chip:only-child {
       max-width: 100%;
     }
+
     &.show {
       transform: translateY(0);
     }

@@ -57,6 +57,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   @Input('artistsComponent')
   artistsComponent: ArtistsComponent;
 
+  showChipList = false;
   showSearch = false;
   search = '';
   albums: Album[] = [];
@@ -122,6 +123,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     if (!_.isEqual(this.selectedAlbums, [album])) {
       this.selectedAlbums = [album];
       this.onSelectionChangeSource.next([album]);
+      this.showChipList = false;
     }
   }
 
@@ -129,6 +131,9 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     if (_.includes(this.selectedAlbums, album)) {
       this.selectedAlbums = _.filter(this.selectedAlbums, a => a !== album);
       this.onSelectionChangeSource.next(this.selectedAlbums);
+      if (this.selectedAlbums.length < 3) {
+        this.showChipList = false;
+      }
     }
   }
 
@@ -169,6 +174,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     } else {
       this.selectedAlbums = [];
       this.onSelectionChangeSource.next([]);
+      this.showChipList = false;
     }
   }
 

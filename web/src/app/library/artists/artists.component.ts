@@ -51,6 +51,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     'Z'
   ];
 
+  showChipList = false;
   showSearch = false;
   search = '';
   artists: Artist[] = [];
@@ -109,6 +110,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     if (!_.isEqual(this.selectedArtists, [artist])) {
       this.selectedArtists = [artist];
       this.onSelectionChangeSource.next([artist]);
+      this.showChipList = false;
     }
   }
 
@@ -116,6 +118,9 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     if (_.includes(this.selectedArtists, artist)) {
       this.selectedArtists = _.filter(this.selectedArtists, a => a !== artist);
       this.onSelectionChangeSource.next(this.selectedArtists);
+      if (this.selectedArtists.length < 3) {
+        this.showChipList = false;
+      }
     }
   }
 
@@ -152,6 +157,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     } else {
       this.selectedArtists = [];
       this.onSelectionChangeSource.next([]);
+      this.showChipList = false;
     }
   }
 

@@ -1,4 +1,12 @@
 <div class="wrapper">
+  <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
+    <mat-chip *ngFor="let album of selectedAlbums"
+              (click)="scrollTo(album.title); showChipList = false">
+      <span class="chip-text">{{album.title}}</span>
+      <mat-icon matChipRemove (click)="deselectAlbum(album); $event.stopPropagation()">cancel</mat-icon>
+    </mat-chip>
+    <mat-chip class="remove-all" (click)="deselectAll()">Remove All</mat-chip>
+  </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
       <mat-icon>arrow_back</mat-icon>
@@ -14,14 +22,19 @@
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
-      <span class="select-text" *ngIf="selectedAlbums.length == 0">Select an album (or <a (click)="selectAll()">select all</a>)</span>
+      <span class="select-text" *ngIf="selectedAlbums.length == 0">
+        Select an album or
+        <mat-chip (click)="selectAll()">Select All</mat-chip>
+      </span>
       <mat-chip-list>
         <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
                   (click)="scrollTo(album.title)">
           <span class="chip-text">{{album.title}}</span>
           <mat-icon matChipRemove (click)="deselectAlbum(album)">cancel</mat-icon>
         </mat-chip>
-        <mat-chip *ngIf="selectedAlbums.length > 2" class="chip-more">
+        <mat-chip *ngIf="selectedAlbums.length > 2"
+                  (click)="showChipList = !showChipList"
+                  class="chip-more">
           {{selectedAlbums.length - 1}} more…
         </mat-chip>
       </mat-chip-list>

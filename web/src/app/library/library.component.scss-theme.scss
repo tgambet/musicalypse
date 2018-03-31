@@ -33,4 +33,11 @@
     }
   }
 
+  .mat-chip-list.full-list {
+    background-color: mat-color($background, dialog);
+    .mat-chip {
+      background-color: mat-color($background, background);
+    }
+  }
+
 }

@@ -1,4 +1,12 @@
 <div class="wrapper">
+  <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
+    <mat-chip *ngFor="let artist of selectedArtists"
+              (click)="scrollTo(artist.name); showChipList = false">
+      <span class="chip-text">{{artist.name}}</span>
+      <mat-icon matChipRemove (click)="deselectArtist(artist); $event.stopPropagation()">cancel</mat-icon>
+    </mat-chip>
+    <mat-chip class="remove-all" (click)="deselectAll()">Remove All</mat-chip>
+  </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
       <input #searchInput matInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
@@ -11,14 +19,19 @@
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
-      <span class="select-text" *ngIf="selectedArtists.length == 0">Select an artist (or <a (click)="selectAll()">select all</a>)</span>
+      <span class="select-text" *ngIf="selectedArtists.length == 0">
+        Select an artist or
+        <mat-chip (click)="selectAll()">Select All</mat-chip>
+      </span>
       <mat-chip-list>
         <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                   (click)="scrollTo(artist.name)">
           <span class="chip-text">{{artist.name}}</span>
           <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
         </mat-chip>
-        <mat-chip *ngIf="selectedArtists.length > 2" class="chip-more">
+        <mat-chip *ngIf="selectedArtists.length > 2"
+                  (click)="showChipList = !showChipList"
+                  class="chip-more">
           {{selectedArtists.length - 1}} more…
         </mat-chip>
       </mat-chip-list>

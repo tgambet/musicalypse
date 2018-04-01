@@ -64,7 +64,7 @@
         <mat-radio-group>
           <mat-radio-button *ngFor="let theme of settings.themes"
                             [value]="theme.cssClass"
-                            [checked]="settings.currentTheme == theme"
+                            [checked]="settings.isCurrentTheme(theme)"
                             (change)="settings.changeTheme(theme)"
                             color="primary">
             {{theme.name}}

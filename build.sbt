@@ -89,6 +89,10 @@ lazy val root = (project in file(".")).
     },
     mappings in Universal ++= jreMappings.value,
 
+    javaOptions in Universal ++= Seq(
+      "-java-home ${app_home}/../jre"
+    ),
+
     launch4j := {
       val log = streams.value.log
       log.info(file(".").getAbsoluteFile.toString)
@@ -117,8 +121,8 @@ lazy val root = (project in file(".")).
 
     wixFeatures += WindowsFeature(
       id="Shortcut",
-      title="My Project's shortcut",
-      desc="Adds a shortcut somewhere?",
+      title="Start menu shortcut",
+      desc="Adds a shortcut to Windows start menu.",
       components = Seq(AddShortCuts(Seq("musicalypse.exe")))
     ),
 

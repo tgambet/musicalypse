@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>console</headerType>
+  <jar>lib\musicalypse_0.1.jar</jar>
+  <outfile>target\musicalypse.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest>l4j.manifest.xml</manifest>
+  <icon></icon>
+  <singleInstance>
+    <mutexName>Musicalypse</mutexName>
+    <windowTitle>Musicalypse</windowTitle>
+  </singleInstance>
+  <jre>
+    <path>jre\</path>
+    <bundledJre64Bit>true</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+    <opt>-Dmusic.cacheFolder=%APPDATA%\musicalypse\cache -Dmusic.uploadFolder=%APPDATA%\musicalypse\uploads</opt>
+  </jre>
+</launch4jConfig>

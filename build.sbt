@@ -1,3 +1,7 @@
+import com.typesafe.sbt.packager.windows.{AddShortCuts, WindowsFeature}
+import NativePackagerHelper._
+import scala.sys.process._
+
 import scala.sys.process.Process
 
 lazy val akkaHttpVersion = "10.1.0-RC2"
@@ -5,12 +9,14 @@ lazy val akkaVersion    = "2.5.11"
 
 val ng = inputKey[Int]("The angular-cli command.")
 val ngBuild = taskKey[Int]("ng build -prod -aot.")
+val jreMappings = taskKey[Seq[(File, String)]]("JRE Mappings for Universal plugin")
+val launch4j = taskKey[Int]("launch4j")
 
 lazy val root = (project in file(".")).
   settings(
     name            := "Musicalypse",
     version         := "0.1",
-    licenses        := Seq("Unlicense" -> new URL("http://unlicense.org/")),
+    licenses        := Seq("MIT" -> new URL("https://choosealicense.com/licenses/mit/")),
     organization    := "net.creasource",
     scalaVersion    := "2.12.4",
     scalacOptions   := Seq("-unchecked", "-deprecation", "-feature"),
@@ -58,5 +64,62 @@ lazy val root = (project in file(".")).
         throw new Exception("Build failed!")
       exitCode
     },
-    stage := stage.dependsOn(ngBuild).value
+    // stage := stage.dependsOn(ngBuild).value,
+    packageSrc in Compile := (packageSrc in Compile).dependsOn(ngBuild).value,
+
+    // https://www.scala-sbt.org/sbt-native-packager/formats/universal.html#filter-remove-mappings
+    // we specify the name for our fat jar
+    assemblyJarName in assembly := name.value.toLowerCase + "_" + version.value + ".jar",
+    // removes all jar mappings in universal and appends the fat jar
+    mappings in Universal := {
+      val universalMappings = (mappings in Universal).value
+      val fatJar = (assembly in Compile).value
+      val filtered = universalMappings filter {
+        case (_, n) => !n.endsWith(".jar")
+      }
+      filtered :+ (fatJar -> ("lib/" + fatJar.getName))
+    },
+    // the bash scripts classpath only needs the fat jar
+    scriptClasspath := Seq((assemblyJarName in assembly).value),
+    // Copy the jre folder for bundling with the exe
+    jreMappings := {
+      val dir = file("C:\\Program Files\\Java\\jre1.8.0_161")
+      val jreMappings = (dir ** "*") pair (f => relativeTo(dir)(f).map("jre/" + _))
+      jreMappings
+    },
+    mappings in Universal ++= jreMappings.value,
+
+    launch4j := {
+      val log = streams.value.log
+      log.info(file(".").getAbsoluteFile.toString)
+      s"launch4j.exe ${file(".").getAbsoluteFile.toString}/l4j.xml".!
+    },
+
+    mappings in Universal := {
+      val universalMappings = (mappings in Universal).value
+      if ((target.value / "musicalypse.exe").exists())
+        universalMappings :+ (target.value / "musicalypse.exe" -> "musicalypse.exe")
+      else
+        universalMappings
+    },
+
+    stage := stage.dependsOn(launch4j).value,
+    packageBin in Windows := (packageBin in Windows).dependsOn(launch4j).value,
+
+    // general package information (can be scoped to Windows)
+    maintainer := "Thomas Gambet <thomas.gambet@gmail.com>",
+    packageSummary := "Musicalypse",
+    packageDescription := """An HTML5 audio player.""",
+
+    // wix build information
+    wixProductId := "237e6cfb-fdc6-4727-acee-4ab6f9279aff",
+    wixProductUpgradeId := "3abe2b39-796b-48f3-a0ab-91163f263828",
+
+    wixFeatures += WindowsFeature(
+      id="Shortcut",
+      title="My Project's shortcut",
+      desc="Adds a shortcut somewhere?",
+      components = Seq(AddShortCuts(Seq("musicalypse.exe")))
+    ),
+
   ).enablePlugins(JavaAppPackaging)

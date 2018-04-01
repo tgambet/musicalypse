@@ -1,7 +1,4 @@
-# Akka-Http Angular
-
-This project provides the seed for developing an Angular application backed by akka-http.
-It is set up for deployment on Heroku.
+# Musicalypse
 
 The following documentation is being worked on.
 
@@ -61,6 +58,8 @@ Main file
 
 sbt compile stage
 
+install launch4j and edit env path
+
 ## Deploy
 
 Buildpacks
@@ -81,4 +80,4 @@ TsLint
 
 ## License
 
-Unlicense
+MIT

@@ -94,8 +94,7 @@ lazy val root = (project in file(".")).
     ),
 
     launch4j := {
-      val log = streams.value.log
-      log.info(file(".").getAbsoluteFile.toString)
+      // val log = streams.value.log
       s"launch4j.exe ${file(".").getAbsoluteFile.toString}/l4j.xml".!
     },
 
@@ -107,7 +106,7 @@ lazy val root = (project in file(".")).
         universalMappings
     },
 
-    stage := stage.dependsOn(launch4j).value,
+    // stage := stage.dependsOn(launch4j).value,
     packageBin in Windows := (packageBin in Windows).dependsOn(launch4j).value,
 
     // general package information (can be scoped to Windows)

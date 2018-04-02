@@ -24,7 +24,8 @@
     "electron:serve": "npm run tsc:main && npm-run-all --parallel web:serve electron:serve_",
     "electron:serve_": "wait-on http-get://localhost:4200 && electron . --serve",
     "electron:build": "npm-run-all --parallel tsc:main ng:build:prod",
-    "electron:stage": ""
+    "electron:stage": "",
+    "heroku-postbuild": "npm run ng:build:prod"
   },
   "private": true,
   "dependencies": {

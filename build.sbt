@@ -65,7 +65,7 @@ lazy val root = (project in file(".")).
       exitCode
     },
     // stage := stage.dependsOn(ngBuild).value,
-    packageSrc in Compile := (packageSrc in Compile).dependsOn(ngBuild).value,
+    // packageSrc in Compile := (packageSrc in Compile).dependsOn(ngBuild).value,
 
     // https://www.scala-sbt.org/sbt-native-packager/formats/universal.html#filter-remove-mappings
     // we specify the name for our fat jar

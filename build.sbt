@@ -37,7 +37,7 @@ lazy val root = (project in file(".")).
       "org.scalatest"     %% "scalatest"            % "3.0.4"         % Test
     ),
     unmanagedResourceDirectories in Compile += baseDirectory.value / "config",
-    unmanagedResourceDirectories in Compile += baseDirectory.value / "web" / "resources",
+    unmanagedResourceDirectories in Compile += target.value / "dist",
 //    ng := {
 //      import complete.DefaultParsers._
 //      val args = spaceDelimited("<arg>").parsed.mkString(" ")

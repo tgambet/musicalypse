@@ -1,0 +1,28 @@
+{
+  "productName": "musicalypse",
+  "directories": {
+    "output": "target/electron/"
+  },
+  "win": {
+    "files": ["electron/*.js", "target/dist/web"],
+    "extraFiles": [
+      {
+        "from": "target/universal/stage",
+        "to": "./"
+      }
+    ],
+    "target": [
+      "portable"
+    ]
+  },
+  "mac": {
+    "target": [
+      "dmg"
+    ]
+  },
+  "linux": {
+    "target": [
+      "AppImage"
+    ]
+  }
+}

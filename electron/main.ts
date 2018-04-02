@@ -27,11 +27,11 @@ function createWindow() {
 
     if (serve) {
         require('electron-reload')(__dirname, {
-            electron: require(`${__dirname}/node_modules/electron`)});
+            electron: require(`${__dirname}/../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({
-            pathname: path.join(__dirname, 'web/resources/dist/index.html'),
+            pathname: path.join(__dirname, '../target/dist/web/index.html'),
             protocol: 'file:',
             slashes: true
         }));

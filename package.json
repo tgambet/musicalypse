@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "author": "Thomas Gambet <thomas.gambet@gmail.com> (https://github.com/tgambet/)",
   "license": "MIT",
-  "main": "electron/main.js",
+  "main": "target/electron/dist/main.js",
   "scripts": {
     "ng": "ng",
     "ng:serve": "ng serve",
@@ -17,22 +17,25 @@
     "sbt:clean": "sbt clean",
     "sbt:compile": "sbt compile",
     "sbt:stage": "sbt stage",
-    "tsc:main": "tsc electron/main.ts",
     "web:run": "npm-run-all ng:build:prod sbt:run",
     "web:serve": "npm-run-all --parallel ng:serve sbt:run",
     "web:build": "npm-run-all ng:build:prod sbt:compile",
     "web:stage": "npm-run-all ng:build:prod sbt:stage",
-    "electron:run": "npm run electron:build && electron .",
-    "electron:serve": "npm run tsc:main && npm-run-all --parallel web:serve electron:serve_",
+    "electron:run": "npm-run-all electron:build && electron .",
+    "electron:run:dev": "npm run electron:tsc && electron .",
+    "electron:serve": "npm run electron:tsc && npm-run-all --parallel web:serve electron:serve_",
     "electron:serve_": "wait-on http-get://localhost:4200 && electron . --serve",
-    "electron:build": "npm-run-all --parallel tsc:main ng:build:prod",
+    "electron:build": "npm-run-all --parallel electron:tsc web:stage",
+    "electron:tsc": "tsc --project electron",
     "electron:stage": "",
-    "electron:windows": "electron-builder build --windows --dir",
+    "electron:windows": "electron-builder build --windows",
     "postinstall": "electron-builder install-app-deps",
     "heroku-postbuild": "npm run ng:build:prod"
   },
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "wait-on": "^2.1.0"
+  },
   "devDependencies": {
     "@angular/animations": "^5.2.9",
     "@angular/cdk": "^5.2.4",
@@ -75,7 +78,6 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.8.0",
     "typescript": "~2.6.2",
-    "wait-on": "^2.1.0",
     "zone.js": "^0.8.20"
   },
   "engines": {

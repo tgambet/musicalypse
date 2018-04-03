@@ -3,16 +3,14 @@
   "directories": {
     "output": "target/electron/"
   },
+  "nsis": {
+    "oneClick": false
+  },
   "win": {
-    "files": ["electron/*.js", "target/dist/web"],
-    "extraFiles": [
-      {
-        "from": "target/universal/stage",
-        "to": "./"
-      }
-    ],
+    "files": ["target/electron/dist", "target/dist/web"],
+    "extraFiles": ["target/universal/stage"],
     "target": [
-      "portable"
+      "nsis"
     ]
   },
   "mac": {

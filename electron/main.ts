@@ -1,20 +1,22 @@
-import { app, BrowserWindow, screen } from 'electron';
+import {app, BrowserWindow, screen} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import {ChildProcess} from 'child_process';
 
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-try {
-    require('dotenv').config();
-} catch {
-    console.log('asar');
-}
+// const asar = process.mainModule.filename.indexOf('app.asar') !== -1;
+
+// try {
+//     require('dotenv').config();
+// } catch {
+//     console.log('asar');
+// }
 
 function createWindow() {
 
-    // const electronScreen = screen;
     const size = screen.getPrimaryDisplay().workAreaSize;
 
     // Create the browser window.
@@ -26,12 +28,11 @@ function createWindow() {
     });
 
     if (serve) {
-        require('electron-reload')(__dirname, {
-            electron: require(`${__dirname}/../node_modules/electron`)});
+        require('electron-reload')(__dirname, {electron: require(`${__dirname}/../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({
-            pathname: path.join(__dirname, '../target/dist/web/index.html'),
+            pathname: path.join(__dirname, '../../dist/web/index.html'),
             protocol: 'file:',
             slashes: true
         }));
@@ -50,17 +51,65 @@ function createWindow() {
 
 try {
 
+    let serverProcess: ChildProcess;
+
+    if (!serve) {
+
+        serverProcess = require('child_process')
+            .spawn(
+                'bin\\musicalypse.bat',
+                [],
+                {
+                    cwd: './target/universal/stage',
+                    env: {
+                        'JAVA_OPTS': '-Dmusic.uploadFolder=./uploads'
+                    }
+                }
+            ).addListener('exit', code => {
+                if (code === 1) {
+                    throw Error('Server exited unexpectedly.');
+                }
+            });
+
+        serverProcess.stdout.addListener('data', chunk => {
+           console.log(chunk.toString().replace(/\n$/, ''));
+        });
+
+        serverProcess.stderr.addListener('data', chunk => {
+            console.error(chunk.toString().replace(/\n$/, ''));
+        });
+
+    }
+
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-    app.on('ready', createWindow);
+    app.on('ready', () => {
+        const waitOn = require('wait-on');
+        const opts = {
+            resources: ['http://127.0.0.1:8080'],
+            delay: 0,
+            interval: 200,
+            timeout: 10000,
+            headers: {'Accept': 'text/html'}
+        };
+        waitOn(opts, err => {
+            if (err) { throw err; }
+            createWindow();
+        });
+    });
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {
         // On OS X it is common for applications and their menu bar
         // to stay active until the user quits explicitly with Cmd + Q
         if (process.platform !== 'darwin') {
-            app.quit();
+            if (serverProcess) {
+                serverProcess.stdin.write('\n');
+                serverProcess.on('exit', app.quit);
+            } else {
+                app.quit();
+            }
         }
     });
 
@@ -73,6 +122,5 @@ try {
     });
 
 } catch (e) {
-    // Catch Error
-    // throw e;
+    throw e;
 }

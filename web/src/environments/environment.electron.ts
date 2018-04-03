@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  electron: false,
-  httpPort: 443
+  electron: true,
+  httpPort: 8080
 };

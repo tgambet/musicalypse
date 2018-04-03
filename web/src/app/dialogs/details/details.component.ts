@@ -22,8 +22,8 @@ export class DetailsComponent implements OnInit {
   }
 
   download() {
-    // TODO move getAudioComponent elsewhere. refactor with PlayerComponent.getAudioUrl
-    window.open(LibraryService.getAudioUrl(this.data.track.url), '_blank');
+    // TODO move getAudioComponent elsewhere. refactor with PlayerComponent.resolveUrl
+    window.open(LibraryService.resolveUrl(this.data.track.url), '_blank');
   }
 
 }

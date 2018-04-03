@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
+  electron: false,
   httpPort: 8080
 };

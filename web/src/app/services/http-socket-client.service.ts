@@ -22,14 +22,18 @@ export class HttpSocketClientService implements OnDestroy {
 
   private static getSocketUrl() {
     let socketUrl = '';
-    socketUrl += window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-    socketUrl += window.location.hostname;
-    if (environment.production) {
-      if (window.location.port) {
-        socketUrl += ':' + window.location.port;
-      }
+    if (environment.electron) {
+      socketUrl += 'ws://localhost:' + environment.httpPort;
     } else {
-      socketUrl += ':' + environment.httpPort;
+      socketUrl += window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+      socketUrl += window.location.hostname;
+      if (environment.production) {
+        if (window.location.port) {
+          socketUrl += ':' + window.location.port;
+        }
+      } else {
+        socketUrl += ':' + environment.httpPort;
+      }
     }
     socketUrl += '/socket';
     return socketUrl;
@@ -37,13 +41,17 @@ export class HttpSocketClientService implements OnDestroy {
 
   private static getAPIUrl(path: string) {
     let url = '';
-    url += window.location.protocol + '//' + window.location.hostname;
-    if (environment.production) {
-      if (window.location.port) {
-        url += ':' + window.location.port;
-      }
+    if (environment.electron) {
+      url += 'http://localhost:' + environment.httpPort
     } else {
-      url += ':' + environment.httpPort;
+      url += window.location.protocol + '//' + window.location.hostname;
+      if (environment.production) {
+        if (window.location.port) {
+          url += ':' + window.location.port;
+        }
+      } else {
+        url += ':' + environment.httpPort;
+      }
     }
     url += path;
     return url;

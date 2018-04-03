@@ -51,8 +51,10 @@ export class LibraryService {
     this.onReset = this.onResetSource.asObservable();
   }
 
-  static getAudioUrl(sourceUrl: string) {
-    if (environment.production) {
+  static resolveUrl(sourceUrl: string) {
+    if (environment.electron) {
+      return 'http://localhost:' + environment.httpPort + encodeURI(sourceUrl);
+    } else if (environment.production) {
       return encodeURI(sourceUrl);
     } else {
       return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
@@ -95,7 +97,7 @@ export class LibraryService {
       track.warn = true;
     }
     if (track.coverUrl) {
-      track.coverUrl = LibraryService.getAudioUrl(track.coverUrl);
+      track.coverUrl = LibraryService.resolveUrl(track.coverUrl);
     }
     if (!_.includes(_.map(this.tracks, t => t.url), track.url)) {
       this.tracks.push(track);
@@ -317,7 +319,7 @@ export class LibraryService {
 
   private _playTrack(track: Track) {
     this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`);
-    this.audio.setSource(LibraryService.getAudioUrl(track.url));
+    this.audio.setSource(LibraryService.resolveUrl(track.url));
     window.setTimeout(() => this.audio.play(), 0);
   }
 

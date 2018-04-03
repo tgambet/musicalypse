@@ -28,7 +28,8 @@ function createWindow() {
     });
 
     if (serve) {
-        require('electron-reload')(__dirname, {electron: require(`${__dirname}/../node_modules/electron`)});
+        // dirname is target/electron/dist
+        require('electron-reload')(__dirname, {electron: require(`${__dirname}/../../../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({
@@ -85,18 +86,22 @@ try {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-        const waitOn = require('wait-on');
-        const opts = {
-            resources: ['http://127.0.0.1:8080'],
-            delay: 0,
-            interval: 200,
-            timeout: 10000,
-            headers: {'Accept': 'text/html'}
-        };
-        waitOn(opts, err => {
-            if (err) { throw err; }
+        if (serve) {
             createWindow();
-        });
+        } else {
+            const waitOn = require('wait-on');
+            const opts = {
+                resources: ['http://127.0.0.1:8080/api/libraries/tracks'],
+                delay: 0,
+                interval: 200,
+                timeout: 10000,
+                headers: {'Accept': 'application/json'}
+            };
+            waitOn(opts, err => {
+                if (err) { throw err; }
+                createWindow();
+            });
+        }
     });
 
     // Quit when all windows are closed.
@@ -122,5 +127,6 @@ try {
     });
 
 } catch (e) {
+    app.quit();
     throw e;
 }

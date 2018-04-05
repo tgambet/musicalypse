@@ -25,7 +25,8 @@ function createWindow() {
         x: 0,
         y: 0,
         width: size.width,
-        height: size.height
+        height: size.height,
+        show: false
     });
 
     if (serve) {
@@ -40,7 +41,7 @@ function createWindow() {
         }));
     }
 
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -48,6 +49,10 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         win = null;
+    });
+
+    win.once('ready-to-show', () => {
+        win.show();
     });
 }
 

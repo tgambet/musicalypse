@@ -37,9 +37,11 @@ export class LibraryService {
   shuffle = false;
 
   onTrackAdded: Observable<Track>;
+  onTracksUpdated: Observable<void>;
   onReset: Observable<void>;
 
   private onTrackAddedSource = new Subject<Track>();
+  private onTracksUpdatedSource = new Subject<void>();
   private onResetSource = new Subject<void>();
 
   constructor(
@@ -48,6 +50,7 @@ export class LibraryService {
   ) {
     // this.addTrack(this.a);
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
+    this.onTracksUpdated = this.onTracksUpdatedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
   }
 
@@ -307,6 +310,7 @@ export class LibraryService {
       this.httpSocketClient.get('/api/libraries/tracks').subscribe(
         (tracks: Track[]) => {
           _.forEach(tracks, track => this.addTrack(track));
+          this.onTracksUpdatedSource.next();
           resolve();
         },
         (error) => {

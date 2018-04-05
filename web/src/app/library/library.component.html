@@ -1,6 +1,6 @@
 <mat-progress-bar class="main-loader" mode="indeterminate" *ngIf="loader.isLoading()"></mat-progress-bar>
 <div class="container">
-  <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack">
+  <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack" [class.no-animation]="noAnimation">
     <div class="column a1">
       <app-artists #artistsComponent (onNext)="translateContent(1)"></app-artists>
     </div>

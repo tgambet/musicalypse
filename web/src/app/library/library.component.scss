@@ -1,3 +1,5 @@
+$sideMenuWidth: 44px;
+
 .container {
   position: relative;
   width: 100vw;
@@ -6,6 +8,7 @@
 }
 
 .content {
+  padding-left: $sideMenuWidth;
   position: absolute;
   height: 100%;
   display: flex;
@@ -15,9 +18,12 @@
   transition-duration: 0.4s;
   transition-timing-function: ease;
   overflow-y: hidden;
+  &.no-animation {
+    transition-property: none;
+  }
   .column {
     position: relative;
-    width: 100vw;
+    width: calc(100vw - #{$sideMenuWidth});
     min-height: 420px; // TODO figure out what to do if screen size is below
   }
   .a1, .a2, .a3 {
@@ -29,7 +35,8 @@
   app-mini-player {
     position: absolute;
     bottom: 0;
-    width: 100vw;
+    left: $sideMenuWidth;
+    width: calc(100vw - #{$sideMenuWidth});
     height: 72px;
     transition-property: transform, height;
     transition-duration: 0.4s;
@@ -37,21 +44,21 @@
     overflow: hidden;
   }
   &.t1 {
-    transform: translateX(-100vw);
+    transform: translateX(calc(-100vw + #{$sideMenuWidth}));
     app-mini-player {
-      transform: translateX(100vw);
+      transform: translateX(calc(100vw - #{$sideMenuWidth}));
     }
   }
   &.t2 {
-    transform: translateX(-200vw);
+    transform: translateX(calc(-200vw + 2* #{$sideMenuWidth}));
     app-mini-player {
-      transform: translateX(200vw);
+      transform: translateX(calc(200vw - 2* #{$sideMenuWidth}));
     }
   }
   &.t3 {
-    transform: translateX(-300vw);
+    transform: translateX(calc(-300vw + 3* #{$sideMenuWidth}));
     app-mini-player {
-      transform: translate(200vw, 72px);
+      transform: translate(calc(200vw - 2* #{$sideMenuWidth}), 72px);
     }
     .a1, .a2, .a3 {
       padding-bottom: 0;
@@ -62,7 +69,7 @@
       padding-bottom: 0;
     }
     app-mini-player {
-      transform: translate(200vw, 72px);
+      transform: translate(calc(200vw - 2* #{$sideMenuWidth}), 72px);
       height: 0;
     }
   }
@@ -71,27 +78,27 @@
 @media screen and (min-width: 599px) {
   .content {
     .column {
-      width: 50vw;
+      width: calc(50vw - #{$sideMenuWidth} / 2);
       &.a4 {
-        width: 100vw;
+        width: calc(100vw - #{$sideMenuWidth});
       }
     }
     &.t1 {
-      transform: translateX(-50vw);
+      transform: translateX(calc(-50vw + #{$sideMenuWidth} / 2));
       app-mini-player {
-        transform: translateX(50vw);
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2));
       }
     }
     &.t2 {
-      transform: translateX(-50vw);
+      transform: translateX(calc(-50vw + #{$sideMenuWidth} / 2));
       app-mini-player {
-        transform: translateX(50vw);
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2));
       }
     }
     &.t3 {
-      transform: translateX(-150vw);
+      transform: translateX(calc(-150vw + 1.5 * #{$sideMenuWidth}));
       app-mini-player {
-        transform: translate(50vw, 72px);
+        transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
       }
     }
     &.no-track {
@@ -99,7 +106,7 @@
         padding-bottom: 0;
       }
       app-mini-player {
-        transform: translate(50vw, 72px);
+        transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
         height: 0;
       }
     }
@@ -109,9 +116,9 @@
 @media screen and (min-width: 959px) {
   .content {
     .column {
-      width: 33.33vw;
+      width: calc(33.33vw - #{$sideMenuWidth} / 3);
       &.a4 {
-        width: 66.66vw;
+        width: calc(66.66vw - #{$sideMenuWidth} * 2 / 3);
       }
     }
     &.t1 {
@@ -127,7 +134,7 @@
       }
     }
     &.t3 {
-      transform: translateX(-66.6vw);
+      transform: translateX(calc(-66.6vw + #{$sideMenuWidth} * 2 / 3));
       app-mini-player {
         transform: translate(0, 72px);
       }
@@ -147,9 +154,9 @@
 @media screen and (min-width: 1319px) {
   .content {
     .column {
-      width: 20vw;
+      width: calc(20vw - #{$sideMenuWidth} / 4);
       &.a4 {
-        width: 40vw;
+        width: calc(40vw - #{$sideMenuWidth} / 4);
       }
     }
     .a1, .a2, .a3 {

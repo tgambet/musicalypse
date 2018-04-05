@@ -81,9 +81,18 @@
     outline: 2px dashed mat-color($foreground, icon);
   }
 
-  mat-nav-list, nav {
+  .side-menu {
+    background-color: mat-color($background, app-bar);
+    color: mat-color($foreground, text);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+    mat-icon {
+      padding: 5px;
+    }
+  }
+
+  mat-nav-list {
     .active {
-      color: mat-color($warn) !important;
+      color: mat-color($primary) !important;
     }
   }
 
@@ -94,6 +103,11 @@
     .close:hover {
       background-color: mat-color($warn);
     }
+  }
+
+  mat-toolbar {
+    background-color: mat-color($background, status-bar) !important;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
   }
 
 }

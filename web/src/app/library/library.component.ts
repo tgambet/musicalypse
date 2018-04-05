@@ -1,8 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LibraryService} from '../services/library.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {ArtistsComponent} from './artists/artists.component';
 import {AlbumsComponent} from './albums/albums.component';
+import {Subscription} from 'rxjs/Subscription';
 import {LoaderService} from '../services/loader.service';
 import * as _ from 'lodash';
 
@@ -11,7 +12,7 @@ import * as _ from 'lodash';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.scss']
 })
-export class LibraryComponent implements OnInit {
+export class LibraryComponent implements OnInit, OnDestroy {
 
   @ViewChild('artistsComponent')
   artistsComponent: ArtistsComponent;
@@ -19,9 +20,14 @@ export class LibraryComponent implements OnInit {
   @ViewChild('albumsComponent')
   albumsComponent: AlbumsComponent;
 
+  subscriptions: Subscription[] = [];
+
   urlData: Object = {};
 
   contentTranslation = 0;
+
+  noAnimation = false;
+  animationTimeout;
 
   constructor(
     public library: LibraryService,
@@ -32,12 +38,15 @@ export class LibraryComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  @HostListener('window:resize') onResize() {
+    this.noAnimation = true;
+    clearTimeout(this.animationTimeout);
+    this.animationTimeout = setTimeout(() => this.noAnimation = false, 200);
+  }
 
-    this.loader.load();
-    this.library.updateTracks().then(
-      () => {
-        this.loader.unload();
+  ngOnInit() {
+    this.subscriptions.push(
+      this.library.onTracksUpdated.subscribe(() => {
         this.route.paramMap.subscribe((next: ParamMap) => {
           if (next.has('t')) {
             this.contentTranslation = +next.get('t');
@@ -63,8 +72,7 @@ export class LibraryComponent implements OnInit {
             this.albumsComponent.deselectAll();
           }
         });
-      },
-      (error) => { this.loader.unload(); console.log(error); }
+      })
     );
 
     this.artistsComponent.onSelectionChange.subscribe(artists => {
@@ -91,6 +99,10 @@ export class LibraryComponent implements OnInit {
         this.updateUrl();
       }
     });
+  }
+
+  ngOnDestroy() {
+    _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   updateUrl() {

@@ -68,7 +68,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.library.setAudioComponent(this.audio);
 
-
+    this.loader.load();
+    this.library.updateTracks().then(() => this.loader.unload());
 
     // this.sidenav.open();
     // this.httpSocketClient.openSocket();

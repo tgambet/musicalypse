@@ -1,13 +1,35 @@
 .main-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 450px;
 }
 
-mat-toolbar h1 {
-  font-family: 'Cookie', cursive;
-  font-size: 40px;
+.side-menu {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 44px;
+  z-index: 2;
+  min-height: 380px;
+  button {
+    margin: 4px;
+    box-sizing: content-box;
+  }
+}
+
+mat-toolbar {
+  min-height: 50px;
+  max-height: 50px;
+  z-index: 3;
+  h1 {
+    font-family: 'Cookie', cursive;
+    font-size: 40px;
+  }
 }
 
 mat-sidenav-container {
@@ -15,40 +37,23 @@ mat-sidenav-container {
 }
 
 mat-sidenav {
-  width: 240px;
+  width: 250px;
+  padding-left: 44px;
   a {
     text-decoration: none;
   }
-}
-
-.menu {
-  margin-right: 5px;
 }
 
 .filler {
   flex-grow: 1;
 }
 
-nav {
-  li {
-    display: inline-block;
-    text-transform: uppercase;
-    margin-left: 2rem;
-    font-size: 14px;
-  }
-}
-
-nav li mat-icon,
 mat-sidenav .mat-line mat-icon {
   height: 18px;
   width: 18px;
   line-height: 18px;
   font-size: 18px;
   vertical-align: text-top;
-}
-
-.theme {
-  margin-left: 2rem;
 }
 
 $theme-chooser-height: 80px;
@@ -115,19 +120,6 @@ $theme-chooser-right: 10px;
       line-height: 0;
     }
 
-    .dark-theme-chooser {
-      background-color: black;
-    }
-
-    .light-theme-chooser {
-      background-color: white;
-    }
-  }
-}
-
-@media screen and (max-width: 599px) {
-  mat-toolbar {
-    padding-left: 5px;
   }
 }
 
@@ -137,6 +129,7 @@ $theme-chooser-right: 10px;
     user-select: none;
     -webkit-app-region: drag;
     height: 34px !important;
+    min-height: 34px;
 
     a, button, .electron-buttons, .theme-chooser {
       -webkit-app-region: no-drag;
@@ -148,6 +141,10 @@ $theme-chooser-right: 10px;
     }
   }
 
+  .side-menu {
+    top: 34px;
+  }
+
   .electron-buttons {
     display: flex;
     flex-direction: row;
@@ -156,22 +153,17 @@ $theme-chooser-right: 10px;
     right: 0;
     mat-icon {
       cursor: pointer;
-      padding: 7px 12px;
+      padding: 9px 14px;
       box-sizing: content-box;
-      font-size: 20px;
-      height: 20px;
-      width: 20px;
-      line-height: 20px;
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+      line-height: 16px;
       &.electron-theme {
-        font-size: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-    }
-    & ~ .theme {
-      visibility: hidden;
-      margin-right: 10rem;
     }
   }
 

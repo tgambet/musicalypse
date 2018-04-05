@@ -5,6 +5,7 @@ import {LibraryService} from './services/library.service';
 import {AudioComponent} from './audio/audio.component';
 import {SettingsService} from './services/settings.service';
 import {LoaderService} from './services/loader.service';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,8 @@ import {LoaderService} from './services/loader.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
+
+  private static electron = environment.electron ? (<any>window).require('electron').remote : null;
 
   @ViewChild('sidenav')
   sidenav: MatSidenav;
@@ -22,12 +25,36 @@ export class AppComponent implements OnInit, AfterViewInit {
   themeChooser = false;
   showSidenav: boolean;
 
+  isElectron = environment.electron;
+
+  application = AppComponent;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     public library: LibraryService,
     public settings: SettingsService,
     public loader: LoaderService
   ) {
+  }
+
+  static close() {
+    this.electron.getCurrentWindow().close();
+  }
+
+  static minimize() {
+    this.electron.getCurrentWindow().minimize();
+  }
+
+  static maximize() {
+    this.electron.getCurrentWindow().maximize();
+  }
+
+  static unmaximize() {
+    this.electron.getCurrentWindow().unmaximize();
+  }
+
+  static isMaximized(): boolean {
+    return this.electron.getCurrentWindow().isMaximized();
   }
 
   ngOnInit(): void {

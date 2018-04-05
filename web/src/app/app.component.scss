@@ -130,3 +130,49 @@ $theme-chooser-right: 10px;
     padding-left: 5px;
   }
 }
+
+.electron {
+
+  mat-toolbar {
+    user-select: none;
+    -webkit-app-region: drag;
+    height: 34px !important;
+
+    a, button, .electron-buttons, .theme-chooser {
+      -webkit-app-region: no-drag;
+    }
+
+    h1 {
+      font-family: 'Cookie', cursive;
+      font-size: 24px;
+    }
+  }
+
+  .electron-buttons {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 0;
+    right: 0;
+    mat-icon {
+      cursor: pointer;
+      padding: 7px 12px;
+      box-sizing: content-box;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+      line-height: 20px;
+      &.electron-theme {
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+    & ~ .theme {
+      visibility: hidden;
+      margin-right: 10rem;
+    }
+  }
+
+}

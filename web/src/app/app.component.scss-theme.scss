@@ -87,4 +87,13 @@
     }
   }
 
+  .electron-buttons {
+    :hover {
+      background-color: mat-color($background, hover);
+    }
+    .close:hover {
+      background-color: mat-color($warn);
+    }
+  }
+
 }

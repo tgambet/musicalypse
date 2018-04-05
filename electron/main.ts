@@ -21,6 +21,7 @@ function createWindow() {
 
     // Create the browser window.
     win = new BrowserWindow({
+        frame: false,
         x: 0,
         y: 0,
         width: size.width,
@@ -29,7 +30,7 @@ function createWindow() {
 
     if (serve) {
         // dirname is target/electron/dist
-        require('electron-reload')(__dirname, {electron: require(`${__dirname}/../../../node_modules/electron`)});
+        // require('electron-reload')(__dirname + '/electron', {electron: require(`${__dirname}/../../../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({

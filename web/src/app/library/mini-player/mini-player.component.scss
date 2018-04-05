@@ -45,10 +45,9 @@
   }
 
   .controls {
-    button {
-      box-sizing: content-box;
-      // border: 1px solid black;
-    }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
     .playPause {
       margin: 0 0.5rem;
@@ -64,6 +63,7 @@
       height: 30px;
       width: 30px;
       line-height: 30px;
+      font-size: 0;
       .mat-icon {
         font-size: 20px;
         height: 20px;

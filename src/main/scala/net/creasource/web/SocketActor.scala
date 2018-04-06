@@ -60,15 +60,20 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
       }
 
     case JsonMessage("ScanLibrary", id, _) =>
+      logger.info("Scanning library")
       val scanFuture: Future[Done] = for {
         f1 <- (app.libraryActor ? ScanLibrary)(askTimeout)
                 .mapTo[Source[Track, NotUsed]]
                 .map(_.map(track => JsonMessage("TrackAdded", id, track.toJson).toJson))
-        f2 <- f1.runWith(Sink.foreach(client ! _))
+        f2 <- f1.watch(self).runWith(Sink.foreach(client ! _))
       } yield f2
       scanFuture onComplete {
-        case Success(Done) => client ! JsonMessage("LibraryScanned", id, JsNull).toJson
-        case Failure(t)    => client ! JsonMessage("LibraryScannedFailed", id, JsString(t.getMessage)).toJson
+        case Success(Done) =>
+          logger.info("Library scan succeeded")
+          client ! JsonMessage("LibraryScanned", id, JsNull).toJson
+        case Failure(t)    =>
+          logger.error(t, "Library scan failed")
+          client ! JsonMessage("LibraryScannedFailed", id, JsString(t.getMessage)).toJson
       }
 
     case a @ JsonMessage(_, _, _) =>

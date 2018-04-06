@@ -1,18 +1,23 @@
 package net.creasource.web
 
-import java.io.{File, RandomAccessFile}
+import java.io._
 
-import akka.NotUsed
+import akka.{Done, NotUsed}
 import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
-import akka.stream.scaladsl.{Flow, Source}
+import akka.stream.IOResult
+import akka.stream.scaladsl.{Flow, Framing, Sink, Source, StreamConverters}
+import akka.util.ByteString
 import net.creasource.audio.LibraryScanner.AlbumCover
 import net.creasource.audio.{LibraryScanner, Track, TrackMetadata}
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
+import spray.json._
 
 import scala.collection.JavaConverters._
-import scala.util.Try
+import scala.collection.immutable.Seq
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 object LibraryActor {
 
@@ -38,13 +43,21 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   private val logger = Logging(context.system, this)
 
+  import context.dispatcher
+
   var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
 
   var uploadFolder: String = application.config.getString("music.uploadFolder")
 
   var cacheFolder: String = application.config.getString("music.cacheFolder")
 
-  var tracks: Seq[Track] = Seq.empty
+  var tracksFile: File = new File(cacheFolder + "/tracks")
+
+  var tracks: Seq[Track] = Seq.empty[Track]
+
+  tracksFile.createNewFile()
+
+  loadTracksFromFile()
 
   def receive: Receive = {
 
@@ -73,8 +86,14 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
 
     case ScanLibrary =>
+      import context.dispatcher
       tracks = Seq.empty
-      sender() ! getTrackSource
+      val a: Source[Track, NotUsed] = getTrackSource
+        .watchTermination()((m, f) => {
+          f.onComplete(_ => writeTracksToFile()) // TODO write even if unsuccessful, e.g. aborted ?
+          m
+        })
+      sender() ! a
 
     case GetTracks =>
       sender() ! tracks
@@ -156,6 +175,43 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   private def getUrlFromMetadata(metadata: TrackMetadata, libraryFolder: File): String = {
     "/music/" + libraryFolder.toPath.relativize(new File(metadata.location).toPath).toString.replaceAll("""\\""", "/")
+  }
+
+  def writeTracksToFile(): Unit = {
+    import application.materializer
+    val outputStream: OutputStream = new FileOutputStream(tracksFile)
+    val sink: Sink[ByteString, Future[IOResult]] = StreamConverters.fromOutputStream(() => outputStream, autoFlush = true)
+    val f = Source(tracks).map(t => ByteString(t.toJson.compactPrint + "\n")).runWith(sink)
+    f.onComplete{
+      case Success(result) =>
+        result.status match {
+          case Success(Done) => logger.info("Successfully wrote the tracks file.")
+          case Failure(t) => logger.error(t, "Error writing the tracks file.")
+        }
+        Try(outputStream.close())
+      case Failure(t) =>
+        logger.error(t, "Error writing the tracks file.")
+        Try(outputStream.close())
+    }
+  }
+
+  def loadTracksFromFile(): Unit = {
+    import application.materializer
+    val inputStream: InputStream = new FileInputStream(tracksFile)
+    StreamConverters.fromInputStream(() => inputStream).via(Framing.delimiter(
+      ByteString("\n"), maximumFrameLength = 1000, allowTruncation = false))
+      .map(_.utf8String)
+      .map(_.parseJson.convertTo[Track])
+      .runWith(Sink.foreach(self ! AddTrack(_)))
+      .onComplete{
+        case Success(Done) =>
+          logger.info("Successfully read the tracks file.")
+          Try(inputStream.close())
+        case Failure(t) =>
+          logger.error(t, "Failure reading the tracks file.")
+          // new File("./tracks").delete()
+          Try(inputStream.close())
+      }
   }
 
 }

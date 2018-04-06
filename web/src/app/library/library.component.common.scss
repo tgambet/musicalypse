@@ -109,10 +109,10 @@
   position: absolute;
   z-index: 2;
   top: 60px;
-  width: 100%;
+  width: calc(100% - 6px);
   display: none;
   max-height: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   .mat-chip {
     cursor: pointer;
     margin-left: 0 !important;

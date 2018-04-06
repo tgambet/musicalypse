@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding-left: 50px;
+  padding-left: 44px;
 }
 
 .settings {
@@ -24,7 +24,7 @@
   }
 }
 
-@media screen and (max-width: 599px){
+@media screen and (max-width: 598px){
   .settings {
     // flex-wrap: wrap;
     .c2 {

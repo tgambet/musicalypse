@@ -30,12 +30,13 @@
       </ol>
     </div>
   </mat-toolbar>
+  <mat-progress-bar class="main-loader" mode="indeterminate" [class.show]="loader.isLoading()"></mat-progress-bar>
   <nav class="side-menu">
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
     </button>
     <button mat-icon-button>
-      <mat-icon>library_music</mat-icon>
+      <mat-icon>queue_music</mat-icon>
     </button>
     <button mat-icon-button>
       <mat-icon>schedule</mat-icon>
@@ -44,7 +45,7 @@
       <mat-icon>favorite_border</mat-icon>
     </button>
     <button mat-icon-button>
-      <mat-icon>queue_music</mat-icon>
+      <mat-icon>album</mat-icon>
     </button>
     <button mat-icon-button>
       <mat-icon>mode_edit</mat-icon>

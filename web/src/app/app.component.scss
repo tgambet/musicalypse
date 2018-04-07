@@ -5,6 +5,17 @@
   min-height: 450px;
 }
 
+.main-loader {
+  position: absolute;
+  z-index: 3;
+  height: 3px;
+  top: 50px;
+  display: none;
+  &.show {
+    display: inline-block;
+  }
+}
+
 .side-menu {
   position: absolute;
   top: 50px;

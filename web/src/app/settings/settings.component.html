@@ -6,7 +6,7 @@
       <mat-list>
         <mat-list-item class="hover" *ngFor="let folder of settings.libraryFolders">
           <mat-icon mat-list-icon>folder_open</mat-icon>
-          <span matLine>{{folder}}</span>
+          <span matLine>{{ folder }}</span>
           <button mat-button mat-icon-button (click)="removeFolderDialog(folder)">
             <mat-icon>close</mat-icon>
           </button>
@@ -40,11 +40,11 @@
           <mat-icon>cloud_upload</mat-icon>
         </button>
         <div *ngFor="let file of settings.files" class="file">
-          <span class="name">{{file._file.name}}</span>
+          <span class="name">{{ file._file.name }}</span>
           <span class="progress">
             <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
           </span>
-          <span class="size">{{file._file.size | sgFileSize}}</span>
+          <span class="size">{{ file._file.size | sgFileSize }}</span>
         </div>
       </div>
       <div class="upload-actions">
@@ -53,7 +53,7 @@
           Upload
         </button>
         <button mat-button (click)="settings.isUploading() ? settings.cancelUpload() : settings.clearUploads()" [disabled]="settings.files.length == 0">
-          {{settings.isUploading() ? 'Cancel' : 'Clear'}}
+          {{ settings.isUploading() ? 'Cancel' : 'Clear' }}
         </button>
       </div>
       <mat-divider></mat-divider>
@@ -67,7 +67,7 @@
                             [checked]="settings.isCurrentTheme(theme)"
                             (change)="settings.changeTheme(theme)"
                             color="primary">
-            {{theme.name}}
+            {{ theme.name }}
           </mat-radio-button>
         </mat-radio-group>
       </p>
@@ -75,7 +75,7 @@
       <h3 class="secondary-text">Misc</h3>
       <div>
         <button mat-button (click)="httpSocketClient.isSocketOpen() ? httpSocketClient.closeSocket() : httpSocketClient.openSocket()">
-          <mat-icon>{{httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked'}}</mat-icon>
+          <mat-icon>{{ httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
           <span>WebSocket</span>
         </button>
       </div>

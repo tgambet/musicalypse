@@ -15,7 +15,7 @@
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
       <span class="select-text">
-        Total tracks: {{tracks.length}}
+        Total tracks: {{ tracks.length }}
         <!--TODO: If tracks.length > 300 show warning-->
       </span>
     </div>
@@ -56,8 +56,8 @@
             <span class="track-name" [innerHtml]="track.metadata.title | sgSearch:search"></span>
           </div>
           <div matLine class="secondary-text">
-            {{track.metadata.duration | sgTime}}
-            <span *ngIf="isMultipleAlbumsSelected()">• {{track.metadata.album}}</span>
+            {{ track.metadata.duration | sgTime }}
+            <span *ngIf="isMultipleAlbumsSelected()">• {{ track.metadata.album }}</span>
           </div>
           <button mat-button mat-icon-button
                   class="more"
@@ -115,7 +115,7 @@
                   class = "playPause"
                   *ngIf="library.currentTrack == track"
                   (click)="library.audio.playing ? library.audio.pause() : library.audio.play(); $event.stopPropagation()">
-            <mat-icon>{{library.audio.playing ? 'pause' : 'play_arrow'}}</mat-icon>
+            <mat-icon>{{ library.audio.playing ? 'pause' : 'play_arrow' }}</mat-icon>
           </button>
           <span class="spinner" *ngIf="library.currentTrack == track">
             <mat-progress-spinner diameter="40"
@@ -129,7 +129,7 @@
   </div>
   <div *ngIf="sortedAlphabetically" class="alphabet" (click)="$event.stopPropagation()">
     <ol>
-      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{letter}}</li>
+      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{ letter }}</li>
     </ol>
   </div>
 </div>

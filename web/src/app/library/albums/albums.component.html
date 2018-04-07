@@ -2,7 +2,7 @@
   <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
     <mat-chip *ngFor="let album of library.selectedAlbums"
               (click)="scrollTo(album.title); showChipList = false">
-      <span class="chip-text">{{album.title}}</span>
+      <span class="chip-text">{{ album.title }}</span>
       <mat-icon matChipRemove (click)="library.deselectAlbum(album); $event.stopPropagation()">cancel</mat-icon>
     </mat-chip>
     <mat-chip class="remove-all" (click)="library.deselectAllAlbums()">Remove All</mat-chip>
@@ -29,13 +29,13 @@
       <mat-chip-list>
         <mat-chip *ngFor="let album of library.selectedAlbums.length <= 2 ? library.selectedAlbums : library.selectedAlbums.slice(0,1)"
                   (click)="scrollTo(album.title)">
-          <span class="chip-text">{{album.title}}</span>
+          <span class="chip-text">{{ album.title }}</span>
           <mat-icon matChipRemove (click)="library.deselectAlbum(album)">cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="library.selectedAlbums.length > 2"
                   (click)="showChipList = !showChipList"
                   class="chip-more">
-          {{library.selectedAlbums.length - 1}} more…
+          {{ library.selectedAlbums.length - 1 }} more…
         </mat-chip>
       </mat-chip-list>
     </div>
@@ -81,8 +81,8 @@
             <span class="album-name" [innerHtml]="album.title | sgSearch:search"></span>
           </div>
           <div matLine class="secondary-text">
-            {{album.songs}} songs
-            <span *ngIf="isMultipleArtistsSelected()">• {{album.artist}}</span>
+            {{ album.songs }} songs
+            <span *ngIf="isMultipleArtistsSelected()">• {{ album.artist }}</span>
           </div>
           <button mat-button mat-icon-button
                   (click)="library.addAlbum(album); onNext.emit(); $event.stopPropagation()">
@@ -95,7 +95,7 @@
   </div>
   <div class="alphabet" (click)="$event.stopPropagation()">
     <ol>
-      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{letter}}</li>
+      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{ letter }}</li>
     </ol>
   </div>
 </div>

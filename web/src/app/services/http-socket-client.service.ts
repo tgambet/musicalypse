@@ -42,7 +42,7 @@ export class HttpSocketClientService implements OnDestroy {
   private static getAPIUrl(path: string) {
     let url = '';
     if (environment.electron) {
-      url += 'http://localhost:' + environment.httpPort
+      url += 'http://localhost:' + environment.httpPort;
     } else {
       url += window.location.protocol + '//' + window.location.hostname;
       if (environment.production) {

@@ -2,7 +2,7 @@
   <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
     <mat-chip *ngFor="let artist of library.selectedArtists"
               (click)="scrollTo(artist.name); showChipList = false">
-      <span class="chip-text">{{artist.name}}</span>
+      <span class="chip-text">{{ artist.name }}</span>
       <mat-icon matChipRemove (click)="library.deselectArtist(artist); $event.stopPropagation()">cancel</mat-icon>
     </mat-chip>
     <mat-chip class="remove-all" (click)="library.deselectAllArtists()">Remove All</mat-chip>
@@ -26,13 +26,13 @@
       <mat-chip-list>
         <mat-chip *ngFor="let artist of library.selectedArtists.length <= 2 ? library.selectedArtists : library.selectedArtists.slice(0,1)"
                   (click)="scrollTo(artist.name)">
-          <span class="chip-text">{{artist.name}}</span>
+          <span class="chip-text">{{ artist.name }}</span>
           <mat-icon matChipRemove (click)="library.deselectArtist(artist)">cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="library.selectedArtists.length > 2"
                   (click)="showChipList = !showChipList"
                   class="chip-more">
-          {{library.selectedArtists.length - 1}} more…
+          {{ library.selectedArtists.length - 1 }} more…
         </mat-chip>
       </mat-chip-list>
     </div>
@@ -78,7 +78,7 @@
             <mat-icon *ngIf="artist.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
             <span class="artist-name" [innerHtml]="artist.name | sgSearch:search"></span>
           </div>
-          <div matLine class="secondary-text">{{artist.songs}} songs</div>
+          <div matLine class="secondary-text">{{ artist.songs }} songs</div>
           <button mat-button mat-icon-button
                   (click)="library.addArtist(artist); onNext.emit(); $event.stopPropagation()">
             <mat-icon>keyboard_arrow_right</mat-icon>
@@ -90,7 +90,7 @@
   </div>
   <div class="alphabet" (click)="$event.stopPropagation()">
     <ol>
-      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{letter}}</li>
+      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{ letter }}</li>
     </ol>
   </div>
 </div>

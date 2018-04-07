@@ -26,12 +26,15 @@ function createWindow() {
         y: 0,
         width: size.width,
         height: size.height,
-        show: false
+        minHeight: 450,
+        minWidth: 350,
+        show: false,
+        transparent: true
     });
 
     if (serve) {
         // dirname is target/electron/dist
-        // require('electron-reload')(__dirname + '/electron', {electron: require(`${__dirname}/../../../node_modules/electron`)});
+        // require('electron-reload')(__dirname, {electron: require(`${__dirname}/../../../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({

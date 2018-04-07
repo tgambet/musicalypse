@@ -1,11 +1,8 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Album, Artist} from '../../model';
-import {ArtistsComponent} from '../artists/artists.component';
+import {Album} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
@@ -54,60 +51,46 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     'Z'
   ];
 
-  @Input('artistsComponent')
-  artistsComponent: ArtistsComponent;
-
   showChipList = false;
   showSearch = false;
   search = '';
   albums: Album[] = [];
   filteredAlbums: Album[] = [];
-  selectedAlbums: Album[] = [];
-
-  onSelectionChange: Observable<Album[]>;
-
-  private onSelectionChangeSource: Subject<Album[]> = new Subject();
 
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private library: LibraryService,
+    public library: LibraryService,
     public settings: SettingsService,
     private sanitizer: DomSanitizer
   ) {
-    this.onSelectionChange = this.onSelectionChangeSource.asObservable();
   }
 
   ngOnInit() {
-    const updateAlbumsSelection: (artists: Artist[]) => void = artists => {
-      this.albums = this.library.getAlbumsOf(artists);
-      this.sortAlphabetically();
-      const artistsNames = _.map(artists, 'name');
-      const oldSelection = this.selectedAlbums;
-      this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
-      if (!_.isEqual(oldSelection, this.selectedAlbums)) {
-        this.onSelectionChangeSource.next(this.selectedAlbums);
-      }
-    };
-    // Subscribe to ArtistsComponent selection changes
-    this.artistsComponent.onSelectionChange.subscribe(artists => updateAlbumsSelection(artists));
-    // Subscribe to new tracks and library reset
+    // Subscribe to selection changes
     this.subscriptions.push(
-      this.library.onTrackAdded.subscribe(() => {
-        if (!_.isEqual(this.artistsComponent.selectedArtists, [])) {
-          this.albums = this.library.getAlbumsOf(this.artistsComponent.selectedArtists);
-          this.sortAlphabetically();
+      this.library.onArtistSelectionChanged.subscribe(artists => {
+        this.albums = this.library.getAlbumsOf(artists);
+        this.sortAlphabetically();
+        this.library.filterSelectedAlbums(artists);
+        if (this.library.selectedAlbums.length < 3) {
+          this.showChipList = false;
         }
       })
     );
+    // Subscribe to new tracks and library reset
     this.subscriptions.push(
-      this.library.onReset.subscribe(() => { this.albums = []; this.selectedAlbums = []; this.filteredAlbums = []; })
+      this.library.onTrackAdded.subscribe(() => {
+        this.albums = this.library.getAlbumsOf(this.library.selectedArtists);
+        this.sortAlphabetically();
+      })
+    );
+    this.subscriptions.push(
+      this.library.onReset.subscribe(() => { this.albums = []; this.filteredAlbums = []; })
     );
   }
 
   ngOnDestroy(): void {
-    this.onSelectionChangeSource.complete();
-    this.onSelectionChangeSource.unsubscribe();
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
@@ -117,65 +100,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
 
   getAvatarStyle(album: Album) {
     return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
-  }
-
-  selectAlbum(album: Album) {
-    if (!_.isEqual(this.selectedAlbums, [album])) {
-      this.selectedAlbums = [album];
-      this.onSelectionChangeSource.next([album]);
-      this.showChipList = false;
-    }
-  }
-
-  deselectAlbum(album: Album) {
-    if (_.includes(this.selectedAlbums, album)) {
-      this.selectedAlbums = _.filter(this.selectedAlbums, a => a !== album);
-      this.onSelectionChangeSource.next(this.selectedAlbums);
-      if (this.selectedAlbums.length < 3) {
-        this.showChipList = false;
-      }
-    }
-  }
-
-  selectAlbumsByName(names: string[]) {
-    const oldSelection = this.selectedAlbums;
-    this.selectedAlbums = _.filter(this.albums, album => _.includes(names, album.title));
-    if (!_.isEqual(oldSelection, this.selectedAlbums)) {
-      this.onSelectionChangeSource.next(this.selectedAlbums);
-    }
-  }
-
-  addAlbum(album: Album) {
-    if (!_.includes(this.selectedAlbums, album)) {
-      this.selectedAlbums.push(album);
-      this.onSelectionChangeSource.next(this.selectedAlbums);
-    }
-  }
-
-  removeAlbum(album: Album) {
-    if (_.includes(this.selectedAlbums, album)) {
-      _.remove(this.selectedAlbums, a => a.title === album.title);
-      this.onSelectionChangeSource.next(this.selectedAlbums);
-    }
-  }
-
-  isSelectedAlbum(album: Album): boolean {
-    return _.includes(this.selectedAlbums, album);
-  }
-
-  selectAll() {
-    this.selectedAlbums = _.clone(this.albums);
-    this.onSelectionChangeSource.next(this.selectedAlbums);
-  }
-
-  deselectAll() {
-    if (this.selectedAlbums === []) {
-      return;
-    } else {
-      this.selectedAlbums = [];
-      this.onSelectionChangeSource.next([]);
-      this.showChipList = false;
-    }
   }
 
   sortAlphabetically() {
@@ -192,7 +116,7 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   }
 
   isMultipleArtistsSelected(): boolean {
-    return this.artistsComponent.selectedArtists.length > 1;
+    return this.library.selectedArtists.length > 1;
   }
 
   scrollTo(letter: string) {

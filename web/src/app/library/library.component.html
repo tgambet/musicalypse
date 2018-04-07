@@ -5,10 +5,10 @@
       <app-artists #artistsComponent (onNext)="translateContent(1)"></app-artists>
     </div>
     <div class="column a2">
-      <app-albums #albumsComponent [artistsComponent]="artistsComponent" (onNext)="translateContent(2)" (onPrevious)="translateContent(0)"></app-albums>
+      <app-albums #albumsComponent (onNext)="translateContent(2)" (onPrevious)="translateContent(0)"></app-albums>
     </div>
     <div class="column a3">
-      <app-tracks #tracksComponent [albumsComponent]="albumsComponent" (onNext)="translateContent(3)" (onPrevious)="translateContent(1)"></app-tracks>
+      <app-tracks #tracksComponent (onNext)="translateContent(3)" (onPrevious)="translateContent(1)"></app-tracks>
     </div>
     <div class="column a4">
       <app-player (onPrevious)="translateContent(2)"></app-player>

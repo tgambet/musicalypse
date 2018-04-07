@@ -3,8 +3,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
@@ -56,21 +54,14 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   search = '';
   artists: Artist[] = [];
   filteredArtists: Artist[] = [];
-  selectedArtists: Artist[] = [];
-
-  onSelectionChange: Observable<Artist[]>;
-
-  private onSelectionChangeSource: Subject<Artist[]> = new Subject();
 
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private library: LibraryService,
+    public library: LibraryService,
     public settings: SettingsService,
     private sanitizer: DomSanitizer
-  ) {
-    this.onSelectionChange = this.onSelectionChangeSource.asObservable();
-  }
+  ) {}
 
   ngOnInit() {
     const updateArtists: () => void = () => {
@@ -84,13 +75,18 @@ export class ArtistsComponent implements OnInit, OnDestroy {
       this.library.onTrackAdded.subscribe(() => updateArtists())
     );
     this.subscriptions.push(
-      this.library.onReset.subscribe(() => { this.artists = []; this.selectedArtists = []; this.filteredArtists = []; })
+      this.library.onReset.subscribe(() => { this.artists = []; this.filteredArtists = []; })
+    );
+    this.subscriptions.push(
+      this.library.onArtistSelectionChanged.subscribe(artists => {
+        if (artists.length < 3) {
+          this.showChipList = false;
+        }
+      })
     );
   }
 
   ngOnDestroy(): void {
-    this.onSelectionChangeSource.complete();
-    this.onSelectionChangeSource.unsubscribe();
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
@@ -100,65 +96,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   getAvatarStyle(artist: Artist) {
     return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
-  }
-
-  isSelectedArtist(artist: Artist): boolean {
-    return _.includes(this.selectedArtists, artist);
-  }
-
-  selectArtist(artist: Artist) {
-    if (!_.isEqual(this.selectedArtists, [artist])) {
-      this.selectedArtists = [artist];
-      this.onSelectionChangeSource.next([artist]);
-      this.showChipList = false;
-    }
-  }
-
-  deselectArtist(artist: Artist) {
-    if (_.includes(this.selectedArtists, artist)) {
-      this.selectedArtists = _.filter(this.selectedArtists, a => a !== artist);
-      this.onSelectionChangeSource.next(this.selectedArtists);
-      if (this.selectedArtists.length < 3) {
-        this.showChipList = false;
-      }
-    }
-  }
-
-  selectArtistsByName(names: string[]) {
-    const oldSelection = this.selectedArtists;
-    this.selectedArtists = _.filter(this.artists, artist => _.includes(names, artist.name));
-    if (!_.isEqual(oldSelection, this.selectedArtists)) {
-      this.onSelectionChangeSource.next(this.selectedArtists);
-    }
-  }
-
-  addArtist(artist: Artist) {
-    if (!_.includes(this.selectedArtists, artist)) {
-      this.selectedArtists.push(artist);
-      this.onSelectionChangeSource.next(this.selectedArtists);
-    }
-  }
-
-  removeArtist(artist: Artist) {
-    if (_.includes(this.selectedArtists, artist)) {
-      _.remove(this.selectedArtists, a => a.name === artist.name);
-      this.onSelectionChangeSource.next(this.selectedArtists);
-    }
-  }
-
-  selectAll() {
-    this.selectedArtists = _.clone(this.artists);
-    this.onSelectionChangeSource.next(this.selectedArtists);
-  }
-
-  deselectAll() {
-    if (this.selectedArtists === []) {
-      return;
-    } else {
-      this.selectedArtists = [];
-      this.onSelectionChangeSource.next([]);
-      this.showChipList = false;
-    }
   }
 
   sortAlphabetically() {

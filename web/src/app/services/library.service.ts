@@ -30,16 +30,22 @@ export class LibraryService {
   tracks: Track[] = [];
   artists: Artist[] = [];
   albums: Album[] = [];
+  selectedArtists: Artist[] = [];
+  selectedAlbums: Album[] = [];
   playlist: Track[] = [];
   oldPlaylist: Track[];
 
   repeat = false;
   shuffle = false;
 
+  onArtistSelectionChanged: Observable<Artist[]>;
+  onAlbumSelectionChanged: Observable<Album[]>;
   onTrackAdded: Observable<Track>;
   onTracksUpdated: Observable<void>;
   onReset: Observable<void>;
 
+  private onArtistSelectionChangedSource = new Subject<Artist[]>();
+  private onAlbumSelectionChangedSource = new Subject<Album[]>();
   private onTrackAddedSource = new Subject<Track>();
   private onTracksUpdatedSource = new Subject<void>();
   private onResetSource = new Subject<void>();
@@ -49,6 +55,8 @@ export class LibraryService {
     private titleService: Title
   ) {
     // this.addTrack(this.a);
+    this.onArtistSelectionChanged = this.onArtistSelectionChangedSource.asObservable();
+    this.onAlbumSelectionChanged = this.onAlbumSelectionChangedSource.asObservable();
     this.onTrackAdded = this.onTrackAddedSource.asObservable();
     this.onTracksUpdated = this.onTracksUpdatedSource.asObservable();
     this.onReset = this.onResetSource.asObservable();
@@ -138,6 +146,8 @@ export class LibraryService {
     this.tracks = [];
     this.albums = [];
     this.artists = [];
+    this.selectedArtists = [];
+    this.selectedAlbums = [];
     this.playlist = [];
     this.oldPlaylist = null;
     this.currentTrack = null;
@@ -251,11 +261,17 @@ export class LibraryService {
   }
 
   getAlbumsOf(artists: Artist[]): Album[] {
+    if (_.isEqual(artists, [])) {
+      return [];
+    }
     const artistsNames = _.map(artists, 'name');
     return _.filter(this.albums, (album: Album) => _.includes(artistsNames, album.artist));
   }
 
   getTracksOf(albums: Album[]): Track[] {
+    if (_.isEqual(albums, [])) {
+      return [];
+    }
     return _.filter(this.tracks, track => {
       for (let i = 0; i < albums.length; i++) {
         if (albums[i].artist === track.metadata.albumArtist && albums[i].title === track.metadata.album) {
@@ -264,6 +280,120 @@ export class LibraryService {
       }
       return false;
     });
+  }
+
+  isSelectedArtist(artist: Artist): boolean {
+    return _.includes(this.selectedArtists, artist);
+  }
+
+  selectArtist(artist: Artist) {
+    if (!_.isEqual(this.selectedArtists, [artist])) {
+      this.selectedArtists = [artist];
+      this.onArtistSelectionChangedSource.next([artist]);
+    }
+  }
+
+  deselectArtist(artist: Artist) {
+    if (_.includes(this.selectedArtists, artist)) {
+      this.selectedArtists = _.filter(this.selectedArtists, a => a !== artist);
+      this.onArtistSelectionChangedSource.next(this.selectedArtists);
+    }
+  }
+
+  selectArtistsByName(names: string[]) {
+    this.selectedArtists = _.filter(this.artists, artist => _.includes(names, artist.name));
+    this.onArtistSelectionChangedSource.next(this.selectedArtists);
+  }
+
+  addArtist(artist: Artist) {
+    if (!_.includes(this.selectedArtists, artist)) {
+      this.selectedArtists.push(artist);
+      this.onArtistSelectionChangedSource.next(this.selectedArtists);
+    }
+  }
+
+  removeArtist(artist: Artist) {
+    if (_.includes(this.selectedArtists, artist)) {
+      _.remove(this.selectedArtists, a => a.name === artist.name);
+      this.onArtistSelectionChangedSource.next(this.selectedArtists);
+    }
+  }
+
+  selectAllArtists() {
+    this.selectedArtists = _.clone(this.artists);
+    this.onArtistSelectionChangedSource.next(this.selectedArtists);
+  }
+
+  deselectAllArtists() {
+    if (this.selectedArtists === []) {
+      return;
+    } else {
+      this.selectedArtists = [];
+      this.onArtistSelectionChangedSource.next(this.selectedArtists);
+    }
+  }
+
+  selectAlbum(album: Album) {
+    if (!_.isEqual(this.selectedAlbums, [album])) {
+      this.selectedAlbums = [album];
+      this.onAlbumSelectionChangedSource.next([album]);
+    }
+  }
+
+  deselectAlbum(album: Album) {
+    if (_.includes(this.selectedAlbums, album)) {
+      this.selectedAlbums = _.filter(this.selectedAlbums, a => a !== album);
+      this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+    }
+  }
+
+  selectAlbumsByName(names: string[]) {
+    const oldSelection = this.selectedAlbums;
+    this.selectedAlbums = _.filter(this.albums, album => _.includes(names, album.title));
+    if (!_.isEqual(oldSelection, this.selectedAlbums)) {
+      this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+    }
+  }
+
+  addAlbum(album: Album) {
+    if (!_.includes(this.selectedAlbums, album)) {
+      this.selectedAlbums.push(album);
+      this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+    }
+  }
+
+  removeAlbum(album: Album) {
+    if (_.includes(this.selectedAlbums, album)) {
+      _.remove(this.selectedAlbums, a => a.title === album.title);
+      this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+    }
+  }
+
+  isSelectedAlbum(album: Album): boolean {
+    return _.includes(this.selectedAlbums, album);
+  }
+
+  selectAllAlbums(albums: Album[]) {
+    this.selectedAlbums = albums;
+    this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+  }
+
+  deselectAllAlbums() {
+    if (this.selectedAlbums === []) {
+      return;
+    } else {
+      this.selectedAlbums = [];
+      this.onAlbumSelectionChangedSource.next([]);
+    }
+  }
+
+  filterSelectedAlbums(artists: Artist[]) {
+    const oldSelection = _.clone(this.selectedAlbums);
+    const artistsNames = _.map(artists, 'name');
+    this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
+    if (!_.isEqual(oldSelection, this.selectedAlbums)) {
+      this.onAlbumSelectionChangedSource.next(this.selectedAlbums);
+    }
   }
 
   scanLibrary(): Promise<void> {

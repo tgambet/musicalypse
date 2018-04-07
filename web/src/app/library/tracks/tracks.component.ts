@@ -1,7 +1,6 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Album, Track} from '../../model';
-import {AlbumsComponent} from '../albums/albums.component';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -20,9 +19,6 @@ export class TracksComponent implements OnInit, OnDestroy {
   onNext: EventEmitter<void> = new EventEmitter();
   @Output()
   onPrevious: EventEmitter<void> = new EventEmitter();
-
-  @Input('albumsComponent')
-  albumsComponent: AlbumsComponent;
 
   @ViewChild('list')
   list: ElementRef;
@@ -77,12 +73,16 @@ export class TracksComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const updateTracks: (albums: Album[]) => void = (albums) => {
       this.tracks = this.library.getTracksOf(albums);
-      this.sortByFilename();
+      if (this.sortedAlphabetically) {
+        this.sortAlphabetically();
+      } else {
+        this.sortByFilename();
+      }
     };
-    updateTracks(this.albumsComponent.selectedAlbums);
-    this.albumsComponent.onSelectionChange.subscribe(albums => updateTracks(albums));
+    updateTracks(this.library.selectedAlbums);
+    this.library.onAlbumSelectionChanged.subscribe(albums => updateTracks(albums));
     this.subscriptions.push(
-      this.library.onTrackAdded.subscribe(() => updateTracks(this.albumsComponent.selectedAlbums))
+      this.library.onTrackAdded.subscribe(() => updateTracks(this.library.selectedAlbums))
     );
     this.subscriptions.push(
       this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; })
@@ -118,7 +118,7 @@ export class TracksComponent implements OnInit, OnDestroy {
   }
 
   isMultipleAlbumsSelected(): boolean {
-    return this.albumsComponent.selectedAlbums.length > 1;
+    return this.library.selectedAlbums.length > 1;
   }
 
   addAllToPlaylist() {

@@ -1,10 +1,12 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LibraryService} from '../services/library.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {ArtistsComponent} from './artists/artists.component';
 import {AlbumsComponent} from './albums/albums.component';
-import {Subscription} from 'rxjs/Subscription';
 import {LoaderService} from '../services/loader.service';
+import {Album, Artist} from '../model';
+import {Subscription} from 'rxjs/Subscription';
+import 'rxjs/add/operator/skip';
 import * as _ from 'lodash';
 
 @Component({
@@ -12,7 +14,7 @@ import * as _ from 'lodash';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.scss']
 })
-export class LibraryComponent implements OnInit, OnDestroy {
+export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('artistsComponent')
   artistsComponent: ArtistsComponent;
@@ -44,61 +46,90 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.animationTimeout = setTimeout(() => this.noAnimation = false, 200);
   }
 
+  updateUrlDataFromArtists(artists: Artist[]) {
+    if (artists.length === 0) {
+      delete this.urlData['artists'];
+    } else {
+      const artistsData = _.map(artists, artist => artist.name.replace(',', '%c%').replace('&', '%a%'));
+      this.urlData['artists'] = _.sortBy(artistsData);
+    }
+  }
+
+  updateUrlDataFromAlbums(albums: Album[]) {
+    if (albums.length === 0) {
+      delete this.urlData['albums'];
+    } else {
+      const albumData = _.map(albums, album => album.title.replace(',', '%c%').replace('&', '%a%'));
+      this.urlData['albums'] = _.sortBy(albumData);
+    }
+  }
+
+  updateState(routeParam: ParamMap) {
+    if (routeParam.has('t')) {
+      this.contentTranslation = +routeParam.get('t');
+    } else {
+      this.contentTranslation = 0;
+    }
+    if (routeParam.has('artists')) {
+      const artists = routeParam
+        .get('artists')
+        .split(',')
+        .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+      this.library.selectArtistsByName(artists);
+    } else {
+      this.library.deselectAllArtists();
+    }
+    if (routeParam.has('albums')) {
+      const artists = routeParam
+        .get('albums')
+        .split(',')
+        .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+      this.library.selectAlbumsByName(artists);
+    } else {
+      this.library.deselectAllAlbums();
+    }
+  }
+
   ngOnInit() {
+
+    // Update the url based on the library state
+    if (this.library.selectedArtists.length > 0) {
+      this.updateUrlDataFromArtists(this.library.selectedArtists);
+      this.updateUrlDataFromAlbums(this.library.selectedAlbums);
+      this.updateUrl();
+    }
+
+    // When tracks are updated (e.g. on first visit) update the state based on the url
     this.subscriptions.push(
       this.library.onTracksUpdated.subscribe(() => {
-        this.route.paramMap.subscribe((next: ParamMap) => {
-          if (next.has('t')) {
-            this.contentTranslation = +next.get('t');
-          } else {
-            this.contentTranslation = 0;
-          }
-          if (next.has('artists')) {
-            const artists = next
-              .get('artists')
-              .split(',')
-              .map(v => v.replace('%c%', ',').replace('%a%', '&'));
-            this.artistsComponent.selectArtistsByName(artists);
-          } else {
-            this.artistsComponent.deselectAll();
-          }
-          if (next.has('albums')) {
-            const artists = next
-              .get('albums')
-              .split(',')
-              .map(v => v.replace('%c%', ',').replace('%a%', '&'));
-            this.albumsComponent.selectAlbumsByName(artists);
-          } else {
-            this.albumsComponent.deselectAll();
-          }
-        });
+        this.route.paramMap.take(1).subscribe(params => this.updateState(params));
       })
     );
 
-    this.artistsComponent.onSelectionChange.subscribe(artists => {
-      const oldData = _.clone(this.urlData);
-      if (artists.length === 0) {
-        delete this.urlData['artists'];
-      } else {
-        const artistsData = _.map(artists, artist => artist.name.replace(',', '%c%').replace('&', '%a%'));
-        this.urlData['artists'] = _.sortBy(artistsData);
-      }
-      if (oldData['artists'] !== this.urlData['artists']) {
+    // Update the state on url change
+    this.subscriptions.push(
+      this.route.paramMap.skip(1).subscribe(params => this.updateState(params))
+    );
+
+    // On artist selection change update url
+    this.subscriptions.push(
+      this.library.onArtistSelectionChanged.subscribe((artists) => {
+        this.updateUrlDataFromArtists(artists);
         this.updateUrl();
-      }
-    });
-    this.albumsComponent.onSelectionChange.subscribe(albums => {
-      const oldData = _.clone(this.urlData);
-      if (albums.length === 0) {
-        delete this.urlData['albums'];
-      } else {
-        const albumData = _.map(albums, album => album.title.replace(',', '%c%').replace('&', '%a%'));
-        this.urlData['albums'] = _.sortBy(albumData);
-      }
-      if (oldData['albums'] !== this.urlData['albums']) {
+      })
+    );
+
+    // On album selection change update url
+    this.subscriptions.push(
+      this.library.onAlbumSelectionChanged.subscribe(albums => {
+        this.updateUrlDataFromAlbums(albums);
         this.updateUrl();
-      }
-    });
+      })
+    );
+  }
+
+  ngAfterViewInit() {
+
   }
 
   ngOnDestroy() {

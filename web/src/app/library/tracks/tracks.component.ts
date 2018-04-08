@@ -61,7 +61,7 @@ export class TracksComponent implements OnInit, OnDestroy {
   filterAndSort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
     let result: Track[] = tracks;
     const selectedAlbumsIds = _.map(this.library.selectedAlbums, album => album.title + album.artist);
-    result = _.filter(result, track => _.includes(selectedAlbumsIds, track.metadata.album + track.metadata.artist));
+    result = _.filter(result, track => _.includes(selectedAlbumsIds, track.metadata.album + track.metadata.albumArtist));
     if (this.search !== '') {
       result = _.filter(result, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
     }

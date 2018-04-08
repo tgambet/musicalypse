@@ -7,7 +7,7 @@
         cancel
       </mat-icon>
     </mat-chip>
-    <mat-chip class="remove-all" (click)="library.deselectAllArtists()">Remove All</mat-chip>
+    <mat-chip class="remove-all" (click)="library.deselectAllArtists(); showChipList = false">Remove All</mat-chip>
   </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">

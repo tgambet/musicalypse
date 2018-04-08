@@ -1,9 +1,3 @@
-export interface SocketMessage {
-  id: number;
-  method: string;
-  entity: any;
-}
-
 export interface Artist {
   name: string;
   songs: number;

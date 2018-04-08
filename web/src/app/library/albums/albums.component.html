@@ -3,28 +3,28 @@
     <mat-chip *ngFor="let album of library.selectedAlbums"
               (click)="scrollTo(album.title); showChipList = false">
       <span class="chip-text">{{ album.title }}</span>
-      <mat-icon matChipRemove (click)="library.deselectAlbum(album); $event.stopPropagation()">cancel</mat-icon>
+      <mat-icon matChipRemove (click)="library.deselectAlbum(album); $event.stopPropagation(); library.selectedAlbums.length < 3 ? showChipList = false : {};">cancel</mat-icon>
     </mat-chip>
-    <mat-chip class="remove-all" (click)="library.deselectAllAlbums()">Remove All</mat-chip>
+    <mat-chip class="remove-all" (click)="library.deselectAllAlbums(); showChipList = false">Remove All</mat-chip>
   </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">
       <mat-icon>arrow_back</mat-icon>
     </button>
     <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
-      <input matInput #searchInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
+      <input matInput #searchInput title="Search" [(ngModel)]="search" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
         Search an album
       </mat-placeholder>
-      <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
+      <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
       <span class="select-text" *ngIf="library.selectedAlbums.length == 0">
         Select an album or
-        <mat-chip (click)="library.selectAllAlbums(albums)">Select All</mat-chip>
+        <mat-chip (click)="library.selectAllAlbums(library.albumsObs.map(filterAndSort))">Select All</mat-chip>
       </span>
       <mat-chip-list>
         <mat-chip *ngFor="let album of library.selectedAlbums.length <= 2 ? library.selectedAlbums : library.selectedAlbums.slice(0,1)"
@@ -44,29 +44,10 @@
             class="searchButton">
       <mat-icon>search</mat-icon>
     </button>
-    <!--<button mat-button mat-icon-button
-            class="more"
-            [matMenuTriggerFor]="moreAlbumMenu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #moreAlbumMenu>
-      <button mat-menu-item (click)="selectAll()">
-        <mat-icon>select_all</mat-icon>
-        <span>Select all</span>
-      </button>
-      <button mat-menu-item (click)="sortAlphabetically()">
-        <mat-icon>sort_by_alpha</mat-icon>
-        <span>Sort alphabetically</span>
-      </button>
-      <button mat-menu-item (click)="sortBySongs()">
-        <mat-icon>sort</mat-icon>
-        <span>Sort by number of songs</span>
-      </button>
-    </mat-menu>-->
   </div>
   <div #list class="list-wrapper" (swiperight)="onPrevious.emit()" (swipeleft)="onNext.emit()">
     <mat-list class="albums" dense>
-      <ng-container *ngFor="let album of filteredAlbums; trackBy: trackByTitle">
+      <ng-container *ngFor="let album of library.albumsObs.map(filterAndSort) | async; trackBy: trackByTitle">
         <a class="album hover" (click)="library.selectAlbum(album); onNext.emit()" mat-list-item>
           <mat-checkbox matListIcon
                         color="primary"

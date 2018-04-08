@@ -54,8 +54,17 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   showChipList = false;
   showSearch = false;
   search = '';
-  albums: Album[] = [];
-  filteredAlbums: Album[] = [];
+
+  filterAndSort: (albums: Album[]) => Album[] = ((albums: Album[]) => {
+    let result: Album[] = albums;
+    const selectedArtistsName = _.map(this.library.selectedArtists, 'name');
+    result = _.filter(result, (album: Album) => _.includes(selectedArtistsName, album.artist));
+    if (this.search !== '') {
+      result = _.filter(result, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
+    }
+    result = _.sortBy(result, album => album.title.toLowerCase());
+    return result;
+  });
 
   private subscriptions: Subscription[] = [];
 
@@ -66,53 +75,18 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
-    // Subscribe to selection changes
-    this.subscriptions.push(
-      this.library.onArtistSelectionChanged.subscribe(artists => {
-        this.albums = this.library.getAlbumsOf(artists);
-        this.sortAlphabetically();
-        this.library.filterSelectedAlbums(artists);
-        if (this.library.selectedAlbums.length < 3) {
-          this.showChipList = false;
-        }
-      })
-    );
-    // Subscribe to new tracks and library reset
-    this.subscriptions.push(
-      this.library.onTrackAdded.subscribe(() => {
-        this.albums = this.library.getAlbumsOf(this.library.selectedArtists);
-        this.sortAlphabetically();
-      })
-    );
-    this.subscriptions.push(
-      this.library.onReset.subscribe(() => { this.albums = []; this.filteredAlbums = []; })
-    );
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   trackByTitle(index: number, album: Album) {
-    return album.title;
+    return album.title + album.artist;
   }
 
   getAvatarStyle(album: Album) {
     return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
-  }
-
-  sortAlphabetically() {
-    this.albums = _.sortBy(this.albums, album => album.title.toLowerCase());
-    this.filter();
-  }
-
-  filter() {
-    if (this.search !== '') {
-      this.filteredAlbums = _.filter(this.albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
-    } else {
-      this.filteredAlbums = this.albums;
-    }
   }
 
   isMultipleArtistsSelected(): boolean {

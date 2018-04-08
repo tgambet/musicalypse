@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {Injectable, NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 import {FormsModule} from '@angular/forms';
@@ -36,6 +36,7 @@ const appRoutes: Routes = [
   { path: 'about', component: AboutComponent },
 ];
 
+@Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = <any> {
     'pinch': { enable: false },

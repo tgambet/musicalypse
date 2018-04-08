@@ -52,8 +52,15 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   showChipList = false;
   showSearch = false;
   search = '';
-  artists: Artist[] = [];
-  filteredArtists: Artist[] = [];
+
+  filterAndSort: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
+    let result: Artist[] = artists;
+    if (this.search !== '') {
+      result = _.filter(result, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
+    }
+    result = _.sortBy(result, artist => artist.name.toLowerCase());
+    return result;
+  });
 
   private subscriptions: Subscription[] = [];
 
@@ -63,28 +70,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {
-    const updateArtists: () => void = () => {
-      this.artists = _.clone(this.library.artists);
-      this.sortAlphabetically();
-    };
-    // Initialize
-    updateArtists();
-    // subscribe to new tracks and library reset
-    this.subscriptions.push(
-      this.library.onTrackAdded.subscribe(() => updateArtists())
-    );
-    this.subscriptions.push(
-      this.library.onReset.subscribe(() => { this.artists = []; this.filteredArtists = []; })
-    );
-    this.subscriptions.push(
-      this.library.onArtistSelectionChanged.subscribe(artists => {
-        if (artists.length < 3) {
-          this.showChipList = false;
-        }
-      })
-    );
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
@@ -96,19 +82,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   getAvatarStyle(artist: Artist) {
     return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
-  }
-
-  sortAlphabetically() {
-    this.artists = _.sortBy(this.artists, artist => artist.name.toLowerCase());
-    this.filter();
-  }
-
-  filter() {
-    if (this.search !== '') {
-      this.filteredArtists = _.filter(this.artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
-    } else {
-      this.filteredArtists = this.artists;
-    }
   }
 
   scrollTo(letter: string) {

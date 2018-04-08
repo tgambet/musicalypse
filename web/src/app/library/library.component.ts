@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LibraryService} from '../services/library.service';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ArtistsComponent} from './artists/artists.component';
 import {AlbumsComponent} from './albums/albums.component';
 import {LoaderService} from '../services/loader.service';
@@ -33,9 +33,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     public library: LibraryService,
-    public route: ActivatedRoute,
     private router: Router,
-    public loader: LoaderService
   ) {
 
   }
@@ -64,31 +62,31 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  updateState(routeParam: ParamMap) {
-    if (routeParam.has('t')) {
-      this.contentTranslation = +routeParam.get('t');
-    } else {
-      this.contentTranslation = 0;
-    }
-    if (routeParam.has('artists')) {
-      const artists = routeParam
-        .get('artists')
-        .split(',')
-        .map(v => v.replace('%c%', ',').replace('%a%', '&'));
-      this.library.selectArtistsByName(artists);
-    } else {
-      this.library.deselectAllArtists();
-    }
-    if (routeParam.has('albums')) {
-      const artists = routeParam
-        .get('albums')
-        .split(',')
-        .map(v => v.replace('%c%', ',').replace('%a%', '&'));
-      this.library.selectAlbumsByName(artists);
-    } else {
-      this.library.deselectAllAlbums();
-    }
-  }
+  // updateState(routeParam: ParamMap) {
+  //   if (routeParam.has('t')) {
+  //     this.contentTranslation = +routeParam.get('t');
+  //   } else {
+  //     this.contentTranslation = 0;
+  //   }
+  //   if (routeParam.has('artists')) {
+  //     const artists = routeParam
+  //       .get('artists')
+  //       .split(',')
+  //       .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+  //     this.library.selectArtistsByName(artists);
+  //   } else {
+  //     this.library.deselectAllArtists();
+  //   }
+  //   if (routeParam.has('albums')) {
+  //     const artists = routeParam
+  //       .get('albums')
+  //       .split(',')
+  //       .map(v => v.replace('%c%', ',').replace('%a%', '&'));
+  //     this.library.selectAlbumsByName(artists);
+  //   } else {
+  //     this.library.deselectAllAlbums();
+  //   }
+  // }
 
   ngOnInit() {
 
@@ -100,32 +98,32 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // When tracks are updated (e.g. on first visit) update the state based on the url
-    this.subscriptions.push(
-      this.library.onTracksUpdated.subscribe(() => {
-        this.route.paramMap.take(1).subscribe(params => this.updateState(params));
-      })
-    );
+    // this.subscriptions.push(
+    //   this.library.onTracksUpdated.subscribe(() => {
+    //     this.route.paramMap.take(1).subscribe(params => this.updateState(params));
+    //   })
+    // );
 
     // Update the state on url change
-    this.subscriptions.push(
-      this.route.paramMap.skip(1).subscribe(params => this.updateState(params))
-    );
+    // this.subscriptions.push(
+    //   this.route.paramMap.skip(1).subscribe(params => this.updateState(params))
+    // );
 
     // On artist selection change update url
-    this.subscriptions.push(
-      this.library.onArtistSelectionChanged.subscribe((artists) => {
-        this.updateUrlDataFromArtists(artists);
-        this.updateUrl();
-      })
-    );
+    // this.subscriptions.push(
+    //   this.library.onArtistSelectionChanged.subscribe((artists) => {
+    //     this.updateUrlDataFromArtists(artists);
+    //     this.updateUrl();
+    //   })
+    // );
 
     // On album selection change update url
-    this.subscriptions.push(
-      this.library.onAlbumSelectionChanged.subscribe(albums => {
-        this.updateUrlDataFromAlbums(albums);
-        this.updateUrl();
-      })
-    );
+    // this.subscriptions.push(
+    //   this.library.onAlbumSelectionChanged.subscribe(albums => {
+    //     this.updateUrlDataFromAlbums(albums);
+    //     this.updateUrl();
+    //   })
+    // );
   }
 
   ngAfterViewInit() {

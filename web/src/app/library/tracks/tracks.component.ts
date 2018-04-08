@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {Album, Track} from '../../model';
+import {Track} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -57,8 +57,21 @@ export class TracksComponent implements OnInit, OnDestroy {
 
   showSearch = false;
   search = '';
-  tracks: Track[] = [];
-  filteredTracks: Track[] = [];
+
+  filterAndSort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
+    let result: Track[] = tracks;
+    const selectedAlbumsIds = _.map(this.library.selectedAlbums, album => album.title + album.artist);
+    result = _.filter(result, track => _.includes(selectedAlbumsIds, track.metadata.album + track.metadata.artist));
+    if (this.search !== '') {
+      result = _.filter(result, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
+    }
+    if (this.sortedAlphabetically) {
+      result = _.sortBy(result, (t: Track) => t.metadata.title);
+    } else {
+      result = _.sortBy(result, (t: Track) => t.metadata.location);
+    }
+    return result;
+  });
 
   private subscriptions: Subscription[] = [];
 
@@ -70,24 +83,7 @@ export class TracksComponent implements OnInit, OnDestroy {
     public settings: SettingsService
   ) { }
 
-  ngOnInit() {
-    const updateTracks: (albums: Album[]) => void = (albums) => {
-      this.tracks = this.library.getTracksOf(albums);
-      if (this.sortedAlphabetically) {
-        this.sortAlphabetically();
-      } else {
-        this.sortByFilename();
-      }
-    };
-    updateTracks(this.library.selectedAlbums);
-    this.library.onAlbumSelectionChanged.subscribe(albums => updateTracks(albums));
-    this.subscriptions.push(
-      this.library.onTrackAdded.subscribe(() => updateTracks(this.library.selectedAlbums))
-    );
-    this.subscriptions.push(
-      this.library.onReset.subscribe(() => { this.tracks = []; this.filteredTracks = []; })
-    );
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
@@ -97,35 +93,15 @@ export class TracksComponent implements OnInit, OnDestroy {
     return track.url;
   }
 
-  sortAlphabetically() {
-    this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.title);
-    this.filter();
-    this.sortedAlphabetically = true;
-  }
-
-  sortByFilename() {
-    this.tracks = _.sortBy(this.tracks, (t: Track) => t.metadata.location);
-    this.filter();
-    this.sortedAlphabetically = false;
-  }
-
-  filter() {
-    if (this.search !== '') {
-      this.filteredTracks = _.filter(this.tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
-    } else {
-      this.filteredTracks = this.tracks;
-    }
-  }
-
   isMultipleAlbumsSelected(): boolean {
     return this.library.selectedAlbums.length > 1;
   }
 
-  addAllToPlaylist() {
-    this.library.addTracksToPlaylist(this.filteredTracks);
-    const tracks = this.filteredTracks.length > 1 ? 'tracks' : 'track';
-    this.snackBar.open(`${this.filteredTracks.length} ${tracks} added to current playlist`, '', { duration: 1500 });
-  }
+  // addAllToPlaylist() {
+  //   this.library.addTracksToPlaylist(this.filteredTracks);
+  //   const tracks = this.filteredTracks.length > 1 ? 'tracks' : 'track';
+  //   this.snackBar.open(`${this.filteredTracks.length} ${tracks} added to current playlist`, '', { duration: 1500 });
+  // }
 
   addTrackToPlaylist(track: Track) {
     this.library.addTrackToPlaylist(track);

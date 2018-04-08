@@ -4,18 +4,18 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
-      <input matInput #searchInput title="Search" [(ngModel)]="search" (keyup)="filter()" spellcheck="false">
+      <input matInput #searchInput title="Search" [(ngModel)]="search" spellcheck="false">
       <mat-placeholder>
         <mat-icon>search</mat-icon>
         Search a track
       </mat-placeholder>
-      <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''; filter()">
+      <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
       <span class="select-text">
-        Total tracks: {{ tracks.length }}
+        Total tracks: {{ (library.tracksObs.map(filterAndSort) | async)?.length }}
         <!--TODO: If tracks.length > 300 show warning-->
       </span>
     </div>
@@ -30,15 +30,15 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #Track>
-      <button mat-menu-item (click)="addAllToPlaylist()" [disabled]="filteredTracks.length == 0">
+      <button mat-menu-item (click)="library.addTracksToPlaylist(library.tracksObs.map(filterAndSort))" [disabled]="(library.tracksObs.map(filterAndSort) | async)?.length == 0">
         <mat-icon>playlist_add</mat-icon>
         <span>Add all to current playlist</span>
       </button>
-      <button mat-menu-item (click)="sortAlphabetically()" [disabled]="sortedAlphabetically">
+      <button mat-menu-item (click)="sortedAlphabetically = true" [disabled]="sortedAlphabetically">
         <mat-icon>sort_by_alpha</mat-icon>
         <span>Sort alphabetically</span>
       </button>
-      <button mat-menu-item (click)="sortByFilename()" [disabled]="!sortedAlphabetically">
+      <button mat-menu-item (click)="sortedAlphabetically = false" [disabled]="!sortedAlphabetically">
         <mat-icon>sort</mat-icon>
         <span>Sort by file name</span>
       </button>
@@ -46,10 +46,10 @@
   </div>
   <div #list class="list-wrapper" (swiperight)="onPrevious.emit()" (swipeleft)="onNext.emit()">
     <mat-list class="tracks" [class.sorted-alpha]="sortedAlphabetically" dense>
-      <ng-container *ngFor="let track of filteredTracks.slice(0, 299); trackBy: trackByURL">
+      <ng-container *ngFor="let track of library.tracksObs.map(filterAndSort) | async; trackBy: trackByURL">
         <a mat-list-item
            class="track hover"
-           (click)="library.playTracks(this.tracks.slice(0, 299), track); onNext.emit()">
+           (click)="library.playTracks(library.tracksObs.map(filterAndSort), track); onNext.emit()">
           <div matLine class="primary-text">
             <mat-icon *ngIf="track.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
             <mat-icon color="warn" class="favorite-icon" *ngIf="favorites.isFavorite(track)">favorite</mat-icon>

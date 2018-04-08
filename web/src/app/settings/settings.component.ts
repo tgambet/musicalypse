@@ -84,22 +84,30 @@ export class SettingsComponent implements OnInit {
   }
 
   requestLibraryScan() {
-    this.loader.load();
-    this.router.navigate(['/']).then(() => {
-      const snackBar = this.snackBar.open('Scanning library...');
-      this.library.scanLibrary().then(
-        () => {
-          snackBar.dismiss();
-          this.loader.unload();
-        },
-        (error) => {
-          console.log(error);
-          snackBar.dismiss();
-          this.loader.unload();
-          this.snackBar.open('An error occurred', '', {duration: 2000});
-        }
-      );
-    });
+    this.router.navigate(['/']).then(() => this.library.scan());
   }
+
+  // requestLibraryScan() {
+  //   this.router.navigate(['/']);
+  //   this.library.scan();
+  //   // this.library.getTracks();
+  //
+  //   this.loader.load();
+  //   this.router.navigate(['/']).then(() => {
+  //     const snackBar = this.snackBar.open('Scanning library...');
+  //     this.library.scanLibrary().then(
+  //       () => {
+  //         snackBar.dismiss();
+  //         this.loader.unload();
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //         snackBar.dismiss();
+  //         this.loader.unload();
+  //         this.snackBar.open('An error occurred', '', {duration: 2000});
+  //       }
+  //     );
+  //   });
+  // }
 
 }

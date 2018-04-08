@@ -4,7 +4,6 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {LibraryService} from './services/library.service';
 import {AudioComponent} from './audio/audio.component';
 import {SettingsService} from './services/settings.service';
-import {LoaderService} from './services/loader.service';
 import {environment} from '../environments/environment';
 
 @Component({
@@ -32,8 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     public library: LibraryService,
-    public settings: SettingsService,
-    public loader: LoaderService
+    public settings: SettingsService
   ) {
   }
 
@@ -68,11 +66,40 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.library.setAudioComponent(this.audio);
 
-    this.loader.load();
-    this.library.updateTracks().then(() => this.loader.unload());
+    // this.loader.load();
+    // this.library.updateTracks().then(() => this.loader.unload());
+
+    // const a = this.library.scanTracks();
+    //
+    // const b = a.subscribe(track => console.log(track));
+    //
+    // // a.connect();
+    //
+    // setTimeout(() => b.unsubscribe())
 
     // this.sidenav.open();
     // this.httpSocketClient.openSocket();
+
+    // console.log(this.httpClient.isSocketOpen())
+    //
+    // const s = this.httpClient.getSocket();
+    //
+    // console.log(this.httpClient.isSocketOpen())
+    //
+    // const b = s.subscribe();
+    //
+    // console.log(this.httpClient.isSocketOpen())
+    //
+    // setTimeout(() => {
+    //   console.log(this.httpClient.isSocketOpen())
+    //
+    //   b.unsubscribe()
+    //
+    //   console.log(this.httpClient.isSocketOpen())
+    // }, 5000);
+
+
+
   }
 
   ngAfterViewInit(): void {

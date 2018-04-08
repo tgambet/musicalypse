@@ -73,7 +73,7 @@
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Misc</h3>
       <div>
-        <button mat-button (click)="httpSocketClient.isSocketOpen() ? httpSocketClient.closeSocket() : httpSocketClient.openSocket()">
+        <button mat-button>
           <mat-icon>{{ httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
           <span>WebSocket</span>
         </button>

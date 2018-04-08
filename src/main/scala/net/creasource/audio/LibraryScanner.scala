@@ -6,8 +6,6 @@ import java.nio.file.Files
 import akka.NotUsed
 import akka.stream.scaladsl.{Source, StreamConverters}
 
-import scala.concurrent.Future
-
 object LibraryScanner {
 
   type AlbumCover = Option[(Array[Byte], String)]

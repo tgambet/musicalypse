@@ -19,6 +19,8 @@ export class HttpSocketClientService implements OnDestroy {
 
   private socketOpened = false;
 
+  private preferHttpOverSocket = false;
+
   private socket: Subject<Object> = webSocket({
     url: HttpSocketClientService.getSocketUrl(),
     openObserver: {
@@ -85,7 +87,7 @@ export class HttpSocketClientService implements OnDestroy {
   }
 
   get(path: string): Observable<Object> {
-    if (!this.socket) {
+    if (this.preferHttpOverSocket || !this.socketOpened) {
       return this.httpClient.get(HttpSocketClientService.getAPIUrl(path));
     } else {
       const request: HttpRequest = {
@@ -101,7 +103,7 @@ export class HttpSocketClientService implements OnDestroy {
   }
 
   post(path: string, entity: Object): Observable<Object> {
-    if (!this.socket) {
+    if (this.preferHttpOverSocket || !this.socketOpened) {
       return this.httpClient.post(
         HttpSocketClientService.getAPIUrl(path),
         JSON.stringify(entity),
@@ -146,7 +148,7 @@ export class HttpSocketClientService implements OnDestroy {
   }
 
   _delete(path: string): Observable<Object> {
-    if (!this.socket) {
+    if (this.preferHttpOverSocket || !this.socketOpened) {
       return this.httpClient.delete(
         HttpSocketClientService.getAPIUrl(path)/*,
         { headers: {'Content-Type': 'application/json'}}*/

@@ -5,6 +5,7 @@ import {LibraryService} from './services/library.service';
 import {AudioComponent} from './audio/audio.component';
 import {SettingsService} from './services/settings.service';
 import {environment} from '../environments/environment';
+import {LoaderService} from './services/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     public library: LibraryService,
-    public settings: SettingsService
+    public settings: SettingsService,
+    public loader: LoaderService
   ) {
   }
 

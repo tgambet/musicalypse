@@ -1,7 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import {webSocket} from 'rxjs/observable/dom/webSocket';
@@ -18,7 +17,19 @@ export class HttpSocketClientService implements OnDestroy {
 
   public id = 0;
 
-  private socket: Subject<Object>;
+  private socketOpened = false;
+
+  private socket: Subject<Object> = webSocket({
+    url: HttpSocketClientService.getSocketUrl(),
+    openObserver: {
+      next: (val: Event) => this.socketOpened = true
+    },
+    closeObserver: {
+      next: (val: CloseEvent) => this.socketOpened = false
+    }
+  });
+
+  private socketObs: Observable<SocketMessage> = this.socket.publish().refCount() as Observable<SocketMessage>;
 
   private static getSocketUrl() {
     let socketUrl = '';
@@ -57,36 +68,41 @@ export class HttpSocketClientService implements OnDestroy {
     return url;
   }
 
-  openSocket(): Observable<Object> {
-    if (!this.socket) {
-      this.socket = webSocket(HttpSocketClientService.getSocketUrl());
-      this.socket.subscribe(
-        () => {},
-        (error) => this.closeSocket(),
-        () => this.closeSocket()
-      );
-    }
-    return this.socket;
+  getSocket(): Observable<SocketMessage> {
+    return this.socketObs;
   }
 
-  closeSocket(): void {
-    if (this.socket) {
-      this.socket.unsubscribe();
-    }
-    this.socket = null;
-  }
+  // openSocket(): Observable<Object> {
+  //   if (!this.socket) {
+  //     this.socket = webSocket(HttpSocketClientService.getSocketUrl()); // publish().refCount()
+  //     this.socket.subscribe(
+  //       () => {},
+  //       (error) => this.closeSocket(),
+  //       () => this.closeSocket()
+  //     );
+  //   }
+  //   return this.socket;
+  // }
+  //
+  // closeSocket(): void {
+  //   if (this.socket) {
+  //     this.socket.unsubscribe();
+  //   }
+  //   this.socket = null;
+  // }
 
   isSocketOpen(): boolean {
-    return this.socket != null;
+    // return this.socket != null;
+    return this.socketOpened;
   }
 
   send(message: any): void {
-    if (!this.socket) { throw new Error('Unable to send on a closed socket: ' + message); }
+    // if (!this.socket) { throw new Error('Unable to send on a closed socket: ' + message); }
     this.socket.next(JSON.stringify(message));
   }
 
   ngOnDestroy(): void {
-    this.closeSocket();
+    this.socket.unsubscribe();
   }
 
   get(path: string): Observable<Object> {
@@ -172,7 +188,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   private sendRequest(request: HttpRequest): Observable<Object> {
     const expectResponse =
-      this.openSocket()
+      this.getSocket()
         .filter((r: HttpResponse) => r.method === 'HttpResponse' && r.id === request.id)
         .map((r: HttpResponse) => {
           const status = r.entity.status;
@@ -192,6 +208,12 @@ export class HttpSocketClientService implements OnDestroy {
     return sendRequest.concat(expectResponse);
   }
 
+}
+
+export interface SocketMessage {
+  id: number;
+  method: string;
+  entity: any;
 }
 
 export interface HttpRequest {

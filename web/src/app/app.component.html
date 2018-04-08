@@ -35,7 +35,7 @@
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
     </button>
-    <button mat-icon-button>
+    <button mat-icon-button routerLink="/library" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
       <mat-icon>queue_music</mat-icon>
     </button>
     <button mat-icon-button>
@@ -50,7 +50,7 @@
     <button mat-icon-button>
       <mat-icon>mode_edit</mat-icon>
     </button>
-    <button mat-icon-button>
+    <button mat-icon-button routerLink="/settings" routerLinkActive="active" (click)="sidenav.close()">
       <mat-icon>settings</mat-icon>
     </button>
     <button mat-icon-button>

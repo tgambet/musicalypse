@@ -72,32 +72,11 @@ export class HttpSocketClientService implements OnDestroy {
     return this.socketObs;
   }
 
-  // openSocket(): Observable<Object> {
-  //   if (!this.socket) {
-  //     this.socket = webSocket(HttpSocketClientService.getSocketUrl()); // publish().refCount()
-  //     this.socket.subscribe(
-  //       () => {},
-  //       (error) => this.closeSocket(),
-  //       () => this.closeSocket()
-  //     );
-  //   }
-  //   return this.socket;
-  // }
-  //
-  // closeSocket(): void {
-  //   if (this.socket) {
-  //     this.socket.unsubscribe();
-  //   }
-  //   this.socket = null;
-  // }
-
   isSocketOpen(): boolean {
-    // return this.socket != null;
     return this.socketOpened;
   }
 
   send(message: any): void {
-    // if (!this.socket) { throw new Error('Unable to send on a closed socket: ' + message); }
     this.socket.next(JSON.stringify(message));
   }
 

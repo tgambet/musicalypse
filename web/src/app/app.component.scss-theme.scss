@@ -90,7 +90,7 @@
     }
   }
 
-  mat-nav-list {
+  mat-nav-list, .side-menu {
     .active {
       color: mat-color($primary) !important;
     }

@@ -1,5 +1,6 @@
 <div class="wrapper">
   <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
+    <mat-chip class="remove-all" (click)="library.deselectAllArtists(); showChipList = false">Remove All</mat-chip>
     <mat-chip *ngFor="let artist of selectedArtists"
               (click)="scrollTo(artist.name); showChipList = false">
       <span class="chip-text">{{ artist.name }}</span>
@@ -7,7 +8,6 @@
         cancel
       </mat-icon>
     </mat-chip>
-    <mat-chip class="remove-all" (click)="library.deselectAllArtists(); showChipList = false">Remove All</mat-chip>
   </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">

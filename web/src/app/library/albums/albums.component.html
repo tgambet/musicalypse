@@ -1,11 +1,11 @@
 <div class="wrapper">
   <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
+    <mat-chip class="remove-all" (click)="library.deselectAllAlbums(); showChipList = false">Remove All</mat-chip>
     <mat-chip *ngFor="let album of selectedAlbums"
               (click)="scrollTo(album.title); showChipList = false">
       <span class="chip-text">{{ album.title }}</span>
       <mat-icon matChipRemove (click)="library.deselectAlbum(album); $event.stopPropagation(); selectedAlbums.length < 3 ? showChipList = false : {};">cancel</mat-icon>
     </mat-chip>
-    <mat-chip class="remove-all" (click)="library.deselectAllAlbums(); showChipList = false">Remove All</mat-chip>
   </mat-chip-list>
   <div class="controls divider fake-scroll-y">
     <button mat-button mat-icon-button class="back" (click)="onPrevious.emit()">

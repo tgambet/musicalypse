@@ -38,6 +38,10 @@
     .mat-chip {
       background-color: mat-color($background, background);
     }
+    .remove-all {
+      color: mat-color($primary, darker-contrast);
+      background-color: mat-color($primary, darker);
+    }
   }
 
 }

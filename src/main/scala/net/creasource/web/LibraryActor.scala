@@ -113,11 +113,11 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           Track(getUrlFromMetadata(metadata, folder), metadata, None)
 
         case (metadata, Some((cover, mimeType))) =>
-          val coverFile = writeCoverToCacheFile(cover, mimeType, metadata)
+          val coverFileOpt = writeCoverToCacheFile(cover, mimeType, metadata)
           Track(
             url = getUrlFromMetadata(metadata, folder),
             metadata = metadata,
-            coverUrl = Some("/cache/" + coverFile.getName)
+            coverUrl = coverFileOpt.map(f => "/cache/" + f.getName)
           )
 
       }
@@ -131,10 +131,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   // https://github.com/mpatric/mp3agic-examples/blob/master/src/main/java/com/mpatric/mp3agic/app/Mp3Pics.java
 
-  private def writeCoverToCacheFile(cover: Array[Byte], mimeType: String, metadata: TrackMetadata): File = {
-
-    assert(metadata.artist.isDefined, "No artist tag found! Cannot create an image for this file. " + metadata.location)
-    assert(metadata.album.isDefined, "No album tag found! Cannot create an image for this file. " + metadata.location)
+  private def writeCoverToCacheFile(cover: Array[Byte], mimeType: String, metadata: TrackMetadata): Option[File] = {
 
     def toCompressedString(s: String): String = {
       val compressed = new StringBuffer
@@ -148,29 +145,35 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       compressed.toString
     }
 
-    val file: File = {
-      val extension = if (mimeType.indexOf("/") > 0) {
-        "." + mimeType.substring(mimeType.indexOf("/") + 1).toLowerCase
-      } else {
-        "." + mimeType.toLowerCase
+    if ((metadata.artist.isDefined || metadata.albumArtist.isDefined) && metadata.album.isDefined) {
+      val file: File = {
+        val extension = if (mimeType.indexOf("/") > 0) {
+          "." + mimeType.substring(mimeType.indexOf("/") + 1).toLowerCase
+        } else {
+          "." + mimeType.toLowerCase
+        }
+        new File(cacheFolder)
+          .toPath
+          .resolve(toCompressedString(metadata.albumArtist.getOrElse(metadata.artist.get)) + "-" + toCompressedString(metadata.album.get) + extension)
+          .toAbsolutePath
+          .toFile
       }
-      new File(cacheFolder)
-        .toPath
-        .resolve(toCompressedString(metadata.albumArtist.getOrElse(metadata.artist.get)) + "-" + toCompressedString(metadata.album.get) + extension)
-        .toAbsolutePath
-        .toFile
+
+      if (!file.exists()) {
+        val randomAccessFile = new RandomAccessFile(file, "rw")
+        try {
+          randomAccessFile.write(cover)
+        } finally {
+          Try(randomAccessFile.close())
+        }
+      }
+
+      Some(file)
+    } else {
+      logger.warning("Found a mp3 with a cover but no tags, ignoring: " + metadata.location)
+      None
     }
 
-    if (!file.exists()) {
-      val randomAccessFile = new RandomAccessFile(file, "rw")
-      try {
-        randomAccessFile.write(cover)
-      } finally {
-        Try(randomAccessFile.close())
-      }
-    }
-
-    file
   }
 
   private def getUrlFromMetadata(metadata: TrackMetadata, libraryFolder: File): String = {

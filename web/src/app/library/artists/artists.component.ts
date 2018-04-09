@@ -1,15 +1,21 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  ApplicationRef,
+  ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
+  ViewChild
+} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 @Component({
   selector: 'app-artists',
   templateUrl: './artists.component.html',
-  styleUrls: ['../library.component.common.scss', './artists.component.scss']
+  styleUrls: ['../library.component.common.scss', './artists.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArtistsComponent implements OnInit, OnDestroy {
 
@@ -18,6 +24,12 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   @ViewChild('list')
   list: ElementRef;
+
+  @Input('artists')
+  artists: Observable<Artist[]>;
+
+  @Input('selectedArtists')
+  selectedArtists: Artist[];
 
   alphabet = [
     '#',
@@ -53,13 +65,11 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   showSearch = false;
   search = '';
 
-  filterAndSort: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
-    let result: Artist[] = artists;
+  filter: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
     if (this.search !== '') {
-      result = _.filter(result, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
+      return _.filter(artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
     }
-    result = _.sortBy(result, artist => artist.name.toLowerCase());
-    return result;
+    return artists;
   });
 
   private subscriptions: Subscription[] = [];
@@ -67,7 +77,8 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   constructor(
     public library: LibraryService,
     public settings: SettingsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public app: ApplicationRef,
   ) {}
 
   ngOnInit() {}

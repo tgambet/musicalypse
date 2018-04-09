@@ -1,9 +1,9 @@
 <div class="wrapper">
   <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
-    <mat-chip *ngFor="let artist of library.selectedArtists"
+    <mat-chip *ngFor="let artist of selectedArtists"
               (click)="scrollTo(artist.name); showChipList = false">
       <span class="chip-text">{{ artist.name }}</span>
-      <mat-icon matChipRemove (click)="library.deselectArtist(artist); $event.stopPropagation(); library.selectedArtists.length < 3 ? showChipList = false : {}">
+      <mat-icon matChipRemove (click)="library.deselectArtist(artist); $event.stopPropagation(); selectedArtists.length < 3 ? showChipList = false : {}">
         cancel
       </mat-icon>
     </mat-chip>
@@ -21,20 +21,20 @@
       </button>
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
-      <span class="select-text" *ngIf="library.selectedArtists.length == 0">
+      <span class="select-text" *ngIf="selectedArtists.length == 0">
         Select an artist or
-        <mat-chip (click)="library.selectAllArtists(library.artistsObs)">Select All</mat-chip>
+        <mat-chip (click)="library.selectAllArtists(library.artistSource)">Select All</mat-chip>
       </span>
       <mat-chip-list>
-        <mat-chip *ngFor="let artist of library.selectedArtists.length <= 2 ? library.selectedArtists : library.selectedArtists.slice(0,1)"
+        <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                   (click)="scrollTo(artist.name)">
           <span class="chip-text">{{ artist.name }}</span>
           <mat-icon matChipRemove (click)="library.deselectArtist(artist)">cancel</mat-icon>
         </mat-chip>
-        <mat-chip *ngIf="library.selectedArtists.length > 2"
+        <mat-chip *ngIf="selectedArtists.length > 2"
                   (click)="showChipList = !showChipList"
                   class="chip-more">
-          {{ library.selectedArtists.length - 1 }} more…
+          {{ selectedArtists.length - 1 }} more…
         </mat-chip>
       </mat-chip-list>
     </div>
@@ -46,13 +46,13 @@
   </div>
   <div #list class="list-wrapper" (swipeleft)="onNext.emit()">
     <mat-list class="artists" dense>
-      <ng-container *ngFor="let artist of library.artistsObs.map(filterAndSort) | async; trackBy: trackByName">
-        <a class="artist hover" (click)="library.selectArtist(artist); onNext.emit();" mat-list-item>
+      <ng-container *ngFor="let artist of artists.map(filter) | async; trackBy: trackByName">
+        <a class="artist hover" (click)="library.selectArtist(artist); onNext.emit()" mat-list-item>
           <mat-checkbox
             color="primary"
             matListIcon
             [checked]="library.isSelectedArtist(artist)"
-            (change)="$event.checked ? library.addArtist(artist) : library.removeArtist(artist)"
+            (change)="$event.checked ? library.addArtist(artist) : library.deselectArtist(artist)"
             (click)="$event.stopPropagation()"></mat-checkbox>
           <div matListAvatar class="avatar" [style]="getAvatarStyle(artist)">
             <mat-icon *ngIf="!artist.avatarUrl">music_note</mat-icon>

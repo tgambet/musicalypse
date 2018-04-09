@@ -1,17 +1,30 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {Track} from '../../model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {Album, Track} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '../../dialogs/details/details.component';
 import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
+import {AudioComponent} from '../../audio/audio.component';
 
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
-  styleUrls: ['../library.component.common.scss', './tracks.component.scss']
+  styleUrls: ['../library.component.common.scss', './tracks.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TracksComponent implements OnInit, OnDestroy {
 
@@ -20,10 +33,27 @@ export class TracksComponent implements OnInit, OnDestroy {
   @Output()
   onPrevious: EventEmitter<void> = new EventEmitter();
 
+  @Input('selectedAlbums')
+  selectedAlbums: Album[];
+  @Input('tracks')
+  tracks: Observable<Track[]>;
+  @Input('currentTrack')
+  currentTrack: Track;
+
+  @Input('audio')
+  audio: AudioComponent;
+
+  @Input('playing')
+  playing: boolean;
+  @Input('loading')
+  loading: boolean;
+  @Input('currentTime')
+  currentTime: number;
+  @Input('duration')
+  duration: number;
+
   @ViewChild('list')
   list: ElementRef;
-
-  sortedAlphabetically = false;
 
   alphabet = [
     '#',
@@ -58,19 +88,11 @@ export class TracksComponent implements OnInit, OnDestroy {
   showSearch = false;
   search = '';
 
-  filterAndSort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
-    let result: Track[] = tracks;
-    const selectedAlbumsIds = _.map(this.library.selectedAlbums, album => album.title + album.artist);
-    result = _.filter(result, track => _.includes(selectedAlbumsIds, track.metadata.album + track.metadata.albumArtist));
+  filter: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
     if (this.search !== '') {
-      result = _.filter(result, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
+      return _.filter(tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
     }
-    if (this.sortedAlphabetically) {
-      result = _.sortBy(result, (t: Track) => t.metadata.title);
-    } else {
-      result = _.sortBy(result, (t: Track) => t.metadata.location);
-    }
-    return result;
+    return tracks.slice(0, 300); // TODO add a warning if there are more tracks, perf review
   });
 
   private subscriptions: Subscription[] = [];
@@ -78,7 +100,6 @@ export class TracksComponent implements OnInit, OnDestroy {
   constructor(
     public library: LibraryService,
     public favorites: FavoritesService,
-    public snackBar: MatSnackBar,
     public dialog: MatDialog,
     public settings: SettingsService
   ) { }
@@ -94,7 +115,7 @@ export class TracksComponent implements OnInit, OnDestroy {
   }
 
   isMultipleAlbumsSelected(): boolean {
-    return this.library.selectedAlbums.length > 1;
+    return this.selectedAlbums.length > 1;
   }
 
   // addAllToPlaylist() {
@@ -103,10 +124,10 @@ export class TracksComponent implements OnInit, OnDestroy {
   //   this.snackBar.open(`${this.filteredTracks.length} ${tracks} added to current playlist`, '', { duration: 1500 });
   // }
 
-  addTrackToPlaylist(track: Track) {
-    this.library.addTrackToPlaylist(track);
-    this.snackBar.open('Track added to current playlist', '', { duration: 1500 });
-  }
+  // addTrackToPlaylist(track: Track) {
+  //   this.library.addTrackToPlaylist(track);
+  //   this.snackBar.open('Track added to current playlist', '', { duration: 1500 });
+  // }
 
   openDetailsDialog(track: Track) {
     const dialogRef = this.dialog.open(DetailsComponent, {

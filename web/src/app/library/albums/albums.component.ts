@@ -1,15 +1,20 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
+  ViewChild
+} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Album} from '../../model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 @Component({
   selector: 'app-albums',
   templateUrl: './albums.component.html',
-  styleUrls: ['../library.component.common.scss', './albums.component.scss']
+  styleUrls: ['../library.component.common.scss', './albums.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlbumsComponent implements OnInit, OnDestroy {
 
@@ -17,6 +22,11 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   onNext: EventEmitter<void> = new EventEmitter();
   @Output()
   onPrevious: EventEmitter<void> = new EventEmitter();
+
+  @Input('albums')
+  albums: Observable<Album[]>;
+  @Input('selectedAlbums')
+  selectedAlbums: Album[];
 
   @ViewChild('list')
   list: ElementRef;
@@ -55,15 +65,11 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   showSearch = false;
   search = '';
 
-  filterAndSort: (albums: Album[]) => Album[] = ((albums: Album[]) => {
-    let result: Album[] = albums;
-    const selectedArtistsName = _.map(this.library.selectedArtists, 'name');
-    result = _.filter(result, (album: Album) => _.includes(selectedArtistsName, album.artist));
+  filter: (albums: Album[]) => Album[] = ((albums: Album[]) => {
     if (this.search !== '') {
-      result = _.filter(result, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
+      return _.filter(albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
     }
-    result = _.sortBy(result, album => album.title.toLowerCase());
-    return result;
+    return albums;
   });
 
   private subscriptions: Subscription[] = [];

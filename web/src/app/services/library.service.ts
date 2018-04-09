@@ -32,12 +32,18 @@ export class LibraryService {
   playlist: Track[] = [];
   oldPlaylist: Track[];
 
+  isScanning = false;
   repeat = false;
   shuffle = false;
+  sortTracksAlphabetically = false;
 
-  tracksObs:  Observable<Track[]>  = Observable.empty();
-  artistsObs: Observable<Artist[]> = Observable.empty();
-  albumsObs:  Observable<Album[]>  = Observable.empty();
+  trackSource:  Observable<Track[]>;
+  artistSource: Observable<Artist[]>;
+  albumSource:  Observable<Album[]>;
+
+  tracks: Observable<Track[]>;
+  artists: Observable<Artist[]>;
+  albums: Observable<Album[]>;
 
   constructor(
     private httpSocketClient: HttpSocketClientService,
@@ -120,16 +126,80 @@ export class LibraryService {
     return albums;
   }
 
+  private static processArtists(artists: Artist[]): Artist[] {
+    return _.sortBy(artists, album => album.name.toLowerCase());
+  }
+
+  private static processAlbums(albums: Album[], selectedArtists: Artist[]): Album[] {
+    let result: Album[] = albums;
+    const selectedArtistsName = _.map(selectedArtists, 'name');
+    result = _.filter(result, (album: Album) => _.includes(selectedArtistsName, album.artist));
+    result = _.sortBy(result, album => album.title.toLowerCase());
+    return result;
+  }
+
+  private static processTracks(tracks: Track[], selectedAlbums: Album[], sortAlphabetically = false): Track[] {
+    let result: Track[] = tracks;
+    const selectedAlbumsIds = _.map(selectedAlbums, album => album.title + album.artist);
+    result = _.filter(result, track => _.includes(selectedAlbumsIds, track.metadata.album + track.metadata.albumArtist));
+    if (sortAlphabetically) {
+      result = _.sortBy(result, (t: Track) => t.metadata.title);
+    } else {
+      result = _.sortBy(result, (t: Track) => t.metadata.location);
+    }
+    return result;
+  }
+
   scan() {
-    this.tracksObs  = this.scanTracks();
-    this.artistsObs = this.tracksObs.map(tracks => LibraryService.extractArtists(tracks));
-    this.albumsObs  = this.tracksObs.map(tracks => LibraryService.extractAlbums(tracks));
+    this.selectedArtists = [];
+    this.selectedAlbums = [];
+    this.isScanning = true;
+
+    this.trackSource = this.scanTracks()
+      .finally(() => this.isScanning = false)
+      .publishReplay(1)
+      .refCount();
+
+    this.artistSource = this.trackSource
+      .map(LibraryService.extractArtists)
+      .publishReplay(1)
+      .refCount();
+
+    this.albumSource = this.trackSource
+      .map(LibraryService.extractAlbums)
+      .publishReplay(1)
+      .refCount();
+
+    this.tracks = this.processTracksObs(true);
+
+    this.artists = this.processArtistsObs(true);
+
+    this.albums = this.processAlbumsObs(true);
   }
 
   update() {
-    this.tracksObs  = this.updateTracks();
-    this.artistsObs = this.tracksObs.map(tracks => LibraryService.extractArtists(tracks));
-    this.albumsObs  = this.tracksObs.map(tracks => LibraryService.extractAlbums(tracks));
+    this.selectedArtists = [];
+    this.selectedAlbums = [];
+
+    this.trackSource = this.updateTracks()
+      .publishLast()
+      .refCount();
+
+    this.artistSource = this.trackSource
+      .map(LibraryService.extractArtists)
+      .publishLast()
+      .refCount();
+
+    this.albumSource = this.trackSource
+      .map(LibraryService.extractAlbums)
+      .publishLast()
+      .refCount();
+
+    this.tracks = this.processTracksObs();
+
+    this.artists = this.processArtistsObs();
+
+    this.albums = this.processAlbumsObs();
   }
 
   setAudioComponent(audioComponent: AudioComponent) {
@@ -241,17 +311,6 @@ export class LibraryService {
     this._playTrack(track);
   }
 
-  playTracks(obs: Observable<Track[]>, next?: Track) {
-    obs.take(1).subscribe(tracks => {
-      this.playlist = tracks;
-      this.currentTrack = next ? next : this.playlist[0];
-      if (this.shuffle) {
-        this.shufflePlaylist();
-      }
-      this._playTrack(this.currentTrack);
-    });
-  }
-
   playTrackNext(next: Track) {
     // if current track isn't set or in playlist and next isn't in playlist
     if ((!this.currentTrack || !_.includes(this.playlist, this.currentTrack)) && !_.includes(this.playlist, next)) {
@@ -269,6 +328,17 @@ export class LibraryService {
     if (!this.currentTrack) {
       this.playTrack(next);
     }
+  }
+
+  playTracks(obs: Observable<Track[]>, next?: Track) {
+    obs.take(1).subscribe(tracks => {
+      this.playlist = tracks;
+      this.currentTrack = next ? next : this.playlist[0];
+      if (this.shuffle) {
+        this.shufflePlaylist();
+      }
+      this._playTrack(this.currentTrack);
+    });
   }
 
   playNextTrackInPlaylist() {
@@ -324,30 +394,6 @@ export class LibraryService {
     return _.indexOf(this.playlist, this.currentTrack) === this.playlist.length - 1;
   }
 
-  // getAlbumsOf(artists: Artist[]): Album[] {
-  //   if (_.isEqual(artists, [])) {
-  //     return [];
-  //   }
-  //   const artistsNames = _.map(artists, 'name');
-  //   // return _.filter(this.albums, (album: Album) => _.includes(artistsNames, album.artist));
-  //   return [];
-  // }
-
-  // getTracksOf(albums: Album[]): Track[] {
-  //   if (_.isEqual(albums, [])) {
-  //     return [];
-  //   }
-  //   // return _.filter(this.tracks, track => {
-  //   //   for (let i = 0; i < albums.length; i++) {
-  //   //     if (albums[i].artist === track.metadata.albumArtist && albums[i].title === track.metadata.album) {
-  //   //       return true;
-  //   //     }
-  //   //   }
-  //   //   return false;
-  //   // });
-  //   return [];
-  // }
-
   // Artists
 
   isSelectedArtist(artist: Artist): boolean {
@@ -357,11 +403,15 @@ export class LibraryService {
   selectArtist(artist: Artist) {
     this.selectedArtists = [artist];
     this.filterSelectedAlbums();
+    this.albums = this.processAlbumsObs(this.isScanning);
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   deselectArtist(artist: Artist) {
     this.selectedArtists = _.filter(this.selectedArtists, a => !_.isEqual(a, artist));
     this.filterSelectedAlbums();
+    this.albums = this.processAlbumsObs(this.isScanning);
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   // selectArtistsByName(names: string[]) {
@@ -373,22 +423,26 @@ export class LibraryService {
     if (!_.includes(_.map(this.selectedArtists, 'name'), artist.name)) {
       this.selectedArtists.push(artist);
     }
-  }
-
-  removeArtist(artist: Artist) {
-    if (_.includes(_.map(this.selectedArtists, 'name'), artist.name)) {
-      _.remove(this.selectedArtists, a => a.name === artist.name);
-    }
-    this.filterSelectedAlbums();
+    this.albums = this.processAlbumsObs(this.isScanning);
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   selectAllArtists(artists: Observable<Artist[]>) {
     artists.take(1).subscribe(a => this.selectedArtists = a);
+    this.albums = this.processAlbumsObs(this.isScanning);
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   deselectAllArtists() {
     this.selectedArtists = [];
     this.selectedAlbums = [];
+    this.albums = this.processAlbumsObs(this.isScanning);
+    this.tracks = this.processTracksObs(this.isScanning);
+  }
+
+  filterSelectedAlbums() {
+    const artistsNames = _.map(this.selectedArtists, 'name');
+    this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
   }
 
   // Albums
@@ -400,10 +454,12 @@ export class LibraryService {
 
   selectAlbum(album: Album) {
     this.selectedAlbums = [album];
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   deselectAlbum(album: Album) {
     this.selectedAlbums = _.filter(this.selectedAlbums, a => !_.isEqual(a, album));
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   // selectAlbumsByName(names: string[]) {
@@ -419,81 +475,56 @@ export class LibraryService {
     if (!_.includes(selectedAlbumsIds, album.title + album.artist)) {
       this.selectedAlbums.push(album);
     }
-  }
-
-  removeAlbum(album: Album) {
-    const selectedAlbumsIds = _.map(this.selectedAlbums, a => a.title + a.artist);
-    if (_.includes(selectedAlbumsIds, album.title + album.artist)) {
-      _.remove(this.selectedAlbums, a => a.title === album.title && a.artist === album.artist);
-    }
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   selectAllAlbums(albums: Observable<Album[]>) {
     albums.take(1).subscribe(a => this.selectedAlbums = a);
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
   deselectAllAlbums() {
     this.selectedAlbums = [];
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
-  filterSelectedAlbums() {
-    const artistsNames = _.map(this.selectedArtists, 'name');
-    this.selectedAlbums = _.filter(this.selectedAlbums, album => _.includes(artistsNames, album.artist));
+  // Tracks
+
+  sortTracks(alphabetically: boolean = true) {
+    this.sortTracksAlphabetically = alphabetically;
+    this.tracks = this.processTracksObs(this.isScanning);
   }
 
-  // scanLibrary(): Promise<void> {
-  //   return new Promise((resolve, reject) => {
-  //     this.reset();
-  //     const currentId = ++this.httpSocketClient.id;
-  //     const subscription1 = this.httpSocketClient
-  //       .getSocket()
-  //       .filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId)
-  //       .map((r: SocketMessage) => r.entity)
-  //       .map((e: Track) => e)
-  //       .subscribe(
-  //         track => this.addTrack(track),
-  //         error => reject(error)
-  //       );
-  //
-  //     const subscription2 = this.httpSocketClient
-  //       .getSocket()
-  //       .filter((r: SocketMessage) => r.method === 'LibraryScanned' && r.id === currentId)
-  //       .take(1)
-  //       .subscribe(() => {
-  //         subscription1.unsubscribe();
-  //         subscription3.unsubscribe();
-  //         resolve();
-  //       });
-  //
-  //     const subscription3 = this.httpSocketClient
-  //       .getSocket()
-  //       .filter((r: SocketMessage) => r.method === 'LibraryScannedFailed' && r.id === currentId)
-  //       .take(1)
-  //       .subscribe(error => {
-  //         subscription1.unsubscribe();
-  //         subscription2.unsubscribe();
-  //         reject(error);
-  //       });
-  //
-  //     this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
-  //   });
-  // }
+  // Privates
 
-  // updateTracks(): Promise<void> {
-  //   // this.reset();
-  //   return new Promise((resolve, reject) => {
-  //     this.httpSocketClient.get('/api/libraries/tracks').subscribe(
-  //       (tracks: Track[]) => {
-  //         _.forEach(tracks, track => this.addTrack(track));
-  //         this.onTracksUpdatedSource.next();
-  //         resolve();
-  //       },
-  //       (error) => {
-  //         reject(error);
-  //       }
-  //     );
-  //   });
-  // }
+  private processTracksObs(replay = false) {
+    const obs = this.trackSource
+      .map(tracks => LibraryService.processTracks(tracks, this.selectedAlbums, this.sortTracksAlphabetically));
+    if (replay) {
+      return obs.publishReplay(1).refCount();
+    } else {
+      return obs.publishLast().refCount();
+    }
+  }
+
+  private processArtistsObs(replay = false) {
+    const obs = this.artistSource.map(LibraryService.processArtists);
+    if (replay) {
+      return obs.publishReplay(1).refCount();
+    } else {
+      return obs.publishLast().refCount();
+    }
+  }
+
+  private processAlbumsObs(replay = false) {
+    const obs = this.albumSource
+      .map(albums => LibraryService.processAlbums(albums, this.selectedArtists));
+    if (replay) {
+      return obs.publishReplay(1).refCount();
+    } else {
+      return obs.publishLast().refCount();
+    }
+  }
 
   private updateTracks(): Observable<Track[]> {
     return Observable.create(observer => {
@@ -502,8 +533,7 @@ export class LibraryService {
         .finally(() => this.loader.unload())
         .subscribe(observer);
       return () => {};
-    }).publishLast()
-      .refCount();
+    });
   }
 
   private _updateTracksObs(): Observable<Track[]> {
@@ -512,7 +542,7 @@ export class LibraryService {
   }
 
   private scanTracks(): Observable<Track[]> {
-    return this._scanTracksObs().scan((acc, track) => [LibraryService.fixTags(track), ...acc], []).publishReplay(1).refCount();
+    return this._scanTracksObs().scan((acc, track) => [LibraryService.fixTags(track), ...acc], []);
   }
 
   private _scanTracksObs(): Observable<Track> {

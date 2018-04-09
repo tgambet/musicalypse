@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "../",
-    "outDir": "../target/electron/dist",
+    "outDir": "../target/electron/out-tsc",
     "sourceMap": true,
     "moduleResolution": "node",
     "typeRoots": [

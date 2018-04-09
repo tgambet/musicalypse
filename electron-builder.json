@@ -1,5 +1,5 @@
 {
-  "productName": "musicalypse",
+  "productName": "Musicalypse",
   "directories": {
     "output": "target/electron/"
   },
@@ -7,7 +7,7 @@
     "oneClick": false
   },
   "win": {
-    "files": ["target/electron/dist", "target/dist/web"],
+    "files": ["target/electron/out-tsc", "target/dist/electron"],
     "extraFiles": ["target/universal/stage"],
     "target": [
       "nsis"

@@ -8,11 +8,12 @@ $sideMenuWidth: 44px;
 }
 
 .content {
-  padding-left: $sideMenuWidth;
+  padding-left: 0;
   position: absolute;
   height: 100%;
   display: flex;
   flex-direction: row;
+  will-change: transform;
   transform: translateX(0);
   transition-property: transform;
   transition-duration: 0.4s;
@@ -23,7 +24,7 @@ $sideMenuWidth: 44px;
   }
   .column {
     position: relative;
-    width: calc(100vw - #{$sideMenuWidth});
+    width: 100vw;
     min-height: 420px; // TODO figure out what to do if screen size is below
   }
   .a1, .a2, .a3 {
@@ -35,8 +36,8 @@ $sideMenuWidth: 44px;
   app-mini-player {
     position: absolute;
     bottom: 0;
-    left: $sideMenuWidth;
-    width: calc(100vw - #{$sideMenuWidth});
+    left: 0;
+    width: 100vw;
     height: 72px;
     transition-property: transform, height;
     transition-duration: 0.4s;
@@ -44,21 +45,21 @@ $sideMenuWidth: 44px;
     overflow: hidden;
   }
   &.t1 {
-    transform: translateX(calc(-100vw + #{$sideMenuWidth}));
+    transform: translateX(-100vw);
     app-mini-player {
-      transform: translateX(calc(100vw - #{$sideMenuWidth}));
+      transform: translateX(100vw);
     }
   }
   &.t2 {
-    transform: translateX(calc(-200vw + 2* #{$sideMenuWidth}));
+    transform: translateX(-200vw);
     app-mini-player {
-      transform: translateX(calc(200vw - 2* #{$sideMenuWidth}));
+      transform: translateX(200vw);
     }
   }
   &.t3 {
-    transform: translateX(calc(-300vw + 3* #{$sideMenuWidth}));
+    transform: translateX(-300vw);
     app-mini-player {
-      transform: translate(calc(200vw - 2* #{$sideMenuWidth}), 72px);
+      transform: translate(200vw, 72px);
     }
     .a1, .a2, .a3 {
       padding-bottom: 0;
@@ -69,7 +70,7 @@ $sideMenuWidth: 44px;
       padding-bottom: 0;
     }
     app-mini-player {
-      transform: translate(calc(200vw - 2* #{$sideMenuWidth}), 72px);
+      transform: translate(calc(200vw), 72px);
       height: 0;
     }
   }
@@ -77,6 +78,7 @@ $sideMenuWidth: 44px;
 
 @media screen and (min-width: 599px) {
   .content {
+    padding-left: $sideMenuWidth - 1px;
     .column {
       width: calc(50vw - #{$sideMenuWidth} / 2);
       &.a4 {
@@ -109,6 +111,10 @@ $sideMenuWidth: 44px;
         transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
         height: 0;
       }
+    }
+    app-mini-player {
+      left: $sideMenuWidth;
+      width: calc(100vw - #{$sideMenuWidth});
     }
   }
 }

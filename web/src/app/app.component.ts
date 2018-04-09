@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
-import {BreakpointObserver} from '@angular/cdk/layout';
 import {LibraryService} from './services/library.service';
 import {AudioComponent} from './audio/audio.component';
 import {SettingsService} from './services/settings.service';
@@ -23,17 +22,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   audio: AudioComponent;
 
   themeChooser = false;
-  showSidenav: boolean;
 
   isElectron = environment.electron;
 
   application = AppComponent;
 
   constructor(
-    private breakpointObserver: BreakpointObserver,
     public library: LibraryService,
     public settings: SettingsService,
-    public loader: LoaderService
+    public loader: LoaderService // wrong IDE warning, don't remove
   ) {
   }
 
@@ -58,13 +55,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
-    this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
-      this.showSidenav = result.matches;
-      if (!this.showSidenav) {
-        this.sidenav.close();
-      }
-    });
 
     this.library.setAudioComponent(this.audio);
 

@@ -21,15 +21,24 @@
   top: 50px;
   left: 0;
   bottom: 0;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   width: 44px;
   z-index: 2;
   min-height: 380px;
   button {
-    margin: 4px;
+    margin: 4px 0;
     box-sizing: content-box;
+  }
+  .toggle, .album {
+    margin-bottom: 5px;
+  }
+}
+
+@media screen and (min-width: 599px){
+  .side-menu {
+    display: flex;
   }
 }
 
@@ -41,6 +50,18 @@ mat-toolbar {
     font-family: 'Cookie', cursive;
     font-size: 40px;
   }
+  .toggle {
+    margin-left: -0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
+@media screen and (min-width: 599px){
+  mat-toolbar {
+    .toggle {
+      display: none;
+    }
+  }
 }
 
 mat-sidenav-container {
@@ -49,9 +70,23 @@ mat-sidenav-container {
 
 mat-sidenav {
   width: 250px;
-  padding-left: 44px;
   a {
     text-decoration: none;
+  }
+  .mat-list-icon {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 599px){
+  mat-sidenav {
+    padding-left: 44px;
+    .mat-list-icon {
+      display: none;
+    }
+    .mat-line {
+      margin-left: -16px;
+    }
   }
 }
 

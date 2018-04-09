@@ -1,5 +1,8 @@
 <div ngClass="mat-typography main-wrapper" [class]="settings.currentTheme.cssClass" [class.electron]="isElectron">
   <mat-toolbar>
+    <button mat-icon-button (click)="sidenav.toggle()" class="toggle">
+      <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
+    </button>
     <h1>
       <a routerLink="/" class="link" tabindex="-1">
         Musicalypse
@@ -32,7 +35,7 @@
   </mat-toolbar>
   <mat-progress-bar class="main-loader" mode="indeterminate" [class.show]="loader.isLoading()"></mat-progress-bar>
   <nav class="side-menu">
-    <button mat-icon-button (click)="sidenav.toggle()">
+    <button mat-icon-button (click)="sidenav.toggle()" class="toggle">
       <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>
     </button>
     <button mat-icon-button routerLink="/library" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
@@ -44,7 +47,7 @@
     <button mat-icon-button>
       <mat-icon>favorite_border</mat-icon>
     </button>
-    <button mat-icon-button>
+    <button mat-icon-button class="album">
       <mat-icon>album</mat-icon>
     </button>
     <button mat-icon-button>
@@ -63,28 +66,35 @@
         <h3 mat-subheader>Navigation</h3>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/library" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="sidenav.close()">
+          <mat-icon matListIcon>queue_music</mat-icon>
           <span matLine>
             <mat-icon *ngIf="library.audio.playing && !library.audio.muted">volume_up</mat-icon>
             Library
           </span>
         </a>
         <a mat-list-item routerLink="/recent" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>schedule</mat-icon>
           <span matLine>Recently played</span>
         </a>
         <a mat-list-item routerLink="/favorites" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>favorite_border</mat-icon>
           <span matLine>Favorites</span>
         </a>
         <a mat-list-item routerLink="/playlists" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>album</mat-icon>
           <span matLine>Playlists</span>
         </a>
         <mat-divider></mat-divider>
         <a mat-list-item routerLink="/editor" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>mode_edit</mat-icon>
           <span matLine>Tag editor</span>
         </a>
         <a mat-list-item routerLink="/settings" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>settings</mat-icon>
           <span matLine>Settings</span>
         </a>
         <a mat-list-item routerLink="/about" routerLinkActive="active" (click)="sidenav.close()">
+          <mat-icon matListIcon>info</mat-icon>
           <span matLine>About</span>
         </a>
       </mat-nav-list>

@@ -49,6 +49,9 @@ mat-toolbar {
   h1 {
     font-family: 'Cookie', cursive;
     font-size: 40px;
+    a:focus {
+      outline: none;
+    }
   }
   .toggle {
     margin-left: -0.5rem;

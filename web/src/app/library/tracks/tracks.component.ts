@@ -15,10 +15,10 @@ import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '../../services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '../../dialogs/details/details.component';
+import {AudioComponent} from '../../audio/audio.component';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
-import {AudioComponent} from '../../audio/audio.component';
 
 @Component({
   selector: 'app-tracks',

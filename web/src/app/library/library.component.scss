@@ -2,9 +2,13 @@ $sideMenuWidth: 44px;
 
 .container {
   position: relative;
-  width: 100vw;
+  //width: 100%;
   height: 100%;
   overflow-x: hidden;
+}
+
+:host-context(.electron) .container {
+  left: -1px; // account for .main-wrapper border
 }
 
 .content {
@@ -60,6 +64,7 @@ $sideMenuWidth: 44px;
     transform: translateX(-300vw);
     app-mini-player {
       transform: translate(200vw, 72px);
+      visibility: hidden;
     }
     .a1, .a2, .a3 {
       padding-bottom: 0;
@@ -78,7 +83,7 @@ $sideMenuWidth: 44px;
 
 @media screen and (min-width: 599px) {
   .content {
-    padding-left: $sideMenuWidth - 1px;
+    padding-left: $sideMenuWidth;
     .column {
       width: calc(50vw - #{$sideMenuWidth} / 2);
       &.a4 {
@@ -101,6 +106,7 @@ $sideMenuWidth: 44px;
       transform: translateX(calc(-150vw + 1.5 * #{$sideMenuWidth}));
       app-mini-player {
         transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
+        height: 0;
       }
     }
     &.no-track {
@@ -143,6 +149,7 @@ $sideMenuWidth: 44px;
       transform: translateX(calc(-66.6vw + #{$sideMenuWidth} * 2 / 3));
       app-mini-player {
         transform: translate(0, 72px);
+        height: 0;
       }
       .a1, .a2, .a3 {
         padding-bottom: 0;

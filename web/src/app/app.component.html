@@ -1,4 +1,4 @@
-<div ngClass="mat-typography main-wrapper" [class]="settings.currentTheme.cssClass" [class.electron]="isElectron">
+<div ngClass="mat-typography main-wrapper" [class]="settings.currentTheme.cssClass" [class.focused]="isElectronFocused" [class.electron]="isElectron" >
   <mat-toolbar>
     <button mat-icon-button (click)="sidenav.toggle()" class="toggle">
       <mat-icon>{{ sidenav.opened ? 'close' : 'menu' }}</mat-icon>

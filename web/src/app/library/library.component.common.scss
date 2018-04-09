@@ -147,7 +147,6 @@
 
   .controls-meta {
     overflow: hidden;
-    white-space: nowrap;
     height: 60px;
     width: calc(100% - 40px - 2rem);
     display: flex;
@@ -159,10 +158,6 @@
     transition-property: transform;
     transition-timing-function: ease;
     transition-duration: 0.4s;
-    a {
-      text-decoration: underline;
-      cursor: pointer;
-    }
     .select-text {
       font-weight: 300;
     }
@@ -172,6 +167,7 @@
       padding: 5px 10px;
       max-width: calc(50% - 4px);
       .chip-text {
+        white-space: nowrap;
         display: inline-block;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {LibraryService} from './services/library.service';
 import {AudioComponent} from './audio/audio.component';
@@ -24,14 +24,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   themeChooser = false;
 
   isElectron = environment.electron;
+  isElectronFocused: boolean;
 
   application = AppComponent;
 
   constructor(
     public library: LibraryService,
     public settings: SettingsService,
+    private ref: ChangeDetectorRef,
     public loader: LoaderService // wrong IDE warning, don't remove
   ) {
+
+    if (environment.electron) {
+      const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
+      ipc.on('focus', () => {
+        this.isElectronFocused = true;
+        ref.detectChanges();
+      });
+      ipc.on('blur', () => {
+        this.isElectronFocused = false;
+        ref.detectChanges();
+      });
+    }
   }
 
   static close() {

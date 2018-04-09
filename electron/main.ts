@@ -22,19 +22,17 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         frame: false,
-        x: 0,
-        y: 0,
-        width: size.width,
-        height: size.height,
+        width: size.width - 200,
+        height: size.height - 200,
         minHeight: 450,
         minWidth: 350,
         show: false,
-        transparent: true
+        backgroundColor: '#000'
     });
 
     if (serve) {
         // dirname is target/electron/dist
-        // require('electron-reload')(__dirname, {electron: require(`${__dirname}/../../../node_modules/electron`)});
+        require('electron-reload')(__dirname, {electron: require(`${__dirname}/../../../node_modules/electron`)});
         win.loadURL('http://localhost:4200');
     } else {
         win.loadURL(url.format({
@@ -57,6 +55,15 @@ function createWindow() {
     win.once('ready-to-show', () => {
         win.show();
     });
+
+    win.on('focus', () => {
+        win.send('focus', '');
+    });
+
+    win.on('blur', () => {
+        win.send('blur', '');
+    });
+
 }
 
 try {

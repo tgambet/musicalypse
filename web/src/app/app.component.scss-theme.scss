@@ -1,10 +1,7 @@
 @import '~@angular/material/theming';
 
-// mixin name will be used in main style.scss
 @mixin app-component-theme($theme) {
 
-  // retrieve variables from theme
-  // (all possible variables, use only what you really need)
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
@@ -81,6 +78,11 @@
     outline: 2px dashed mat-color($foreground, icon);
   }
 
+  mat-toolbar {
+    background-color: mat-color($background, status-bar) !important;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+  }
+
   .side-menu {
     background-color: mat-color($background, app-bar);
     color: mat-color($foreground, text);
@@ -96,7 +98,7 @@
     }
   }
 
-  .electron-buttons {
+  &.electron .electron-buttons {
     :hover {
       background-color: mat-color($background, hover);
     }
@@ -105,9 +107,12 @@
     }
   }
 
-  mat-toolbar {
-    background-color: mat-color($background, status-bar) !important;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+  &.main-wrapper {
+    border: 1px solid mat-color($background, app-bar);
+  }
+
+  &.main-wrapper.electron.focused {
+    border: 1px solid mat-color($primary);
   }
 
 }

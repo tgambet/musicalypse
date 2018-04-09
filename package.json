@@ -11,7 +11,7 @@
     "ng:serve:electron": "ng serve --environment=electron",
     "ng:build": "ng build",
     "ng:build:prod": "ng build --prod --aot",
-    "ng:build:electron": "ng build --env=electron --aot",
+    "ng:build:electron": "ng build --env=electron --aot --target=production",
     "ng:test": "ng test",
     "ng:lint": "ng lint",
     "ng:e2e": "ng e2e",

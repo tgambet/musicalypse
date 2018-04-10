@@ -17,7 +17,6 @@ $sideMenuWidth: 44px;
   height: 100%;
   display: flex;
   flex-direction: row;
-  will-change: transform;
   transform: translateX(0);
   transition-property: transform;
   transition-duration: 0.4s;
@@ -43,28 +42,27 @@ $sideMenuWidth: 44px;
     left: 0;
     width: 100vw;
     height: 72px;
-    transition-property: transform, height;
+    transition-property: transform;
     transition-duration: 0.4s;
     transition-timing-function: ease;
-    overflow: hidden;
+    transform-origin: bottom;
   }
   &.t1 {
     transform: translateX(-100vw);
     app-mini-player {
-      transform: translateX(100vw);
+      transform: translateX(100vw) scaleY(1);
     }
   }
   &.t2 {
     transform: translateX(-200vw);
     app-mini-player {
-      transform: translateX(200vw);
+      transform: translateX(200vw) scaleY(1);
     }
   }
   &.t3 {
     transform: translateX(-300vw);
     app-mini-player {
-      transform: translate(200vw, 72px);
-      visibility: hidden;
+      transform: translateX(200vw) scaleY(0);
     }
     .a1, .a2, .a3 {
       padding-bottom: 0;
@@ -75,8 +73,7 @@ $sideMenuWidth: 44px;
       padding-bottom: 0;
     }
     app-mini-player {
-      transform: translate(calc(200vw), 72px);
-      height: 0;
+      transform: translateX(200vw) scaleY(0);
     }
   }
 }
@@ -90,23 +87,26 @@ $sideMenuWidth: 44px;
         width: calc(100vw - #{$sideMenuWidth});
       }
     }
+    app-mini-player {
+      left: $sideMenuWidth;
+      width: calc(100vw - #{$sideMenuWidth});
+    }
     &.t1 {
       transform: translateX(calc(-50vw + #{$sideMenuWidth} / 2));
       app-mini-player {
-        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2));
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2)) scaleY(1);
       }
     }
     &.t2 {
       transform: translateX(calc(-50vw + #{$sideMenuWidth} / 2));
       app-mini-player {
-        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2));
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2)) scaleY(1);
       }
     }
     &.t3 {
       transform: translateX(calc(-150vw + 1.5 * #{$sideMenuWidth}));
       app-mini-player {
-        transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
-        height: 0;
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2)) scaleY(0);
       }
     }
     &.no-track {
@@ -114,13 +114,8 @@ $sideMenuWidth: 44px;
         padding-bottom: 0;
       }
       app-mini-player {
-        transform: translate(calc(50vw - #{$sideMenuWidth} / 2), 72px);
-        height: 0;
+        transform: translateX(calc(50vw - #{$sideMenuWidth} / 2)) scaleY(0);
       }
-    }
-    app-mini-player {
-      left: $sideMenuWidth;
-      width: calc(100vw - #{$sideMenuWidth});
     }
   }
 }
@@ -136,20 +131,19 @@ $sideMenuWidth: 44px;
     &.t1 {
       transform: translateX(0);
       app-mini-player {
-        transform: translateX(0);
+        transform: scaleY(1);
       }
     }
     &.t2 {
       transform: translateX(0);
       app-mini-player {
-        transform: translateX(0);
+        transform: scaleY(1);
       }
     }
     &.t3 {
       transform: translateX(calc(-66.6vw + #{$sideMenuWidth} * 2 / 3));
       app-mini-player {
-        transform: translate(0, 72px);
-        height: 0;
+        transform: scaleY(0);
       }
       .a1, .a2, .a3 {
         padding-bottom: 0;
@@ -157,8 +151,7 @@ $sideMenuWidth: 44px;
     }
     &.no-track {
       app-mini-player {
-        transform: translate(0, 72px);
-        height: 0;
+        transform: scaleY(0);
       }
     }
   }

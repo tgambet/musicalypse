@@ -68,17 +68,18 @@
     height: calc(100% - 132px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 10px;
     position: absolute;
     top: 60px;
     right: 21px;
     ol {
       list-style-type: none;
+      height: 100%;
       li {
         text-align: center;
         cursor: pointer;
-        line-height: calc((100vh - 192px) / 27);
+        height: calc(100% / 27);
       }
     }
   }

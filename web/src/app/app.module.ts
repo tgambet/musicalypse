@@ -2,9 +2,10 @@ import {Injectable, NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 import {FormsModule} from '@angular/forms';
-import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig} from '@angular/platform-browser';
+import {BrowserModule, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import * as Material from '@angular/material';
+import {GestureConfig, HammerManager} from '@angular/material';
 
 import {AppComponent} from './app.component';
 import {AudioComponent} from './audio/audio.component';
@@ -37,11 +38,12 @@ const appRoutes: Routes = [
 ];
 
 @Injectable()
-export class MyHammerConfig extends HammerGestureConfig {
-  overrides = <any> {
-    'pinch': { enable: false },
-    'rotate': { enable: false }
-  };
+export class MyHammerConfig extends GestureConfig {
+  buildHammer(element: HTMLElement) {
+    const mc = <HammerManager>super.buildHammer(element);
+    mc.set({ touchAction: 'pan-y' });
+    return mc;
+  }
 }
 
 @NgModule({

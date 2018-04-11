@@ -5,14 +5,14 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatSnackBar} from '@angular/material';
 import {HttpSocketClientService} from './http-socket-client.service';
 import {Subscription} from 'rxjs/Subscription';
-import {LoaderService} from './loader.service';
-import * as _ from 'lodash';
 import {PersistenceService} from './persistence.service';
+import {Observable} from 'rxjs/Observable';
+import * as _ from 'lodash';
 
 @Injectable()
 export class SettingsService implements OnDestroy {
 
-  libraryFolders: string[] = [];
+  // libraryFolders: Observable<string[]> = Observable.empty();
 
   themes: Theme[] = [
     {name: 'Dark/Green', cssClass: 'dark-theme', color: '#212121'},
@@ -35,8 +35,7 @@ export class SettingsService implements OnDestroy {
     private overlayContainer: OverlayContainer,
     private sanitizer: DomSanitizer,
     public httpSocketClient: HttpSocketClientService,
-    public snackBar: MatSnackBar,
-    public loader: LoaderService
+    public snackBar: MatSnackBar
   ) {
     overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
     const theme = PersistenceService.load('theme');
@@ -130,34 +129,22 @@ export class SettingsService implements OnDestroy {
     return _.isEqual(this.currentTheme, theme);
   }
 
-  addLibraryFolder(folder: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.httpSocketClient.post('/api/libraries', folder).subscribe(
-        () => {
-          this.libraryFolders.push(folder);
-          resolve();
-        },
-        error => {
-          console.log(error);
-          reject(error);
-        }
-      );
-    });
+  geLibraryFolders(): Observable<string[]> {
+    return this.httpSocketClient.get('/api/libraries')
+      .publishLast()
+      .refCount() as Observable<string[]>;
   }
 
-  removeLibraryFolder(folder: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.httpSocketClient._delete('/api/libraries/' + encodeURIComponent(folder)).subscribe(
-        () => {
-          this.libraryFolders = _.filter(this.libraryFolders, lib => lib !== folder);
-          resolve();
-        },
-        error => {
-          console.log(error);
-          reject(error);
-        }
-      );
-    });
+  addLibraryFolder(folder: string): Observable<void> {
+    return this.httpSocketClient
+      .post('/api/libraries', folder)
+      .map(() => {}); // as Observable<void>
+  }
+
+  removeLibraryFolder(folder: string): Observable<void> {
+    return this.httpSocketClient
+      ._delete('/api/libraries/' + encodeURIComponent(folder))
+      .map(() => {});
   }
 
 }

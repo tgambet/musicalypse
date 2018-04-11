@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {SettingsService} from '../services/settings.service';
@@ -6,7 +6,7 @@ import {FolderComponent} from '../dialogs/folder/folder.component';
 import {LibraryService} from '../services/library.service';
 import {HttpSocketClientService} from '../services/http-socket-client.service';
 import {ConfirmComponent} from '../dialogs/confirm/confirm.component';
-import {LoaderService} from '../services/loader.service';
+import {environment} from '../../environments/environment';
 import * as _ from 'lodash';
 
 @Component({
@@ -14,9 +14,15 @@ import * as _ from 'lodash';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
+
+  libraryFolders: string[] = [];
 
   dragOver = false;
+
+  ipcAddFolder = (event, folder) => {
+    this.addLibraryFolder(folder[0]);
+  }
 
   constructor(
     public settings: SettingsService,
@@ -24,16 +30,54 @@ export class SettingsComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     public library: LibraryService,
-    public loader: LoaderService,
-    public router: Router
-  ) { }
+    public router: Router,
+    private ref: ChangeDetectorRef,
+  ) {
+
+  }
 
   ngOnInit() {
-    this.loader.load();
-    this.httpSocketClient.get('/api/libraries').subscribe(
-      (result: string[]) => this.settings.libraryFolders = result,
-      error => { this.loader.unload(); console.log(error); },
-      () => { this.loader.unload(); }
+    this.settings.geLibraryFolders().subscribe(
+      folders => {
+        this.libraryFolders = folders;
+      }
+    );
+
+    if (environment.electron) {
+      const ipc = (<any>window).require('electron').ipcRenderer;
+      ipc.on('selected-directory', this.ipcAddFolder);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (environment.electron) {
+      const ipc = (<any>window).require('electron').ipcRenderer;
+      ipc.removeListener('selected-directory', this.ipcAddFolder);
+    }
+  }
+
+  addLibraryFolder(folder: string) {
+    this.settings.addLibraryFolder(folder).subscribe(
+      () => {
+        // this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 2000});
+        this.libraryFolders = [folder, ...this.libraryFolders];
+      },
+      (error) => {
+        this.snackBar.open('An error occurred: ' + error.error, '', {duration: 2000});
+      },
+      () => {
+        this.ref.detectChanges();
+      }
+    );
+  }
+
+  removeLibraryFolder(folder: string) {
+    this.settings.removeLibraryFolder(folder).subscribe(
+      () => {
+        this.libraryFolders = _.filter(this.libraryFolders, f => f !== folder);
+        this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500});
+      },
+      (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
     );
   }
 
@@ -55,30 +99,32 @@ export class SettingsComponent implements OnInit {
   }
 
   addFolderDialog() {
-    const dialogRef = this.dialog.open(FolderComponent, {
-      minWidth: '400px'
-    });
-    dialogRef.afterClosed().subscribe(folder => {
-      if (folder) {
-        this.settings.addLibraryFolder(folder).then(
-          () => this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 2000}),
-          (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 2000})
-        );
-      }
-    });
+    if (environment.electron) {
+      const ipc = (<any>window).require('electron').ipcRenderer;
+      ipc.send('open-file-dialog');
+    } else {
+      const dialogRef = this.dialog.open(FolderComponent, {
+        minWidth: '400px'
+      });
+      dialogRef.afterClosed().subscribe(folder => {
+        if (folder) {
+          this.addLibraryFolder(folder);
+        }
+      });
+    }
   }
 
   removeFolderDialog(folder: string) {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       minWidth: '400px',
-      data: { title: 'Please confirm', message: 'Are you sure you want to remove the folder "' + folder + '" from the library?' }
+      data: {
+        title: 'Please confirm',
+        message: 'Are you sure you want to remove the folder "' + folder + '" from the library?'
+      }
     });
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.settings.removeLibraryFolder(folder).then(
-          () => this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500}),
-          (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
-        );
+        this.removeLibraryFolder(folder);
       }
     });
   }
@@ -86,28 +132,5 @@ export class SettingsComponent implements OnInit {
   requestLibraryScan() {
     this.router.navigate(['/']).then(() => this.library.scan());
   }
-
-  // requestLibraryScan() {
-  //   this.router.navigate(['/']);
-  //   this.library.scan();
-  //   // this.library.getTracks();
-  //
-  //   this.loader.load();
-  //   this.router.navigate(['/']).then(() => {
-  //     const snackBar = this.snackBar.open('Scanning library...');
-  //     this.library.scanLibrary().then(
-  //       () => {
-  //         snackBar.dismiss();
-  //         this.loader.unload();
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //         snackBar.dismiss();
-  //         this.loader.unload();
-  //         this.snackBar.open('An error occurred', '', {duration: 2000});
-  //       }
-  //     );
-  //   });
-  // }
 
 }

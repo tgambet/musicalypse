@@ -98,6 +98,19 @@ try {
 
     }
 
+    const ipc = require('electron').ipcMain;
+    const dialog = require('electron').dialog;
+
+    ipc.on('open-file-dialog', function (event) {
+        dialog.showOpenDialog({
+            properties: ['openDirectory']
+        }, function (directory) {
+            if (directory) {
+                event.sender.send('selected-directory', directory);
+            }
+        });
+    });
+
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.

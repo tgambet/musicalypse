@@ -71,7 +71,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(libraries :+ uploadFolder)
+    case GetLibraries => sender ! Libraries(libraries :+ new File(uploadFolder).toPath.toRealPath().toString)
 
     case AddLibrary(library) =>
       if (libraries.contains(library)) {

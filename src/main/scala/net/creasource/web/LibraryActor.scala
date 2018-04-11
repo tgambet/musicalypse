@@ -26,6 +26,8 @@ object LibraryActor {
 
   case class AddLibrary(library: String)
   case class RemoveLibrary(library: String)
+  case class SetLibraries(libraries: List[String])
+
   sealed trait LibraryChangeResult
   case object LibraryChangeSuccess extends LibraryChangeResult
   case class LibraryChangeFailed(reason: String) extends LibraryChangeResult
@@ -47,17 +49,25 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
 
-  var uploadFolder: String = application.config.getString("music.uploadFolder")
-
-  var cacheFolder: String = application.config.getString("music.cacheFolder")
-
-  var tracksFile: File = new File(cacheFolder + "/tracks")
-
   var tracks: Seq[Track] = Seq.empty[Track]
 
-  tracksFile.createNewFile()
+  val uploadFolder: String = application.config.getString("music.uploadFolder")
 
+  val cacheFolder: String = application.config.getString("music.cacheFolder")
+
+  val tracksFile: File = new File(cacheFolder + "/tracks")
+
+  val librariesFile: File = new File(cacheFolder + "/libraries")
+
+  tracksFile.createNewFile()
   loadTracksFromFile()
+
+  if (librariesFile.exists()) {
+    loadLibrariesFromFile()
+  } else {
+    librariesFile.createNewFile()
+    writeLibrariesToFile()
+  }
 
   def receive: Receive = {
 
@@ -76,6 +86,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           sender() ! LibraryChangeFailed(s"'$file' is not a directory")
         }
       }
+      writeLibrariesToFile()
 
     case RemoveLibrary(library) =>
       if (libraries.contains(library)) {
@@ -84,6 +95,9 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       } else {
         sender() ! LibraryChangeFailed(s"$library is not a known library folder or cannot be deleted.")
       }
+      writeLibrariesToFile()
+
+    case SetLibraries(libs) => libraries = libs
 
     case ScanLibrary =>
       import context.dispatcher
@@ -213,6 +227,43 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         case Failure(t) =>
           logger.error(t, "Failure reading the tracks file.")
           // new File("./tracks").delete()
+          Try(inputStream.close())
+      }
+  }
+
+  def writeLibrariesToFile(): Unit = {
+    import application.materializer
+    val outputStream: OutputStream = new FileOutputStream(librariesFile)
+    val sink: Sink[ByteString, Future[IOResult]] = StreamConverters.fromOutputStream(() => outputStream, autoFlush = true)
+    val f = Source(libraries).map(t => ByteString(t.toJson.compactPrint + "\n")).runWith(sink)
+    f.onComplete{
+      case Success(result) =>
+        result.status match {
+          case Success(Done) => logger.info("Successfully wrote the libraries file.")
+          case Failure(t) => logger.error(t, "Error writing the libraries file.")
+        }
+        Try(outputStream.close())
+      case Failure(t) =>
+        logger.error(t, "Error writing the libraries file.")
+        Try(outputStream.close())
+    }
+  }
+
+  def loadLibrariesFromFile(): Unit = {
+    import application.materializer
+    val inputStream: InputStream = new FileInputStream(librariesFile)
+    StreamConverters.fromInputStream(() => inputStream).via(Framing.delimiter(
+      ByteString("\n"), maximumFrameLength = 1000, allowTruncation = false))
+      .map(_.utf8String)
+      .map(_.parseJson.convertTo[String])
+      .runWith(Sink.fold(List.empty[String])((list, value) => list :+ value))
+      .onComplete {
+        case Success(libs) =>
+          self ! SetLibraries(libs)
+          logger.info("Successfully read the libraries file.")
+          Try(inputStream.close())
+        case Failure(t) =>
+          logger.error(t, "Failure reading the libraries file.")
           Try(inputStream.close())
       }
   }

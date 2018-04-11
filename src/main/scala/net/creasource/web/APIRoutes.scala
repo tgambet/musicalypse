@@ -29,7 +29,7 @@ class APIRoutes(application: Application) {
 
   implicit val settings: RoutingSettings = RoutingSettings.apply(application.config)
 
-  val askTimeout: akka.util.Timeout = 2.seconds
+  val askTimeout: akka.util.Timeout = 10.seconds
 
   val uploadFolder: String = application.config.getString("music.uploadFolder")
 

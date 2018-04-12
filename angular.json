@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular6": {
+    "musicalypse": {
       "root": "",
       "projectType": "application",
       "architect": {
@@ -51,24 +51,44 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "electron": {
+              "fileReplacements": [
+                {
+                  "src": "web/src/environments/environment.ts",
+                  "replaceWith": "web/src/environments/environment.electron.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular6:build"
+            "browserTarget": "musicalypse:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular6:build:production"
+              "browserTarget": "musicalypse:build:production"
+            },
+            "electron": {
+              "browserTarget": "musicalypse:build:electron"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular6:build"
+            "browserTarget": "musicalypse:build"
           }
         },
         "test": {
@@ -112,7 +132,7 @@
         }
       }
     },
-    "angular6-e2e": {
+    "musicalypse-e2e": {
       "root": "web/e2e/",
       "projectType": "application",
       "architect": {
@@ -120,7 +140,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "web/e2e/protractor.conf.js",
-            "devServerTarget": "angular6:serve"
+            "devServerTarget": "musicalypse:serve"
           }
         },
         "lint": {

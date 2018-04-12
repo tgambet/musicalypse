@@ -8,10 +8,10 @@
   "scripts": {
     "ng": "ng",
     "ng:serve": "ng serve",
-    "ng:serve:electron": "ng serve --environment=electron",
+    "ng:serve:electron": "ng serve --configuration=electron",
     "ng:build": "ng build",
-    "ng:build:prod": "ng build --prod --aot",
-    "ng:build:electron": "ng build --env=electron --aot --target=production --output-path=target/dist/electron",
+    "ng:build:prod": "ng build --prod",
+    "ng:build:electron": "ng build --configuration=electron --output-path=target/dist/electron",
     "ng:test": "ng test",
     "ng:lint": "ng lint",
     "ng:e2e": "ng e2e",

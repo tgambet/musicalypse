@@ -57,11 +57,11 @@ function createWindow() {
   });
 
   win.on('focus', () => {
-    win.send('focus', '');
+    win.send('focus');
   });
 
   win.on('blur', () => {
-    win.send('blur', '');
+    win.send('blur');
   });
 
 }

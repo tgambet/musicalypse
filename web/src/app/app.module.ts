@@ -20,7 +20,6 @@ import {SearchPipe} from './pipes/search.pipe';
 import {FavoritesService} from './services/favorites.service';
 import {DetailsComponent} from './dialogs/details/details.component';
 import {FolderComponent} from './dialogs/folder/folder.component';
-import {RouterModule, Routes} from '@angular/router';
 import {LibraryComponent} from './library/library.component';
 import {AboutComponent} from './about/about.component';
 import {SettingsComponent} from './settings/settings.component';
@@ -29,13 +28,7 @@ import {SettingsService} from './services/settings.service';
 import {ConfirmComponent} from './dialogs/confirm/confirm.component';
 import {LoaderService} from './services/loader.service';
 import {MiniPlayerComponent} from './library/mini-player/mini-player.component';
-
-const appRoutes: Routes = [
-  { path: '',   redirectTo: '/library', pathMatch: 'full' },
-  { path: 'library', component: LibraryComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'about', component: AboutComponent },
-];
+import {AppRoutingModule} from './app-routing.module';
 
 @Injectable()
 export class MyHammerConfig extends GestureConfig {
@@ -71,7 +64,7 @@ export class MyHammerConfig extends GestureConfig {
     ConfirmComponent
   ],
   imports: [
-    RouterModule.forRoot(appRoutes/*, { enableTracing: true }*/),
+    AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,

@@ -1,13 +1,14 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {webSocket} from 'rxjs/observable/dom/webSocket';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/concat';
+import 'rxjs/add/operator/publish';
 import * as _ from 'lodash';
 
 @Injectable()

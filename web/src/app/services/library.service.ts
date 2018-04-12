@@ -5,18 +5,13 @@ import {environment} from '../../environments/environment';
 import {AudioComponent} from '../audio/audio.component';
 import {HttpSocketClientService, SocketMessage} from './http-socket-client.service';
 import {LoaderService} from './loader.service';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/concatMap';
-import 'rxjs/add/operator/publish';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/finally';
+import {Observable} from 'rxjs';
+import {finalize, publishReplay, refCount} from 'rxjs/operators';
 import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/operator/publishLast';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/empty';
+import 'rxjs/add/operator/finally';
+import 'rxjs/add/operator/scan';
+import 'rxjs/observable/from';
+import 'rxjs/observable/empty';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -156,9 +151,11 @@ export class LibraryService {
     this.isScanning = true;
 
     this.trackSource = this.scanTracks()
-      .finally(() => this.isScanning = false)
-      .publishReplay(1)
-      .refCount();
+      .pipe(
+        finalize(() => this.isScanning = false),
+        publishReplay(1),
+        refCount()
+      );
 
     this.artistSource = this.trackSource
       .map(LibraryService.extractArtists)
@@ -556,6 +553,7 @@ export class LibraryService {
         .map((e: Track) => e)
         .subscribe(
           next => observer.next(next)
+          // TODO manage errors
         );
       const subscription2 = this.httpSocketClient
         .getSocket()

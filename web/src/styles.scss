@@ -99,10 +99,10 @@ $pink-theme:  (
 );
 
 @import 'theme';
-@import 'app/app.component.scss-theme';
-@import 'app/library/library.component.scss-theme';
-@import 'app/library/player/player.component.scss-theme';
-@import 'app/library/mini-player/mini-player.component.scss-theme';
+@import 'app/core/components/app/app.component.scss-theme';
+@import 'app/library/components/library/library.component.scss-theme';
+@import 'app/library/components/player/player.component.scss-theme';
+@import 'app/library/components/mini-player/mini-player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-theme($theme);
@@ -211,7 +211,7 @@ app-root {
 
 // Fix search input length
 .search {
-  .mat-input-infix {
+  .mat-form-field-infix {
     width: auto;
   }
 }

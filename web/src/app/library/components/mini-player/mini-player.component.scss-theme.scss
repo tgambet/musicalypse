@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+
+@mixin mini-player-component-theme($theme) {
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .mini-player {
+    background-color: mat-color($background, background);
+
+    .avatar {
+      background-color: mat-color($background, hover);
+      color: mat-color($foreground, disabled-text);
+    }
+
+    .controls {
+      .playPause {
+        background-color: mat-color($background, focused-button);
+      }
+      .next, .previous {
+        border: 1px solid mat-color($foreground, divider);
+      }
+    }
+  }
+
+
+}

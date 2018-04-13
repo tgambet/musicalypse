@@ -4,7 +4,7 @@
   "newProjectRoot": "projects",
   "projects": {
     "musicalypse": {
-      "root": "",
+      "root": "web",
       "projectType": "application",
       "architect": {
         "build": {

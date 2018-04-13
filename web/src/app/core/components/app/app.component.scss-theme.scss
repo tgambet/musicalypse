@@ -1,0 +1,118 @@
+@import '../../../../../../node_modules/@angular/material/theming';
+
+@mixin app-component-theme($theme) {
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  *:not(.mat-drawer-content)::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background-color: mat-color($background, app-bar);
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: mat-color($foreground, disabled-button);
+  }
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  .divider {
+    border-bottom: 1px solid mat-color($foreground, divider);
+  }
+
+  .fake-scroll-y {
+    border-right: 5.5px solid mat-color($background, app-bar);
+  }
+
+  .hover:hover {
+    background-color: mat-color($background, hover);
+  }
+
+  .link {
+    text-decoration: none;
+    color: mat-color($foreground, text);
+  }
+
+  .accent {
+    color: mat-color($accent);
+  }
+
+  .warn {
+    color: mat-color($warn);
+  }
+
+  .secondary-text {
+    color: mat-color($foreground, secondary-text);
+  }
+
+  .mat-list-item.accent .mat-line {
+    color: mat-color($accent);
+  }
+
+  .mat-list-item.warn .mat-line {
+    color: mat-color($warn);
+  }
+
+  .theme-chooser {
+    background-color: mat-color($background, dialog);
+    border: 1px solid mat-color($background, status-bar);
+    button {
+      border: 1px solid mat-color($foreground, divider);
+      mat-icon {
+        color: mat-color($warn);
+      }
+    }
+  }
+
+  .hover-background {
+    background-color: mat-color($background, hover);
+  }
+
+  .outline-dashed {
+    outline: 2px dashed mat-color($foreground, icon);
+  }
+
+  mat-toolbar {
+    background-color: mat-color($background, status-bar) !important;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .side-menu {
+    background-color: mat-color($background, app-bar);
+    color: mat-color($foreground, text);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+    mat-icon {
+      padding: 5px;
+    }
+  }
+
+  mat-nav-list, .side-menu {
+    .active {
+      color: mat-color($primary) !important;
+    }
+  }
+
+  &.electron .electron-buttons {
+    :hover {
+      background-color: mat-color($background, hover);
+    }
+    .close:hover {
+      background-color: mat-color($warn);
+    }
+  }
+
+  &.main-wrapper {
+    border: 1px solid mat-color($background, app-bar);
+  }
+
+  &.main-wrapper.electron.focused {
+    border: 1px solid mat-color($primary);
+  }
+
+}

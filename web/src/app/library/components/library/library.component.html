@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack" [class.no-animation]="noAnimation">
+    <div class="column a1">
+      <app-artists #artistsComponent
+                   (next)="translateContent(1)"
+                   [artists]="library.artists"
+                   [selectedArtists]="library.selectedArtists"></app-artists>
+    </div>
+    <div class="column a2">
+      <app-albums #albumsComponent
+                  (next)="translateContent(2)"
+                  (previous)="translateContent(0)"
+                  [albums]="library.albums"
+                  [selectedAlbums]="library.selectedAlbums"></app-albums>
+    </div>
+    <div class="column a3">
+      <app-tracks #tracksComponent
+                  (next)="translateContent(3)"
+                  (previous)="translateContent(1)"
+                  [tracks]="library.tracks"
+                  [selectedAlbums]="library.selectedAlbums"
+                  [currentTrack]="library.currentTrack"
+                  [audio]="library.audio"
+                  [playing]="library.audio.playing"
+                  [loading]="library.audio.loading"
+                  [currentTime]="library.audio.currentTime"
+                  [duration]="library.audio.duration"></app-tracks>
+    </div>
+    <div class="column a4">
+      <app-player (previous)="translateContent(2)"></app-player>
+    </div>
+    <app-mini-player (next)="translateContent(3)"></app-mini-player>
+  </div>
+</div>

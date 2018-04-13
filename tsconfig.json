@@ -1,7 +1,7 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "web/",
     "outDir": "./target/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -15,6 +15,10 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@app/*": ["app/*"],
+      "@env/*": ["environments/*"]
+    }
   }
 }

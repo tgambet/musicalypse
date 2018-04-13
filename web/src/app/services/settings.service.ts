@@ -4,9 +4,8 @@ import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatSnackBar} from '@angular/material';
 import {HttpSocketClientService} from './http-socket-client.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {PersistenceService} from './persistence.service';
-import {Observable} from 'rxjs';
 import 'rxjs/add/operator/publishLast';
 import * as _ from 'lodash';
 

@@ -1,11 +1,8 @@
-import {Injectable, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
-import {BreakpointObserver, MediaMatcher} from '@angular/cdk/layout';
 import {FormsModule} from '@angular/forms';
-import {BrowserModule, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import * as Material from '@angular/material';
-import {GestureConfig, HammerManager} from '@angular/material';
 
 import {AppComponent} from './app.component';
 import {AudioComponent} from './audio/audio.component';
@@ -29,15 +26,8 @@ import {ConfirmComponent} from './dialogs/confirm/confirm.component';
 import {LoaderService} from './services/loader.service';
 import {MiniPlayerComponent} from './library/mini-player/mini-player.component';
 import {AppRoutingModule} from './app-routing.module';
+import {MaterialModule} from './material';
 
-@Injectable()
-export class MyHammerConfig extends GestureConfig {
-  buildHammer(element: HTMLElement) {
-    const mc = <HammerManager>super.buildHammer(element);
-    mc.set({ touchAction: 'pan-y' });
-    return mc;
-  }
-}
 
 @NgModule({
   declarations: [
@@ -69,40 +59,14 @@ export class MyHammerConfig extends GestureConfig {
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    Material.MatChipsModule,
-    Material.MatRadioModule,
-    Material.MatSlideToggleModule,
-    Material.MatGridListModule,
-    Material.MatDialogModule,
-    Material.MatSnackBarModule,
-    Material.MatButtonModule,
-    Material.MatProgressSpinnerModule,
-    Material.MatProgressBarModule,
-    Material.MatTabsModule,
-    Material.MatFormFieldModule,
-    Material.MatSelectModule,
-    Material.MatInputModule,
-    Material.MatSliderModule,
-    Material.MatListModule,
-    Material.MatTooltipModule,
-    Material.MatCheckboxModule,
-    Material.MatMenuModule,
-    Material.MatSidenavModule,
-    Material.MatToolbarModule,
-    Material.MatIconModule
+    MaterialModule
   ],
   providers: [
-    {
-      provide: HAMMER_GESTURE_CONFIG,
-      useClass: MyHammerConfig
-    },
-    MediaMatcher,
-    BreakpointObserver,
     HttpSocketClientService,
     LibraryService,
     FavoritesService,
     SettingsService,
-    LoaderService,
+    LoaderService
   ],
   bootstrap: [AppComponent]
 })

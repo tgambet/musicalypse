@@ -2,9 +2,12 @@ import {NgModule, Optional, SkipSelf} from '@angular/core';
 
 import {SharedModule} from '@app/shared/shared.module';
 
-import {AppComponent} from './components/app/app.component';
+import {AppComponent} from './components/app.component';
 import {AboutComponent} from './components/about/about.component';
 import {AudioComponent} from './components/audio/audio.component';
+import {SideMenuComponent} from './components/sidemenu.component';
+import {SideNavComponent} from './components/sidenav.component';
+import {ToolbarComponent} from './components/toolbar.component';
 
 import {LoaderService} from './services/loader.service';
 import {HttpSocketClientService} from './services/http-socket-client.service';
@@ -13,10 +16,14 @@ import {SettingsService} from './services/settings.service';
 // TODO
 import {LibraryService} from '@app/library/services/library.service';
 
+
 export const COMPONENTS = [
   AppComponent,
-  AudioComponent,
   AboutComponent,
+  AudioComponent,
+  SideMenuComponent,
+  SideNavComponent,
+  ToolbarComponent
 ];
 
 @NgModule({

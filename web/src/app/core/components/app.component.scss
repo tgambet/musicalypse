@@ -1,0 +1,56 @@
+.main-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // 100vh TODO figure out the issue with player menu
+  min-height: 450px;
+}
+
+.main-loader {
+  position: absolute;
+  z-index: 3;
+  height: 3px;
+  top: 50px;
+  display: none;
+  &.show {
+    display: inline-block;
+  }
+}
+
+:host-context(.electron) .main-loader {
+  top: 34px;
+}
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: 250px;
+  a {
+    text-decoration: none;
+  }
+  .mat-list-icon {
+    padding: 0;
+  }
+  .mat-line mat-icon {
+    height: 18px;
+    width: 18px;
+    line-height: 18px;
+    font-size: 18px;
+    vertical-align: text-top;
+  }
+}
+
+@media screen and (min-width: 599px){
+  mat-sidenav {
+    padding-left: 44px;
+    .mat-list-icon {
+      display: none;
+    }
+    .mat-line {
+      margin-left: -1rem;
+    }
+  }
+}
+

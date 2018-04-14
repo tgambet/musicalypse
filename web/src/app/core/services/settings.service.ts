@@ -9,6 +9,7 @@ import 'rxjs/add/operator/publishLast';
 import * as _ from 'lodash';
 
 import {HttpSocketClientService} from './http-socket-client.service';
+import {Theme} from '@app/model';
 
 @Injectable()
 export class SettingsService implements OnDestroy {
@@ -150,8 +151,4 @@ export class SettingsService implements OnDestroy {
 
 }
 
-export class Theme {
-  name: string;
-  cssClass: string;
-  color: string;
-}
+

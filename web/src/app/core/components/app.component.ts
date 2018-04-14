@@ -78,10 +78,9 @@ export class AppComponent implements OnInit {
   isElectron = environment.electron;
   isElectronFocused: boolean;
   isMaximized = false;
+  electronRemote = environment.electron ? (<any>window).require('electron').remote : null;
 
   featuredThemes: Theme[] = Themes.featuredThemes;
-
-  electronRemote = environment.electron ? (<any>window).require('electron').remote : null;
 
   constructor(
     private library: LibraryService,
@@ -101,11 +100,9 @@ export class AppComponent implements OnInit {
       });
       this.electronRemote.getCurrentWindow().addListener('maximize', () => {
         this.isMaximized = true;
-        // ref.detectChanges();
       });
       this.electronRemote.getCurrentWindow().addListener('unmaximize', () => {
         this.isMaximized = false;
-        // ref.detectChanges();
       });
     }
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
@@ -165,9 +162,5 @@ export class AppComponent implements OnInit {
   unmaximizeWindow() {
     this.electronRemote.getCurrentWindow().unmaximize();
   }
-
-  // isMaximized(): boolean {
-  //   return this.electronRemote.getCurrentWindow().isMaximized();
-  // }
 
 }

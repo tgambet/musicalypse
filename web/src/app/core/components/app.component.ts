@@ -1,18 +1,19 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-
-import {LibraryService} from '@app/library/services/library.service';
-import {LoaderService} from '@app/core/services/loader.service';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
 import {environment} from '@env/environment';
+
+import {AudioComponent} from '../components/audio/audio.component';
+
+import {LoaderService} from '../services/loader.service';
+import {PersistenceService} from '../services/persistence.service';
+import {LibraryService} from '@app/library/services/library.service';
+
+import {Themes, Theme} from '../utils/themes';
 import * as fromRoot from '@app/reducers';
+import * as LayoutActions from '../core.actions';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-
-import * as LayoutActions from '../core.actions';
-import {Theme} from '@app/model';
-import {PersistenceService} from '@app/core/services/persistence.service';
 
 @Component({
   selector: 'app-root',
@@ -71,12 +72,7 @@ export class AppComponent implements OnInit {
   isElectron = environment.electron;
   isElectronFocused: boolean;
 
-  featuredThemes: Theme[] = [
-    {name: 'Dark/Green', cssClass: 'dark-theme', color: '#212121'},
-    {name: 'Light/Blue', cssClass: 'light-theme', color: '#F5F5F5'},
-    {name: 'Blue/Orange', cssClass: 'blue-theme', color: '#263238'},
-    {name: 'Pink', cssClass: 'pink-theme', color: '#F8BBD0'}
-  ];
+  featuredThemes: Theme[] = Themes.featuredThemes;
 
   constructor(
     private library: LibraryService,

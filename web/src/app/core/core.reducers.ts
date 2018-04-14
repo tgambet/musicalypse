@@ -1,5 +1,5 @@
 import {CoreActionsUnion, CoreActionTypes} from './core.actions';
-import {Theme} from '@app/model';
+import {Theme} from './utils/themes';
 
 /**
  * State

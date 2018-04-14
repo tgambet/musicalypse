@@ -98,15 +98,13 @@ $pink-theme:  (
   ),
 );
 
-@import 'theme';
-@import 'app/core/components/app/app.component.scss-theme';
+@import 'app/core/components/app.theme';
 @import 'app/library/components/library/library.component.scss-theme';
 @import 'app/library/components/player/player.component.scss-theme';
 @import 'app/library/components/mini-player/mini-player.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include app-theme($theme);
-  @include app-component-theme($theme);
   @include library-component-theme($theme);
   @include player-component-theme($theme);
   @include mini-player-component-theme($theme);
@@ -172,6 +170,7 @@ app-root {
     height: 100%;
   }
 }
+
 @media screen and (max-width: 598px) {
   .carousel {
     .mat-tab-header {
@@ -215,7 +214,6 @@ app-root {
     width: auto;
   }
 }
-
 
 // Hide some controls.
 @media screen and (min-width: 599px) {

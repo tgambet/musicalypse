@@ -1,8 +1,3 @@
-export class Theme {
-  name: string;
-  cssClass: string;
-  color: string;
-}
 
 export interface Artist {
   name: string;

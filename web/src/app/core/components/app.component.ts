@@ -26,6 +26,12 @@ import {map} from 'rxjs/operators';
       <app-toolbar [sideNavOpened]="showSidenav$ | async"
                    [themes]="featuredThemes"
                    [currentTheme]="currentTheme$ | async"
+                   [isElectron]="isElectron"
+                   [isMaximized]="isMaximized"
+                   (closeWindow)="closeWindow()"
+                   (maximizeWindow)="maximizeWindow()"
+                   (minimizeWindow)="minimizeWindow()"
+                   (unmaximizeWindow)="unmaximizeWindow()"
                    (changeTheme)="changeTheme($event)"
                    (toggleSidenav)="toggleSidenav()"></app-toolbar>
 
@@ -71,8 +77,11 @@ export class AppComponent implements OnInit {
 
   isElectron = environment.electron;
   isElectronFocused: boolean;
+  isMaximized = false;
 
   featuredThemes: Theme[] = Themes.featuredThemes;
+
+  electronRemote = environment.electron ? (<any>window).require('electron').remote : null;
 
   constructor(
     private library: LibraryService,
@@ -90,6 +99,14 @@ export class AppComponent implements OnInit {
         this.isElectronFocused = false;
         ref.detectChanges();
       });
+      this.electronRemote.getCurrentWindow().addListener('maximize', () => {
+        this.isMaximized = true;
+        // ref.detectChanges();
+      });
+      this.electronRemote.getCurrentWindow().addListener('unmaximize', () => {
+        this.isMaximized = false;
+        // ref.detectChanges();
+      });
     }
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
@@ -99,6 +116,7 @@ export class AppComponent implements OnInit {
     if (savedTheme) {
       this.changeTheme(JSON.parse(savedTheme));
     }
+
   }
 
   @HostListener('window:storage', ['$event'])
@@ -131,5 +149,25 @@ export class AppComponent implements OnInit {
   changeTheme(theme: Theme) {
     this.store.dispatch(new LayoutActions.ChangeTheme(theme));
   }
+
+  closeWindow() {
+    this.electronRemote.getCurrentWindow().close();
+  }
+
+  minimizeWindow() {
+    this.electronRemote.getCurrentWindow().minimize();
+  }
+
+  maximizeWindow() {
+    this.electronRemote.getCurrentWindow().maximize();
+  }
+
+  unmaximizeWindow() {
+    this.electronRemote.getCurrentWindow().unmaximize();
+  }
+
+  // isMaximized(): boolean {
+  //   return this.electronRemote.getCurrentWindow().isMaximized();
+  // }
 
 }

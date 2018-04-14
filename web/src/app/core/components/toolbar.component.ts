@@ -15,13 +15,13 @@ import {Theme} from '../utils/themes';
         </a>
       </h1>
       <div class="filler"></div>
-      <!--<div class="electron-buttons" *ngIf="isElectron">-->
-        <!--<mat-icon class="electron-theme" (click)="themeChooser = true">format_color_fill</mat-icon>-->
-        <!--<mat-icon (click)="application.minimize()">remove</mat-icon>-->
-        <!--<mat-icon (click)="application.maximize()" *ngIf="!application.isMaximized()">crop_square</mat-icon>-->
-        <!--<mat-icon (click)="application.unmaximize()" *ngIf="application.isMaximized()">crop_16_9</mat-icon>-->
-        <!--<mat-icon class="close" (click)="application.close()">close</mat-icon>-->
-      <!--</div>-->
+      <div class="electron-buttons" *ngIf="isElectron">
+        <mat-icon class="electron-theme" (click)="themeChooser = true">format_color_fill</mat-icon>
+        <mat-icon (click)="minimizeWindow.emit()">remove</mat-icon>
+        <mat-icon (click)="maximizeWindow.emit()" *ngIf="!isMaximized">crop_square</mat-icon>
+        <mat-icon (click)="unmaximizeWindow.emit()" *ngIf="isMaximized">crop_16_9</mat-icon>
+        <mat-icon class="close" (click)="closeWindow.emit()">close</mat-icon>
+      </div>
       <button mat-button mat-icon-button
               class="theme-button"
               (click)="themeChooser = true"
@@ -52,9 +52,15 @@ export class ToolbarComponent {
   @Input() sideNavOpened: boolean;
   @Input() themes: Theme[];
   @Input() currentTheme: Theme;
+  @Input() isElectron: boolean;
+  @Input() isMaximized: boolean;
 
   @Output() toggleSidenav = new EventEmitter<void>();
   @Output() changeTheme = new EventEmitter<Theme>();
+  @Output() closeWindow = new EventEmitter<void>();
+  @Output() maximizeWindow = new EventEmitter<void>();
+  @Output() minimizeWindow = new EventEmitter<void>();
+  @Output() unmaximizeWindow = new EventEmitter<void>();
 
   getThemeStyle(theme: Theme) {
     return this.sanitizer.bypassSecurityTrustStyle(`background-color: ${theme.color}`);

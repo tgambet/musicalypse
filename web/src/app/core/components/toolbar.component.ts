@@ -6,7 +6,7 @@ import {Theme} from '@app/model';
   selector: 'app-toolbar',
   template: `
     <mat-toolbar>
-      <button mat-icon-button (click)="toggleSideNav.emit()" class="toggle">
+      <button mat-icon-button (click)="toggleSidenav.emit()" class="toggle">
         <mat-icon>{{ sideNavOpened ? 'close' : 'menu' }}</mat-icon>
       </button>
       <h1>
@@ -53,7 +53,7 @@ export class ToolbarComponent {
   @Input() themes: Theme[];
   @Input() currentTheme: Theme;
 
-  @Output() toggleSideNav = new EventEmitter<void>();
+  @Output() toggleSidenav = new EventEmitter<void>();
   @Output() changeTheme = new EventEmitter<Theme>();
 
   getThemeStyle(theme: Theme) {

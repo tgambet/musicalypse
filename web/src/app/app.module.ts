@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
 
 import {routes} from './routes';
 
@@ -17,6 +18,7 @@ import {reducers, metaReducers} from './reducers';
 
     // Ngrx Modules
     StoreModule.forRoot(reducers, { metaReducers }),
+    EffectsModule.forRoot([]),
 
     // My Modules
     CoreModule,

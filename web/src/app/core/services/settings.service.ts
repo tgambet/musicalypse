@@ -25,7 +25,7 @@ export class SettingsService implements OnDestroy {
 
   featuredThemes: Theme[] = this.themes;
 
-  currentTheme: Theme = this.themes[0];
+  // currentTheme: Theme = this.themes[0];
 
   uploadSubscription: Subscription;
 
@@ -39,16 +39,16 @@ export class SettingsService implements OnDestroy {
     public httpSocketClient: HttpSocketClientService,
     public snackBar: MatSnackBar
   ) {
-    overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
-    const theme = PersistenceService.load('theme');
-    if (theme) {
-      this.changeTheme(JSON.parse(theme));
-    }
-    window.addEventListener('storage', e => {
-      if (e.key === 'theme') {
-        this.changeTheme(JSON.parse(e.newValue));
-      }
-    });
+    // overlayContainer.getContainerElement().classList.add(this.currentTheme.cssClass);
+    // const theme = PersistenceService.load('theme');
+    // if (theme) {
+    //   this.changeTheme(JSON.parse(theme));
+    // }
+    // window.addEventListener('storage', e => {
+    //   if (e.key === 'theme') {
+    //     this.changeTheme(JSON.parse(e.newValue));
+    //   }
+    // });
   }
 
   ngOnDestroy(): void {
@@ -120,16 +120,16 @@ export class SettingsService implements OnDestroy {
     );
   }
 
-  changeTheme(theme: Theme) {
-    this.overlayContainer.getContainerElement().classList.remove(this.currentTheme.cssClass);
-    this.overlayContainer.getContainerElement().classList.add(theme.cssClass);
-    this.currentTheme = theme;
-    PersistenceService.save('theme', JSON.stringify(theme));
-  }
+  // changeTheme(theme: Theme) {
+  //   // this.overlayContainer.getContainerElement().classList.remove(this.currentTheme.cssClass);
+  //   // this.overlayContainer.getContainerElement().classList.add(theme.cssClass);
+  //   // this.currentTheme = theme;
+  //   // PersistenceService.save('theme', JSON.stringify(theme));
+  // }
 
-  isCurrentTheme(theme: Theme): boolean {
-    return _.isEqual(this.currentTheme, theme);
-  }
+  // isCurrentTheme(theme: Theme): boolean {
+  //   return _.isEqual(this.currentTheme, theme);
+  // }
 
   geLibraryFolders(): Observable<string[]> {
     return this.httpSocketClient.get('/api/libraries')

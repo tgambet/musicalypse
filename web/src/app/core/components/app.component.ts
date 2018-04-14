@@ -1,29 +1,32 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {LibraryService} from '@app/library/services/library.service';
-import {LoaderService} from '@app/core/services/loader.service';
-import {SettingsService} from '@app/core/services/settings.service';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
-import {environment} from '@env/environment';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 
-import * as fromRoot from '../../reducers';
+import {LibraryService} from '@app/library/services/library.service';
+import {LoaderService} from '@app/core/services/loader.service';
+import {AudioComponent} from '@app/core/components/audio/audio.component';
+import {environment} from '@env/environment';
+import * as fromRoot from '@app/reducers';
+
 import {Observable} from 'rxjs';
-import * as LayoutActions from '@app/core/actions/layout';
+import {map} from 'rxjs/operators';
+
+import * as LayoutActions from '../core.actions';
 import {Theme} from '@app/model';
+import {PersistenceService} from '@app/core/services/persistence.service';
 
 @Component({
   selector: 'app-root',
   template: `
     <div ngClass="mat-typography main-wrapper"
-         [class]="settings.currentTheme.cssClass"
+         [class]="currentThemeCssClass$ | async"
          [class.focused]="isElectronFocused"
          [class.electron]="isElectron">
 
       <app-toolbar [sideNavOpened]="showSidenav$ | async"
                    [themes]="featuredThemes"
-                   [currentTheme]="settings.currentTheme"
+                   [currentTheme]="currentTheme$ | async"
                    (changeTheme)="changeTheme($event)"
-                   (toggleSideNav)="toggleSideNav()"></app-toolbar>
+                   (toggleSidenav)="toggleSidenav()"></app-toolbar>
 
       <mat-progress-bar
         class="main-loader"
@@ -32,13 +35,17 @@ import {Theme} from '@app/model';
 
       <app-side-menu
         [sideNavOpened]="showSidenav$ | async"
-        (closeSideNav)="closeSideNav()"
-        (toggleSideNav)="toggleSideNav()"></app-side-menu>
+        (closeSidenav)="closeSidenav()"
+        (toggleSidenav)="toggleSidenav()"></app-side-menu>
 
-      <mat-sidenav-container>
+      <mat-sidenav-container (backdropClick)="closeSidenav()">
 
-        <mat-sidenav [opened]="showSidenav$ | async" [mode]="'over'">
-          <app-side-nav [playing]="false"></app-side-nav>
+        <mat-sidenav
+          [opened]="showSidenav$ | async"
+          [mode]="'over'">
+          <app-side-nav
+            [playing]="false"
+            (closeSidenav)="closeSidenav()"></app-side-nav>
         </mat-sidenav>
 
         <router-outlet></router-outlet>
@@ -49,7 +56,8 @@ import {Theme} from '@app/model';
 
     <app-audio #audio></app-audio>
   `,
-  styleUrls: ['app.component.scss']
+  styleUrls: ['app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
 
@@ -57,16 +65,21 @@ export class AppComponent implements OnInit {
   audio: AudioComponent;
 
   showSidenav$: Observable<boolean>;
+  currentTheme$: Observable<Theme>;
+  currentThemeCssClass$: Observable<string>;
 
   isElectron = environment.electron;
   isElectronFocused: boolean;
 
-  themeClass: string;
-  featuredThemes: Theme[];
+  featuredThemes: Theme[] = [
+    {name: 'Dark/Green', cssClass: 'dark-theme', color: '#212121'},
+    {name: 'Light/Blue', cssClass: 'light-theme', color: '#F5F5F5'},
+    {name: 'Blue/Orange', cssClass: 'blue-theme', color: '#263238'},
+    {name: 'Pink', cssClass: 'pink-theme', color: '#F8BBD0'}
+  ];
 
   constructor(
     private library: LibraryService,
-    public settings: SettingsService,
     private ref: ChangeDetectorRef,
     private store: Store<fromRoot.State>,
     private loader: LoaderService
@@ -83,32 +96,44 @@ export class AppComponent implements OnInit {
       });
     }
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
-    this.featuredThemes = this.settings.featuredThemes;
+    this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
+    this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
+
+    const savedTheme = PersistenceService.load('theme');
+    if (savedTheme) {
+      this.changeTheme(JSON.parse(savedTheme));
+    }
+  }
+
+  @HostListener('window:storage', ['$event'])
+  onStorage(event) {
+    if (event.key === 'theme') {
+      this.changeTheme(JSON.parse(event.newValue));
+    }
   }
 
   ngOnInit() {
     this.library.setAudioComponent(this.audio);
-    this.themeClass = this.settings.currentTheme.cssClass;
   }
 
   isLoading() {
     return this.loader.isLoading();
   }
 
-  openSideNav() {
+  openSidenav() {
     this.store.dispatch(new LayoutActions.OpenSidenav());
   }
 
-  closeSideNav() {
+  closeSidenav() {
     this.store.dispatch(new LayoutActions.CloseSidenav());
   }
 
-  toggleSideNav() {
+  toggleSidenav() {
     this.store.dispatch(new LayoutActions.ToggleSidenav());
   }
 
   changeTheme(theme: Theme) {
-    this.settings.changeTheme(theme);
+    this.store.dispatch(new LayoutActions.ChangeTheme(theme));
   }
 
 }

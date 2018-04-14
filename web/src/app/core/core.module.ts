@@ -1,4 +1,5 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
+import {EffectsModule} from '@ngrx/effects';
 
 import {SharedModule} from '@app/shared/shared.module';
 
@@ -6,29 +7,32 @@ import {AppComponent} from './components/app.component';
 import {AboutComponent} from './components/about/about.component';
 import {AudioComponent} from './components/audio/audio.component';
 import {SideMenuComponent} from './components/sidemenu.component';
-import {SideNavComponent} from './components/sidenav.component';
+import {SidenavComponent} from './components/sidenav.component';
 import {ToolbarComponent} from './components/toolbar.component';
 
 import {LoaderService} from './services/loader.service';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {PersistenceService} from './services/persistence.service';
 import {SettingsService} from './services/settings.service';
+
+import {CoreEffects} from './core.effects';
+
 // TODO
 import {LibraryService} from '@app/library/services/library.service';
-
 
 export const COMPONENTS = [
   AppComponent,
   AboutComponent,
   AudioComponent,
   SideMenuComponent,
-  SideNavComponent,
+  SidenavComponent,
   ToolbarComponent
 ];
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    EffectsModule.forFeature([CoreEffects]),
   ],
   declarations: COMPONENTS,
   exports: COMPONENTS,

@@ -1,9 +1,9 @@
 import {ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
-import * as fromLayout from '../core/reducers/layout';
+import * as fromCore from '../core/core.reducers';
 import {environment} from '@env/environment';
 
 export interface State {
-  layout: fromLayout.State;
+  core: fromCore.State;
 }
 
 /**
@@ -12,7 +12,7 @@ export interface State {
  * and the current or initial state and return a new immutable state.
  */
 export const reducers: ActionReducerMap<State> = {
-  layout: fromLayout.reducer,
+  core: fromCore.reducer,
 };
 
 // console.log all actions
@@ -35,11 +35,16 @@ export const metaReducers: MetaReducer<State>[] = !environment.production
   : [];
 
 /**
- * Layout Reducers
+ * Core Reducers
  */
-export const getLayoutState = createFeatureSelector<fromLayout.State>('layout');
+export const getCoreState = createFeatureSelector<fromCore.State>('core');
 
 export const getShowSidenav = createSelector(
-  getLayoutState,
-  fromLayout.getShowSidenav
+  getCoreState,
+  fromCore.getShowSidenav
+);
+
+export const getCurrentTheme = createSelector(
+  getCoreState,
+  fromCore.getCurrentTheme
 );

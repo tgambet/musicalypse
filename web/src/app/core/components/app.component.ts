@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
 
@@ -8,12 +8,13 @@ import {LoaderService} from '../services/loader.service';
 import {PersistenceService} from '../services/persistence.service';
 import {LibraryService} from '@app/library/services/library.service';
 
-import {Themes, Theme} from '../utils/themes';
+import {Theme, Themes} from '../utils/themes';
 import * as fromRoot from '@app/reducers';
 import * as LayoutActions from '../core.actions';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Component({
   selector: 'app-root',
@@ -86,8 +87,12 @@ export class AppComponent implements OnInit {
     private library: LibraryService,
     private ref: ChangeDetectorRef,
     private store: Store<fromRoot.State>,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private audioService: AudioService,
+    private renderer: Renderer2,
+    private appRoot: ElementRef
   ) {
+    // Set up electron listeners
     if (environment.electron) {
       const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
       ipc.on('focus', () => {
@@ -105,15 +110,19 @@ export class AppComponent implements OnInit {
         this.isMaximized = false;
       });
     }
+    // Set up core observables
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
     this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
-
+    // Load the last theme
     const savedTheme = PersistenceService.load('theme');
     if (savedTheme) {
       this.changeTheme(JSON.parse(savedTheme));
     }
 
+    // configure Audio Service
+    this.audioService.renderer = renderer;
+    this.audioService.appRoot = appRoot;
   }
 
   @HostListener('window:storage', ['$event'])

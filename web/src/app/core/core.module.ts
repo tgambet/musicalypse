@@ -18,6 +18,7 @@ import {CoreEffects} from './core.effects';
 
 // TODO
 import {LibraryService} from '@app/library/services/library.service';
+import {AudioService} from '@app/core/services/audio.service';
 
 export const COMPONENTS = [
   AppComponent,
@@ -39,7 +40,8 @@ export const COMPONENTS = [
     HttpSocketClientService,
     LoaderService,
     PersistenceService,
-    LibraryService
+    LibraryService,
+    AudioService
   ]
 })
 export class CoreModule {

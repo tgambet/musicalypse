@@ -5,7 +5,7 @@ import {Observable, Subscription} from 'rxjs';
 import 'rxjs/add/operator/publishLast';
 import * as _ from 'lodash';
 
-import {HttpSocketClientService} from './http-socket-client.service';
+import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 
 @Injectable()
 export class SettingsService implements OnDestroy {

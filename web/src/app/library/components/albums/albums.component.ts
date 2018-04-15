@@ -5,7 +5,7 @@ import {
 import {DomSanitizer} from '@angular/platform-browser';
 import {Album} from '@app/model';
 import {LibraryService} from '../../services/library.service';
-import {SettingsService} from '@app/core/services/settings.service';
+import {SettingsService} from '@app/settings/services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';

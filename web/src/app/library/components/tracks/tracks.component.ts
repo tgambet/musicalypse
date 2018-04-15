@@ -12,7 +12,7 @@ import {
 import {MatDialog} from '@angular/material';
 import {Album, Track} from '@app/model';
 import {LibraryService} from '../../services/library.service';
-import {SettingsService} from '@app/core/services/settings.service';
+import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {AudioComponent} from '@app/core/components/audio/audio.component';

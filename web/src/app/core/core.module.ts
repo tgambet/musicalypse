@@ -13,7 +13,6 @@ import {ToolbarComponent} from './components/toolbar.component';
 import {LoaderService} from './services/loader.service';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {PersistenceService} from './services/persistence.service';
-import {SettingsService} from './services/settings.service';
 
 import {CoreEffects} from './core.effects';
 
@@ -40,8 +39,7 @@ export const COMPONENTS = [
     HttpSocketClientService,
     LoaderService,
     PersistenceService,
-    LibraryService,
-    SettingsService
+    LibraryService
   ]
 })
 export class CoreModule {

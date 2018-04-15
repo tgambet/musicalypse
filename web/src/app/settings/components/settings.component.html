@@ -60,15 +60,15 @@
     <div class="column c2">
       <h3 class="secondary-text">Themes</h3>
       <p>
-        <mat-radio-group>
-          <mat-radio-button *ngFor="let theme of settings.themes"
-                            [value]="theme.cssClass"
-                            [checked]="settings.isCurrentTheme(theme)"
-                            (change)="settings.changeTheme(theme)"
-                            color="primary">
-            {{ theme.name }}
-          </mat-radio-button>
-        </mat-radio-group>
+        <!--<mat-radio-group>-->
+          <!--<mat-radio-button *ngFor="let theme of settings.themes"-->
+                            <!--[value]="theme.cssClass"-->
+                            <!--[checked]="settings.isCurrentTheme(theme)"-->
+                            <!--(change)="settings.changeTheme(theme)"-->
+                            <!--color="primary">-->
+            <!--{{ theme.name }}-->
+          <!--</mat-radio-button>-->
+        <!--</mat-radio-group>-->
       </p>
       <mat-divider></mat-divider>
       <h3 class="secondary-text">Misc</h3>

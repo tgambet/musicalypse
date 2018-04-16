@@ -31,36 +31,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   @ViewChild('list')
   list: ElementRef;
 
-  alphabet = [
-    '#',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z'
-  ];
-
   showChipList = false;
   showSearch = false;
   search = '';

@@ -71,9 +71,5 @@
       </ng-container>
     </mat-list>
   </div>
-  <div class="alphabet" (click)="$event.stopPropagation()">
-    <ol>
-      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{ letter }}</li>
-    </ol>
-  </div>
+  <app-dictionary (letterClicked)="scrollTo($event)"></app-dictionary>
 </div>

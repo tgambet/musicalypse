@@ -8,6 +8,7 @@ import {ArtistsComponent} from './artists/artists.component';
 import {AlbumsComponent} from './albums/albums.component';
 import {TracksComponent} from './tracks/tracks.component';
 import {LibraryComponent} from './library/library.component';
+import {DictionaryComponent} from '@app/library/components/shared/dictionary.component';
 
 export const COMPONENTS = [
   AlbumsComponent,
@@ -15,7 +16,8 @@ export const COMPONENTS = [
   LibraryComponent,
   MiniPlayerComponent,
   PlayerComponent,
-  TracksComponent
+  TracksComponent,
+  DictionaryComponent
 ];
 
 @NgModule({

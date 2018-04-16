@@ -1,8 +1,4 @@
-import {
-  ApplicationRef,
-  ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '@app/model';
 import {LibraryService} from '../../services/library.service';
@@ -31,36 +27,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   @Input('selectedArtists')
   selectedArtists: Artist[];
 
-  alphabet = [
-    '#',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z'
-  ];
-
   showChipList = false;
   showSearch = false;
   search = '';
@@ -77,8 +43,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   constructor(
     public library: LibraryService,
     public settings: SettingsService,
-    private sanitizer: DomSanitizer,
-    public app: ApplicationRef,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {}

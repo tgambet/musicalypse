@@ -117,7 +117,7 @@
             <mat-icon>{{ playing ? 'pause' : 'play_arrow' }}</mat-icon>
           </button>
           <span class="spinner" *ngIf="currentTrack == track">
-            <mat-progress-spinner diameter="40"
+            <mat-progress-spinner [diameter]="40"
                                   [mode]="loading ? 'indeterminate' : 'determinate'"
                                   [value]="currentTime / duration * 100"></mat-progress-spinner>
           </span>
@@ -126,9 +126,5 @@
       </ng-container>
     </mat-list>
   </div>
-  <div *ngIf="library.sortTracksAlphabetically" class="alphabet" (click)="$event.stopPropagation()">
-    <ol>
-      <li *ngFor="let letter of alphabet" (click)="scrollTo(letter)">{{ letter }}</li>
-    </ol>
-  </div>
+  <app-dictionary *ngIf="library.sortTracksAlphabetically" (letterClicked)="scrollTo($event)"></app-dictionary>
 </div>

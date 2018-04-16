@@ -28,7 +28,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   selectedArtists: Artist[];
 
   showChipList = false;
-  showSearch = false;
   search = '';
 
   filter: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
@@ -72,6 +71,18 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     if (elem) {
       elem.scrollIntoView(scrollOptions);
     }
+  }
+
+  deselect(artist: Artist) {
+    this.library.deselectArtist(artist);
+    if (this.library.selectedArtists.length < 3) {
+      this.showChipList = false;
+    }
+  }
+
+  deselectAll() {
+    this.library.deselectAllArtists();
+    this.showChipList = false;
   }
 
 }

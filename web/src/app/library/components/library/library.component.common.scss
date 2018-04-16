@@ -63,46 +63,6 @@
   padding-top: 60px;
   height: 100%;
   box-sizing: border-box;
-  .alphabet {
-    user-select: none;
-    height: calc(100% - 132px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size: 10px;
-    position: absolute;
-    top: 60px;
-    right: 21px;
-    ol {
-      list-style-type: none;
-      height: 100%;
-      li {
-        text-align: center;
-        cursor: pointer;
-        height: calc(100% / 27);
-      }
-    }
-  }
-}
-
-// Chrome and Opera only?
-@supports (-webkit-appearance:none) {
-  .wrapper .alphabet {
-    right: 9px;
-  }
-}
-
-@media screen and (min-width: 1319px){
-  .wrapper {
-    .alphabet {
-      height: calc(100% - 60px);
-      ol {
-        li {
-          line-height: calc((100vh - 120px) / 27);
-        }
-      }
-    }
-  }
 }
 
 .mat-chip-list.full-list {
@@ -132,6 +92,26 @@
 .mat-chip-list.full-list.show {
   display: block;
   max-height: 50%;
+}
+
+.select-text {
+  font-weight: 300;
+}
+
+.mat-chip {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 10px;
+  max-width: calc(50% - 4px);
+  .chip-text {
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.mat-chip:only-child {
+  max-width: 100%;
 }
 
 .controls {

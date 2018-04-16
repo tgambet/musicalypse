@@ -1,7 +1,4 @@
-import {
-  ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Album} from '@app/model';
 import {LibraryService} from '../../services/library.service';
@@ -32,7 +29,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   list: ElementRef;
 
   showChipList = false;
-  showSearch = false;
   search = '';
 
   filter: (albums: Album[]) => Album[] = ((albums: Album[]) => {
@@ -81,6 +77,18 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     if (elem) {
       elem.scrollIntoView(scrollOptions);
     }
+  }
+
+  deselect(album: Album) {
+    this.library.deselectAlbum(album);
+    if (this.library.selectedAlbums.length < 3) {
+      this.showChipList = false;
+    }
+  }
+
+  deselectAll() {
+    this.library.deselectAllAlbums();
+    this.showChipList = false;
   }
 
 }

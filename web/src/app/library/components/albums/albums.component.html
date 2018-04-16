@@ -1,50 +1,33 @@
 <div class="wrapper">
-  <mat-chip-list class="full-list mat-elevation-z3" [class.show]="showChipList" (click)="showChipList = false">
-    <mat-chip class="remove-all" (click)="library.deselectAllAlbums(); showChipList = false">Remove All</mat-chip>
-    <mat-chip *ngFor="let album of selectedAlbums"
-              (click)="scrollTo(album.title); showChipList = false">
-      <span class="chip-text">{{ album.title }}</span>
-      <mat-icon matChipRemove (click)="library.deselectAlbum(album); $event.stopPropagation(); selectedAlbums.length < 3 ? showChipList = false : {};">cancel</mat-icon>
-    </mat-chip>
-  </mat-chip-list>
-  <div class="controls divider fake-scroll-y">
-    <button mat-button mat-icon-button class="back" (click)="previous.emit()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <mat-form-field floatLabel="never" class="search" [class.show]="showSearch">
-      <input matInput #searchInput title="Search" [(ngModel)]="search" spellcheck="false">
-      <mat-placeholder>
-        <mat-icon>search</mat-icon>
-        Search an album
-      </mat-placeholder>
-      <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-    <div class="controls-meta" [class.show]="!showSearch">
-      <span class="select-text" *ngIf="selectedAlbums.length == 0">
-        Select an album or
-        <mat-chip (click)="library.selectAllAlbums(albums.map(filter))">Select All</mat-chip>
-      </span>
-      <mat-chip-list>
-        <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
-                  (click)="scrollTo(album.title)">
-          <span class="chip-text">{{ album.title }}</span>
-          <mat-icon matChipRemove (click)="library.deselectAlbum(album)">cancel</mat-icon>
-        </mat-chip>
-        <mat-chip *ngIf="selectedAlbums.length > 2"
-                  (click)="showChipList = !showChipList"
-                  class="chip-more">
-          {{ selectedAlbums.length - 1 }} more…
-        </mat-chip>
-      </mat-chip-list>
-    </div>
-    <button mat-button mat-icon-button
-            (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"
-            class="searchButton">
-      <mat-icon>search</mat-icon>
-    </button>
-  </div>
+
+  <app-chips #chips
+             [hidden]="!showChipList"
+             [list]="selectedAlbums"
+             [displayProperty]="'title'"
+             (clickedElement)="scrollTo($event.title)"
+             (removedAll)="deselectAll()"
+             (removedElement)="deselect($event)">
+  </app-chips>
+
+  <app-controls [(search)]="search" [searchPlaceholder]="'Search an album'">
+    <span class="select-text" *ngIf="selectedAlbums.length == 0">
+      Select an album or
+      <mat-chip (click)="library.selectAllAlbums(albums.map(filter))">Select All</mat-chip>
+    </span>
+    <mat-chip-list>
+      <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
+                (click)="scrollTo(album.title)">
+        <span class="chip-text">{{ album.title }}</span>
+        <mat-icon matChipRemove (click)="library.deselectAlbum(album)">cancel</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="selectedAlbums.length > 2"
+                (click)="showChipList = !showChipList"
+                class="chip-more">
+        {{ selectedAlbums.length - 1 }} more…
+      </mat-chip>
+    </mat-chip-list>
+  </app-controls>
+
   <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
     <mat-list class="albums" dense>
       <ng-container *ngFor="let album of albums.map(filter) | async; trackBy: trackByTitle">
@@ -74,5 +57,7 @@
       </ng-container>
     </mat-list>
   </div>
+
   <app-dictionary (letterClicked)="scrollTo($event)"></app-dictionary>
+
 </div>

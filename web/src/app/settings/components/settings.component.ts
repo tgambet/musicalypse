@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {FolderComponent} from '@app/shared/dialogs/folder/folder.component';
 import {LibraryService} from '@app/library/services/library.service';
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
@@ -12,7 +12,7 @@ import {select, Store} from '@ngrx/store';
 import * as fromSettings from '../settings.reducers';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {LoadLibraryFolders} from '@app/settings/settings.actions';
+import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/settings/settings.actions';
 
 @Component({
   selector: 'app-settings',
@@ -21,8 +21,6 @@ import {LoadLibraryFolders} from '@app/settings/settings.actions';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  // libraryFolders: string[] = [];
-
   dragOver = false;
 
   error$: Observable<string>;
@@ -30,18 +28,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
   libraryFoldersLength$: Observable<number>;
 
   ipcAddFolder = (event, folder) => {
-    this.addLibraryFolder(folder[0]);
+    this.zone.run(() => this.addLibraryFolder(folder[0]));
   }
 
   constructor(
     public httpSocketClient: HttpSocketClientService,
     public settings: SettingsService,
     public dialog: MatDialog,
-    public snackBar: MatSnackBar,
     public library: LibraryService,
     public router: Router,
-    private ref: ChangeDetectorRef,
     private store: Store<fromSettings.State>,
+    private zone: NgZone
   ) {
     this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
     this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
@@ -49,12 +46,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.settings.geLibraryFolders().subscribe(
-    //   folders => {
-    //     this.libraryFolders = folders;
-    //   }
-    // );
-
     this.store.dispatch(new LoadLibraryFolders());
 
     if (environment.electron) {
@@ -71,28 +62,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   addLibraryFolder(folder: string) {
-    // this.settings.addLibraryFolder(folder).subscribe(
-    //   () => {
-    //     // this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 2000});
-    //     this.libraryFolders = [folder, ...this.libraryFolders];
-    //   },
-    //   (error) => {
-    //     this.snackBar.open('An error occurred: ' + error.error, '', {duration: 2000});
-    //   },
-    //   () => {
-    //     this.ref.detectChanges();
-    //   }
-    // );
-  }
+    this.store.dispatch(new AddLibraryFolder(folder));
+   }
 
   removeLibraryFolder(folder: string) {
-    // this.settings.removeLibraryFolder(folder).subscribe(
-    //   () => {
-    //     this.libraryFolders = _.filter(this.libraryFolders, f => f !== folder);
-    //     this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500});
-    //   },
-    //   (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
-    // );
+    this.store.dispatch(new RemoveLibraryFolder(folder));
   }
 
   drop(event) {

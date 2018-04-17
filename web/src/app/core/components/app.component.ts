@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
 
@@ -97,17 +106,19 @@ export class AppComponent implements OnInit {
       const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
       ipc.on('focus', () => {
         this.isElectronFocused = true;
-        ref.detectChanges();
+        this.ref.detectChanges(); // TODO investigate why ngZone.run doesn't work here
       });
       ipc.on('blur', () => {
         this.isElectronFocused = false;
-        ref.detectChanges();
+        this.ref.detectChanges();
       });
       this.electronRemote.getCurrentWindow().addListener('maximize', () => {
         this.isMaximized = true;
+        this.ref.detectChanges();
       });
       this.electronRemote.getCurrentWindow().addListener('unmaximize', () => {
         this.isMaximized = false;
+        this.ref.detectChanges();
       });
     }
     // Set up core observables

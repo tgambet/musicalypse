@@ -36,6 +36,8 @@ export class AudioService {
 
   private audioElement: HTMLMediaElement;
 
+  private listeners: (() => void)[];
+
   constructor () {
     this.volume$ = this._volume.asObservable();
     this.muted$ = this._muted.asObservable();
@@ -52,6 +54,7 @@ export class AudioService {
   play(src: string): Promise<void> {
     if (this.audioElement) {
       this._renderer.removeChild(this._appRoot, this.audioElement);
+      this.listeners.forEach(listener => listener());
     }
     this._playing.next(false);
     this._loading.next(true);
@@ -112,6 +115,7 @@ export class AudioService {
     this._renderer.setAttribute(audio, 'src', src);
     this._renderer.setAttribute(audio, 'volume', this.volume.toString());
     this._renderer.setAttribute(audio, 'muted', this.muted.toString());
+    // this._renderer.listen(audio, '', (event) => {})
     return audio;
   }
 

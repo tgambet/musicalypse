@@ -15,10 +15,7 @@ const initialState: State = {
 };
 
 /**
- * Reducers
- * @param {State} state
- * @param {CoreActionsUnion} action
- * @returns {State}
+ * Reducer
  */
 export function reducer(
   state: State = initialState,
@@ -57,8 +54,6 @@ export function reducer(
 
 /**
  * Selectors
- * @param {State} state
- * @returns {boolean}
  */
 export const getShowSidenav = (state: State) => state.showSidenav;
 export const getCurrentTheme = (state: State) => state.currentTheme;

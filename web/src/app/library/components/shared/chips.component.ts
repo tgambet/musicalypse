@@ -38,7 +38,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 })
 export class ChipsComponent {
 
-  @Input() list: Array<any>;
+  @Input() list: any[];
   @Input() displayProperty: string;
 
   @Output() clickedElement = new EventEmitter<any>();

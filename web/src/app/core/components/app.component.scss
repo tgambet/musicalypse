@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100vh; // 100vh TODO figure out the issue with player menu
   min-height: 450px;
+  box-sizing: border-box;
 }
 
 .main-loader {

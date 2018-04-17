@@ -9,7 +9,9 @@
              (removedElement)="deselect($event)">
   </app-chips>
 
-  <app-controls [(search)]="search" [searchPlaceholder]="'Search an artist'">
+  <app-controls [(search)]="search"
+                [searchPlaceholder]="'Search an artist'"
+                [backButton]="false">
     <span class="select-text" *ngIf="selectedArtists.length == 0">
       Select an artist or
       <mat-chip (click)="library.selectAllArtists(library.artistSource)">Select All</mat-chip>
@@ -31,28 +33,15 @@
   <div #list class="list-wrapper" (swipeleft)="next.emit()">
     <mat-list class="artists" dense>
       <ng-container *ngFor="let artist of artists.map(filter) | async; trackBy: trackByName">
-        <a class="artist hover" (click)="library.selectArtist(artist); next.emit()" mat-list-item>
-          <mat-checkbox matListIcon
-                        color="primary"
-                        [checked]="library.isSelectedArtist(artist)"
-                        (change)="$event.checked ? library.addArtist(artist) : library.deselectArtist(artist)"
-                        (click)="$event.stopPropagation()"></mat-checkbox>
-          <div matListAvatar class="avatar" [style]="getAvatarStyle(artist)">
-            <mat-icon *ngIf="!artist.avatarUrl">music_note</mat-icon>
-          </div>
-          <div matLine class="primary-text">
-            <mat-icon *ngIf="artist.warn && settings.warnOnMissingTags" color="warn" matTooltip="Unset tags!">warning</mat-icon>
-            <span class="artist-name" [innerHtml]="artist.name | sgSearch:search"></span>
-          </div>
-          <div matLine class="secondary-text">{
-            { artist.songs }} songs
-          </div>
-          <button mat-button mat-icon-button
-                  (click)="library.addArtist(artist); next.emit(); $event.stopPropagation()">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-          <mat-divider></mat-divider>
-        </a>
+        <app-list-item [selected]="library.isSelectedArtist(artist)"
+                       [avatarStyle]="getAvatarStyle(artist)"
+                       [warn]="artist.warn && settings.warnOnMissingTags"
+                       [primaryHTML]="artist.name | sgSearch:search"
+                       [secondaryHTML]="artist.songs + ' songs'"
+                       (click)="library.selectArtist(artist); next.emit()"
+                       (arrowClicked)="library.addArtist(artist); next.emit()"
+                       (checked)="$event ? library.addArtist(artist) : library.deselectArtist(artist)">
+        </app-list-item>
       </ng-container>
     </mat-list>
   </div>

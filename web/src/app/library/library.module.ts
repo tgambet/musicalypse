@@ -12,6 +12,7 @@ import {LibraryComponent} from '@app/library/components/library/library.componen
 import {TracksComponent} from '@app/library/components/tracks/tracks.component';
 import {ControlsComponent} from '@app/library/components/shared/controls.component';
 import {ChipsComponent} from '@app/library/components/shared/chips.component';
+import {ListItemComponent} from '@app/library/components/shared/list-item.component';
 
 export const COMPONENTS = [
   AlbumsComponent,
@@ -22,7 +23,8 @@ export const COMPONENTS = [
   TracksComponent,
   DictionaryComponent,
   ControlsComponent,
-  ChipsComponent
+  ChipsComponent,
+  ListItemComponent
 ];
 
 @NgModule({

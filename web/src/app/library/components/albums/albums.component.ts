@@ -61,18 +61,14 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
   }
 
-  isMultipleArtistsSelected(): boolean {
-    return this.library.selectedArtists.length > 1;
-  }
-
   scrollTo(letter: string) {
     const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
     if (letter === '#') {
-      this.list.nativeElement.getElementsByClassName('album')[0].scrollIntoView(scrollOptions);
+      this.list.nativeElement.getElementsByClassName('list-item')[0].scrollIntoView(scrollOptions);
       return;
     }
-    const elem = _.find(this.list.nativeElement.getElementsByClassName('album'), artist => {
-      return artist.getElementsByClassName('album-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    const elem = _.find(this.list.nativeElement.getElementsByClassName('list-item'), artist => {
+      return artist.getElementsByClassName('item-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
     });
     if (elem) {
       elem.scrollIntoView(scrollOptions);

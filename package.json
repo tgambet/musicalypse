@@ -57,6 +57,7 @@
     "@angular/router": "^6.0.0-rc.4",
     "@ngrx/effects": "^6.0.0-beta.1",
     "@ngrx/store": "^6.0.0-beta.1",
+    "@ngrx/store-devtools": "^6.0.0-beta.1",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
     "@types/lodash": "^4.14.104",

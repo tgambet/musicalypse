@@ -24,6 +24,8 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular
     ol {
       list-style-type: none;
       height: 100%;
+      margin: 0;
+      padding: 0;
     }
     li {
       text-align: center;

@@ -22,21 +22,6 @@ export function reducer(
 ): State {
   switch (action.type) {
 
-    case SettingsActionTypes.AddLibraryFolder:
-      return {
-        ...state,
-        libraryFolders: [...state.libraryFolders, action.payload],
-      };
-
-    case SettingsActionTypes.RemoveLibraryFolder:
-      return {
-        ...state,
-        libraryFolders: state.libraryFolders.filter(folder => folder !== action.payload),
-      };
-
-    case SettingsActionTypes.LoadLibraryFolders:
-      return state;
-
     case SettingsActionTypes.LoadLibraryFoldersSuccess:
       return {
         ...state,
@@ -50,6 +35,35 @@ export function reducer(
         error: action.payload
       };
 
+    case SettingsActionTypes.AddLibraryFolderSuccess:
+      return {
+        ...state,
+        libraryFolders: [...state.libraryFolders, action.payload],
+        error: ''
+      };
+
+    case SettingsActionTypes.AddLibraryFolderFailure:
+      return {
+        ...state,
+        error: action.payload
+      };
+
+    case SettingsActionTypes.RemoveLibraryFolderSuccess:
+      return {
+        ...state,
+        libraryFolders: state.libraryFolders.filter(folder => folder !== action.payload),
+        error: ''
+      };
+
+    case SettingsActionTypes.RemoveLibraryFolderFailure:
+      return {
+        ...state,
+        error: action.payload
+      };
+
+    case SettingsActionTypes.LoadLibraryFolders:
+    case SettingsActionTypes.AddLibraryFolder:
+    case SettingsActionTypes.RemoveLibraryFolder:
     default:
       return state;
   }

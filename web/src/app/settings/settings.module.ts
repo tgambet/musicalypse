@@ -1,14 +1,24 @@
 import {NgModule} from '@angular/core';
-import {EffectsModule} from '@ngrx/effects';
-import {SharedModule} from '@app/shared/shared.module';
-import {SettingsComponent} from './components/settings.component';
-import {SettingsService} from './services/settings.service';
-import {SettingsEffects} from './settings.effects';
 import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
+
+import {SharedModule} from '@app/shared/shared.module';
+
+import {LibraryFoldersComponent} from './components/library-folders.component';
+import {SettingsComponent} from './components/settings.component';
+import {UploadsComponent} from './components/uploads.component';
+import {ThemesComponent} from './components/themes.component';
+
+import {SettingsService} from './services/settings.service';
+
+import {SettingsEffects} from './settings.effects';
 import {reducers} from './settings.reducers';
 
 export const COMPONENTS = [
-  SettingsComponent
+  SettingsComponent,
+  LibraryFoldersComponent,
+  UploadsComponent,
+  ThemesComponent
 ];
 
 @NgModule({

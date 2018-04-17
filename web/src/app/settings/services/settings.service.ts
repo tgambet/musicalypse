@@ -10,8 +10,6 @@ import {HttpSocketClientService} from '@app/core/services/http-socket-client.ser
 @Injectable()
 export class SettingsService implements OnDestroy {
 
-  // libraryFolders: Observable<string[]> = Observable.empty();
-
   uploadSubscription: Subscription;
 
   files: { _file: File, progress: number }[] = [];

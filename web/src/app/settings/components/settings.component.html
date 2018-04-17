@@ -2,80 +2,37 @@
   <div class="settings">
     <div class="column c1">
       <h3 class="secondary-text">Library</h3>
-      <mat-list>
-        <mat-list-item class="hover" *ngFor="let folder of libraryFolders$ | async">
-          <mat-icon mat-list-icon>folder_open</mat-icon>
-          <span matLine>{{ folder }}</span>
-          <button mat-button mat-icon-button (click)="removeFolderDialog(folder)">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-list-item>
-        <button mat-menu-item tabindex="0" (click)="addFolderDialog()">
-          <mat-icon mat-list-icon>create_new_folder</mat-icon>
-          <span matLine>Add a new folder</span>
-        </button>
-        <button mat-menu-item [disabled]="(libraryFoldersLength$ | async) == 0" tabindex="0" (click)="requestLibraryScan()">
-          <mat-icon mat-list-icon>sync</mat-icon>
-          <span matLine>Scan Library</span>
-        </button>
-      </mat-list>
-      <mat-menu></mat-menu><!--Fix: don't remove-->
+      <app-library-folders [folders]="libraryFolders$ | async"
+                           (addFolder)="addFolderDialog()"
+                           (removeFolder)="removeFolderDialog($event)"
+                           (scanRequest)="requestLibraryScan()">
+      </app-library-folders>
       <mat-divider></mat-divider>
+
       <h3 class="secondary-text">Upload</h3>
-      <p>
-        Drag and drop files in the zone below to upload them to the server.<br>
-        Or click it to choose files to upload from the explorer.
-      </p>
-      <input #file type='file' accept=".mp3" multiple style="display: none" (change)="addFiles($event.target.files)"/>
-      <div [class.empty]="settings.files.length == 0"
-           [class.outline-dashed]="dragOver"
-           class="drop hover-background"
-           (click)="settings.isUploading() ? {} : file.click(); $event.preventDefault()"
-           (dragover)="dragOver = true; $event.preventDefault()"
-           (drop)="drop($event)"
-           (dragenter)="dragOver = true"
-           (dragleave)="dragOver = false">
-        <button mat-icon-button *ngIf="settings.files.length == 0">
-          <mat-icon>cloud_upload</mat-icon>
-        </button>
-        <div *ngFor="let file of settings.files" class="file">
-          <span class="name">{{ file._file.name }}</span>
-          <span class="progress">
-            <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
-          </span>
-          <span class="size">{{ file._file.size | sgFileSize }}</span>
-        </div>
-      </div>
-      <div class="upload-actions">
-        <button mat-button [disabled]="settings.files.length == 0 || settings.isUploading()" (click)="settings.uploadFiles()">
-          <mat-icon>file_upload</mat-icon>
-          Upload
-        </button>
-        <button mat-button (click)="settings.isUploading() ? settings.cancelUpload() : settings.clearUploads()" [disabled]="settings.files.length == 0">
-          {{ settings.isUploading() ? 'Cancel' : 'Clear' }}
-        </button>
-      </div>
+      <app-uploads [files]="settings.files"
+                   [isUploading]="settings.isUploading()"
+                   (addFiles)="addFiles($event)"
+                   (uploadFiles)="settings.uploadFiles()"
+                   (cancelUploads)="settings.cancelUpload()"
+                   (clearUploads)="settings.clearUploads()">
+      </app-uploads>
       <mat-divider></mat-divider>
+
     </div>
     <div class="column c2">
       <h3 class="secondary-text">Themes</h3>
-      <p>
-        <!--<mat-radio-group>-->
-          <!--<mat-radio-button *ngFor="let theme of settings.themes"-->
-                            <!--[value]="theme.cssClass"-->
-                            <!--[checked]="settings.isCurrentTheme(theme)"-->
-                            <!--(change)="settings.changeTheme(theme)"-->
-                            <!--color="primary">-->
-            <!--{{ theme.name }}-->
-          <!--</mat-radio-button>-->
-        <!--</mat-radio-group>-->
-      </p>
+      <app-themes [themes]="themes"
+                  [currentTheme]="currentTheme$ | async"
+                  (changeTheme)="changeTheme($event)">
+      </app-themes>
       <mat-divider></mat-divider>
+
       <h3 class="secondary-text">Misc</h3>
       <div>
         <button mat-button>
           <mat-icon>{{ httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
-          <span>WebSocket</span>
+          <span> WebSocket</span>
         </button>
       </div>
       <!--<div>-->

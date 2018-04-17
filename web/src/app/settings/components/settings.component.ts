@@ -13,6 +13,9 @@ import * as fromSettings from '../settings.reducers';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/settings/settings.actions';
+import {Theme, Themes} from '@app/core/utils/themes';
+import * as LayoutActions from '@app/core/core.actions';
+import * as fromRoot from '@app/reducers';
 
 @Component({
   selector: 'app-settings',
@@ -21,27 +24,27 @@ import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/se
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  dragOver = false;
+  themes = Themes.allThemes;
 
   error$: Observable<string>;
   libraryFolders$: Observable<string[]>;
   libraryFoldersLength$: Observable<number>;
+  currentTheme$: Observable<Theme>;
 
-  ipcAddFolder = (event, folder) => {
-    this.zone.run(() => this.addLibraryFolder(folder[0]));
-  }
+  ipcAddFolder = (event, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
   constructor(
-    public httpSocketClient: HttpSocketClientService,
+    private httpSocketClient: HttpSocketClientService,
     public settings: SettingsService,
-    public dialog: MatDialog,
-    public library: LibraryService,
-    public router: Router,
+    private dialog: MatDialog,
+    private library: LibraryService,
+    private router: Router,
     private store: Store<fromSettings.State>,
     private zone: NgZone
   ) {
     this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
     this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
+    this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
     this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
   }
 
@@ -67,12 +70,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   removeLibraryFolder(folder: string) {
     this.store.dispatch(new RemoveLibraryFolder(folder));
-  }
-
-  drop(event) {
-    this.addFiles(event.dataTransfer.files);
-    this.dragOver = false;
-    event.preventDefault();
   }
 
   addFiles(files: FileList) {
@@ -119,6 +116,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   requestLibraryScan() {
     this.router.navigate(['/']).then(() => this.library.scan());
+  }
+
+  changeTheme(theme: Theme) {
+    this.store.dispatch(new LayoutActions.ChangeTheme(theme));
   }
 
 }

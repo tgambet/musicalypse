@@ -2,7 +2,8 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding-left: 44px;
+  padding-left: 44px; // TODO a parent div must have the padding-left set
+  box-sizing: border-box;
 }
 
 .settings {
@@ -33,81 +34,80 @@
   }
 }
 
-mat-list {
-  padding-top: 0 !important;
-  margin-bottom: 12px;
-  a {
-    cursor: pointer;
-  }
-  .mat-menu-item {
-    padding-left: 20px;
-  }
-}
+//mat-list {
+//  padding-top: 0 !important;
+//  margin-bottom: 12px;
+//  a {
+//    cursor: pointer;
+//  }
+//  .mat-menu-item {
+//    padding-left: 20px;
+//  }
+//}
 
 mat-divider {
   margin: 1rem 0;
 }
 
-.drop {
-  padding: 1rem;
-  min-height: 150px;
-  //border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  &.empty {
-    justify-content: space-around;
-  }
-  button {
-    padding: 5px;
-    box-sizing: content-box;
-  }
-  button, mat-icon  {
-    height: 40px;
-    width: 40px;
-    font-size: 40px;
-    line-height: 40px;
-  }
-  mat-icon {
-    position: relative;
-    top: -4px;
-  }
-  .file {
-    display: flex;
-    width: 100%;
-    mat-progress-bar {
-      width: auto;
-    }
-    .name {
-      flex-grow: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 50%;
-      overflow: hidden;
-    }
-    .progress {
-      flex-grow: 1;
-      margin: 8px 8px 0 8px;
-    }
-    .size {
-      flex-grow: 0;
-      min-width: 60px;
-      text-align: right;
-    }
-  }
-}
+//.drop {
+//  padding: 1rem;
+//  min-height: 150px;
+//  display: flex;
+//  flex-direction: column;
+//  align-items: center;
+//  cursor: pointer;
+//  user-select: none;
+//  &.empty {
+//    justify-content: space-around;
+//  }
+//  button {
+//    padding: 5px;
+//    box-sizing: content-box;
+//  }
+//  button, mat-icon  {
+//    height: 40px;
+//    width: 40px;
+//    font-size: 40px;
+//    line-height: 40px;
+//  }
+//  mat-icon {
+//    position: relative;
+//    top: -4px;
+//  }
+//  .file {
+//    display: flex;
+//    width: 100%;
+//    mat-progress-bar {
+//      width: auto;
+//    }
+//    .name {
+//      flex-grow: 0;
+//      white-space: nowrap;
+//      text-overflow: ellipsis;
+//      max-width: 50%;
+//      overflow: hidden;
+//    }
+//    .progress {
+//      flex-grow: 1;
+//      margin: 8px 8px 0 8px;
+//    }
+//    .size {
+//      flex-grow: 0;
+//      min-width: 60px;
+//      text-align: right;
+//    }
+//  }
+//}
 
-.upload-actions {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
+//.upload-actions {
+//  margin-top: 0.5rem;
+//  display: flex;
+//  flex-direction: row;
+//  justify-content: flex-end;
+//}
 
-mat-radio-button {
-  display: block;
-  margin-bottom: 1rem;
-  padding-left: 1rem;
-}
+//mat-radio-button {
+//  display: block;
+//  margin-bottom: 1rem;
+//  padding-left: 1rem;
+//}

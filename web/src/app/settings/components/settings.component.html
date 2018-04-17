@@ -3,7 +3,7 @@
     <div class="column c1">
       <h3 class="secondary-text">Library</h3>
       <mat-list>
-        <mat-list-item class="hover" *ngFor="let folder of libraryFolders">
+        <mat-list-item class="hover" *ngFor="let folder of libraryFolders$ | async">
           <mat-icon mat-list-icon>folder_open</mat-icon>
           <span matLine>{{ folder }}</span>
           <button mat-button mat-icon-button (click)="removeFolderDialog(folder)">
@@ -14,7 +14,7 @@
           <mat-icon mat-list-icon>create_new_folder</mat-icon>
           <span matLine>Add a new folder</span>
         </button>
-        <button mat-menu-item [disabled]="libraryFolders.length == 0" tabindex="0" (click)="requestLibraryScan()">
+        <button mat-menu-item [disabled]="(libraryFoldersLength$ | async) == 0" tabindex="0" (click)="requestLibraryScan()">
           <mat-icon mat-list-icon>sync</mat-icon>
           <span matLine>Scan Library</span>
         </button>

@@ -8,6 +8,11 @@ import {SettingsService} from '@app/settings/services/settings.service';
 import {ConfirmComponent} from '@app/shared/dialogs/confirm/confirm.component';
 import {environment} from '@env/environment';
 import * as _ from 'lodash';
+import {select, Store} from '@ngrx/store';
+import * as fromSettings from '../settings.reducers';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {LoadLibraryFolders} from '@app/settings/settings.actions';
 
 @Component({
   selector: 'app-settings',
@@ -16,9 +21,13 @@ import * as _ from 'lodash';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  libraryFolders: string[] = [];
+  // libraryFolders: string[] = [];
 
   dragOver = false;
+
+  error$: Observable<string>;
+  libraryFolders$: Observable<string[]>;
+  libraryFoldersLength$: Observable<number>;
 
   ipcAddFolder = (event, folder) => {
     this.addLibraryFolder(folder[0]);
@@ -32,16 +41,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
     public library: LibraryService,
     public router: Router,
     private ref: ChangeDetectorRef,
+    private store: Store<fromSettings.State>,
   ) {
-
+    this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
+    this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
+    this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
   }
 
   ngOnInit() {
-    this.settings.geLibraryFolders().subscribe(
-      folders => {
-        this.libraryFolders = folders;
-      }
-    );
+    // this.settings.geLibraryFolders().subscribe(
+    //   folders => {
+    //     this.libraryFolders = folders;
+    //   }
+    // );
+
+    this.store.dispatch(new LoadLibraryFolders());
 
     if (environment.electron) {
       const ipc = (<any>window).require('electron').ipcRenderer;
@@ -57,28 +71,28 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   addLibraryFolder(folder: string) {
-    this.settings.addLibraryFolder(folder).subscribe(
-      () => {
-        // this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 2000});
-        this.libraryFolders = [folder, ...this.libraryFolders];
-      },
-      (error) => {
-        this.snackBar.open('An error occurred: ' + error.error, '', {duration: 2000});
-      },
-      () => {
-        this.ref.detectChanges();
-      }
-    );
+    // this.settings.addLibraryFolder(folder).subscribe(
+    //   () => {
+    //     // this.snackBar.open('Folder ' + folder + ' added to library', '', {duration: 2000});
+    //     this.libraryFolders = [folder, ...this.libraryFolders];
+    //   },
+    //   (error) => {
+    //     this.snackBar.open('An error occurred: ' + error.error, '', {duration: 2000});
+    //   },
+    //   () => {
+    //     this.ref.detectChanges();
+    //   }
+    // );
   }
 
   removeLibraryFolder(folder: string) {
-    this.settings.removeLibraryFolder(folder).subscribe(
-      () => {
-        this.libraryFolders = _.filter(this.libraryFolders, f => f !== folder);
-        this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500});
-      },
-      (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
-    );
+    // this.settings.removeLibraryFolder(folder).subscribe(
+    //   () => {
+    //     this.libraryFolders = _.filter(this.libraryFolders, f => f !== folder);
+    //     this.snackBar.open('Folder ' + folder + ' removed from library', '', {duration: 1500});
+    //   },
+    //   (error) => this.snackBar.open('An error occurred: ' + error.error, '', {duration: 1500})
+    // );
   }
 
   drop(event) {

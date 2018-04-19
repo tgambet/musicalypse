@@ -1,6 +1,6 @@
 import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
-import * as fromTracks from './reducers/tracks.reducer';
+import * as fromTracks from './reducers/tracks.reducers';
 import * as fromRoot from '@app/reducers';
 
 export interface TracksState {

@@ -1,7 +1,6 @@
 <div class="wrapper">
 
-  <app-chips #chips
-             [hidden]="!showChipList"
+  <app-chips [hidden]="!showChipList"
              [list]="selectedArtists"
              [displayProperty]="'name'"
              (clickedElement)="scrollTo($event.name)"

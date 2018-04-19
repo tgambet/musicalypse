@@ -40,6 +40,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       display: flex;
       flex-direction: row;
       align-items: center;
+      box-sizing: border-box;
     }
     .controls-meta {
       overflow: hidden;

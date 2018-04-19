@@ -1,17 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  Renderer2,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Renderer2} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
-
-import {AudioComponent} from '../components/audio/audio.component';
 
 import {LoaderService} from '../services/loader.service';
 import {PersistenceService} from '../services/persistence.service';
@@ -71,15 +60,12 @@ import {AudioService} from '@app/core/services/audio.service';
 
     </div>
 
-    <app-audio #audio></app-audio>
+    <!--<app-audio #audio></app-audio>-->
   `,
   styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent implements OnInit {
-
-  @ViewChild('audio')
-  audio: AudioComponent;
+export class AppComponent {
 
   showSidenav$: Observable<boolean>;
   currentTheme$: Observable<Theme>;
@@ -141,10 +127,6 @@ export class AppComponent implements OnInit {
     if (event.key === 'theme') {
       this.changeTheme(JSON.parse(event.newValue));
     }
-  }
-
-  ngOnInit() {
-    this.library.setAudioComponent(this.audio);
   }
 
   isLoading() {

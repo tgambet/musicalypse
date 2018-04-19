@@ -7,6 +7,7 @@ import {Album, Artist} from '@app/model';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/skip';
 import * as _ from 'lodash';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Component({
   selector: 'app-library',
@@ -33,6 +34,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public library: LibraryService,
     private router: Router,
+    public audioService: AudioService
   ) {
 
   }

@@ -36,15 +36,15 @@ export class AudioService {
 
   private audioElement: HTMLMediaElement;
 
-  private listeners: (() => void)[];
+  private listeners: (() => void)[] = [];
 
   constructor () {
     this.volume$ = this._volume.asObservable();
     this.muted$ = this._muted.asObservable();
     this.currentTime$ = this._currentTime.asObservable();
     this.duration$ = this._duration.asObservable();
-    this.loading$ = this._loading.asObservable().publishLast().refCount();
-    this.playing$ = this._playing.asObservable().publishLast().refCount();
+    this.loading$ = this._loading.asObservable();
+    this.playing$ = this._playing.asObservable();
     this._volume.next(this.volume);
     this._muted.next(this.muted);
     this._loading.next(false);
@@ -52,12 +52,15 @@ export class AudioService {
   }
 
   play(src: string): Promise<void> {
+    this._volume.next(this.volume);
+    this._muted.next(this.muted);
     if (this.audioElement) {
       this._renderer.removeChild(this._appRoot, this.audioElement);
       this.listeners.forEach(listener => listener());
     }
     this._playing.next(false);
     this._loading.next(true);
+    this._currentTime.next(0);
     this.audioElement = this.createAudioElement(src);
     return this.audioElement.play();
   }
@@ -76,20 +79,26 @@ export class AudioService {
 
   setVolume(volume: number) {
     if (this.audioElement) {
-      this._renderer.setAttribute(this.audioElement, 'volume', volume.toString());
+      this.audioElement.volume = volume;
     }
+    this.volume = volume;
+    this._volume.next(this.volume);
   }
 
   mute() {
     if (this.audioElement) {
-      this._renderer.setAttribute(this.audioElement, 'muted', 'true');
+      this.audioElement.muted = true;
     }
+    this.muted = true;
+    this._muted.next(this.muted);
   }
 
   unmute() {
     if (this.audioElement) {
-      this._renderer.setAttribute(this.audioElement, 'muted', 'false');
+      this.audioElement.muted = false;
     }
+    this.muted = false;
+    this._muted.next(this.muted);
   }
 
   seekTo(time: number) {
@@ -112,10 +121,20 @@ export class AudioService {
   private createAudioElement(src: string): HTMLMediaElement {
     const audio: HTMLMediaElement = this._renderer.createElement('audio');
     this._renderer.appendChild(this._appRoot.nativeElement, audio);
-    this._renderer.setAttribute(audio, 'src', src);
-    this._renderer.setAttribute(audio, 'volume', this.volume.toString());
-    this._renderer.setAttribute(audio, 'muted', this.muted.toString());
-    // this._renderer.listen(audio, '', (event) => {})
+    // this._renderer.setAttribute(audio, 'src', src);
+    audio.src = src;
+    audio.volume = this.volume;
+    audio.muted = this.muted;
+    this.listeners.push(
+      this._renderer.listen(audio, 'loadedmetadata', (event) => this._duration.next(event.target.duration)),
+      this._renderer.listen(audio, 'timeupdate', (event) => this._currentTime.next(event.target.currentTime)),
+      this._renderer.listen(audio, 'playing', () => this._playing.next(true)),
+      this._renderer.listen(audio, 'pause', () => this._playing.next(false)),
+      this._renderer.listen(audio, 'abort', () => this._playing.next(false)),
+      this._renderer.listen(audio, 'ended', () => this._playing.next(false)),
+      this._renderer.listen(audio, 'canplay', () => this._loading.next(false))
+      // this._renderer.listen(audio, 'error', () => this._loading.next(false))
+    );
     return audio;
   }
 

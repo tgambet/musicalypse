@@ -1,13 +1,13 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {Track} from '@app/model';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Component({
   selector: 'app-player',
@@ -16,6 +16,14 @@ import * as _ from 'lodash';
 })
 export class PlayerComponent implements OnInit, OnDestroy {
 
+  @Input() currentTrack: Track;
+  @Input() playing: boolean;
+  @Input() loading: boolean;
+  @Input() volume: number;
+  @Input() muted: boolean;
+  @Input() duration: number;
+  @Input() currentTime: number;
+
   @Output()
   previous: EventEmitter<void> = new EventEmitter();
 
@@ -23,8 +31,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   carousel: MatTabGroup;
 
   selectedCarouselIndex = 0;
-
-  audio: AudioComponent;
 
   smallScreen: boolean;
 
@@ -35,12 +41,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
     public library: LibraryService,
     public favorites: FavoritesService,
     public snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private audioService: AudioService
   ) {}
 
   ngOnInit() {
-    this.audio = this.library.audio;
-
     this.subscriptions.push(
       this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
         this.smallScreen = result.matches;
@@ -86,6 +91,30 @@ export class PlayerComponent implements OnInit, OnDestroy {
       console.log(result);
       // this.animal = result;
     });
+  }
+
+  play() {
+    this.audioService.resume();
+  }
+
+  pause() {
+    this.audioService.pause();
+  }
+
+  seekTo(time: number) {
+    this.audioService.seekTo(time);
+  }
+
+  setVolume(value: number) {
+    this.audioService.setVolume(value);
+  }
+
+  mute() {
+    this.audioService.mute();
+  }
+
+  unmute() {
+    this.audioService.unmute();
   }
 
 }

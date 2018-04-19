@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Album, Artist, Track} from '@app/model';
 import {environment} from '@env/environment';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {LoaderService} from '@app/core/services/loader.service';
 import {Observable} from 'rxjs';
@@ -13,11 +12,10 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/observable/from';
 import 'rxjs/observable/empty';
 import * as _ from 'lodash';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Injectable()
 export class LibraryService {
-
-  audio: AudioComponent;
 
   currentTrack: Track;
 
@@ -43,7 +41,8 @@ export class LibraryService {
   constructor(
     private httpSocketClient: HttpSocketClientService,
     private titleService: Title,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private audioService: AudioService
   ) {
     this.update();
   }
@@ -199,22 +198,22 @@ export class LibraryService {
     this.albums = this.processAlbumsObs();
   }
 
-  setAudioComponent(audioComponent: AudioComponent) {
-    if (this.audio) {
-      throw Error('AudioComponent already set!');
-    }
-    this.audio = audioComponent;
-    this.audio.playEnd.asObservable().subscribe(
-      () => {
-        if (this.playlist.length > 0 && (this.repeat || !this.isCurrentTrackLastInPlaylist())) {
-          this.playNextTrackInPlaylist();
-        } else {
-          this.currentTrack = null;
-          this.audio.setSource('');
-        }
-      }
-    );
-  }
+  // setAudioComponent(audioComponent: AudioComponent) {
+  //   if (this.audio) {
+  //     throw Error('AudioComponent already set!');
+  //   }
+  //   this.audio = audioComponent;
+  //   this.audio.playEnd.asObservable().subscribe(
+  //     () => {
+  //       if (this.playlist.length > 0 && (this.repeat || !this.isCurrentTrackLastInPlaylist())) {
+  //         this.playNextTrackInPlaylist();
+  //       } else {
+  //         this.currentTrack = null;
+  //         this.audio.setSource('');
+  //       }
+  //     }
+  //   );
+  // }
 
   // addTrack(track: Track): void {
   //   if (track.metadata.title === undefined || track.metadata.title === '') {
@@ -418,7 +417,7 @@ export class LibraryService {
 
   addArtist(artist: Artist) {
     if (!_.includes(_.map(this.selectedArtists, 'name'), artist.name)) {
-      this.selectedArtists.push(artist);
+      this.selectedArtists = [...this.selectedArtists, artist];
     }
     this.albums = this.processAlbumsObs(this.isScanning);
     this.tracks = this.processTracksObs(this.isScanning);
@@ -470,7 +469,7 @@ export class LibraryService {
   addAlbum(album: Album) {
     const selectedAlbumsIds = _.map(this.selectedAlbums, a => a.title + a.artist);
     if (!_.includes(selectedAlbumsIds, album.title + album.artist)) {
-      this.selectedAlbums.push(album);
+      this.selectedAlbums = [...this.selectedAlbums, album];
     }
     this.tracks = this.processTracksObs(this.isScanning);
   }
@@ -577,8 +576,9 @@ export class LibraryService {
 
   private _playTrack(track: Track) {
     this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`);
-    this.audio.setSource(LibraryService.resolveUrl(track.url));
-    window.setTimeout(() => this.audio.play());
+    // this.audio.setSource(LibraryService.resolveUrl(track.url));
+    this.audioService.play(LibraryService.resolveUrl(track.url));
+    // window.setTimeout(() => this.audio.play());
   }
 
 }

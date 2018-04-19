@@ -1,7 +1,7 @@
+import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
 import * as fromLibraryFolders from './reducers/libray-folders.reducers';
 import * as fromRoot from '@app/reducers';
-import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
 export interface SettingsState {
   libraryFolders: fromLibraryFolders.State;

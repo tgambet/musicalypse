@@ -1,24 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {Album, Track} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Component({
   selector: 'app-tracks',
@@ -28,29 +18,11 @@ import * as _ from 'lodash';
 })
 export class TracksComponent implements OnInit, OnDestroy {
 
-  @Output()
-  next: EventEmitter<void> = new EventEmitter();
-  @Output()
-  previous: EventEmitter<void> = new EventEmitter();
+  @Output() next: EventEmitter<void> = new EventEmitter();
+  @Output() previous: EventEmitter<void> = new EventEmitter();
 
-  @Input('selectedAlbums')
-  selectedAlbums: Album[];
-  @Input('tracks')
-  tracks: Observable<Track[]>;
-  @Input('currentTrack')
-  currentTrack: Track;
-
-  @Input('audio')
-  audio: AudioComponent;
-
-  @Input('playing')
-  playing: boolean;
-  @Input('loading')
-  loading: boolean;
-  @Input('currentTime')
-  currentTime: number;
-  @Input('duration')
-  duration: number;
+  @Input() selectedAlbums: Album[];
+  @Input() tracks: Observable<Track[]>;
 
   @ViewChild('list')
   list: ElementRef;
@@ -71,7 +43,8 @@ export class TracksComponent implements OnInit, OnDestroy {
     public library: LibraryService,
     public favorites: FavoritesService,
     public dialog: MatDialog,
-    public settings: SettingsService
+    public settings: SettingsService,
+    private audioService: AudioService
   ) { }
 
   ngOnInit() {}
@@ -124,6 +97,14 @@ export class TracksComponent implements OnInit, OnDestroy {
     if (elem) {
       elem.scrollIntoView(scrollOptions);
     }
+  }
+
+  play() {
+    this.audioService.resume();
+  }
+
+  pause() {
+    this.audioService.pause();
   }
 
 }

@@ -1,4 +1,6 @@
 import {NgModule} from '@angular/core';
+import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
 
 import {SharedModule} from '@app/shared/shared.module';
 import {FavoritesService} from './services/favorites.service';
@@ -14,6 +16,9 @@ import {ControlsComponent} from '@app/library/components/shared/controls.compone
 import {ChipsComponent} from '@app/library/components/shared/chips.component';
 import {ListItemComponent} from '@app/library/components/shared/list-item.component';
 import {TrackComponent} from '@app/library/components/tracks/track.component';
+
+import {LibraryEffects} from '@app/library/library.effects';
+import {reducers} from './library.reducers';
 
 export const COMPONENTS = [
   AlbumsComponent,
@@ -31,7 +36,9 @@ export const COMPONENTS = [
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    StoreModule.forFeature('library', reducers),
+    EffectsModule.forFeature([LibraryEffects]),
   ],
   declarations: COMPONENTS,
   exports: COMPONENTS,

@@ -1,12 +1,11 @@
 import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {Album, Track} from '@app/model';
+import {Track} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 
@@ -21,8 +20,8 @@ export class TracksComponent implements OnInit, OnDestroy {
   @Output() next: EventEmitter<void> = new EventEmitter();
   @Output() previous: EventEmitter<void> = new EventEmitter();
 
-  @Input() selectedAlbums: Album[];
-  @Input() tracks: Observable<Track[]>;
+  // @Input() selectedAlbums: Album[];
+  @Input() tracks: Track[];
 
   @ViewChild('list')
   list: ElementRef;
@@ -30,12 +29,20 @@ export class TracksComponent implements OnInit, OnDestroy {
   showSearch = false;
   search = '';
 
-  filter: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
+  // filter: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
+  //   if (this.search !== '') {
+  //     return _.filter(tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
+  //   }
+  //   return tracks.slice(0, 300); // TODO add a warning if there are more tracks, perf review
+  // });
+
+  filter: (track: Track) => boolean = ((track: Track) => {
     if (this.search !== '') {
-      return _.filter(tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
+      return track.metadata.title.toLowerCase().includes(this.search.toLowerCase());
     }
-    return tracks.slice(0, 300); // TODO add a warning if there are more tracks, perf review
+    return true;
   });
+
 
   private subscriptions: Subscription[] = [];
 
@@ -57,9 +64,9 @@ export class TracksComponent implements OnInit, OnDestroy {
     return track.url;
   }
 
-  isMultipleAlbumsSelected(): boolean {
-    return this.selectedAlbums.length > 1;
-  }
+  // isMultipleAlbumsSelected(): boolean {
+  //   return this.selectedAlbums.length > 1;
+  // }
 
   // addAllToPlaylist() {
   //   this.library.addTracksToPlaylist(this.filteredTracks);

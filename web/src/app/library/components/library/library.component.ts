@@ -1,13 +1,18 @@
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {LibraryService} from '../../services/library.service';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
-import {ArtistsComponent} from '../artists/artists.component';
-import {AlbumsComponent} from '../albums/albums.component';
-import {Album, Artist} from '@app/model';
-import {Subscription} from 'rxjs/Subscription';
-import 'rxjs/add/operator/skip';
-import * as _ from 'lodash';
+
 import {AudioService} from '@app/core/services/audio.service';
+import {Track} from '@app/model';
+
+import {LibraryService} from '../../services/library.service';
+import * as fromLibrary from '../../library.reducers';
+
+import {Subscription} from 'rxjs/Subscription';
+import * as _ from 'lodash';
+import {Observable} from 'rxjs';
+import {LoadTracks} from '@app/library/actions/tracks.actions';
+
 
 @Component({
   selector: 'app-library',
@@ -16,27 +21,26 @@ import {AudioService} from '@app/core/services/audio.service';
 })
 export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('artistsComponent')
-  artistsComponent: ArtistsComponent;
-
-  @ViewChild('albumsComponent')
-  albumsComponent: AlbumsComponent;
+  tracks$: Observable<Track[]>;
 
   subscriptions: Subscription[] = [];
 
-  urlData: Object = {};
+  // urlData: Object = {};
 
   contentTranslation = 0;
 
-  noAnimation = false;
-  animationTimeout;
+  private noAnimation = false;
+  private animationTimeout;
 
   constructor(
     public library: LibraryService,
     private router: Router,
-    public audioService: AudioService
+    public audioService: AudioService,
+    private store: Store<fromLibrary.State>,
   ) {
-
+    store.dispatch(new LoadTracks());
+    this.tracks$ = store.select(fromLibrary.getAllTracks);
+    this.tracks$.subscribe(t => console.log(t.length));
   }
 
   @HostListener('window:resize') onResize() {
@@ -45,23 +49,23 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.animationTimeout = setTimeout(() => this.noAnimation = false, 200);
   }
 
-  updateUrlDataFromArtists(artists: Artist[]) {
-    if (artists.length === 0) {
-      delete this.urlData['artists'];
-    } else {
-      const artistsData = _.map(artists, artist => artist.name.replace(',', '%c%').replace('&', '%a%'));
-      this.urlData['artists'] = _.sortBy(artistsData);
-    }
-  }
-
-  updateUrlDataFromAlbums(albums: Album[]) {
-    if (albums.length === 0) {
-      delete this.urlData['albums'];
-    } else {
-      const albumData = _.map(albums, album => album.title.replace(',', '%c%').replace('&', '%a%'));
-      this.urlData['albums'] = _.sortBy(albumData);
-    }
-  }
+  // updateUrlDataFromArtists(artists: Artist[]) {
+  //   if (artists.length === 0) {
+  //     delete this.urlData['artists'];
+  //   } else {
+  //     const artistsData = _.map(artists, artist => artist.name.replace(',', '%c%').replace('&', '%a%'));
+  //     this.urlData['artists'] = _.sortBy(artistsData);
+  //   }
+  // }
+  //
+  // updateUrlDataFromAlbums(albums: Album[]) {
+  //   if (albums.length === 0) {
+  //     delete this.urlData['albums'];
+  //   } else {
+  //     const albumData = _.map(albums, album => album.title.replace(',', '%c%').replace('&', '%a%'));
+  //     this.urlData['albums'] = _.sortBy(albumData);
+  //   }
+  // }
 
   // updateState(routeParam: ParamMap) {
   //   if (routeParam.has('t')) {
@@ -92,11 +96,11 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
 
     // Update the url based on the library state
-    if (this.library.selectedArtists.length > 0) {
-      this.updateUrlDataFromArtists(this.library.selectedArtists);
-      this.updateUrlDataFromAlbums(this.library.selectedAlbums);
-      this.updateUrl();
-    }
+    // if (this.library.selectedArtists.length > 0) {
+    //   this.updateUrlDataFromArtists(this.library.selectedArtists);
+    //   this.updateUrlDataFromAlbums(this.library.selectedAlbums);
+    //   this.updateUrl();
+    // }
 
     // When tracks are updated (e.g. on first visit) update the state based on the url
     // this.subscriptions.push(
@@ -135,14 +139,14 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
-  updateUrl() {
-    const finalData = this.contentTranslation > 0 ? _.merge({t: this.contentTranslation}, this.urlData) : this.urlData;
-    this.router.navigate(['/library', finalData]);
-  }
+  // updateUrl() {
+  //   const finalData = this.contentTranslation > 0 ? _.merge({t: this.contentTranslation}, this.urlData) : this.urlData;
+  //   this.router.navigate(['/library', finalData]);
+  // }
 
   translateContent(n: number) {
     this.contentTranslation = n;
-    this.updateUrl();
+    // this.updateUrl();
   }
 
 }

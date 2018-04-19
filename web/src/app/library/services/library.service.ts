@@ -57,7 +57,7 @@ export class LibraryService {
     }
   }
 
-  private static fixTags(track: Track): Track {
+  public static fixTags(track: Track): Track {
     if (track.metadata.title === undefined || track.metadata.title === '') {
       const components = track.url.split('/');
       track.metadata.title = components[components.length - 1];
@@ -290,10 +290,14 @@ export class LibraryService {
     }
   }
 
-  addTracksToPlaylist(obs: Observable<Track[]>) {
-    obs.take(1).subscribe(tracks => {
-      _.forEach(tracks, track => this.addTrackToPlaylist(track));
-    });
+  // addTracksToPlaylist(obs: Observable<Track[]>) {
+  //   obs.take(1).subscribe(tracks => {
+  //     _.forEach(tracks, track => this.addTrackToPlaylist(track));
+  //   });
+  // }
+
+  addTracksToPlaylist(tracks: Track[]) {
+    _.forEach(tracks, track => this.addTrackToPlaylist(track));
   }
 
   resetPlaylist() {
@@ -326,15 +330,24 @@ export class LibraryService {
     }
   }
 
-  playTracks(obs: Observable<Track[]>, next?: Track) {
-    obs.take(1).subscribe(tracks => {
-      this.playlist = tracks;
-      this.currentTrack = next ? next : this.playlist[0];
-      if (this.shuffle) {
-        this.shufflePlaylist();
-      }
-      this._playTrack(this.currentTrack);
-    });
+  // playTracks(obs: Observable<Track[]>, next?: Track) {
+  //   obs.take(1).subscribe(tracks => {
+  //     this.playlist = tracks;
+  //     this.currentTrack = next ? next : this.playlist[0];
+  //     if (this.shuffle) {
+  //       this.shufflePlaylist();
+  //     }
+  //     this._playTrack(this.currentTrack);
+  //   });
+  // }
+
+  playTracks(tracks: Track[], next?: Track) {
+    this.playlist = tracks;
+    this.currentTrack = next ? next : this.playlist[0];
+    if (this.shuffle) {
+      this.shufflePlaylist();
+    }
+    this._playTrack(this.currentTrack);
   }
 
   playNextTrackInPlaylist() {

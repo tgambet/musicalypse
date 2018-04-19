@@ -15,7 +15,7 @@
     </mat-form-field>
     <div class="controls-meta" [class.show]="!showSearch">
       <span class="select-text">
-        Total tracks: {{ (tracks.map(filter) | async)?.length }}
+        Total tracks: {{ tracks.filter(filter).length }}
         </span>
     </div>
     <button mat-button mat-icon-button
@@ -29,7 +29,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #Track>
-      <button mat-menu-item (click)="library.addTracksToPlaylist(tracks.map(filter))" [disabled]="(tracks.map(filter) | async)?.length == 0">
+      <button mat-menu-item (click)="library.addTracksToPlaylist(tracks.filter(filter))" [disabled]="tracks.filter(filter).length == 0">
         <mat-icon>playlist_add</mat-icon>
         <span>Add all to current playlist</span>
       </button>
@@ -45,7 +45,7 @@
   </div>
   <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
     <mat-list class="tracks" [class.sorted-alpha]="library.sortTracksAlphabetically" dense>
-      <ng-container *ngFor="let track of tracks.map(filter) | async; trackBy: trackByURL">
+      <ng-container *ngFor="let track of tracks.filter(filter).slice(0,300); trackBy: trackByURL">
         <app-track [track]="track"
                    [warn]="track.warn && settings.warnOnMissingTags"
                    [currentTrack]="track == library.currentTrack"
@@ -55,7 +55,7 @@
                    [favorite]="favorites.isFavorite(track)"
                    [currentTime]="audioService.currentTime$ | async"
                    [duration]="audioService.duration$ | async"
-                   (click)="library.playTracks(tracks.map(filter), track); next.emit()"
+                   (click)="library.playTracks(tracks.filter(filter), track); next.emit()"
                    (addToFavorites)="favorites.addToFavorites(track)"
                    (addTrackToPlaylist)="library.addTrackToPlaylist(track)"
                    (audioPause)="pause()"

@@ -18,14 +18,10 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   @Output()
   next: EventEmitter<void> = new EventEmitter();
 
-  @ViewChild('list')
-  list: ElementRef;
+  @ViewChild('list') list: ElementRef;
 
-  @Input('artists')
-  artists: Observable<Artist[]>;
-
-  @Input('selectedArtists')
-  selectedArtists: Artist[];
+  @Input() artists: Observable<Artist[]>;
+  @Input() selectedArtists: Artist[];
 
   showChipList = false;
   search = '';

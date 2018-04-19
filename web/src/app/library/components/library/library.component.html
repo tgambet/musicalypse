@@ -19,8 +19,7 @@
       <app-tracks #tracksComponent
                   (next)="translateContent(3)"
                   (previous)="translateContent(1)"
-                  [tracks]="library.tracks"
-                  [selectedAlbums]="library.selectedAlbums">
+                  [tracks]="tracks$ | async">
       </app-tracks>
     </div>
     <div class="column a4">

@@ -34,6 +34,14 @@
                   (previous)="translateContent(2)">
       </app-player>
     </div>
-    <!--<app-mini-player (next)="translateContent(3)"></app-mini-player>-->
+    <app-mini-player [currentTrack]="library.currentTrack"
+                     [muted]="audioService.muted$ | async"
+                     [volume]="audioService.volume$ | async"
+                     [duration]="audioService.duration$ | async"
+                     [currentTime]="audioService.currentTime$ | async"
+                     [playing]="audioService.playing$ | async"
+                     [loading]="audioService.loading$ | async"
+                     (next)="translateContent(3)">
+    </app-mini-player>
   </div>
 </div>

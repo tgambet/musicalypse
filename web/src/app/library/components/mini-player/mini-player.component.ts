@@ -1,8 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {LibraryService} from '../../services/library.service';
-import {AudioComponent} from '@app/core/components/audio/audio.component';
 import {Track} from '@app/model';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Component({
   selector: 'app-mini-player',
@@ -11,22 +11,36 @@ import {Track} from '@app/model';
 })
 export class MiniPlayerComponent implements OnInit {
 
-  @Output()
-  next: EventEmitter<void> = new EventEmitter();
+  @Input() currentTrack: Track;
+  @Input() playing: boolean;
+  @Input() loading: boolean;
+  @Input() volume: number;
+  @Input() muted: boolean;
+  @Input() duration: number;
+  @Input() currentTime: number;
 
-  audio: AudioComponent;
+  @Output() next: EventEmitter<void> = new EventEmitter();
 
   constructor(
     public library: LibraryService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private audioService: AudioService
   ) { }
 
   ngOnInit() {
-    this.audio = this.library.audio;
+
   }
 
   getAvatarStyle(track: Track) {
     return track && track.coverUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${track.coverUrl}")`) : '';
+  }
+
+  play() {
+    this.audioService.resume();
+  }
+
+  pause() {
+    this.audioService.pause();
   }
 
 }

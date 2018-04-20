@@ -6,7 +6,7 @@ import {ArtistsActionsUnion, ArtistsActionTypes} from '@app/library/actions/arti
  * State
  */
 export interface State extends EntityState<Artist> {
-  selectedArtistsIds: string[];
+  selectedIds: (string | number)[];
 }
 
 export const adapter: EntityAdapter<Artist> = createEntityAdapter<Artist>({
@@ -15,7 +15,7 @@ export const adapter: EntityAdapter<Artist> = createEntityAdapter<Artist>({
 });
 
 export const initialState: State = adapter.getInitialState({
-  selectedArtistsIds: []
+  selectedIds: []
 });
 
 /**
@@ -30,20 +30,52 @@ export function reducer(
     case ArtistsActionTypes.LoadArtists:
       return adapter.addMany(action.payload, state);
 
-    case ArtistsActionTypes.AddArtist:
-      return adapter.addOne(action.payload, state);
+    // case ArtistsActionTypes.AddArtist:
+    //   return adapter.addOne(action.payload, state);
+    //
+    // case ArtistsActionTypes.UpdateArtist: {
+    //   return adapter.updateOne({
+    //     id: action.payload.name,
+    //     changes: action.payload
+    //   }, state);
+    // }
 
-    case ArtistsActionTypes.UpdateArtist: {
-      return adapter.updateOne({
-        id: action.payload.name,
-        changes: action.payload
-      }, state);
+    case ArtistsActionTypes.SelectAllArtists: {
+      return {
+        ...state,
+        selectedIds: state.ids
+      };
+    }
+
+    case ArtistsActionTypes.DeselectAllArtists: {
+      return {
+        ...state,
+        selectedIds: []
+      };
     }
 
     case ArtistsActionTypes.SelectArtist: {
+      if (state.selectedIds.indexOf(action.payload.name) === -1) {
+        return {
+          ...state,
+          selectedIds: [...state.selectedIds, action.payload.name]
+        };
+      } else {
+        return state;
+      }
+    }
+
+    case ArtistsActionTypes.DeselectArtist: {
       return {
         ...state,
-        selectedArtistsIds: [...state.selectedArtistsIds, action.payload.name]
+        selectedIds: state.selectedIds.filter(id => id !== action.payload.name)
+      };
+    }
+
+    case ArtistsActionTypes.SelectArtists: {
+      return {
+        ...state,
+        selectedIds: [...action.payload.map(a => a.name)]
       };
     }
 
@@ -56,4 +88,4 @@ export function reducer(
 /**
  * Selectors
  */
-export const getSelectedArtistsIds = (state: State) => state.selectedArtistsIds;
+export const getSelectedIds = (state: State) => state.selectedIds;

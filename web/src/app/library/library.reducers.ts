@@ -4,6 +4,7 @@ import * as fromRoot from '@app/reducers';
 import * as fromTracks from './reducers/tracks.reducers';
 import * as fromArtists from './reducers/artists.reducers';
 import * as fromAlbums from './reducers/albums.reducers';
+import {Artist} from '@app/model';
 
 export interface LibraryState {
   tracks: fromTracks.State;
@@ -51,6 +52,16 @@ export const {
   selectAll: getAllArtists,
   selectTotal: getTotalArtists,
 } = fromArtists.adapter.getSelectors(getArtistsState);
+
+export const getSelectedArtistsIds = createSelector(
+  getArtistsState,
+  fromArtists.getSelectedIds
+);
+
+export const isSelectedArtist = (artist: Artist) => createSelector(
+  getSelectedArtistsIds,
+  ids => ids.indexOf(artist.name) > -1
+);
 
 export const getAlbumsState = createSelector(
   getLibraryState,

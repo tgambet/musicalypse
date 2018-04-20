@@ -6,7 +6,7 @@ import {AlbumsActionsUnion, AlbumsActionTypes} from '@app/library/actions/albums
  * State
  */
 export interface State extends EntityState<Album> {
-  selectedAlbumsIds: string[];
+  selectedAlbumsIds: (string | number)[];
 }
 
 export const adapter: EntityAdapter<Album> = createEntityAdapter<Album>({
@@ -30,10 +30,17 @@ export function reducer(
     case AlbumsActionTypes.LoadAlbums:
       return adapter.addMany(action.payload, state);
 
-    case AlbumsActionTypes.SelectAlbum: {
+    case AlbumsActionTypes.SelectAllAlbums: {
       return {
         ...state,
-        selectedAlbumsIds: [...state.selectedAlbumsIds, action.payload.artist + '-' + action.payload.title]
+        selectedAlbumsIds: state.ids
+      };
+    }
+
+    case AlbumsActionTypes.SelectAlbums: {
+      return {
+        ...state,
+        selectedAlbumsIds: [...state.selectedAlbumsIds, ...action.payload.map(a => a.artist + '-' + a.title)]
       };
     }
 

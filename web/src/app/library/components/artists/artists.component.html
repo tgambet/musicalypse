@@ -13,13 +13,13 @@
                 [backButton]="false">
     <span class="select-text" *ngIf="selectedArtists.length == 0">
       Select an artist or
-      <mat-chip (click)="library.selectAllArtists(library.artistSource)">Select All</mat-chip>
+      <mat-chip (click)="selectAllArtists()">Select All</mat-chip>
     </span>
     <mat-chip-list>
       <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                 (click)="scrollTo(artist.name)">
         <span class="chip-text">{{ artist.name }}</span>
-        <mat-icon matChipRemove (click)="library.deselectArtist(artist)">cancel</mat-icon>
+        <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
       </mat-chip>
       <mat-chip *ngIf="selectedArtists.length > 2"
                 (click)="showChipList = !showChipList"
@@ -32,14 +32,14 @@
   <div #list class="list-wrapper" (swipeleft)="next.emit()">
     <mat-list class="artists" dense>
       <ng-container *ngFor="let artist of artists.filter(filter); trackBy: trackByName">
-        <app-list-item [selected]="library.isSelectedArtist(artist)"
+        <app-list-item [selected]="isSelectedArtist(artist) | async"
                        [avatarStyle]="getAvatarStyle(artist)"
                        [warn]="artist.warn && settings.warnOnMissingTags"
                        [primaryHTML]="artist.name | sgSearch:search"
                        [secondaryHTML]="artist.songs + ' songs'"
-                       (click)="library.selectArtist(artist); next.emit()"
-                       (arrowClicked)="library.addArtist(artist); next.emit()"
-                       (checked)="$event ? library.addArtist(artist) : library.deselectArtist(artist)">
+                       (click)="selectArtist(artist); next.emit()"
+                       (arrowClicked)="addArtist(artist); next.emit()"
+                       (checked)="$event ? addArtist(artist) : deselectArtist(artist)">
         </app-list-item>
       </ng-container>
     </mat-list>

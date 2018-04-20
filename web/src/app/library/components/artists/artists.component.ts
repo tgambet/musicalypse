@@ -1,10 +1,13 @@
 import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '@app/model';
-import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
+import * as fromLibrary from '@app/library/library.reducers';
+import {Store} from '@ngrx/store';
+import {DeselectAllArtists, DeselectArtist, SelectAllArtists, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-artists',
@@ -24,13 +27,6 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   showChipList = false;
   search = '';
 
-  // filter: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
-  //   if (this.search !== '') {
-  //     return _.filter(artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
-  //   }
-  //   return artists;
-  // });
-
   filter = ((artist: Artist) => {
     if (this.search !== '') {
       return artist.name.toLowerCase().includes(this.search.toLowerCase());
@@ -41,9 +37,9 @@ export class ArtistsComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    public library: LibraryService,
     public settings: SettingsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private store: Store<fromLibrary.State>
   ) {}
 
   ngOnInit() {}
@@ -74,16 +70,28 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectAllArtists() {
+    this.store.dispatch(new SelectAllArtists());
+  }
+
+  selectArtist(artist: Artist) {
+    this.store.dispatch(new SelectArtists([artist]));
+  }
+
+  addArtist(artist: Artist) {
+    this.store.dispatch(new SelectArtist(artist));
+  }
+
+  isSelectedArtist(artist: Artist): Observable<boolean> {
+    return this.store.select(fromLibrary.isSelectedArtist(artist));
+  }
+
   deselect(artist: Artist) {
-    this.library.deselectArtist(artist);
-    if (this.library.selectedArtists.length < 3) {
-      this.showChipList = false;
-    }
+    this.store.dispatch(new DeselectArtist(artist));
   }
 
   deselectAll() {
-    this.library.deselectAllArtists();
-    this.showChipList = false;
+    this.store.dispatch(new DeselectAllArtists());
   }
 
 }

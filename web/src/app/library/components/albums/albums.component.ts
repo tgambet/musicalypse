@@ -4,7 +4,6 @@ import {Album} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 @Component({
@@ -15,15 +14,11 @@ import * as _ from 'lodash';
 })
 export class AlbumsComponent implements OnInit, OnDestroy {
 
-  @Output()
-  next: EventEmitter<void> = new EventEmitter();
-  @Output()
-  previous: EventEmitter<void> = new EventEmitter();
+  @Output() next: EventEmitter<void> = new EventEmitter();
+  @Output() previous: EventEmitter<void> = new EventEmitter();
 
-  @Input('albums')
-  albums: Observable<Album[]>;
-  @Input('selectedAlbums')
-  selectedAlbums: Album[];
+  @Input() albums: Album[];
+  @Input() selectedAlbums: Album[];
 
   @ViewChild('list')
   list: ElementRef;
@@ -31,11 +26,18 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   showChipList = false;
   search = '';
 
-  filter: (albums: Album[]) => Album[] = ((albums: Album[]) => {
+  // filter: (albums: Album[]) => Album[] = ((albums: Album[]) => {
+  //   if (this.search !== '') {
+  //     return _.filter(albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
+  //   }
+  //   return albums;
+  // });
+
+  filter = ((album: Album) => {
     if (this.search !== '') {
-      return _.filter(albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
+      return album.title.toLowerCase().includes(this.search.toLowerCase());
     }
-    return albums;
+    return true;
   });
 
   private subscriptions: Subscription[] = [];

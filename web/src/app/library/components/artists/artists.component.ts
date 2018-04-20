@@ -4,7 +4,6 @@ import {Artist} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 @Component({
@@ -15,22 +14,28 @@ import * as _ from 'lodash';
 })
 export class ArtistsComponent implements OnInit, OnDestroy {
 
-  @Output()
-  next: EventEmitter<void> = new EventEmitter();
+  @Output() next: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('list') list: ElementRef;
 
-  @Input() artists: Observable<Artist[]>;
+  @Input() artists: Artist[];
   @Input() selectedArtists: Artist[];
 
   showChipList = false;
   search = '';
 
-  filter: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
+  // filter: (artists: Artist[]) => Artist[] = ((artists: Artist[]) => {
+  //   if (this.search !== '') {
+  //     return _.filter(artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
+  //   }
+  //   return artists;
+  // });
+
+  filter = ((artist: Artist) => {
     if (this.search !== '') {
-      return _.filter(artists, artist => artist.name.toLowerCase().includes(this.search.toLowerCase()));
+      return artist.name.toLowerCase().includes(this.search.toLowerCase());
     }
-    return artists;
+    return true;
   });
 
   private subscriptions: Subscription[] = [];

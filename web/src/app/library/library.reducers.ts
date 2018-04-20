@@ -1,21 +1,27 @@
 import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
-import * as fromTracks from './reducers/tracks.reducers';
 import * as fromRoot from '@app/reducers';
+import * as fromTracks from './reducers/tracks.reducers';
+import * as fromArtists from './reducers/artists.reducers';
+import * as fromAlbums from './reducers/albums.reducers';
 
-export interface TracksState {
+export interface LibraryState {
   tracks: fromTracks.State;
+  artists: fromArtists.State;
+  albums: fromAlbums.State;
 }
 
 export interface State extends fromRoot.State {
-  library: TracksState;
+  library: LibraryState;
 }
 
-export const reducers: ActionReducerMap<TracksState> = {
-  tracks: fromTracks.reducer
+export const reducers: ActionReducerMap<LibraryState> = {
+  tracks: fromTracks.reducer,
+  artists: fromArtists.reducer,
+  albums: fromAlbums.reducer
 };
 
-export const getLibraryState = createFeatureSelector<TracksState>('library');
+export const getLibraryState = createFeatureSelector<LibraryState>('library');
 
 export const getTracksState = createSelector(
   getLibraryState,
@@ -34,3 +40,26 @@ export const {
   selectTotal: getTotalTracks,
 } = fromTracks.adapter.getSelectors(getTracksState);
 
+export const getArtistsState = createSelector(
+  getLibraryState,
+  state => state.artists
+);
+
+export const {
+  selectIds: getArtistIds,
+  selectEntities: getArtistEntities,
+  selectAll: getAllArtists,
+  selectTotal: getTotalArtists,
+} = fromArtists.adapter.getSelectors(getArtistsState);
+
+export const getAlbumsState = createSelector(
+  getLibraryState,
+  state => state.albums
+);
+
+export const {
+  selectIds: getAlbumIds,
+  selectEntities: getAlbumEntities,
+  selectAll: getAllAlbums,
+  selectTotal: getTotalAlbums,
+} = fromAlbums.adapter.getSelectors(getAlbumsState);

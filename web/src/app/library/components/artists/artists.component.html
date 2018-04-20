@@ -31,7 +31,7 @@
 
   <div #list class="list-wrapper" (swipeleft)="next.emit()">
     <mat-list class="artists" dense>
-      <ng-container *ngFor="let artist of artists.map(filter) | async; trackBy: trackByName">
+      <ng-container *ngFor="let artist of artists.filter(filter); trackBy: trackByName">
         <app-list-item [selected]="library.isSelectedArtist(artist)"
                        [avatarStyle]="getAvatarStyle(artist)"
                        [warn]="artist.warn && settings.warnOnMissingTags"

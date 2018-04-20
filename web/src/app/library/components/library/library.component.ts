@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 
 import {AudioService} from '@app/core/services/audio.service';
-import {Track} from '@app/model';
+import {Album, Artist, Track} from '@app/model';
 
 import {LibraryService} from '../../services/library.service';
 import * as fromLibrary from '../../library.reducers';
@@ -22,6 +22,8 @@ import {LoadTracks} from '@app/library/actions/tracks.actions';
 export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   tracks$: Observable<Track[]>;
+  artists$: Observable<Artist[]>;
+  albums$: Observable<Album[]>;
 
   subscriptions: Subscription[] = [];
 
@@ -40,7 +42,8 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
     store.dispatch(new LoadTracks());
     this.tracks$ = store.select(fromLibrary.getAllTracks);
-    this.tracks$.subscribe(t => console.log(t.length));
+    this.artists$ = store.select(fromLibrary.getAllArtists);
+    this.albums$ = store.select(fromLibrary.getAllAlbums);
   }
 
   @HostListener('window:resize') onResize() {

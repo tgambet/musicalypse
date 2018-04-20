@@ -8,6 +8,8 @@ import {HttpSocketClientService} from '@app/core/services/http-socket-client.ser
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {Track} from '@app/model';
 import {LibraryService} from '@app/library/services/library.service';
+import {LoadArtists} from '@app/library/actions/artists.actions';
+import {LoadAlbums} from '@app/library/actions/albums.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -22,6 +24,26 @@ export class LibraryEffects {
           map(tracks => new LoadTrackSuccess(tracks)),
           catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error)))
         )
+      ),
+    );
+
+  @Effect()
+  loadArtists$: Observable<Action> =
+    this.actions$.pipe(
+      ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
+      map(action => action.payload),
+      map((tracks: Track[]) =>
+        new LoadArtists(LibraryService.extractArtists(tracks))
+      ),
+    );
+
+  @Effect()
+  loadAlbums$: Observable<Action> =
+    this.actions$.pipe(
+      ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
+      map(action => action.payload),
+      map((tracks: Track[]) =>
+        new LoadAlbums(LibraryService.extractAlbums(tracks))
       ),
     );
 

@@ -3,7 +3,7 @@
     <div class="column a1">
       <app-artists #artistsComponent
                    (next)="translateContent(1)"
-                   [artists]="library.artists"
+                   [artists]="artists$ | async"
                    [selectedArtists]="library.selectedArtists">
       </app-artists>
     </div>
@@ -11,7 +11,7 @@
       <app-albums #albumsComponent
                   (next)="translateContent(2)"
                   (previous)="translateContent(0)"
-                  [albums]="library.albums"
+                  [albums]="albums$ | async"
                   [selectedAlbums]="library.selectedAlbums">
       </app-albums>
     </div>

@@ -11,7 +11,7 @@ export interface State extends EntityState<Track> {
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>({
   selectId: (track: Track) => track.url,
-  sortComparer: false,
+  sortComparer: (a, b) => a.url.localeCompare(b.url),
 });
 
 export const initialState: State = adapter.getInitialState({
@@ -34,11 +34,11 @@ export function reducer(
       return adapter.removeOne(action.payload.url, state);
     }
 
-    case TracksActionTypes.LoadTrackSuccess: {
+    case TracksActionTypes.LoadTracksSuccess: {
       return adapter.addMany(action.payload, state);
     }
 
-    case TracksActionTypes.LoadTrackFailure: {
+    case TracksActionTypes.LoadTracksFailure: {
       return {
         ...state,
         error: action.payload

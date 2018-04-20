@@ -4,7 +4,7 @@ import {Album, Artist, Track} from '@app/model';
 import {environment} from '@env/environment';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {LoaderService} from '@app/core/services/loader.service';
-import {Observable} from 'rxjs';
+import {EMPTY, Observable, of} from 'rxjs';
 import {finalize, publishReplay, refCount} from 'rxjs/operators';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/finally';
@@ -34,9 +34,9 @@ export class LibraryService {
   artistSource: Observable<Artist[]>;
   albumSource:  Observable<Album[]>;
 
-  tracks: Observable<Track[]>;
-  artists: Observable<Artist[]>;
-  albums: Observable<Album[]>;
+  tracks: Observable<Track[]> = EMPTY;
+  artists: Observable<Artist[]> = of([]);
+  albums: Observable<Album[]> = EMPTY;
 
   constructor(
     private httpSocketClient: HttpSocketClientService,
@@ -44,7 +44,7 @@ export class LibraryService {
     private loader: LoaderService,
     private audioService: AudioService
   ) {
-    this.update();
+    // this.update();
   }
 
   static resolveUrl(sourceUrl: string) {
@@ -81,7 +81,7 @@ export class LibraryService {
     return track;
   }
 
-  private static extractArtists(tracks: Track[]): Artist[] {
+  public static extractArtists(tracks: Track[]): Artist[] {
     const artists: Artist[] = [];
     _.forEach(tracks, track => {
       const artist = track.metadata.albumArtist;
@@ -100,7 +100,7 @@ export class LibraryService {
     return artists;
   }
 
-  private static extractAlbums(tracks: Track[]): Album[] {
+  public static extractAlbums(tracks: Track[]): Album[] {
     const albums: Album[] = [];
     _.forEach(tracks, track => {
       const artist = track.metadata.albumArtist;
@@ -487,8 +487,8 @@ export class LibraryService {
     this.tracks = this.processTracksObs(this.isScanning);
   }
 
-  selectAllAlbums(albums: Observable<Album[]>) {
-    albums.take(1).subscribe(a => this.selectedAlbums = a);
+  selectAllAlbums(albums: Album[]) {
+    this.selectedAlbums = albums;
     this.tracks = this.processTracksObs(this.isScanning);
   }
 

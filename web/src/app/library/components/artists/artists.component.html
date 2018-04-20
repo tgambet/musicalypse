@@ -39,7 +39,7 @@
                        [secondaryHTML]="artist.songs + ' songs'"
                        (click)="select(artist); next.emit()"
                        (arrowClicked)="add(artist); next.emit()"
-                       (checked)="$event ? add(artist) : deselectArtist(artist)">
+                       (checked)="$event ? add(artist) : deselect(artist)">
         </app-list-item>
       </ng-container>
     </mat-list>

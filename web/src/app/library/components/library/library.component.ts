@@ -21,11 +21,11 @@ import {LoadTracks} from '@app/library/actions/tracks.actions';
 })
 export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  tracks$: Observable<Track[]>;
   artists$: Observable<Artist[]>;
   selectedArtists$: Observable<Artist[]>;
   albums$: Observable<Album[]>;
   selectedAlbums$: Observable<Album[]>;
+  tracks$: Observable<Track[]>;
 
   subscriptions: Subscription[] = [];
 
@@ -43,11 +43,11 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     private store: Store<fromLibrary.State>,
   ) {
     store.dispatch(new LoadTracks());
-    this.tracks$ = store.select(fromLibrary.getAllTracks);
     this.artists$ = store.select(fromLibrary.getAllArtists);
     this.selectedArtists$ = store.select(fromLibrary.getSelectedArtists);
-    this.albums$ = store.select(fromLibrary.getAllAlbums);
+    this.albums$ = store.select(fromLibrary.getDisplayedAlbums);
     this.selectedAlbums$ = store.select(fromLibrary.getSelectedAlbums);
+    this.tracks$ = store.select(fromLibrary.getDisplayedTracks);
   }
 
   @HostListener('window:resize') onResize() {

@@ -105,3 +105,17 @@ export const isSelectedAlbum = (album: Album) => createSelector(
   getSelectedAlbumsIds,
   ids => ids.indexOf(getAlbumId(album)) > -1
 );
+
+export const getDisplayedAlbums = createSelector(
+  getSelectedArtistsIds,
+  getAllAlbums,
+  (artistsIds, albums) =>
+    albums.filter(album => artistsIds.indexOf(album.artist) > -1)
+);
+
+export const getDisplayedTracks = createSelector(
+  getSelectedAlbumsIds,
+  getAllTracks,
+  (ids, tracks) =>
+    tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
+);

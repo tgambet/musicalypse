@@ -3,7 +3,7 @@
   <app-chips [hidden]="!showChipList"
              [list]="selectedArtists"
              [displayProperty]="'name'"
-             (clickedElement)="scrollTo($event.name)"
+             (clickedElement)="scrollTo($event.name); showChipList = false"
              (removedAll)="deselectAll()"
              (removedElement)="deselect($event)">
   </app-chips>
@@ -19,7 +19,7 @@
       <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                 (click)="scrollTo(artist.name)">
         <span class="chip-text">{{ artist.name }}</span>
-        <mat-icon matChipRemove (click)="deselectArtist(artist)">cancel</mat-icon>
+        <mat-icon matChipRemove (click)="deselect(artist)">cancel</mat-icon>
       </mat-chip>
       <mat-chip *ngIf="selectedArtists.length > 2"
                 (click)="showChipList = !showChipList"

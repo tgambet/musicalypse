@@ -76,6 +76,7 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   selectArtist(artist: Artist) {
     this.store.dispatch(new SelectArtists([artist]));
+    this.showChipList = false;
   }
 
   addArtist(artist: Artist) {
@@ -88,10 +89,14 @@ export class ArtistsComponent implements OnInit, OnDestroy {
 
   deselect(artist: Artist) {
     this.store.dispatch(new DeselectArtist(artist));
+    if (this.selectedArtists.length < 4) {
+      this.showChipList = false;
+    }
   }
 
   deselectAll() {
     this.store.dispatch(new DeselectAllArtists());
+    this.showChipList = false;
   }
 
 }

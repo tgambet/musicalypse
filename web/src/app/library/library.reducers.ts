@@ -58,6 +58,16 @@ export const getSelectedArtistsIds = createSelector(
   fromArtists.getSelectedIds
 );
 
+export const getSelectedArtists = createSelector(
+  getArtistEntities,
+  getSelectedArtistsIds,
+  (entities, ids) => {
+    const result: Artist[] = [];
+    ids.forEach(id => result.push(entities[id]));
+    return result;
+  }
+);
+
 export const isSelectedArtist = (artist: Artist) => createSelector(
   getSelectedArtistsIds,
   ids => ids.indexOf(artist.name) > -1

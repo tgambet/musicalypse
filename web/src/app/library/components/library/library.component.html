@@ -4,7 +4,7 @@
       <app-artists #artistsComponent
                    (next)="translateContent(1)"
                    [artists]="artists$ | async"
-                   [selectedArtists]="library.selectedArtists">
+                   [selectedArtists]="selectedArtists$ | async">
       </app-artists>
     </div>
     <div class="column a2">

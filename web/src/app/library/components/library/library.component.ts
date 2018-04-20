@@ -23,6 +23,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   tracks$: Observable<Track[]>;
   artists$: Observable<Artist[]>;
+  selectedArtists$: Observable<Artist[]>;
   albums$: Observable<Album[]>;
 
   subscriptions: Subscription[] = [];
@@ -43,6 +44,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     store.dispatch(new LoadTracks());
     this.tracks$ = store.select(fromLibrary.getAllTracks);
     this.artists$ = store.select(fromLibrary.getAllArtists);
+    this.selectedArtists$ = store.select(fromLibrary.getSelectedArtists);
     this.albums$ = store.select(fromLibrary.getAllAlbums);
   }
 

@@ -20,6 +20,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       z-index: 2;
       top: 60px;
       width: 100%;
+      box-sizing: border-box;
       max-height: 50%;
       overflow-y: auto;
     }

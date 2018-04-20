@@ -32,13 +32,6 @@ export function reducer(
     case AlbumsActionTypes.LoadAlbums:
       return adapter.addMany(action.payload, state);
 
-    case AlbumsActionTypes.SelectAllAlbums: {
-      return {
-        ...state,
-        selectedIds: state.ids
-      };
-    }
-
     case AlbumsActionTypes.DeselectAllAlbums: {
       return {
         ...state,
@@ -71,6 +64,7 @@ export function reducer(
       };
     }
 
+    case AlbumsActionTypes.SelectAllAlbums: // Cf. Effects
     default: {
       return state;
     }

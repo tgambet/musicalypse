@@ -1,19 +1,23 @@
 import {Injectable} from '@angular/core';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Action} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
+import {Action, Store} from '@ngrx/store';
+import {from, Observable, of} from 'rxjs';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from '@app/library/actions/tracks.actions';
-import {Track} from '@app/model';
+import {Album, Artist, Track} from '@app/model';
 import {LibraryService} from '@app/library/services/library.service';
-import {LoadArtists} from '@app/library/actions/artists.actions';
-import {LoadAlbums} from '@app/library/actions/albums.actions';
+import {ArtistsActionTypes, LoadArtists} from '@app/library/actions/artists.actions';
+import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from '@app/library/actions/albums.actions';
+import * as fromLibrary from './library.reducers';
 
 @Injectable()
 export class LibraryEffects {
 
+  /**
+   * Load tracks from the API
+   */
   @Effect()
   loadTracks$: Observable<Action> =
     this.actions$.pipe(
@@ -27,6 +31,9 @@ export class LibraryEffects {
       ),
     );
 
+  /**
+   * Extract Artists from loaded Tracks
+   */
   @Effect()
   loadArtists$: Observable<Action> =
     this.actions$.pipe(
@@ -37,6 +44,9 @@ export class LibraryEffects {
       ),
     );
 
+  /**
+   * Extract Albums from loaded Tracks
+   */
   @Effect()
   loadAlbums$: Observable<Action> =
     this.actions$.pipe(
@@ -47,9 +57,61 @@ export class LibraryEffects {
       ),
     );
 
+  /**
+   * Select All *displayed* albums when SelectAllAlbums is called
+   */
+  @Effect()
+  selectAllAlbums$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(AlbumsActionTypes.SelectAllAlbums),
+      switchMap(() =>
+        this.store.select(fromLibrary.getDisplayedAlbums).take(1).pipe(
+          map(albums => new SelectAlbums(albums))
+        )
+      )
+    );
+
+  /**
+   * Deselect Albums when Artists selection changes
+   */
+  @Effect()
+  deselectAlbums$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(
+        ArtistsActionTypes.SelectArtists,
+        ArtistsActionTypes.DeselectArtist,
+      ),
+      mergeMap(() =>
+        this.store.select(fromLibrary.getSelectedArtists).take(1)
+      ),
+      map((artists: Artist[]) => artists.map(a => a.name)),
+      mergeMap((artistsNames: string[]) =>
+        this.store.select(fromLibrary.getSelectedAlbums).take(1).pipe(
+          mergeMap((albums: Album[]) =>
+            from(
+              albums
+                .filter(album => artistsNames.indexOf(album.artist) === -1)
+                .map(album => new DeselectAlbum(album))
+            )
+          )
+        )
+      )
+    );
+
+  /**
+   * Deselect all Albums when Artists selection is emptied
+   */
+  @Effect()
+  deselectAllAlbums$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(ArtistsActionTypes.DeselectAllArtists),
+      map(() => new DeselectAllAlbums())
+    );
+
   constructor(
     private actions$: Actions,
-    private httpSocketClient: HttpSocketClientService
+    private httpSocketClient: HttpSocketClientService,
+    private store: Store<fromLibrary.State>
   ) {}
 
 }

@@ -60,13 +60,9 @@ export const getSelectedArtistsIds = createSelector(
 );
 
 export const getSelectedArtists = createSelector(
-  getArtistEntities,
+  getAllArtists,
   getSelectedArtistsIds,
-  (entities, ids) => {
-    const result: Artist[] = [];
-    ids.forEach(id => result.push(entities[id]));
-    return result;
-  }
+  (artists, ids) => artists.filter(artist => ids.indexOf(artist.name) > -1)
 );
 
 export const isSelectedArtist = (artist: Artist) => createSelector(
@@ -92,13 +88,9 @@ export const getSelectedAlbumsIds = createSelector(
 );
 
 export const getSelectedAlbums = createSelector(
-  getAlbumEntities,
+  getAllAlbums,
   getSelectedAlbumsIds,
-  (entities, ids) => {
-    const result: Album[] = [];
-    ids.forEach(id => result.push(entities[id]));
-    return result;
-  }
+  (albums, ids) => albums.filter(album => ids.indexOf(getAlbumId(album)) > -1)
 );
 
 export const isSelectedAlbum = (album: Album) => createSelector(

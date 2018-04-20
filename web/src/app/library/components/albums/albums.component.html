@@ -14,13 +14,13 @@
                 (backClicked)="previous.emit()">
     <span class="select-text" *ngIf="selectedAlbums.length == 0">
       Select an album or
-      <mat-chip (click)="library.selectAllAlbums(albums.filter(filter))">Select All</mat-chip>
+      <mat-chip (click)="selectAll()">Select All</mat-chip>
     </span>
     <mat-chip-list>
       <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
                 (click)="scrollTo(album.title)">
         <span class="chip-text">{{ album.title }}</span>
-        <mat-icon matChipRemove (click)="library.deselectAlbum(album)">cancel</mat-icon>
+        <mat-icon matChipRemove (click)="deselect(album)">cancel</mat-icon>
       </mat-chip>
       <mat-chip *ngIf="selectedAlbums.length > 2"
                 (click)="showChipList = !showChipList"
@@ -33,14 +33,14 @@
   <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
     <mat-list class="albums" dense>
       <ng-container *ngFor="let album of albums.filter(filter); trackBy: trackByTitle">
-        <app-list-item [selected]="library.isSelectedAlbum(album)"
+        <app-list-item [selected]="isSelected(album) | async"
                        [avatarStyle]="getAvatarStyle(album)"
                        [warn]="album.warn && settings.warnOnMissingTags"
                        [primaryHTML]="album.title | sgSearch:search"
                        [secondaryHTML]="album.songs + ' songs • ' + album.artist"
-                       (click)="library.selectAlbum(album); next.emit()"
-                       (arrowClicked)="library.addAlbum(album); next.emit()"
-                       (checked)="$event ? library.addAlbum(album) : library.deselectAlbum(album)">
+                       (click)="select(album); next.emit()"
+                       (arrowClicked)="add(album); next.emit()"
+                       (checked)="$event ? add(album) : deselect(album)">
         </app-list-item>
       </ng-container>
     </mat-list>

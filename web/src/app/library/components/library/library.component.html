@@ -12,7 +12,7 @@
                   (next)="translateContent(2)"
                   (previous)="translateContent(0)"
                   [albums]="albums$ | async"
-                  [selectedAlbums]="library.selectedAlbums">
+                  [selectedAlbums]="selectedAlbums$ | async">
       </app-albums>
     </div>
     <div class="column a3">

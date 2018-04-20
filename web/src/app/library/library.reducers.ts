@@ -4,7 +4,8 @@ import * as fromRoot from '@app/reducers';
 import * as fromTracks from './reducers/tracks.reducers';
 import * as fromArtists from './reducers/artists.reducers';
 import * as fromAlbums from './reducers/albums.reducers';
-import {Artist} from '@app/model';
+import {Album, Artist} from '@app/model';
+import {getAlbumId} from '@app/library/reducers/albums.reducers';
 
 export interface LibraryState {
   tracks: fromTracks.State;
@@ -84,3 +85,23 @@ export const {
   selectAll: getAllAlbums,
   selectTotal: getTotalAlbums,
 } = fromAlbums.adapter.getSelectors(getAlbumsState);
+
+export const getSelectedAlbumsIds = createSelector(
+  getAlbumsState,
+  fromAlbums.getSelectedIds
+);
+
+export const getSelectedAlbums = createSelector(
+  getAlbumEntities,
+  getSelectedAlbumsIds,
+  (entities, ids) => {
+    const result: Album[] = [];
+    ids.forEach(id => result.push(entities[id]));
+    return result;
+  }
+);
+
+export const isSelectedAlbum = (album: Album) => createSelector(
+  getSelectedAlbumsIds,
+  ids => ids.indexOf(getAlbumId(album)) > -1
+);

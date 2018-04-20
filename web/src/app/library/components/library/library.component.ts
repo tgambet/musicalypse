@@ -25,6 +25,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   artists$: Observable<Artist[]>;
   selectedArtists$: Observable<Artist[]>;
   albums$: Observable<Album[]>;
+  selectedAlbums$: Observable<Album[]>;
 
   subscriptions: Subscription[] = [];
 
@@ -46,6 +47,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.artists$ = store.select(fromLibrary.getAllArtists);
     this.selectedArtists$ = store.select(fromLibrary.getSelectedArtists);
     this.albums$ = store.select(fromLibrary.getAllAlbums);
+    this.selectedAlbums$ = store.select(fromLibrary.getSelectedAlbums);
   }
 
   @HostListener('window:resize') onResize() {

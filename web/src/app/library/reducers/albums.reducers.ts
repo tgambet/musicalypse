@@ -2,20 +2,22 @@ import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
 import {Album} from '@app/model';
 import {AlbumsActionsUnion, AlbumsActionTypes} from '@app/library/actions/albums.actions';
 
+export const getAlbumId = (album: Album) => album.artist + '-' + album.title;
+
 /**
  * State
  */
 export interface State extends EntityState<Album> {
-  selectedAlbumsIds: (string | number)[];
+  selectedIds: (string | number)[];
 }
 
 export const adapter: EntityAdapter<Album> = createEntityAdapter<Album>({
-  selectId: (album: Album) => album.artist + '-' + album.title,
+  selectId: getAlbumId,
   sortComparer: (a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
 });
 
 export const initialState: State = adapter.getInitialState({
-  selectedAlbumsIds: []
+  selectedIds: []
 });
 
 /**
@@ -33,14 +35,39 @@ export function reducer(
     case AlbumsActionTypes.SelectAllAlbums: {
       return {
         ...state,
-        selectedAlbumsIds: state.ids
+        selectedIds: state.ids
+      };
+    }
+
+    case AlbumsActionTypes.DeselectAllAlbums: {
+      return {
+        ...state,
+        selectedIds: []
+      };
+    }
+
+    case AlbumsActionTypes.SelectAlbum: {
+      if (state.selectedIds.indexOf(getAlbumId(action.payload)) === -1) {
+        return {
+          ...state,
+          selectedIds: [...state.selectedIds, getAlbumId(action.payload)]
+        };
+      } else {
+        return state;
+      }
+    }
+
+    case AlbumsActionTypes.DeselectAlbum: {
+      return {
+        ...state,
+        selectedIds: state.selectedIds.filter(id => id !== getAlbumId(action.payload))
       };
     }
 
     case AlbumsActionTypes.SelectAlbums: {
       return {
         ...state,
-        selectedAlbumsIds: [...state.selectedAlbumsIds, ...action.payload.map(a => a.artist + '-' + a.title)]
+        selectedIds: [...action.payload.map(getAlbumId)]
       };
     }
 
@@ -53,4 +80,4 @@ export function reducer(
 /**
  * Selectors
  */
-export const getSelectedAlbumsIds = (state: State) => state.selectedAlbumsIds;
+export const getSelectedIds = (state: State) => state.selectedIds;

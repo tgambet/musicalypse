@@ -30,16 +30,6 @@ export function reducer(
     case ArtistsActionTypes.LoadArtists:
       return adapter.addMany(action.payload, state);
 
-    // case ArtistsActionTypes.AddArtist:
-    //   return adapter.addOne(action.payload, state);
-    //
-    // case ArtistsActionTypes.UpdateArtist: {
-    //   return adapter.updateOne({
-    //     id: action.payload.name,
-    //     changes: action.payload
-    //   }, state);
-    // }
-
     case ArtistsActionTypes.SelectAllArtists: {
       return {
         ...state,

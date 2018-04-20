@@ -1,10 +1,13 @@
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Album} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
-import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
+import {Observable} from 'rxjs';
+import * as fromLibrary from '@app/library/library.reducers';
+import {Store} from '@ngrx/store';
+import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAllAlbums} from '@app/library/actions/albums.actions';
 
 @Component({
   selector: 'app-albums',
@@ -12,7 +15,7 @@ import * as _ from 'lodash';
   styleUrls: ['../library/library.component.common.scss', './albums.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AlbumsComponent implements OnInit, OnDestroy {
+export class AlbumsComponent {
 
   @Output() next: EventEmitter<void> = new EventEmitter();
   @Output() previous: EventEmitter<void> = new EventEmitter();
@@ -26,13 +29,6 @@ export class AlbumsComponent implements OnInit, OnDestroy {
   showChipList = false;
   search = '';
 
-  // filter: (albums: Album[]) => Album[] = ((albums: Album[]) => {
-  //   if (this.search !== '') {
-  //     return _.filter(albums, album => album.title.toLowerCase().includes(this.search.toLowerCase()));
-  //   }
-  //   return albums;
-  // });
-
   filter = ((album: Album) => {
     if (this.search !== '') {
       return album.title.toLowerCase().includes(this.search.toLowerCase());
@@ -40,19 +36,12 @@ export class AlbumsComponent implements OnInit, OnDestroy {
     return true;
   });
 
-  private subscriptions: Subscription[] = [];
-
   constructor(
     public library: LibraryService,
     public settings: SettingsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private store: Store<fromLibrary.State>
   ) {
-  }
-
-  ngOnInit() {}
-
-  ngOnDestroy(): void {
-    _.forEach(this.subscriptions, sub => sub.unsubscribe());
   }
 
   trackByTitle(index: number, album: Album) {
@@ -69,23 +58,40 @@ export class AlbumsComponent implements OnInit, OnDestroy {
       this.list.nativeElement.getElementsByClassName('list-item')[0].scrollIntoView(scrollOptions);
       return;
     }
-    const elem = _.find(this.list.nativeElement.getElementsByClassName('list-item'), artist => {
-      return artist.getElementsByClassName('item-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    const elem = _.find(this.list.nativeElement.getElementsByClassName('list-item'), album => {
+      return album.getElementsByClassName('item-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
     });
     if (elem) {
       elem.scrollIntoView(scrollOptions);
     }
   }
 
+  selectAll() {
+    this.store.dispatch(new SelectAllAlbums());
+  }
+
+  select(album: Album) {
+    this.store.dispatch(new SelectAlbums([album]));
+    this.showChipList = false;
+  }
+
+  add(album: Album) {
+    this.store.dispatch(new SelectAlbum(album));
+  }
+
+  isSelected(album: Album): Observable<boolean> {
+    return this.store.select(fromLibrary.isSelectedAlbum(album));
+  }
+
   deselect(album: Album) {
-    this.library.deselectAlbum(album);
-    if (this.library.selectedAlbums.length < 3) {
+    this.store.dispatch(new DeselectAlbum(album));
+    if (this.selectedAlbums.length < 4) {
       this.showChipList = false;
     }
   }
 
   deselectAll() {
-    this.library.deselectAllAlbums();
+    this.store.dispatch(new DeselectAllAlbums());
     this.showChipList = false;
   }
 

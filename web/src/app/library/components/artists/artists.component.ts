@@ -1,8 +1,7 @@
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Artist} from '@app/model';
 import {SettingsService} from '@app/settings/services/settings.service';
-import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 import * as fromLibrary from '@app/library/library.reducers';
 import {Store} from '@ngrx/store';
@@ -15,7 +14,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['../library/library.component.common.scss', './artists.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtistsComponent implements OnInit, OnDestroy {
+export class ArtistsComponent {
 
   @Output() next: EventEmitter<void> = new EventEmitter();
 
@@ -34,19 +33,11 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     return true;
   });
 
-  private subscriptions: Subscription[] = [];
-
   constructor(
     public settings: SettingsService,
     private sanitizer: DomSanitizer,
     private store: Store<fromLibrary.State>
   ) {}
-
-  ngOnInit() {}
-
-  ngOnDestroy(): void {
-    _.forEach(this.subscriptions, sub => sub.unsubscribe());
-  }
 
   trackByName(index: number, artist: Artist) {
     return artist.name;
@@ -70,20 +61,20 @@ export class ArtistsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectAllArtists() {
+  selectAll() {
     this.store.dispatch(new SelectAllArtists());
   }
 
-  selectArtist(artist: Artist) {
+  select(artist: Artist) {
     this.store.dispatch(new SelectArtists([artist]));
     this.showChipList = false;
   }
 
-  addArtist(artist: Artist) {
+  add(artist: Artist) {
     this.store.dispatch(new SelectArtist(artist));
   }
 
-  isSelectedArtist(artist: Artist): Observable<boolean> {
+  isSelected(artist: Artist): Observable<boolean> {
     return this.store.select(fromLibrary.isSelectedArtist(artist));
   }
 

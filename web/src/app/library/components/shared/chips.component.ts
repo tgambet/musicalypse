@@ -26,7 +26,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
     }
     mat-chip {
       cursor: pointer;
-      max-width: calc(50% - 1.5rem);
+      max-width: calc(50% - 27px);
       white-space: nowrap;
     }
     .chip-text {

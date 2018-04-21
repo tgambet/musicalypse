@@ -51,7 +51,7 @@ export class TracksComponent implements OnInit, OnDestroy {
     public favorites: FavoritesService,
     public dialog: MatDialog,
     public settings: SettingsService,
-    private audioService: AudioService
+    public audioService: AudioService
   ) { }
 
   ngOnInit() {}

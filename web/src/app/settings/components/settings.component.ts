@@ -34,7 +34,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ipcAddFolder = (event, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
   constructor(
-    private httpSocketClient: HttpSocketClientService,
+    public httpSocketClient: HttpSocketClientService,
     public settings: SettingsService,
     private dialog: MatDialog,
     private library: LibraryService,

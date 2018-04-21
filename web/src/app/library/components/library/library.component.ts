@@ -36,7 +36,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   contentTranslation = 0;
 
-  private noAnimation = false;
+  noAnimation = false;
   private animationTimeout;
 
   constructor(
@@ -150,7 +150,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
     }
 
-    // Save selection state
+    // Save selection state on change
     this.subscriptions.push(
       this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
         ids => PersistenceService.save('selectedArtistsIds', JSON.stringify(ids))

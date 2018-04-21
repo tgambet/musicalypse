@@ -11,6 +11,7 @@ import {AppComponent} from './core/components/app.component';
 import {LibraryModule} from './library/library.module';
 import {SettingsModule} from './settings/settings.module';
 import {metaReducers, reducers} from './reducers';
+import {environment} from '@env/environment';
 
 @NgModule({
   imports: [
@@ -20,7 +21,10 @@ import {metaReducers, reducers} from './reducers';
     // Ngrx Modules
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot([]),
-    StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument({
+      maxAge: 50, // Retains last 50 states
+      logOnly: environment.production // Restrict extension to log-only mode
+    }),
 
     // My Modules
     CoreModule,

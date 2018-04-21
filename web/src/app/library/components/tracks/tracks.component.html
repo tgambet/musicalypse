@@ -48,7 +48,7 @@
       <ng-container *ngFor="let track of tracks.filter(filter).slice(0,300); trackBy: trackByURL">
         <app-track [track]="track"
                    [warn]="track.warn && settings.warnOnMissingTags"
-                   [currentTrack]="track.url === library.currentTrack.url"
+                   [currentTrack]="track.url === (library.currentTrack ? library.currentTrack.url : '')"
                    [search]="search"
                    [playing]="audioService.playing$ | async"
                    [loading]="audioService.loading$ | async"

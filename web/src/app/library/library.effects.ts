@@ -1,16 +1,20 @@
 import {Injectable} from '@angular/core';
-import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Action, Store} from '@ngrx/store';
-import {from, Observable, of} from 'rxjs';
 import {Actions, Effect, ofType} from '@ngrx/effects';
+
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
-import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {Album, Artist, Track} from '@app/model';
-import {LibraryService} from '@app/library/services/library.service';
-import {ArtistsActionTypes, LoadArtists} from '@app/library/actions/artists.actions';
-import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from '@app/library/actions/albums.actions';
+
+import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
+import {ArtistsActionTypes, LoadArtists} from './actions/artists.actions';
+import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from './actions/albums.actions';
+import {LibraryService} from './services/library.service';
+
 import * as fromLibrary from './library.reducers';
+
+import {from, Observable, of} from 'rxjs';
+import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 
 @Injectable()
 export class LibraryEffects {

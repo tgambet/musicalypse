@@ -60,7 +60,14 @@ export function reducer(
     case AlbumsActionTypes.SelectAlbums: {
       return {
         ...state,
-        selectedIds: [...action.payload.map(getAlbumId)]
+        selectedIds: action.payload.map(getAlbumId)
+      };
+    }
+
+    case AlbumsActionTypes.SelectAlbumsByIds: {
+      return {
+        ...state,
+        selectedIds: action.payload
       };
     }
 

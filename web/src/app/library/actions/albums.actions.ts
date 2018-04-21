@@ -6,6 +6,7 @@ export enum AlbumsActionTypes {
   SelectAlbum = '[Albums] Select Album',
   DeselectAlbum = '[Albums] Deselect Album',
   SelectAlbums = '[Albums] Select Albums',
+  SelectAlbumsByIds = '[Albums] Select Albums By Ids',
   SelectAllAlbums = '[Albums] Select All Albums',
   DeselectAllAlbums = '[Albums] Deselect All Albums',
 }
@@ -30,6 +31,11 @@ export class SelectAlbums implements Action {
   constructor(public payload: Album[]) {}
 }
 
+export class SelectAlbumsByIds implements Action {
+  readonly type = AlbumsActionTypes.SelectAlbumsByIds;
+  constructor(public payload: (string | number)[]) {}
+}
+
 export class SelectAllAlbums implements Action {
   readonly type = AlbumsActionTypes.SelectAllAlbums;
 }
@@ -43,5 +49,6 @@ export type AlbumsActionsUnion =
   SelectAlbum |
   DeselectAlbum |
   SelectAlbums |
+  SelectAlbumsByIds |
   SelectAllAlbums |
   DeselectAllAlbums;

@@ -12,6 +12,9 @@ import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 import {Observable} from 'rxjs';
 import {LoadTracks} from '@app/library/actions/tracks.actions';
+import {PersistenceService} from '@app/core/services/persistence.service';
+import {SelectArtistsByIds} from '@app/library/actions/artists.actions';
+import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
 
 
 @Component({
@@ -136,6 +139,28 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     //     this.updateUrl();
     //   })
     // );
+
+    // Restore selection state
+    const savedSelectedArtistsIds = PersistenceService.load('selectedArtistsIds');
+    if (savedSelectedArtistsIds) {
+      this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
+    }
+    const savedSelectedAlbumsIds = PersistenceService.load('selectedAlbumsIds');
+    if (savedSelectedAlbumsIds) {
+      this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
+    }
+
+    // Save selection state
+    this.subscriptions.push(
+      this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
+        ids => PersistenceService.save('selectedArtistsIds', JSON.stringify(ids))
+      ),
+      this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
+        ids => PersistenceService.save('selectedAlbumsIds', JSON.stringify(ids))
+      )
+    );
+
+
   }
 
   ngAfterViewInit() {

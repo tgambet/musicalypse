@@ -65,7 +65,14 @@ export function reducer(
     case ArtistsActionTypes.SelectArtists: {
       return {
         ...state,
-        selectedIds: [...action.payload.map(a => a.name)]
+        selectedIds: action.payload.map(a => a.name)
+      };
+    }
+
+    case ArtistsActionTypes.SelectArtistsByIds: {
+      return {
+        ...state,
+        selectedIds: action.payload
       };
     }
 

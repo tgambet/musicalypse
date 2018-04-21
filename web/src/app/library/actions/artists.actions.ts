@@ -6,6 +6,7 @@ export enum ArtistsActionTypes {
   SelectArtist = '[Artists] Select Artist',
   DeselectArtist = '[Artists] Deselect Artist',
   SelectArtists = '[Artists] Select Artists',
+  SelectArtistsByIds = '[Artists] Select Artists By Ids',
   SelectAllArtists = '[Artists] Select All Artists',
   DeselectAllArtists = '[Artists] Deselect All Artists',
 }
@@ -30,6 +31,11 @@ export class SelectArtists implements Action {
   constructor(public payload: Artist[]) {}
 }
 
+export class SelectArtistsByIds implements Action {
+  readonly type = ArtistsActionTypes.SelectArtistsByIds;
+  constructor(public payload: (string | number)[]) {}
+}
+
 export class SelectAllArtists implements Action {
   readonly type = ArtistsActionTypes.SelectAllArtists;
 }
@@ -40,10 +46,9 @@ export class DeselectAllArtists implements Action {
 
 export type ArtistsActionsUnion =
   LoadArtists |
-  // AddArtist |
-  // UpdateArtist |
   SelectArtist |
   DeselectArtist |
   SelectArtists |
+  SelectArtistsByIds |
   SelectAllArtists |
   DeselectAllArtists;

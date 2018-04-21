@@ -101,8 +101,7 @@
 .mat-chip {
   cursor: pointer;
   font-size: 12px;
-  padding: 5px 10px;
-  max-width: calc(50% - 4px);
+  max-width: calc(50% - 16px);
   .chip-text {
     white-space: nowrap;
     display: inline-block;

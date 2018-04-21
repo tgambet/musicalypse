@@ -13,6 +13,10 @@ import * as LayoutActions from '../core.actions';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AudioService} from '@app/core/services/audio.service';
+import {LoadTracks} from '@app/library/actions/tracks.actions';
+import * as fromLibrary from '@app/library/library.reducers';
+import {SelectArtistsByIds} from '@app/library/actions/artists.actions';
+import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
 
 @Component({
   selector: 'app-root',
@@ -120,6 +124,27 @@ export class AppComponent {
     // configure Audio Service
     this.audioService.renderer = renderer;
     this.audioService.appRoot = appRoot;
+
+    // Load Tracks
+    store.dispatch(new LoadTracks());
+
+    // Restore selection state
+    const savedSelectedArtistsIds = PersistenceService.load('selectedArtistsIds');
+    if (savedSelectedArtistsIds) {
+      this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
+    }
+    const savedSelectedAlbumsIds = PersistenceService.load('selectedAlbumsIds');
+    if (savedSelectedAlbumsIds) {
+      this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
+    }
+
+    // Save selection state on change
+    this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
+      ids => PersistenceService.save('selectedArtistsIds', JSON.stringify(ids))
+    );
+    this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
+      ids => PersistenceService.save('selectedAlbumsIds', JSON.stringify(ids))
+    );
   }
 
   @HostListener('window:storage', ['$event'])

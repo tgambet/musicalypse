@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Observable, Subject} from 'rxjs';
-import {webSocket} from 'rxjs/observable/dom/webSocket';
+import {Observable} from 'rxjs';
+import {websocket} from 'rxjs/websocket';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -10,6 +10,8 @@ import 'rxjs/add/operator/publish';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
+import {publish, refCount} from 'rxjs/operators';
+import {WebSocketSubject} from 'rxjs/internal/observable/dom/WebSocketSubject';
 
 @Injectable()
 export class HttpSocketClientService implements OnDestroy {
@@ -22,7 +24,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   private preferHttpOverSocket = false;
 
-  private socket: Subject<Object> = webSocket({
+  private socket: WebSocketSubject<Object> = websocket({
     url: HttpSocketClientService.getSocketUrl(),
     openObserver: {
       next: () => this.socketOpened = true
@@ -32,7 +34,7 @@ export class HttpSocketClientService implements OnDestroy {
     }
   });
 
-  private socketObs: Observable<SocketMessage> = this.socket.publish().refCount() as Observable<SocketMessage>;
+  private socketObs: Observable<SocketMessage> = this.socket.asObservable().pipe(publish(), refCount()) as Observable<SocketMessage>;
 
   private static getSocketUrl() {
     let socketUrl = '';
@@ -80,7 +82,7 @@ export class HttpSocketClientService implements OnDestroy {
   }
 
   send(message: any): void {
-    this.socket.next(JSON.stringify(message));
+    this.socket.next(message);
   }
 
   ngOnDestroy(): void {

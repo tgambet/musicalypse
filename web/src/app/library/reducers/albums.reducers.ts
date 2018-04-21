@@ -1,6 +1,7 @@
 import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
 import {Album} from '@app/model';
 import {AlbumsActionsUnion, AlbumsActionTypes} from '@app/library/actions/albums.actions';
+import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 
 export const getAlbumId = (album: Album) => album.artist + '-' + album.title;
 
@@ -25,12 +26,12 @@ export const initialState: State = adapter.getInitialState({
  */
 export function reducer(
   state = initialState,
-  action: AlbumsActionsUnion
+  action: AlbumsActionsUnion | TracksActionsUnion
 ): State {
   switch (action.type) {
 
     case AlbumsActionTypes.LoadAlbums:
-      return adapter.addMany(action.payload, state);
+      return adapter.upsertMany(action.payload, state);
 
     case AlbumsActionTypes.DeselectAllAlbums: {
       return {
@@ -70,6 +71,12 @@ export function reducer(
         selectedIds: action.payload
       };
     }
+
+    case TracksActionTypes.ScanTracks:
+      return adapter.removeAll({
+        ...state,
+        selectedIds: []
+      });
 
     case AlbumsActionTypes.SelectAllAlbums: // Cf. Effects
     default: {

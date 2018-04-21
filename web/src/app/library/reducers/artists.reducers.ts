@@ -1,6 +1,7 @@
 import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
 import {Artist} from '@app/model';
 import {ArtistsActionsUnion, ArtistsActionTypes} from '@app/library/actions/artists.actions';
+import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 
 /**
  * State
@@ -23,12 +24,12 @@ export const initialState: State = adapter.getInitialState({
  */
 export function reducer(
   state = initialState,
-  action: ArtistsActionsUnion
+  action: ArtistsActionsUnion | TracksActionsUnion
 ): State {
   switch (action.type) {
 
     case ArtistsActionTypes.LoadArtists:
-      return adapter.addMany(action.payload, state);
+      return adapter.upsertMany(action.payload, state);
 
     case ArtistsActionTypes.SelectAllArtists: {
       return {
@@ -75,6 +76,12 @@ export function reducer(
         selectedIds: action.payload
       };
     }
+
+    case TracksActionTypes.ScanTracks:
+      return adapter.removeAll({
+        ...state,
+        selectedIds: []
+      });
 
     default: {
       return state;

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatSnackBar, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {LibraryService} from '../../services/library.service';
@@ -12,7 +12,8 @@ import {AudioService} from '@app/core/services/audio.service';
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+  styleUrls: ['./player.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent implements OnInit, OnDestroy {
 

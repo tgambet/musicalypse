@@ -45,6 +45,9 @@ export function reducer(
       };
     }
 
+    case TracksActionTypes.ScanTracks:
+      return adapter.removeAll(state);
+
     case TracksActionTypes.LoadTracks:
 
     default: {

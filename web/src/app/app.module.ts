@@ -10,8 +10,7 @@ import {CoreModule} from './core/core.module';
 import {AppComponent} from './core/components/app.component';
 import {LibraryModule} from './library/library.module';
 import {SettingsModule} from './settings/settings.module';
-import {reducers, metaReducers} from './reducers';
-
+import {metaReducers, reducers} from './reducers';
 
 @NgModule({
   imports: [

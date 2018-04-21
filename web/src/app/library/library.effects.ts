@@ -3,7 +3,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Action, Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 
-import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
+import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
@@ -14,7 +14,7 @@ import {LibraryService} from './services/library.service';
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
-import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
+import {catchError, map, mergeMap, switchMap, filter, take, scan} from 'rxjs/operators';
 
 @Injectable()
 export class LibraryEffects {
@@ -39,7 +39,7 @@ export class LibraryEffects {
    * Extract Artists from loaded Tracks
    */
   @Effect()
-  loadArtists$: Observable<Action> =
+  extractArtists$: Observable<Action> =
     this.actions$.pipe(
       ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
       map(action => action.payload),
@@ -52,7 +52,7 @@ export class LibraryEffects {
    * Extract Albums from loaded Tracks
    */
   @Effect()
-  loadAlbums$: Observable<Action> =
+  extractAlbums$: Observable<Action> =
     this.actions$.pipe(
       ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
       map(action => action.payload),
@@ -83,6 +83,7 @@ export class LibraryEffects {
     this.actions$.pipe(
       ofType(
         ArtistsActionTypes.SelectArtists,
+        ArtistsActionTypes.SelectArtistsByIds,
         ArtistsActionTypes.DeselectArtist,
       ),
       mergeMap(() =>
@@ -112,10 +113,61 @@ export class LibraryEffects {
       map(() => new DeselectAllAlbums())
     );
 
+  @Effect()
+  scanTracks$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(TracksActionTypes.ScanTracks),
+      switchMap(() => {
+        console.log('test');
+        return this.scanTracks().pipe(
+          map(tracks => new LoadTrackSuccess(tracks))
+        );
+      })
+    );
+
   constructor(
     private actions$: Actions,
     private httpSocketClient: HttpSocketClientService,
     private store: Store<fromLibrary.State>
   ) {}
+
+  public scanTracks(): Observable<Track[]> {
+    return this._scanTracksObs().pipe(scan((acc: Track[], track: Track) => [LibraryService.fixTags(track), ...acc], []));
+  }
+
+  public _scanTracksObs(): Observable<Track> {
+    return Observable.create((observer) => {
+      const currentId = ++this.httpSocketClient.id;
+      const subscription1 = this.httpSocketClient
+        .getSocket()
+        .pipe(
+          filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId),
+          map((r: SocketMessage) => r.entity),
+          map((e: Track) => e)
+        )
+        .subscribe(
+          next => observer.next(next),
+          error => observer.error(error)
+        );
+      const subscription2 = this.httpSocketClient
+        .getSocket()
+        .pipe(
+          filter((r: SocketMessage) => (r.method === 'LibraryScanned' || r.method === 'LibraryScannedFailed') && r.id === currentId),
+          take(1)
+        )
+        .subscribe((n: SocketMessage) => {
+          if (n.method === 'LibraryScanned') {
+            observer.complete();
+          } else {
+            observer.error(n.entity);
+          }
+        });
+      this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
+      return () => {
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
+      };
+    });
+  }
 
 }

@@ -1,4 +1,4 @@
-import {ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
+import {ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
 import * as fromCore from '../core/core.reducers';
 import {environment} from '@env/environment';
 
@@ -16,23 +16,21 @@ export const reducers: ActionReducerMap<State> = {
 };
 
 // console.log all actions
-export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
-  return function(state: State, action: any): State {
-    console.log('state', state);
-    console.log('action', action);
-
-    return reducer(state, action);
-  };
-}
+// export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
+//   return function(state: State, action: any): State {
+//     console.log('state', state);
+//     console.log('action', action);
+//
+//     return reducer(state, action);
+//   };
+// }
 
 /**
  * By default, @ngrx/store uses combineReducers with the reducer map to compose
  * the root meta-reducer. To add more meta-reducers, provide an array of meta-reducers
  * that will be composed to form the root meta-reducer.
  */
-export const metaReducers: MetaReducer<State>[] = !environment.production
-  ? [logger]
-  : [];
+export const metaReducers: MetaReducer<State>[] = !environment.production ? [/*logger*/] : [];
 
 /**
  * Core Reducers

@@ -3,7 +3,7 @@
   <app-chips [hidden]="!showChipList"
              [list]="selectedAlbums"
              [displayProperty]="'title'"
-             (clickedElement)="scrollTo($event.title)"
+             (clickedElement)="scrollTo($event.title); showChipList = false;"
              (removedAll)="deselectAll()"
              (removedElement)="deselect($event)">
   </app-chips>

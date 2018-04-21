@@ -1,5 +1,6 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
+import {throttleTime} from 'rxjs/operators';
 
 /**
  * Service configured by AppComponent and in charge of creating and setting up the audio tag.
@@ -41,7 +42,7 @@ export class AudioService {
   constructor () {
     this.volume$ = this._volume.asObservable();
     this.muted$ = this._muted.asObservable();
-    this.currentTime$ = this._currentTime.asObservable();
+    this.currentTime$ = this._currentTime.asObservable().pipe(throttleTime(200));
     this.duration$ = this._duration.asObservable();
     this.loading$ = this._loading.asObservable();
     this.playing$ = this._playing.asObservable();

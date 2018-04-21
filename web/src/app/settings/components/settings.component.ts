@@ -16,6 +16,7 @@ import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/se
 import {Theme, Themes} from '@app/core/utils/themes';
 import * as LayoutActions from '@app/core/core.actions';
 import * as fromRoot from '@app/reducers';
+import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Component({
   selector: 'app-settings',
@@ -115,7 +116,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   requestLibraryScan() {
-    this.router.navigate(['/']).then(() => this.library.scan());
+    this.router.navigate(['/']); // .then(() => this.library.scan());
+    this.store.dispatch(new ScanTracks());
   }
 
   changeTheme(theme: Theme) {

@@ -7,6 +7,7 @@ export enum TracksActionTypes {
   LoadTracks = '[Tracks] Load Tracks',
   LoadTracksSuccess = '[Tracks] Load Tracks Success',
   LoadTracksFailure = '[Tracks] Load Tracks Failure',
+  ScanTracks = '[Tracks] Scan Tracks',
 }
 
 export class AddTrack implements Action {
@@ -33,9 +34,14 @@ export class LoadTrackFailure implements Action {
   constructor(public payload: string) {}
 }
 
+export class ScanTracks implements Action {
+  readonly type = TracksActionTypes.ScanTracks;
+}
+
 export type TracksActionsUnion =
   AddTrack |
   RemoveTrack |
   LoadTracks |
   LoadTrackSuccess |
-  LoadTrackFailure;
+  LoadTrackFailure |
+  ScanTracks;

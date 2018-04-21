@@ -18,7 +18,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       </a>
       <a mat-list-item routerLink="/recent" routerLinkActive="active" (click)="closeSidenav.emit()">
         <mat-icon matListIcon>schedule</mat-icon>
-        <span matLine>Recently played</span>
+        <span matLine>Played recently</span>
       </a>
       <a mat-list-item routerLink="/favorites" routerLinkActive="active" (click)="closeSidenav.emit()">
         <mat-icon matListIcon>favorite_border</mat-icon>

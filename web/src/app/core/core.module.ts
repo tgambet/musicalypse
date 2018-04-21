@@ -4,7 +4,7 @@ import {EffectsModule} from '@ngrx/effects';
 import {SharedModule} from '@app/shared/shared.module';
 
 import {AppComponent} from './components/app.component';
-import {AboutComponent} from './components/about/about.component';
+import {AboutComponent} from './components/about.component';
 import {SideMenuComponent} from './components/sidemenu.component';
 import {SidenavComponent} from './components/sidenav.component';
 import {ToolbarComponent} from './components/toolbar.component';
@@ -12,12 +12,9 @@ import {ToolbarComponent} from './components/toolbar.component';
 import {LoaderService} from './services/loader.service';
 import {HttpSocketClientService} from './services/http-socket-client.service';
 import {PersistenceService} from './services/persistence.service';
+import {AudioService} from './services/audio.service';
 
 import {CoreEffects} from './core.effects';
-
-// TODO
-import {LibraryService} from '@app/library/services/library.service';
-import {AudioService} from '@app/core/services/audio.service';
 
 export const COMPONENTS = [
   AppComponent,
@@ -38,7 +35,6 @@ export const COMPONENTS = [
     HttpSocketClientService,
     LoaderService,
     PersistenceService,
-    LibraryService,
     AudioService
   ]
 })

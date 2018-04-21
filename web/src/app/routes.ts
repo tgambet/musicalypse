@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {LibraryComponent} from './library/components/library/library.component';
 import {SettingsComponent} from './settings/components/settings.component';
-import {AboutComponent} from './core/components/about/about.component';
+import {AboutComponent} from './core/components/about.component';
 
 export const routes: Routes = [
   { path: '',   redirectTo: '/library', pathMatch: 'full' },

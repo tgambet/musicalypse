@@ -5,7 +5,7 @@ import {LibraryService} from '../../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 

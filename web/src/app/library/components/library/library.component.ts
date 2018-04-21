@@ -8,9 +8,8 @@ import {Album, Artist, Track} from '@app/model';
 import {LibraryService} from '../../services/library.service';
 import * as fromLibrary from '../../library.reducers';
 
-import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 
 @Component({

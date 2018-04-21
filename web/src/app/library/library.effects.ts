@@ -69,7 +69,8 @@ export class LibraryEffects {
     this.actions$.pipe(
       ofType(AlbumsActionTypes.SelectAllAlbums),
       switchMap(() =>
-        this.store.select(fromLibrary.getDisplayedAlbums).take(1).pipe(
+        this.store.select(fromLibrary.getDisplayedAlbums).pipe(
+          take(1),
           map(albums => new SelectAlbums(albums))
         )
       )
@@ -87,11 +88,12 @@ export class LibraryEffects {
         ArtistsActionTypes.DeselectArtist,
       ),
       mergeMap(() =>
-        this.store.select(fromLibrary.getSelectedArtists).take(1)
+        this.store.select(fromLibrary.getSelectedArtists).pipe(take(1))
       ),
       map((artists: Artist[]) => artists.map(a => a.name)),
       mergeMap((artistsNames: string[]) =>
-        this.store.select(fromLibrary.getSelectedAlbums).take(1).pipe(
+        this.store.select(fromLibrary.getSelectedAlbums).pipe(
+          take(1),
           mergeMap((albums: Album[]) =>
             from(
               albums

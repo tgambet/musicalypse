@@ -1,8 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material';
-import {Observable, Subscription} from 'rxjs';
-import 'rxjs/add/operator/publishLast';
+import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
@@ -88,23 +87,23 @@ export class SettingsService implements OnDestroy {
     );
   }
 
-  geLibraryFolders(): Observable<string[]> {
-    return this.httpSocketClient.get('/api/libraries')
-      .publishLast()
-      .refCount() as Observable<string[]>;
-  }
-
-  addLibraryFolder(folder: string): Observable<void> {
-    return this.httpSocketClient
-      .post('/api/libraries', folder)
-      .map(() => {}); // as Observable<void>
-  }
-
-  removeLibraryFolder(folder: string): Observable<void> {
-    return this.httpSocketClient
-      ._delete('/api/libraries/' + encodeURIComponent(folder))
-      .map(() => {});
-  }
+  // geLibraryFolders(): Observable<string[]> {
+  //   return this.httpSocketClient.get('/api/libraries')
+  //     .publishLast()
+  //     .refCount() as Observable<string[]>;
+  // }
+  //
+  // addLibraryFolder(folder: string): Observable<void> {
+  //   return this.httpSocketClient
+  //     .post('/api/libraries', folder)
+  //     .map(() => {}); // as Observable<void>
+  // }
+  //
+  // removeLibraryFolder(folder: string): Observable<void> {
+  //   return this.httpSocketClient
+  //     ._delete('/api/libraries/' + encodeURIComponent(folder))
+  //     .map(() => {});
+  // }
 
 }
 

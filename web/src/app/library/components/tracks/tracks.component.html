@@ -33,14 +33,14 @@
         <mat-icon>playlist_add</mat-icon>
         <span>Add all to current playlist</span>
       </button>
-      <button mat-menu-item (click)="library.sortTracks(true)" [disabled]="library.sortTracksAlphabetically">
-        <mat-icon>sort_by_alpha</mat-icon>
-        <span>Sort alphabetically</span>
-      </button>
-      <button mat-menu-item (click)="library.sortTracks(false)" [disabled]="!library.sortTracksAlphabetically">
-        <mat-icon>sort</mat-icon>
-        <span>Sort by file name</span>
-      </button>
+      <!--<button mat-menu-item (click)="library.sortTracks(true)" [disabled]="library.sortTracksAlphabetically">-->
+        <!--<mat-icon>sort_by_alpha</mat-icon>-->
+        <!--<span>Sort alphabetically</span>-->
+      <!--</button>-->
+      <!--<button mat-menu-item (click)="library.sortTracks(false)" [disabled]="!library.sortTracksAlphabetically">-->
+        <!--<mat-icon>sort</mat-icon>-->
+        <!--<span>Sort by file name</span>-->
+      <!--</button>-->
     </mat-menu>
   </div>
   <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">

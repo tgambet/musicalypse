@@ -1,17 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, Subject, concat} from 'rxjs';
 import {websocket} from 'rxjs/websocket';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/concat';
-import 'rxjs/add/operator/publish';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
-import {publish, refCount} from 'rxjs/operators';
-import {WebSocketSubject} from 'rxjs/internal/observable/dom/WebSocketSubject';
+import {publish, refCount, map, filter, take} from 'rxjs/operators';
 
 @Injectable()
 export class HttpSocketClientService implements OnDestroy {
@@ -24,7 +18,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   private preferHttpOverSocket = false;
 
-  private socket: WebSocketSubject<Object> = websocket({
+  private socket: Subject<Object> = websocket({
     url: HttpSocketClientService.getSocketUrl(),
     openObserver: {
       next: () => this.socketOpened = true
@@ -128,7 +122,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   postFiles(path: string, files: File[]): Observable<Object> {
     const filesObs: Observable<Object>[] =
-      _.map(files, file => this.postFile(path, file).map(event => ({event: event, file: file })));
+      _.map(files, file => this.postFile(path, file).pipe(map(event => ({event: event, file: file }))));
 
     // const acknowledgment = Observable.create(observer => {
     //   observer.next({ event: { type: 10 }});
@@ -136,7 +130,7 @@ export class HttpSocketClientService implements OnDestroy {
     //   return () => {};
     // });
 
-    return _.reduce(filesObs, (obs1: Observable<Object>, obs2) => obs1.concat(obs2));
+    return _.reduce(filesObs, (obs1: Observable<Object>, obs2) => concat(obs1, obs2));
 
   }
 
@@ -173,17 +167,19 @@ export class HttpSocketClientService implements OnDestroy {
   private sendRequest(request: HttpRequest): Observable<Object> {
     const expectResponse =
       this.getSocket()
-        .filter((r: HttpResponse) => r.method === 'HttpResponse' && r.id === request.id)
-        .map((r: HttpResponse) => {
-          const status = r.entity.status;
-          const statusText = r.entity.statusText;
-          const entity = r.entity.entity;
-          if (status >= 400) {
-            throw new HttpErrorResponse({error: entity, status: status, statusText: statusText, url: request.entity.url});
-          }
-          return entity;
-        })
-        .take(1);
+        .pipe(
+          filter((r: HttpResponse) => r.method === 'HttpResponse' && r.id === request.id),
+          map((r: HttpResponse) => {
+            const status = r.entity.status;
+            const statusText = r.entity.statusText;
+            const entity = r.entity.entity;
+            if (status >= 400) {
+              throw new HttpErrorResponse({error: entity, status: status, statusText: statusText, url: request.entity.url});
+            }
+            return entity;
+          }),
+          take(1)
+        );
     const sendRequest = Observable.create(observer => {
       this.send(request);
       observer.complete();

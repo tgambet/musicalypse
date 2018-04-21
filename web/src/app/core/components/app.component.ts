@@ -36,26 +36,23 @@ import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
                    (minimizeWindow)="minimizeWindow()"
                    (unmaximizeWindow)="unmaximizeWindow()"
                    (changeTheme)="changeTheme($event)"
-                   (toggleSidenav)="toggleSidenav()"></app-toolbar>
+                   (toggleSidenav)="toggleSidenav()">
+      </app-toolbar>
 
-      <mat-progress-bar
-        class="main-loader"
-        mode="indeterminate"
-        [class.show]="isLoading()"></mat-progress-bar>
+      <mat-progress-bar class="main-loader"
+                        mode="indeterminate"
+                        [class.show]="isLoading()">
+      </mat-progress-bar>
 
-      <app-side-menu
-        [sideNavOpened]="showSidenav$ | async"
-        (closeSidenav)="closeSidenav()"
-        (toggleSidenav)="toggleSidenav()"></app-side-menu>
+      <app-side-menu [sideNavOpened]="showSidenav$ | async"
+                     (closeSidenav)="closeSidenav()"
+                     (toggleSidenav)="toggleSidenav()">
+      </app-side-menu>
 
       <mat-sidenav-container (backdropClick)="closeSidenav()">
 
-        <mat-sidenav
-          [opened]="showSidenav$ | async"
-          [mode]="'over'">
-          <app-side-nav
-            [playing]="false"
-            (closeSidenav)="closeSidenav()"></app-side-nav>
+        <mat-sidenav [opened]="showSidenav$ | async" [mode]="'over'">
+          <app-side-nav [playing]="false" (closeSidenav)="closeSidenav()"></app-side-nav>
         </mat-sidenav>
 
         <router-outlet></router-outlet>
@@ -63,10 +60,41 @@ import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
       </mat-sidenav-container>
 
     </div>
-
-    <!--<app-audio #audio></app-audio>-->
   `,
-  styleUrls: ['app.component.scss'],
+  styles: [`
+    .main-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100vh; /* 100vh TODO figure out the issue with player menu */
+      min-height: 450px;
+      box-sizing: border-box;
+    }
+    .main-loader {
+      position: absolute;
+      z-index: 3;
+      height: 3px;
+      top: 50px;
+      display: none;
+    }
+    .main-loader.show {
+      display: inline-block;
+    }
+    .electron .main-loader {
+      top: 34px;
+    }
+    mat-sidenav-container {
+      height: 100%;
+    }
+    mat-sidenav {
+      width: 250px;
+    }
+    @media screen and (min-width: 599px){
+      mat-sidenav {
+        padding-left: 44px;
+      }
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {

@@ -43,7 +43,29 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       </a>
     </mat-nav-list>
   `,
-  styleUrls: ['sidenav.component.scss'],
+  styles: [`
+    a {
+      text-decoration: none;
+    }
+    mat-icon {
+      padding: 0 !important;
+    }
+    .playing-icon {
+      height: 18px;
+      width: 18px;
+      line-height: 18px;
+      font-size: 18px;
+      vertical-align: text-top;
+    }
+    @media screen and (min-width: 599px){
+      mat-icon {
+        display: none;
+      }
+      .mat-line {
+        margin-left: -1rem !important;
+      }
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidenavComponent {

@@ -29,20 +29,12 @@ export class TracksComponent implements OnInit, OnDestroy {
   showSearch = false;
   search = '';
 
-  // filter: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
-  //   if (this.search !== '') {
-  //     return _.filter(tracks, track => track.metadata.title.toLowerCase().includes(this.search.toLowerCase()));
-  //   }
-  //   return tracks.slice(0, 300); // TODO add a warning if there are more tracks, perf review
-  // });
-
   filter: (track: Track) => boolean = ((track: Track) => {
     if (this.search !== '') {
       return track.metadata.title.toLowerCase().includes(this.search.toLowerCase());
     }
     return true;
   });
-
 
   private subscriptions: Subscription[] = [];
 

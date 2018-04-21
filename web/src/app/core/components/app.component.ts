@@ -7,7 +7,7 @@ import {PersistenceService} from '../services/persistence.service';
 import {LibraryService} from '@app/library/services/library.service';
 
 import {Theme, Themes} from '../utils/themes';
-import * as fromRoot from '@app/reducers';
+import * as fromRoot from '@app/app.reducers';
 import * as LayoutActions from '../core.actions';
 
 import {Observable} from 'rxjs';

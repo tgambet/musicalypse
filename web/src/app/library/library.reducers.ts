@@ -1,6 +1,6 @@
 import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
-import * as fromRoot from '@app/reducers';
+import * as fromRoot from '@app/app.reducers';
 import * as fromTracks from './reducers/tracks.reducers';
 import * as fromArtists from './reducers/artists.reducers';
 import * as fromAlbums from './reducers/albums.reducers';

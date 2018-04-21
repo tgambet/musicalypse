@@ -15,7 +15,7 @@ import {map} from 'rxjs/operators';
 import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/settings/settings.actions';
 import {Theme, Themes} from '@app/core/utils/themes';
 import * as LayoutActions from '@app/core/core.actions';
-import * as fromRoot from '@app/reducers';
+import * as fromRoot from '@app/app.reducers';
 import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Component({

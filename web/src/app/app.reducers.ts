@@ -1,5 +1,5 @@
 import {ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
-import * as fromCore from '../core/core.reducers';
+import * as fromCore from './core/core.reducers';
 import {environment} from '@env/environment';
 
 export interface State {

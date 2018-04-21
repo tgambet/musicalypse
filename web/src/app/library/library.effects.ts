@@ -120,7 +120,6 @@ export class LibraryEffects {
     this.actions$.pipe(
       ofType(TracksActionTypes.ScanTracks),
       switchMap(() => {
-        console.log('test');
         return this.scanTracks().pipe(
           map(tracks => new LoadTrackSuccess(tracks))
         );

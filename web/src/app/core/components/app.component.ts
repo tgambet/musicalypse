@@ -13,6 +13,8 @@ import * as LayoutActions from '../core.actions';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AudioService} from '@app/core/services/audio.service';
+
+// TODO This should be imported in a library service
 import {LoadTracks} from '@app/library/actions/tracks.actions';
 import * as fromLibrary from '@app/library/library.reducers';
 import {SelectArtistsByIds} from '@app/library/actions/artists.actions';
@@ -52,7 +54,7 @@ import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
       <mat-sidenav-container (backdropClick)="closeSidenav()">
 
         <mat-sidenav [opened]="showSidenav$ | async" [mode]="'over'">
-          <app-side-nav [playing]="false" (closeSidenav)="closeSidenav()"></app-side-nav>
+          <app-side-nav [playing]="playing$ | async" (closeSidenav)="closeSidenav()"></app-side-nav>
         </mat-sidenav>
 
         <router-outlet></router-outlet>
@@ -102,6 +104,7 @@ export class AppComponent {
   showSidenav$: Observable<boolean>;
   currentTheme$: Observable<Theme>;
   currentThemeCssClass$: Observable<string>;
+  playing$: Observable<boolean>;
 
   isElectron = environment.electron;
   isElectronFocused: boolean;
@@ -139,19 +142,24 @@ export class AppComponent {
         this.ref.detectChanges();
       });
     }
+
     // Set up core observables
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
     this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
+    this.playing$ = this.audioService.playing$;
+
     // Load the last theme
     const savedTheme = PersistenceService.load('theme');
     if (savedTheme) {
       this.changeTheme(JSON.parse(savedTheme));
     }
 
-    // configure Audio Service
+    // Configure Audio Service
     this.audioService.renderer = renderer;
     this.audioService.appRoot = appRoot;
+
+    // TODO move following in library service
 
     // Load Tracks
     store.dispatch(new LoadTracks());
@@ -186,9 +194,9 @@ export class AppComponent {
     return this.loader.isLoading();
   }
 
-  openSidenav() {
-    this.store.dispatch(new LayoutActions.OpenSidenav());
-  }
+  // openSidenav() {
+  //   this.store.dispatch(new LayoutActions.OpenSidenav());
+  // }
 
   closeSidenav() {
     this.store.dispatch(new LayoutActions.CloseSidenav());

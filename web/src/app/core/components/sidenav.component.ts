@@ -58,7 +58,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       vertical-align: text-top;
     }
     @media screen and (min-width: 599px){
-      mat-icon {
+      mat-icon:not(.playing-icon) {
         display: none;
       }
       .mat-line {

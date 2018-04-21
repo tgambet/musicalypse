@@ -29,7 +29,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       <button mat-icon-button routerLink="/settings" routerLinkActive="active" (click)="closeSidenav.emit()">
         <mat-icon>settings</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button routerLink="/about" routerLinkActive="active" (click)="closeSidenav.emit()">
         <mat-icon>info</mat-icon>
       </button>
     </nav>

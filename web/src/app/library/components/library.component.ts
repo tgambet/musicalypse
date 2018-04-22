@@ -43,10 +43,7 @@ import {Observable, Subscription} from 'rxjs';
           <app-player [currentTrack]="library.currentTrack"
                       [muted]="audioService.muted$ | async"
                       [volume]="audioService.volume$ | async"
-                      [duration]="audioService.duration$ | async"
-                      [currentTime]="audioService.currentTime$ | async"
                       [playing]="audioService.playing$ | async"
-                      [loading]="audioService.loading$ | async"
                       (previous)="translateContent(2)">
           </app-player>
         </div>

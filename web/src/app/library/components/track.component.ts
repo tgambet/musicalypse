@@ -81,6 +81,9 @@ import {Track} from '@app/model';
     </a>
   `,
   styles: [`
+    .track {
+      cursor: pointer;
+    }
     .spinner {
       display: inline-block;
       height: 40px;

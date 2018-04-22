@@ -51,7 +51,7 @@ import {AudioService} from '@app/core/services/audio.service';
                        [favorite]="favorites.isFavorite(track)"
                        [currentTime]="audioService.currentTime$ | async"
                        [duration]="audioService.duration$ | async"
-                       (click)="library.playTracks(tracks.filter(filter), track); next.emit()"
+                       (click)="library.playTracks(tracks.filter(filter).slice(0,300), track); next.emit()"
                        (addToFavorites)="favorites.addToFavorites(track)"
                        (addTrackToPlaylist)="library.addTrackToPlaylist(track)"
                        (audioPause)="pause()"

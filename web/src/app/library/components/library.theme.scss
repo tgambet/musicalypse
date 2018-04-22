@@ -62,4 +62,25 @@
     }
   }
 
+  .player {
+    .playlist, .playlist-long {
+      .mat-list-item, li {
+        color: mat-color($foreground, secondary-text);
+        &:hover {
+          color: mat-color($foreground, text);
+          background: mat-color($background, hover);
+        }
+      }
+      .current {
+        color: mat-color($primary) !important;
+      }
+    }
+    .playPause, .next, .previous {
+      background-color: mat-color($background, focused-button);
+    }
+    .albumArt {
+      color: mat-color($foreground, disabled-text);
+    }
+  }
+
 }

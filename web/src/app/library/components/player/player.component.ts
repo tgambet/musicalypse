@@ -5,7 +5,7 @@ import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {Track} from '@app/model';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 
@@ -19,11 +19,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   @Input() currentTrack: Track;
   @Input() playing: boolean;
-  @Input() loading: boolean;
   @Input() volume: number;
   @Input() muted: boolean;
-  @Input() duration: number;
-  @Input() currentTime: number;
+
+  loading$: Observable<boolean>;
+  duration$: Observable<number>;
+  currentTime$: Observable<number>;
 
   @Output()
   previous: EventEmitter<void> = new EventEmitter();
@@ -44,7 +45,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     public dialog: MatDialog,
     private audioService: AudioService
-  ) {}
+  ) {
+    this.loading$ = this.audioService.loading$;
+    this.duration$ = this.audioService.duration$;
+    this.currentTime$ = this.audioService.currentTime$;
+  }
 
   ngOnInit() {
     this.subscriptions.push(

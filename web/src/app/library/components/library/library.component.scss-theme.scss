@@ -11,7 +11,7 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
-  .artists, .albums, .tracks {
+  .list, .tracks {
     .mat-list-item {
       .avatar {
         background-color: mat-color($background, hover);

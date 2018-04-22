@@ -12,7 +12,7 @@ import {AudioService} from '@app/core/services/audio.service';
 @Component({
   selector: 'app-tracks',
   templateUrl: './tracks.component.html',
-  styleUrls: ['../library/library.component.common.scss', './tracks.component.scss'],
+  styleUrls: ['./tracks.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TracksComponent implements OnInit, OnDestroy {

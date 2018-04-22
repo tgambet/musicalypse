@@ -5,8 +5,8 @@ import {Router} from '@angular/router';
 import {AudioService} from '@app/core/services/audio.service';
 import {Album, Artist, Track} from '@app/model';
 
-import {LibraryService} from '../../services/library.service';
-import * as fromLibrary from '../../library.reducers';
+import {LibraryService} from '../services/library.service';
+import * as fromLibrary from '../library.reducers';
 
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
@@ -14,7 +14,54 @@ import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-library',
-  templateUrl: './library.component.html',
+  template: `
+    <div class="container">
+      <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack" [class.no-animation]="noAnimation">
+        <div class="column a1">
+          <app-artists #artistsComponent
+                       (next)="translateContent(1)"
+                       [artists]="artists$ | async"
+                       [selectedArtists]="selectedArtists$ | async">
+          </app-artists>
+        </div>
+        <div class="column a2">
+          <app-albums #albumsComponent
+                      (next)="translateContent(2)"
+                      (previous)="translateContent(0)"
+                      [albums]="albums$ | async"
+                      [selectedAlbums]="selectedAlbums$ | async">
+          </app-albums>
+        </div>
+        <div class="column a3">
+          <app-tracks #tracksComponent
+                      (next)="translateContent(3)"
+                      (previous)="translateContent(1)"
+                      [tracks]="tracks$ | async">
+          </app-tracks>
+        </div>
+        <div class="column a4">
+          <app-player [currentTrack]="library.currentTrack"
+                      [muted]="audioService.muted$ | async"
+                      [volume]="audioService.volume$ | async"
+                      [duration]="audioService.duration$ | async"
+                      [currentTime]="audioService.currentTime$ | async"
+                      [playing]="audioService.playing$ | async"
+                      [loading]="audioService.loading$ | async"
+                      (previous)="translateContent(2)">
+          </app-player>
+        </div>
+        <app-mini-player [currentTrack]="library.currentTrack"
+                         [muted]="audioService.muted$ | async"
+                         [volume]="audioService.volume$ | async"
+                         [duration]="audioService.duration$ | async"
+                         [currentTime]="audioService.currentTime$ | async"
+                         [playing]="audioService.playing$ | async"
+                         [loading]="audioService.loading$ | async"
+                         (next)="translateContent(3)">
+        </app-mini-player>
+      </div>
+    </div>
+  `,
   styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {

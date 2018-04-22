@@ -10,7 +10,7 @@ import {MiniPlayerComponent} from '@app/library/components/mini-player/mini-play
 import {PlayerComponent} from '@app/library/components/player/player.component';
 import {AlbumsComponent} from '@app/library/components/albums.component';
 import {ArtistsComponent} from '@app/library/components/artists.component';
-import {LibraryComponent} from '@app/library/components/library/library.component';
+import {LibraryComponent} from '@app/library/components/library.component';
 import {TracksComponent} from '@app/library/components/tracks/tracks.component';
 import {ControlsComponent} from '@app/library/components/shared/controls.component';
 import {ChipsComponent} from '@app/library/components/shared/chips.component';

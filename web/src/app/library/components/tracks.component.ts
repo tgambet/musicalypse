@@ -29,19 +29,19 @@ import {AudioService} from '@app/core/services/audio.service';
           <mat-icon>playlist_add</mat-icon>
           <span>Add all to current playlist</span>
         </button>
-        <!--<button mat-menu-item (click)="library.sortTracks(true)" [disabled]="library.sortTracksAlphabetically">-->
-        <!--<mat-icon>sort_by_alpha</mat-icon>-->
-        <!--<span>Sort alphabetically</span>-->
-        <!--</button>-->
-        <!--<button mat-menu-item (click)="library.sortTracks(false)" [disabled]="!library.sortTracksAlphabetically">-->
-        <!--<mat-icon>sort</mat-icon>-->
-        <!--<span>Sort by file name</span>-->
-        <!--</button>-->
+        <button mat-menu-item (click)="sortedAlphabetically = true" [disabled]="sortedAlphabetically">
+          <mat-icon>sort_by_alpha</mat-icon>
+          <span>Sort alphabetically</span>
+        </button>
+        <button mat-menu-item (click)="sortedAlphabetically = false" [disabled]="!sortedAlphabetically">
+          <mat-icon>sort</mat-icon>
+          <span>Sort by file name</span>
+        </button>
       </mat-menu>
 
       <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
-        <mat-list class="list" [class.sorted-alpha]="library.sortTracksAlphabetically" dense>
-          <ng-container *ngFor="let track of tracks.filter(filter).slice(0,300); trackBy: trackByURL">
+        <mat-list class="list" [class.sorted-alpha]="sortedAlphabetically" dense>
+          <ng-container *ngFor="let track of sort(tracks.filter(filter)).slice(0,300); trackBy: trackByURL">
             <app-track [track]="track"
                        [warn]="track.warn && settings.warnOnMissingTags"
                        [currentTrack]="track.url === (library.currentTrack ? library.currentTrack.url : '')"
@@ -65,7 +65,7 @@ import {AudioService} from '@app/core/services/audio.service';
         </mat-list>
       </div>
 
-      <app-dictionary *ngIf="library.sortTracksAlphabetically" (letterClicked)="scrollTo($event)"></app-dictionary>
+      <app-dictionary *ngIf="sortedAlphabetically" (letterClicked)="scrollTo($event)"></app-dictionary>
 
     </div>
   `,
@@ -102,12 +102,21 @@ export class TracksComponent implements OnInit, OnDestroy {
   @ViewChild('tracksMenu') tracksMenu: MatMenu;
 
   search = '';
+  sortedAlphabetically = false;
 
   filter: (track: Track) => boolean = ((track: Track) => {
     if (this.search !== '') {
       return track.metadata.title.toLowerCase().includes(this.search.toLowerCase());
     }
     return true;
+  });
+
+  sort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
+    if (this.sortedAlphabetically) {
+      return _.sortBy(tracks, (track: Track) => track.metadata.title);
+    } else {
+      return tracks;
+    }
   });
 
   private subscriptions: Subscription[] = [];

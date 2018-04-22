@@ -6,7 +6,7 @@ import {SharedModule} from '@app/shared/shared.module';
 import {FavoritesService} from './services/favorites.service';
 import {LibraryService} from './services/library.service';
 import {DictionaryComponent} from '@app/library/components/shared/dictionary.component';
-import {MiniPlayerComponent} from '@app/library/components/mini-player/mini-player.component';
+import {MiniPlayerComponent} from '@app/library/components/mini-player.component';
 import {PlayerComponent} from '@app/library/components/player/player.component';
 import {AlbumsComponent} from '@app/library/components/albums.component';
 import {ArtistsComponent} from '@app/library/components/artists.component';

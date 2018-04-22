@@ -44,4 +44,22 @@
     }
   }
 
+  .mini-player {
+    background-color: mat-color($background, background);
+
+    .avatar {
+      background-color: mat-color($background, hover);
+      color: mat-color($foreground, disabled-text);
+    }
+
+    .controls {
+      .playPause {
+        background-color: mat-color($background, focused-button);
+      }
+      .next, .previous {
+        border: 1px solid mat-color($foreground, divider);
+      }
+    }
+  }
+
 }

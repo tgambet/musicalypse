@@ -12,7 +12,7 @@ export interface State extends EntityState<Artist> {
 
 export const adapter: EntityAdapter<Artist> = createEntityAdapter<Artist>({
   selectId: (artist: Artist) => artist.name,
-  sortComparer: (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
 
 export const initialState: State = adapter.getInitialState({

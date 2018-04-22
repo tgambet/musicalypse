@@ -14,7 +14,7 @@ export interface State extends EntityState<Album> {
 
 export const adapter: EntityAdapter<Album> = createEntityAdapter<Album>({
   selectId: getAlbumId,
-  sortComparer: (a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
+  sortComparer: (a, b) => a.title.localeCompare(b.title),
 });
 
 export const initialState: State = adapter.getInitialState({

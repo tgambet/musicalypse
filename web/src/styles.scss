@@ -238,7 +238,7 @@ app-root {
 }
 
 // Fix padding right on mat-list-items
-.artists, .albums, .tracks {
+.list {
   .mat-list-item-content {
     padding-right: 0.5rem !important;
   }

@@ -11,11 +11,11 @@ import {PlayerComponent} from '@app/library/components/player/player.component';
 import {AlbumsComponent} from '@app/library/components/albums.component';
 import {ArtistsComponent} from '@app/library/components/artists.component';
 import {LibraryComponent} from '@app/library/components/library.component';
-import {TracksComponent} from '@app/library/components/tracks/tracks.component';
+import {TracksComponent} from '@app/library/components/tracks.component';
 import {ControlsComponent} from '@app/library/components/shared/controls.component';
 import {ChipsComponent} from '@app/library/components/shared/chips.component';
 import {ListItemComponent} from '@app/library/components/shared/list-item.component';
-import {TrackComponent} from '@app/library/components/tracks/track.component';
+import {TrackComponent} from '@app/library/components/track.component';
 
 import {LibraryEffects} from '@app/library/library.effects';
 import {reducers} from './library.reducers';

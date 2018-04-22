@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {MatMenu} from '@angular/material';
 
 @Component({
   selector: 'app-controls',
@@ -26,6 +27,12 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               (click)="showSearch = !showSearch; showSearch ? searchInput.focus() : {}"
               class="searchButton">
         <mat-icon>search</mat-icon>
+      </button>
+      <button mat-button mat-icon-button
+              class="more"
+              *ngIf="matMenu"
+              [matMenuTriggerFor]="matMenu">
+        <mat-icon>more_vert</mat-icon>
       </button>
     </div>
   `,
@@ -93,6 +100,7 @@ export class ControlsComponent {
   @Input() backButton: boolean;
   @Input() search: string;
   @Input() searchPlaceholder: string;
+  @Input() matMenu: MatMenu;
 
   @Output() searchChange = new EventEmitter<string>();
   @Output() backClicked = new EventEmitter<void>();

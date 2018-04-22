@@ -66,6 +66,11 @@ import * as fromLibrary from '../library.reducers';
     </div>
   `,
   styles: [`
+    .wrapper {
+      padding-top: 60px;
+      height: 100%;
+      box-sizing: border-box;
+    }
     .list-wrapper {
       overflow-y: scroll;
       height: 100%;
@@ -73,11 +78,6 @@ import * as fromLibrary from '../library.reducers';
     .list {
       padding-top: 0;
       padding-right: 1rem;
-    }
-    .wrapper {
-      padding-top: 60px;
-      height: 100%;
-      box-sizing: border-box;
     }
     .select-text {
       font-weight: 300;

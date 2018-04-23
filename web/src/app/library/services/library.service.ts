@@ -9,6 +9,7 @@ import * as fromLibrary from '../library.reducers';
 import * as fromRoot from 'app/core/core.reducers';
 
 import {map} from 'rxjs/operators';
+import {SetPlaylist} from '@app/library/actions/player.actions';
 
 @Injectable()
 export class LibraryService {
@@ -17,7 +18,7 @@ export class LibraryService {
     // Load Tracks
     store.dispatch(new LoadTracks());
 
-    // Restore selection state
+    // Restore selection state and playlist
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
       this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
@@ -26,13 +27,20 @@ export class LibraryService {
     if (savedSelectedAlbumsIds) {
       this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
     }
+    const savedPlaylist = CoreUtils.load('playlist');
+    if (savedPlaylist) {
+      this.store.dispatch(new SetPlaylist(JSON.parse(savedPlaylist)));
+    }
 
-    // Save selection state on change
+    // Save selection state and playlist on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
       ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
     );
     this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
       ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
+    );
+    this.store.select(fromLibrary.getPlaylist).subscribe(
+      playlist => CoreUtils.save('playlist', JSON.stringify(playlist))
     );
   }
 

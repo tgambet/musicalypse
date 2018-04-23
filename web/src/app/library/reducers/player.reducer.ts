@@ -71,12 +71,15 @@ export function reducer(
     case PlayerActionTypes.PlayNextTrackInPlaylist: {
       const playlist = state.playlist;
       const currentTrack = state.currentTrack;
-      if (playlist.size === 0) {
-        return state;
+      if (playlist.size === 0 || (playlist.indexOf(currentTrack) === playlist.size - 1) && !state.repeat) {
+        return {
+          ...state,
+          currentTrack: null // TODO review whether to leave current track as set is better
+        };
       }
       if (!currentTrack ||
           !playlist.includes(currentTrack) ||
-          playlist.indexOf(currentTrack) + 1 >= playlist.size) {
+          (playlist.indexOf(currentTrack) === playlist.size - 1) && state.repeat) {
         return {
           ...state,
           currentTrack: playlist.get(0)

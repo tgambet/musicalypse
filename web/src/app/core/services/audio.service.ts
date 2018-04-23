@@ -17,6 +17,7 @@ export class AudioService {
   duration$: Observable<number>;
   loading$: Observable<boolean>;
   playing$: Observable<boolean>;
+  ended$: Observable<void>;
 
   private _renderer: Renderer2;
   private _appRoot: ElementRef;
@@ -34,6 +35,7 @@ export class AudioService {
   private _duration = new Subject<number>();
   private _loading = new Subject<boolean>();
   private _playing = new Subject<boolean>();
+  private _ended = new Subject<void>();
 
   private audioElement: HTMLMediaElement;
 
@@ -46,6 +48,7 @@ export class AudioService {
     this.duration$ = this._duration.asObservable();
     this.loading$ = this._loading.asObservable();
     this.playing$ = this._playing.asObservable();
+    this.ended$ = this._ended.asObservable();
     this._volume.next(this.volume);
     this._muted.next(this.muted);
     this._loading.next(false);
@@ -119,6 +122,7 @@ export class AudioService {
     return false;
   }
 
+  // TODO manage errors
   private createAudioElement(src: string): HTMLMediaElement {
     const audio: HTMLMediaElement = this._renderer.createElement('audio');
     this._renderer.appendChild(this._appRoot.nativeElement, audio);
@@ -133,7 +137,8 @@ export class AudioService {
       this._renderer.listen(audio, 'pause', () => this._playing.next(false)),
       this._renderer.listen(audio, 'abort', () => this._playing.next(false)),
       this._renderer.listen(audio, 'ended', () => this._playing.next(false)),
-      this._renderer.listen(audio, 'canplay', () => this._loading.next(false))
+      this._renderer.listen(audio, 'canplay', () => this._loading.next(false)),
+      this._renderer.listen(audio, 'ended', () => this._ended.next()),
       // this._renderer.listen(audio, 'error', () => this._loading.next(false))
     );
     return audio;

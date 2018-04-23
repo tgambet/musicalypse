@@ -17,6 +17,7 @@ import {from, Observable, of} from 'rxjs';
 import {catchError, filter, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
 import {Title} from '@angular/platform-browser';
 import {AudioService} from '@app/core/services/audio.service';
+import {PlayNextTrackInPlaylist} from '@app/library/actions/player.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -140,6 +141,15 @@ export class LibraryEffects {
       filter(track => !!track),
       tap(track => this.audioService.play(LibraryService.resolveUrl(track.url))),
       tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`))
+    );
+
+  /**
+   * Play next track when a song has ended
+   */
+  @Effect()
+  playNextTrack$: Observable<Action> =
+    this.audioService.ended$.pipe(
+      map(() => new PlayNextTrackInPlaylist())
     );
 
   constructor(

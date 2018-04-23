@@ -98,7 +98,7 @@ $pink-theme:  (
 );
 
 @import 'app/core/core.theme';
-@import 'app/library/components/library.theme';
+@import 'app/library/library.theme';
 
 @mixin custom-components-theme($theme) {
   @include core-theme($theme);

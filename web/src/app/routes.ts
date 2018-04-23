@@ -1,5 +1,5 @@
 import {Routes} from '@angular/router';
-import {LibraryComponent} from './library/components/library.component';
+import {LibraryComponent} from './library/library.component';
 import {SettingsComponent} from './settings/components/settings.component';
 import {AboutComponent} from './core/components/about.component';
 

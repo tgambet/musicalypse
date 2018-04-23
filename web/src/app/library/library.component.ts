@@ -2,9 +2,9 @@ import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angula
 import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 
-import {AudioService} from '@app/core/services/audio.service';
-import {Album, Artist, Track} from '@app/model';
-import * as fromLibrary from '../library.reducers';
+import {AudioService} from '../core/services/audio.service';
+import {Album, Artist, Track} from '../model';
+import * as fromLibrary from './library.reducers';
 
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';

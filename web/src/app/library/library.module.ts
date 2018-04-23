@@ -11,7 +11,7 @@ import {MiniPlayerComponent} from './components/mini-player.component';
 import {PlayerComponent} from './components/player/player.component';
 import {AlbumsComponent} from './components/albums.component';
 import {ArtistsComponent} from './components/artists.component';
-import {LibraryComponent} from './components/library.component';
+import {LibraryComponent} from './library.component';
 import {TracksComponent} from './components/tracks.component';
 import {ControlsComponent} from './components/shared/controls.component';
 import {ChipsComponent} from './components/shared/chips.component';

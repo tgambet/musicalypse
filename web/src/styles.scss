@@ -97,11 +97,11 @@ $pink-theme:  (
   ),
 );
 
-@import 'app/core/components/app.theme';
+@import 'app/core/core.theme';
 @import 'app/library/components/library.theme';
 
 @mixin custom-components-theme($theme) {
-  @include app-theme($theme);
+  @include core-theme($theme);
   @include library-component-theme($theme);
 }
 

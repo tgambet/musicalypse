@@ -3,7 +3,7 @@ import {Observable, Subject} from 'rxjs';
 import {throttleTime} from 'rxjs/operators';
 
 /**
- * Service configured by AppComponent and in charge of creating and setting up the audio tag.
+ * Service configured by CoreComponent and in charge of creating and setting up the audio tag.
  */
 @Injectable()
 export class AudioService {

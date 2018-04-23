@@ -2,23 +2,23 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostL
 import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
 
-import {LoaderService} from '../services/loader.service';
-import {PersistenceService} from '../services/persistence.service';
-import {LibraryService} from '@app/library/services/library.service';
+import {LoaderService} from './services/loader.service';
+import {PersistenceService} from './services/persistence.service';
+import {AudioService} from './services/audio.service';
+import {LibraryService} from '../library/services/library.service';
 
-import {Theme, Themes} from '../utils/themes';
-import * as fromRoot from '@app/app.reducers';
-import * as LayoutActions from '../core.actions';
+import {Theme, Themes} from './utils/themes';
+import * as fromRoot from '../app.reducers';
+import * as LayoutActions from './core.actions';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AudioService} from '@app/core/services/audio.service';
 
 // TODO This should be imported in a library service
-import {LoadTracks} from '@app/library/actions/tracks.actions';
-import * as fromLibrary from '@app/library/library.reducers';
-import {SelectArtistsByIds} from '@app/library/actions/artists.actions';
-import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
+import {LoadTracks} from '../library/actions/tracks.actions';
+import * as fromLibrary from '../library/library.reducers';
+import {SelectArtistsByIds} from '../library/actions/artists.actions';
+import {SelectAlbumsByIds} from '../library/actions/albums.actions';
 
 @Component({
   selector: 'app-root',
@@ -99,7 +99,7 @@ import {SelectAlbumsByIds} from '@app/library/actions/albums.actions';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class CoreComponent {
 
   showSidenav$: Observable<boolean>;
   currentTheme$: Observable<Theme>;

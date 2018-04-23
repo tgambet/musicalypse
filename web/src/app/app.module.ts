@@ -7,7 +7,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {routes} from './routes';
 
 import {CoreModule} from './core/core.module';
-import {AppComponent} from './core/components/app.component';
+import {CoreComponent} from './core/core.component';
 import {LibraryModule} from './library/library.module';
 import {SettingsModule} from './settings/settings.module';
 import {metaReducers, reducers} from './app.reducers';
@@ -31,6 +31,6 @@ import {environment} from '@env/environment';
     LibraryModule,
     SettingsModule,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [CoreComponent]
 })
 export class AppModule { }

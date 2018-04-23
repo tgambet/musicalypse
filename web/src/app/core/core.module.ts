@@ -3,7 +3,7 @@ import {EffectsModule} from '@ngrx/effects';
 
 import {SharedModule} from '@app/shared/shared.module';
 
-import {AppComponent} from './components/app.component';
+import {CoreComponent} from './core.component';
 import {AboutComponent} from './components/about.component';
 import {SideMenuComponent} from './components/sidemenu.component';
 import {SidenavComponent} from './components/sidenav.component';
@@ -17,7 +17,7 @@ import {AudioService} from './services/audio.service';
 import {CoreEffects} from './core.effects';
 
 export const COMPONENTS = [
-  AppComponent,
+  CoreComponent,
   AboutComponent,
   SideMenuComponent,
   SidenavComponent,

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {LibraryService} from '../services/library.service';
 import {Track} from '@app/model';
 import {AudioService} from '@app/core/services/audio.service';
 import * as fromLibrary from '@app/library/library.reducers';
@@ -33,7 +32,7 @@ import {PlayNextTrackInPlaylist, PlayPreviousTrackInPlaylist} from '@app/library
         <button mat-button mat-icon-button
                 class="playPause"
                 [disabled]="!currentTrack"
-                (click)="playing ? pause() : play(); $event.stopPropagation()">
+                (click)="playing ? pause() : resume(); $event.stopPropagation()">
           <mat-icon>{{ playing ? 'pause' : 'play_arrow' }}</mat-icon>
         </button>
         <button mat-button mat-icon-button
@@ -142,7 +141,6 @@ export class MiniPlayerComponent implements OnInit {
   @Output() next: EventEmitter<void> = new EventEmitter();
 
   constructor(
-    public library: LibraryService,
     private sanitizer: DomSanitizer,
     private audioService: AudioService,
     private store: Store<fromLibrary.State>
@@ -156,7 +154,7 @@ export class MiniPlayerComponent implements OnInit {
     return track && track.coverUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${track.coverUrl}")`) : '';
   }
 
-  play() {
+  resume() {
     this.audioService.resume();
   }
 

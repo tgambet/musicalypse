@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
 import {Track} from '@app/model';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
@@ -53,10 +52,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private library: LibraryService,
     public favorites: FavoritesService,
     // public snackBar: MatSnackBar,
-    public dialog: MatDialog,
+    private dialog: MatDialog,
     private audioService: AudioService,
     private store: Store<fromLibrary.State>
   ) {
@@ -157,7 +155,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   playTrack(track: Track) {
-    // this.library.playTrack(track);
     this.store.dispatch(new PlayTrack(track));
   }
 

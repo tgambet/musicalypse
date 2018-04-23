@@ -1,14 +1,12 @@
 import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 
 import {AudioService} from '../core/services/audio.service';
 import {Album, Artist, Track} from '../model';
-import * as fromLibrary from './library.reducers';
 
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-library',
@@ -74,7 +72,6 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   albums$: Observable<Album[]>;
   selectedAlbums$: Observable<Album[]>;
   tracks$: Observable<Track[]>;
-
   currentTrack$: Observable<Track>;
   playlist$: Observable<Track[]>;
   shuffle$: Observable<boolean>;
@@ -92,17 +89,17 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     public audioService: AudioService,
-    private store: Store<fromLibrary.State>,
+    private libraryService: LibraryService
   ) {
-    this.artists$ = store.select(fromLibrary.getAllArtists);
-    this.selectedArtists$ = store.select(fromLibrary.getSelectedArtists);
-    this.albums$ = store.select(fromLibrary.getDisplayedAlbums);
-    this.selectedAlbums$ = store.select(fromLibrary.getSelectedAlbums);
-    this.tracks$ = store.select(fromLibrary.getDisplayedTracks);
-    this.currentTrack$ = store.select(fromLibrary.getCurrentTrack);
-    this.shuffle$ = store.select(fromLibrary.getShuffle);
-    this.repeat$ = store.select(fromLibrary.getRepeat);
-    this.playlist$ = store.select(fromLibrary.getPlaylist).pipe(map(p => p.toArray()));
+    this.artists$         = libraryService.getArtists();
+    this.selectedArtists$ = libraryService.getSelectedArtists();
+    this.albums$          = libraryService.getAlbums();
+    this.selectedAlbums$  = libraryService.getSelectedAlbums();
+    this.tracks$          = libraryService.getTracks();
+    this.currentTrack$    = libraryService.getCurrentTrack();
+    this.shuffle$         = libraryService.getShuffle();
+    this.repeat$          = libraryService.getRepeat();
+    this.playlist$        = libraryService.getPlaylist();
   }
 
   @HostListener('window:resize') onResize() {

@@ -2,7 +2,6 @@ import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {FolderComponent} from '@app/shared/dialogs/folder/folder.component';
-import {LibraryService} from '@app/library/services/library.service';
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {ConfirmComponent} from '@app/shared/dialogs/confirm/confirm.component';
@@ -38,7 +37,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     public httpSocketClient: HttpSocketClientService,
     public settings: SettingsService,
     private dialog: MatDialog,
-    private library: LibraryService,
     private router: Router,
     private store: Store<fromSettings.State>,
     private zone: NgZone

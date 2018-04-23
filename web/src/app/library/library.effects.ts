@@ -4,21 +4,20 @@ import {Title} from '@angular/platform-browser';
 import {Action, Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 
+import {CoreUtils} from '@app/core/core.utils';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {AudioService} from '@app/core/services/audio.service';
 import {Album, Artist, Track} from '@app/model';
 
+import {LibraryUtils} from './library.utils';
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes, LoadArtists} from './actions/artists.actions';
 import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
-import {LibraryService} from './services/library.service';
-
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
 import {catchError, filter, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
-import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
 export class LibraryEffects {
@@ -32,7 +31,7 @@ export class LibraryEffects {
       ofType(TracksActionTypes.LoadTracks),
       switchMap(() =>
         this.httpSocketClient.get('/api/libraries/tracks').pipe(
-          map((tracks: Track[]) => tracks.map(LibraryService.fixTags)),
+          map((tracks: Track[]) => tracks.map(LibraryUtils.fixTags)),
           map(tracks => new LoadTrackSuccess(tracks)),
           catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error)))
         )
@@ -48,7 +47,7 @@ export class LibraryEffects {
       ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
       map(action => action.payload),
       map((tracks: Track[]) =>
-        new LoadArtists(LibraryService.extractArtists(tracks))
+        new LoadArtists(LibraryUtils.extractArtists(tracks))
       ),
     );
 
@@ -61,7 +60,7 @@ export class LibraryEffects {
       ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
       map(action => action.payload),
       map((tracks: Track[]) =>
-        new LoadAlbums(LibraryService.extractAlbums(tracks))
+        new LoadAlbums(LibraryUtils.extractAlbums(tracks))
       ),
     );
 
@@ -162,7 +161,7 @@ export class LibraryEffects {
   ) {}
 
   public scanTracks(): Observable<Track[]> {
-    return this._scanTracksObs().pipe(scan((acc: Track[], track: Track) => [LibraryService.fixTags(track), ...acc], []));
+    return this._scanTracksObs().pipe(scan((acc: Track[], track: Track) => [LibraryUtils.fixTags(track), ...acc], []));
   }
 
   public _scanTracksObs(): Observable<Track> {

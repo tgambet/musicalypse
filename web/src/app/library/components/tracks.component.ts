@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatMenu} from '@angular/material';
 import {Track} from '@app/model';
-import {LibraryService} from '../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
@@ -128,9 +127,8 @@ export class TracksComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    public library: LibraryService,
     public favorites: FavoritesService,
-    public dialog: MatDialog,
+    private dialog: MatDialog,
     public settings: SettingsService,
     public audioService: AudioService,
     private store: Store<fromLibrary.State>

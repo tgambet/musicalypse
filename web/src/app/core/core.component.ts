@@ -4,20 +4,13 @@ import {environment} from '@env/environment';
 
 import {LoaderService} from './services/loader.service';
 import {AudioService} from './services/audio.service';
-import {LibraryService} from '../library/services/library.service';
 
 import * as fromRoot from '../app.reducers';
 import * as LayoutActions from './core.actions';
+import {CoreUtils, Theme} from './core.utils';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-
-// TODO This should be imported in a library service
-import {LoadTracks} from '../library/actions/tracks.actions';
-import * as fromLibrary from '../library/library.reducers';
-import {SelectArtistsByIds} from '../library/actions/artists.actions';
-import {SelectAlbumsByIds} from '../library/actions/albums.actions';
-import {CoreUtils, Theme} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-root',
@@ -113,7 +106,6 @@ export class CoreComponent {
   featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
   constructor(
-    private library: LibraryService,
     private ref: ChangeDetectorRef,
     private store: Store<fromRoot.State>,
     private loader: LoaderService,
@@ -157,29 +149,6 @@ export class CoreComponent {
     // Configure Audio Service
     this.audioService.renderer = renderer;
     this.audioService.appRoot = appRoot;
-
-    // TODO move following in library service
-
-    // Load Tracks
-    store.dispatch(new LoadTracks());
-
-    // Restore selection state
-    const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
-    if (savedSelectedArtistsIds) {
-      this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
-    }
-    const savedSelectedAlbumsIds = CoreUtils.load('selectedAlbumsIds');
-    if (savedSelectedAlbumsIds) {
-      this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
-    }
-
-    // Save selection state on change
-    this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
-      ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
-    );
-    this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
-      ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
-    );
   }
 
   @HostListener('window:storage', ['$event'])
@@ -189,7 +158,7 @@ export class CoreComponent {
     }
   }
 
-  isLoading() {
+  isLoading(): boolean {
     return this.loader.isLoading();
   }
 
@@ -197,31 +166,31 @@ export class CoreComponent {
   //   this.store.dispatch(new LayoutActions.OpenSidenav());
   // }
 
-  closeSidenav() {
+  closeSidenav(): void {
     this.store.dispatch(new LayoutActions.CloseSidenav());
   }
 
-  toggleSidenav() {
+  toggleSidenav(): void {
     this.store.dispatch(new LayoutActions.ToggleSidenav());
   }
 
-  changeTheme(theme: Theme) {
+  changeTheme(theme: Theme): void {
     this.store.dispatch(new LayoutActions.ChangeTheme(theme));
   }
 
-  closeWindow() {
+  closeWindow(): void {
     this.electronRemote.getCurrentWindow().close();
   }
 
-  minimizeWindow() {
+  minimizeWindow(): void {
     this.electronRemote.getCurrentWindow().minimize();
   }
 
-  maximizeWindow() {
+  maximizeWindow(): void {
     this.electronRemote.getCurrentWindow().maximize();
   }
 
-  unmaximizeWindow() {
+  unmaximizeWindow(): void {
     this.electronRemote.getCurrentWindow().unmaximize();
   }
 

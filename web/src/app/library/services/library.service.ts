@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Album, Artist, Track} from '@app/model';
-import {environment} from '@env/environment';
 import * as _ from 'lodash';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
 export class LibraryService {
@@ -35,15 +35,15 @@ export class LibraryService {
     // this.update();
   }
 
-  static resolveUrl(sourceUrl: string) {
-    if (environment.electron) {
-      return 'http://localhost:' + environment.httpPort + encodeURI(sourceUrl);
-    } else if (environment.production) {
-      return encodeURI(sourceUrl);
-    } else {
-      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
-    }
-  }
+  // static resolveUrl(sourceUrl: string) {
+  //   if (environment.electron) {
+  //     return 'http://localhost:' + environment.httpPort + encodeURI(sourceUrl);
+  //   } else if (environment.production) {
+  //     return encodeURI(sourceUrl);
+  //   } else {
+  //     return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
+  //   }
+  // }
 
   static fixTags(track: Track): Track {
     if (track.metadata.title === undefined || track.metadata.title === '') {
@@ -64,7 +64,7 @@ export class LibraryService {
       track.warn = true;
     }
     if (track.coverUrl) {
-      track.coverUrl = LibraryService.resolveUrl(track.coverUrl);
+      track.coverUrl = CoreUtils.resolveUrl(track.coverUrl);
     }
     return track;
   }

@@ -1,23 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Title} from '@angular/platform-browser';
 import {Action, Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
+import {AudioService} from '@app/core/services/audio.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes, LoadArtists} from './actions/artists.actions';
 import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from './actions/albums.actions';
+import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import {LibraryService} from './services/library.service';
 
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
 import {catchError, filter, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
-import {Title} from '@angular/platform-browser';
-import {AudioService} from '@app/core/services/audio.service';
-import {PlayNextTrackInPlaylist} from '@app/library/actions/player.actions';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
 export class LibraryEffects {
@@ -139,7 +140,7 @@ export class LibraryEffects {
   playTrack$: Observable<Track> =
     this.store.select(fromLibrary.getCurrentTrack).pipe(
       filter(track => !!track),
-      tap(track => this.audioService.play(LibraryService.resolveUrl(track.url))),
+      tap(track => this.audioService.play(CoreUtils.resolveUrl(track.url))),
       tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`))
     );
 

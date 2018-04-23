@@ -3,11 +3,9 @@ import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
 
 import {LoaderService} from './services/loader.service';
-import {PersistenceService} from './services/persistence.service';
 import {AudioService} from './services/audio.service';
 import {LibraryService} from '../library/services/library.service';
 
-import {Theme, Themes} from './utils/themes';
 import * as fromRoot from '../app.reducers';
 import * as LayoutActions from './core.actions';
 
@@ -19,6 +17,7 @@ import {LoadTracks} from '../library/actions/tracks.actions';
 import * as fromLibrary from '../library/library.reducers';
 import {SelectArtistsByIds} from '../library/actions/artists.actions';
 import {SelectAlbumsByIds} from '../library/actions/albums.actions';
+import {CoreUtils, Theme} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-root',
@@ -111,7 +110,7 @@ export class CoreComponent {
   isMaximized = false;
   electronRemote = environment.electron ? (<any>window).require('electron').remote : null;
 
-  featuredThemes: Theme[] = Themes.featuredThemes;
+  featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
   constructor(
     private library: LibraryService,
@@ -150,7 +149,7 @@ export class CoreComponent {
     this.playing$ = this.audioService.playing$;
 
     // Load the last theme
-    const savedTheme = PersistenceService.load('theme');
+    const savedTheme = CoreUtils.load('theme');
     if (savedTheme) {
       this.changeTheme(JSON.parse(savedTheme));
     }
@@ -165,21 +164,21 @@ export class CoreComponent {
     store.dispatch(new LoadTracks());
 
     // Restore selection state
-    const savedSelectedArtistsIds = PersistenceService.load('selectedArtistsIds');
+    const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
       this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
     }
-    const savedSelectedAlbumsIds = PersistenceService.load('selectedAlbumsIds');
+    const savedSelectedAlbumsIds = CoreUtils.load('selectedAlbumsIds');
     if (savedSelectedAlbumsIds) {
       this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
     }
 
     // Save selection state on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
-      ids => PersistenceService.save('selectedArtistsIds', JSON.stringify(ids))
+      ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
     );
     this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
-      ids => PersistenceService.save('selectedAlbumsIds', JSON.stringify(ids))
+      ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
     );
   }
 

@@ -61,7 +61,7 @@ import {MatMenu} from '@angular/material';
       overflow: hidden;
     }
     .controls-meta {
-      height: 60px;
+      height: 59px;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -70,16 +70,16 @@ import {MatMenu} from '@angular/material';
       transition-duration: 0.4s;
     }
     .controls-meta.showSearch {
-      transform: translateY(60px);
+      transform: translateY(59px);
     }
     .search {
-      height: 60px;
+      height: 59px;
       transition-property: transform;
       transition-timing-function: ease;
       transition-duration: 0.4s;
     }
     .search.showSearch {
-      transform: translateY(60px);
+      transform: translateY(59px);
     }
     .search-icon {
       vertical-align: bottom;

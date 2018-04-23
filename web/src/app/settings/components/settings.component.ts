@@ -13,10 +13,10 @@ import * as fromSettings from '../settings.reducers';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from '@app/settings/settings.actions';
-import {Theme, Themes} from '@app/core/utils/themes';
 import * as LayoutActions from '@app/core/core.actions';
 import * as fromRoot from '@app/app.reducers';
 import {ScanTracks} from '@app/library/actions/tracks.actions';
+import {CoreUtils, Theme} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +25,7 @@ import {ScanTracks} from '@app/library/actions/tracks.actions';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  themes = Themes.allThemes;
+  themes = CoreUtils.allThemes;
 
   error$: Observable<string>;
   libraryFolders$: Observable<string[]>;

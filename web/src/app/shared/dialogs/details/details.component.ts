@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {LibraryService} from '@app/library/services/library.service';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-details',
@@ -22,8 +22,7 @@ export class DetailsComponent implements OnInit {
   }
 
   download() {
-    // TODO move getAudioComponent elsewhere. refactor with PlayerComponent.resolveUrl
-    window.open(LibraryService.resolveUrl(this.data.track.url), '_blank');
+    window.open(CoreUtils.resolveUrl(this.data.track.url), '_blank');
   }
 
 }

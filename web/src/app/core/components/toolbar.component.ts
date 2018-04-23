@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Theme} from '../utils/themes';
+import {Theme} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-toolbar',

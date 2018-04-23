@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {ChangeTheme, CoreActionTypes} from '@app/core/core.actions';
 import {OverlayContainer} from '@angular/cdk/overlay';
-import {PersistenceService} from '@app/core/services/persistence.service';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
 export class CoreEffects {
@@ -15,7 +15,7 @@ export class CoreEffects {
       ofType<ChangeTheme>(CoreActionTypes.ChangeTheme),
       tap((action: ChangeTheme) => {
         this.overlayContainer.getContainerElement().className = 'cdk-overlay-container ' + action.payload.cssClass;
-        PersistenceService.save('theme', JSON.stringify(action.payload));
+        CoreUtils.save('theme', JSON.stringify(action.payload));
       }),
       map(() => {})
     );

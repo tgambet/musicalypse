@@ -11,7 +11,6 @@ import {ToolbarComponent} from './components/toolbar.component';
 
 import {LoaderService} from './services/loader.service';
 import {HttpSocketClientService} from './services/http-socket-client.service';
-import {PersistenceService} from './services/persistence.service';
 import {AudioService} from './services/audio.service';
 
 import {CoreEffects} from './core.effects';
@@ -34,7 +33,6 @@ export const COMPONENTS = [
   providers: [
     HttpSocketClientService,
     LoaderService,
-    PersistenceService,
     AudioService
   ]
 })

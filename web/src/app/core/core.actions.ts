@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {Theme} from './utils/themes';
+import {Theme} from '@app/core/core.utils';
 
 export enum CoreActionTypes {
   OpenSidenav = '[Core] Open Sidenav',

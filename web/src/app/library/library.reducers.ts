@@ -1,16 +1,18 @@
 import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
+import {Album, Artist} from '@app/model';
+
 import * as fromRoot from '@app/app.reducers';
 import * as fromTracks from './reducers/tracks.reducers';
 import * as fromArtists from './reducers/artists.reducers';
 import * as fromAlbums from './reducers/albums.reducers';
-import {Album, Artist} from '@app/model';
-import {getAlbumId} from '@app/library/reducers/albums.reducers';
+import * as fromPlayer from './reducers/player.reducer';
 
 export interface LibraryState {
   tracks: fromTracks.State;
   artists: fromArtists.State;
   albums: fromAlbums.State;
+  player: fromPlayer.State;
 }
 
 export interface State extends fromRoot.State {
@@ -20,11 +22,15 @@ export interface State extends fromRoot.State {
 export const reducers: ActionReducerMap<LibraryState> = {
   tracks: fromTracks.reducer,
   artists: fromArtists.reducer,
-  albums: fromAlbums.reducer
+  albums: fromAlbums.reducer,
+  player: fromPlayer.reducer
 };
 
 export const getLibraryState = createFeatureSelector<LibraryState>('library');
 
+/**
+ * Tracks selectors
+ */
 export const getTracksState = createSelector(
   getLibraryState,
   state => state.tracks
@@ -42,6 +48,9 @@ export const {
   selectTotal: getTotalTracks,
 } = fromTracks.adapter.getSelectors(getTracksState);
 
+/**
+ * Artists selectors
+ */
 export const getArtistsState = createSelector(
   getLibraryState,
   state => state.artists
@@ -70,6 +79,9 @@ export const isSelectedArtist = (artist: Artist) => createSelector(
   ids => ids.indexOf(artist.name) > -1
 );
 
+/**
+ * Albums selectors
+ */
 export const getAlbumsState = createSelector(
   getLibraryState,
   state => state.albums
@@ -90,12 +102,12 @@ export const getSelectedAlbumsIds = createSelector(
 export const getSelectedAlbums = createSelector(
   getAllAlbums,
   getSelectedAlbumsIds,
-  (albums, ids) => albums.filter(album => ids.indexOf(getAlbumId(album)) > -1)
+  (albums, ids) => albums.filter(album => ids.indexOf(fromAlbums.getAlbumId(album)) > -1)
 );
 
 export const isSelectedAlbum = (album: Album) => createSelector(
   getSelectedAlbumsIds,
-  ids => ids.indexOf(getAlbumId(album)) > -1
+  ids => ids.indexOf(fromAlbums.getAlbumId(album)) > -1
 );
 
 export const getDisplayedAlbums = createSelector(
@@ -111,3 +123,32 @@ export const getDisplayedTracks = createSelector(
   (ids, tracks) =>
     tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
 );
+
+/**
+ * Player selectors
+ */
+export const getPlayerState = createSelector(
+  getLibraryState,
+  state => state.player
+);
+
+export const getCurrentTrack = createSelector(
+  getPlayerState,
+  fromPlayer.getCurrentTrack
+);
+
+export const getRepeat = createSelector(
+  getPlayerState,
+  fromPlayer.getRepeat
+);
+
+export const getShuffle = createSelector(
+  getPlayerState,
+  fromPlayer.getShuffle
+);
+
+export const getPlaylist = createSelector(
+  getPlayerState,
+  fromPlayer.getPlaylist
+);
+

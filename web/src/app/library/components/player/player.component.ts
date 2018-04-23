@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {MatDialog, MatSnackBar, MatTabGroup} from '@angular/material';
+import {MatDialog, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {LibraryService} from '../../services/library.service';
 import {FavoritesService} from '../../services/favorites.service';
@@ -8,6 +8,16 @@ import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
+import {Store} from '@ngrx/store';
+import * as fromLibrary from '../../library.reducers';
+import {
+  PlayNextTrackInPlaylist,
+  PlayPreviousTrackInPlaylist,
+  PlayTrack,
+  ResetPlaylist,
+  SetRepeat,
+  SetShuffle
+} from '@app/library/actions/player.actions';
 
 @Component({
   selector: 'app-player',
@@ -21,6 +31,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   @Input() playing: boolean;
   @Input() volume: number;
   @Input() muted: boolean;
+  @Input() shuffle: boolean;
+  @Input() repeat: boolean;
+  @Input() playlist: Track[];
 
   loading$: Observable<boolean>;
   duration$: Observable<number>;
@@ -40,11 +53,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    public library: LibraryService,
+    private library: LibraryService,
     public favorites: FavoritesService,
-    public snackBar: MatSnackBar,
+    // public snackBar: MatSnackBar,
     public dialog: MatDialog,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private store: Store<fromLibrary.State>
   ) {
     this.loading$ = this.audioService.loading$;
     this.duration$ = this.audioService.duration$;
@@ -82,8 +96,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   clearPlaylist() {
-    this.library.resetPlaylist();
-    this.snackBar.open('Playlist cleared', '', { duration: 1500 });
+    // this.library.resetPlaylist();
+    // this.snackBar.open('Playlist cleared', '', { duration: 1500 });
+    this.store.dispatch(new ResetPlaylist());
   }
 
   openDetailsDialog(track: Track) {
@@ -99,7 +114,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
   }
 
-  play() {
+  resume() {
     this.audioService.resume();
   }
 
@@ -121,6 +136,29 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   unmute() {
     this.audioService.unmute();
+  }
+
+  playPrevious() {
+    // this.library.playPreviousTrackInPlaylist();
+    this.store.dispatch(new PlayPreviousTrackInPlaylist());
+  }
+
+  playNext() {
+    // this.library.playNextTrackInPlaylist();
+    this.store.dispatch(new PlayNextTrackInPlaylist());
+  }
+
+  setShuffle(value: boolean) {
+    this.store.dispatch(new SetShuffle(value));
+  }
+
+  setRepeat(value: boolean) {
+    this.store.dispatch(new SetRepeat(value));
+  }
+
+  playTrack(track: Track) {
+    // this.library.playTrack(track);
+    this.store.dispatch(new PlayTrack(track));
   }
 
 }

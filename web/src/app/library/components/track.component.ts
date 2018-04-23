@@ -15,7 +15,7 @@ import {Track} from '@app/model';
       </div>
       <button mat-button mat-icon-button
               class="more"
-              *ngIf="!currentTrack"
+              *ngIf="!isCurrentTrack"
               [matMenuTriggerFor]="trackMenu"
               (click)="$event.stopPropagation()">
         <mat-icon>more_vert</mat-icon>
@@ -66,12 +66,12 @@ import {Track} from '@app/model';
         </button>
       </mat-menu>
       <button mat-button mat-icon-button
-              class = "playPause"
-              *ngIf="currentTrack"
+              class="playPause"
+              *ngIf="isCurrentTrack"
               (click)="playing ? audioPause.emit() : audioPlay.emit(); $event.stopPropagation()">
         <mat-icon>{{ playing ? 'pause' : 'play_arrow' }}</mat-icon>
       </button>
-      <span class="spinner" *ngIf="currentTrack">
+      <span class="spinner" *ngIf="isCurrentTrack">
         <mat-progress-spinner [diameter]="40"
                               [mode]="loading ? 'indeterminate' : 'determinate'"
                               [value]="currentTime / duration * 100">
@@ -122,7 +122,7 @@ import {Track} from '@app/model';
 export class TrackComponent {
 
   @Input() track: Track;
-  @Input() currentTrack: boolean;
+  @Input() isCurrentTrack: boolean;
   @Input() warn: boolean;
   @Input() favorite: boolean;
   @Input() search: string;

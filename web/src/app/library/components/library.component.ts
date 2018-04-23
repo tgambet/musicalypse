@@ -4,19 +4,20 @@ import {Router} from '@angular/router';
 
 import {AudioService} from '@app/core/services/audio.service';
 import {Album, Artist, Track} from '@app/model';
-
-import {LibraryService} from '../services/library.service';
 import * as fromLibrary from '../library.reducers';
 
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
-
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-library',
   template: `
     <div class="container">
-      <div class="content" [ngClass]="'t' + contentTranslation" [class.no-track]="!library.currentTrack" [class.no-animation]="noAnimation">
+      <div class="content"
+           [ngClass]="'t' + contentTranslation"
+           [class.no-track]="!(currentTrack$ | async)"
+           [class.no-animation]="noAnimation">
         <div class="column a1">
           <app-artists #artistsComponent
                        (next)="translateContent(1)"
@@ -36,18 +37,23 @@ import {Observable, Subscription} from 'rxjs';
           <app-tracks #tracksComponent
                       (next)="translateContent(3)"
                       (previous)="translateContent(1)"
-                      [tracks]="tracks$ | async">
+                      [tracks]="tracks$ | async"
+                      [currentTrack]="currentTrack$ | async">
           </app-tracks>
         </div>
         <div class="column a4">
-          <app-player [currentTrack]="library.currentTrack"
+          <app-player [currentTrack]="currentTrack$ | async"
+                      [playlist]="playlist$ | async"
                       [muted]="audioService.muted$ | async"
                       [volume]="audioService.volume$ | async"
                       [playing]="audioService.playing$ | async"
+                      [shuffle]="shuffle$ | async"
+                      [repeat]="repeat$ | async"
                       (previous)="translateContent(2)">
           </app-player>
         </div>
-        <app-mini-player [currentTrack]="library.currentTrack"
+        <app-mini-player [currentTrack]="currentTrack$ | async"
+                         [playlist]="playlist$ | async"
                          [muted]="audioService.muted$ | async"
                          [volume]="audioService.volume$ | async"
                          [duration]="audioService.duration$ | async"
@@ -69,6 +75,11 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedAlbums$: Observable<Album[]>;
   tracks$: Observable<Track[]>;
 
+  currentTrack$: Observable<Track>;
+  playlist$: Observable<Track[]>;
+  shuffle$: Observable<boolean>;
+  repeat$: Observable<boolean>;
+
   subscriptions: Subscription[] = [];
 
   // urlData: Object = {};
@@ -79,7 +90,6 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   private animationTimeout;
 
   constructor(
-    public library: LibraryService,
     private router: Router,
     public audioService: AudioService,
     private store: Store<fromLibrary.State>,
@@ -89,6 +99,10 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.albums$ = store.select(fromLibrary.getDisplayedAlbums);
     this.selectedAlbums$ = store.select(fromLibrary.getSelectedAlbums);
     this.tracks$ = store.select(fromLibrary.getDisplayedTracks);
+    this.currentTrack$ = store.select(fromLibrary.getCurrentTrack);
+    this.shuffle$ = store.select(fromLibrary.getShuffle);
+    this.repeat$ = store.select(fromLibrary.getRepeat);
+    this.playlist$ = store.select(fromLibrary.getPlaylist).pipe(map(p => p.toArray()));
   }
 
   @HostListener('window:resize') onResize() {

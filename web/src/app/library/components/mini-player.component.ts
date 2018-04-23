@@ -3,6 +3,9 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {LibraryService} from '../services/library.service';
 import {Track} from '@app/model';
 import {AudioService} from '@app/core/services/audio.service';
+import * as fromLibrary from '@app/library/library.reducers';
+import {Store} from '@ngrx/store';
+import {PlayNextTrackInPlaylist, PlayPreviousTrackInPlaylist} from '@app/library/actions/player.actions';
 
 @Component({
   selector: 'app-mini-player',
@@ -23,8 +26,8 @@ import {AudioService} from '@app/core/services/audio.service';
       <div class="controls">
         <button mat-button mat-icon-button
                 class="previous"
-                (click)="library.playPreviousTrackInPlaylist()"
-                [disabled]="!currentTrack || library.playlist.length <= 1">
+                (click)="playPrevious()"
+                [disabled]="!currentTrack || playlist.length <= 1">
           <mat-icon>skip_previous</mat-icon>
         </button>
         <button mat-button mat-icon-button
@@ -35,8 +38,8 @@ import {AudioService} from '@app/core/services/audio.service';
         </button>
         <button mat-button mat-icon-button
                 class="next"
-                [disabled]="!currentTrack || library.playlist.length <= 1"
-                (click)="library.playNextTrackInPlaylist(); $event.stopPropagation()">
+                [disabled]="!currentTrack || playlist.length <= 1"
+                (click)="playNext(); $event.stopPropagation()">
           <mat-icon>skip_next</mat-icon>
         </button>
       </div>
@@ -128,6 +131,7 @@ import {AudioService} from '@app/core/services/audio.service';
 export class MiniPlayerComponent implements OnInit {
 
   @Input() currentTrack: Track;
+  @Input() playlist: Track[];
   @Input() playing: boolean;
   @Input() loading: boolean;
   @Input() volume: number;
@@ -140,7 +144,8 @@ export class MiniPlayerComponent implements OnInit {
   constructor(
     public library: LibraryService,
     private sanitizer: DomSanitizer,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private store: Store<fromLibrary.State>
   ) { }
 
   ngOnInit() {
@@ -157,6 +162,14 @@ export class MiniPlayerComponent implements OnInit {
 
   pause() {
     this.audioService.pause();
+  }
+
+  playPrevious() {
+    this.store.dispatch(new PlayPreviousTrackInPlaylist());
+  }
+
+  playNext() {
+    this.store.dispatch(new PlayNextTrackInPlaylist());
   }
 
 }

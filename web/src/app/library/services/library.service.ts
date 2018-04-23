@@ -1,27 +1,22 @@
 import {Injectable} from '@angular/core';
-import {Title} from '@angular/platform-browser';
 import {Album, Artist, Track} from '@app/model';
 import {environment} from '@env/environment';
-import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
-import {LoaderService} from '@app/core/services/loader.service';
 import * as _ from 'lodash';
-import {AudioService} from '@app/core/services/audio.service';
 
 @Injectable()
 export class LibraryService {
 
-  currentTrack: Track;
+  // currentTrack: Track;
 
   // selectedArtists: Artist[] = [];
   // selectedAlbums: Album[] = [];
 
-  playlist: Track[] = [];
-  oldPlaylist: Track[];
+  // playlist: Track[] = [];
+  // oldPlaylist: Track[];
 
   // isScanning = false;
-  repeat = false;
-  shuffle = false;
-  sortTracksAlphabetically = false;
+  // repeat = false;
+  // shuffle = false;
 
   // trackSource:  Observable<Track[]>;
   // artistSource: Observable<Artist[]>;
@@ -32,10 +27,10 @@ export class LibraryService {
   // albums: Observable<Album[]> = EMPTY;
 
   constructor(
-    private httpSocketClient: HttpSocketClientService,
-    private titleService: Title,
-    private loader: LoaderService,
-    private audioService: AudioService
+    // private httpSocketClient: HttpSocketClientService,
+    // private titleService: Title,
+    // private loader: LoaderService,
+    // private audioService: AudioService
   ) {
     // this.update();
   }
@@ -274,14 +269,14 @@ export class LibraryService {
   //   this.onResetSource.next();
   // }
 
-  addTrackToPlaylist(track: Track) {
-    if (!_.includes(this.playlist, track)) {
-      this.playlist.push(track);
-    }
-    if (this.shuffle && !_.includes(this.oldPlaylist, track)) {
-      this.oldPlaylist.push(track);
-    }
-  }
+  // addTrackToPlaylist(track: Track) {
+  //   if (!_.includes(this.playlist, track)) {
+  //     this.playlist.push(track);
+  //   }
+  //   if (this.shuffle && !_.includes(this.oldPlaylist, track)) {
+  //     this.oldPlaylist.push(track);
+  //   }
+  // }
 
   // addTracksToPlaylist(obs: Observable<Track[]>) {
   //   obs.take(1).subscribe(tracks => {
@@ -289,39 +284,39 @@ export class LibraryService {
   //   });
   // }
 
-  addTracksToPlaylist(tracks: Track[]) {
-    _.forEach(tracks, track => this.addTrackToPlaylist(track));
-  }
+  // addTracksToPlaylist(tracks: Track[]) {
+  //   _.forEach(tracks, track => this.addTrackToPlaylist(track));
+  // }
+  //
+  // resetPlaylist() {
+  //   this.playlist = [];
+  //   this.oldPlaylist = null;
+  // }
+  //
+  // playTrack(track: Track) {
+  //   this.addTrackToPlaylist(track);
+  //   this.currentTrack = track;
+  //   this._playTrack(track);
+  // }
 
-  resetPlaylist() {
-    this.playlist = [];
-    this.oldPlaylist = null;
-  }
-
-  playTrack(track: Track) {
-    this.addTrackToPlaylist(track);
-    this.currentTrack = track;
-    this._playTrack(track);
-  }
-
-  playTrackNext(next: Track) {
-    // if current track isn't set or in playlist and next isn't in playlist
-    if ((!this.currentTrack || !_.includes(this.playlist, this.currentTrack)) && !_.includes(this.playlist, next)) {
-      this.playlist.splice(0, 0, next);
-    } else {
-      // remove next from playlist if present
-      if (_.includes(this.playlist, next)) {
-        _.remove(this.playlist, next);
-      }
-      // find index of currentTrack
-      const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
-      // insert next at the correct index
-      this.playlist.splice(currentTrackIndex + 1, 0, next);
-    }
-    if (!this.currentTrack) {
-      this.playTrack(next);
-    }
-  }
+  // playTrackNext(next: Track) {
+  //   // if current track isn't set or in playlist and next isn't in playlist
+  //   if ((!this.currentTrack || !_.includes(this.playlist, this.currentTrack)) && !_.includes(this.playlist, next)) {
+  //     this.playlist.splice(0, 0, next);
+  //   } else {
+  //     // remove next from playlist if present
+  //     if (_.includes(this.playlist, next)) {
+  //       _.remove(this.playlist, next);
+  //     }
+  //     // find index of currentTrack
+  //     const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+  //     // insert next at the correct index
+  //     this.playlist.splice(currentTrackIndex + 1, 0, next);
+  //   }
+  //   if (!this.currentTrack) {
+  //     this.playTrack(next);
+  //   }
+  // }
 
   // playTracks(obs: Observable<Track[]>, next?: Track) {
   //   obs.take(1).subscribe(tracks => {
@@ -334,67 +329,67 @@ export class LibraryService {
   //   });
   // }
 
-  playTracks(tracks: Track[], next?: Track) {
-    this.playlist = tracks;
-    this.currentTrack = next ? next : this.playlist[0];
-    if (this.shuffle) {
-      this.shufflePlaylist();
-    }
-    this._playTrack(this.currentTrack);
-  }
-
-  playNextTrackInPlaylist() {
-    if (this.playlist.length === 0) {
-      return;
-    }
-    if (!this.currentTrack) {
-      this.playTrack(this.playlist[0]);
-      return;
-    }
-    const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
-    if (this.playlist[currentTrackIndex + 1]) {
-      this.playTrack(this.playlist[currentTrackIndex + 1]);
-    } else if (currentTrackIndex + 1 >= this.playlist.length) {
-      this.playTrack(this.playlist[0]);
-    }
-  }
-
-  playPreviousTrackInPlaylist() {
-    if (this.playlist.length === 0) {
-      return;
-    }
-    if (!this.currentTrack) {
-      this.playTrack(this.playlist[this.playlist.length - 1]);
-    }
-    const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
-    if (this.playlist[currentTrackIndex - 1]) {
-      this.playTrack(this.playlist[currentTrackIndex - 1]);
-    } else if (currentTrackIndex - 1 <= 0) {
-      this.playTrack(this.playlist[this.playlist.length - 1]);
-    }
-  }
-
-  shufflePlaylist() {
-    this.oldPlaylist = this.playlist;
-    this.playlist = _.shuffle(this.playlist);
-    if (this.currentTrack && _.includes(this.playlist, this.currentTrack)) {
-      _.remove(this.playlist, this.currentTrack);
-      this.playlist.splice(0, 0, this.currentTrack);
-    }
-    this.shuffle = true;
-  }
-
-  unShufflePlaylist() {
-    if (this.oldPlaylist) {
-      this.playlist = this.oldPlaylist;
-      this.oldPlaylist = null;
-    }
-    this.shuffle = false;
-  }
-
-  isCurrentTrackLastInPlaylist(): boolean {
-    return _.indexOf(this.playlist, this.currentTrack) === this.playlist.length - 1;
-  }
+  // playTracks(tracks: Track[], next?: Track) {
+  //   this.playlist = tracks;
+  //   this.currentTrack = next ? next : this.playlist[0];
+  //   if (this.shuffle) {
+  //     this.shufflePlaylist();
+  //   }
+  //   this._playTrack(this.currentTrack);
+  // }
+  //
+  // playNextTrackInPlaylist() {
+  //   if (this.playlist.length === 0) {
+  //     return;
+  //   }
+  //   if (!this.currentTrack) {
+  //     this.playTrack(this.playlist[0]);
+  //     return;
+  //   }
+  //   const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+  //   if (this.playlist[currentTrackIndex + 1]) {
+  //     this.playTrack(this.playlist[currentTrackIndex + 1]);
+  //   } else if (currentTrackIndex + 1 >= this.playlist.length) {
+  //     this.playTrack(this.playlist[0]);
+  //   }
+  // }
+  //
+  // playPreviousTrackInPlaylist() {
+  //   if (this.playlist.length === 0) {
+  //     return;
+  //   }
+  //   if (!this.currentTrack) {
+  //     this.playTrack(this.playlist[this.playlist.length - 1]);
+  //   }
+  //   const currentTrackIndex = _.indexOf(this.playlist, this.currentTrack);
+  //   if (this.playlist[currentTrackIndex - 1]) {
+  //     this.playTrack(this.playlist[currentTrackIndex - 1]);
+  //   } else if (currentTrackIndex - 1 <= 0) {
+  //     this.playTrack(this.playlist[this.playlist.length - 1]);
+  //   }
+  // }
+  //
+  // shufflePlaylist() {
+  //   this.oldPlaylist = this.playlist;
+  //   this.playlist = _.shuffle(this.playlist);
+  //   if (this.currentTrack && _.includes(this.playlist, this.currentTrack)) {
+  //     _.remove(this.playlist, this.currentTrack);
+  //     this.playlist.splice(0, 0, this.currentTrack);
+  //   }
+  //   this.shuffle = true;
+  // }
+  //
+  // unShufflePlaylist() {
+  //   if (this.oldPlaylist) {
+  //     this.playlist = this.oldPlaylist;
+  //     this.oldPlaylist = null;
+  //   }
+  //   this.shuffle = false;
+  // }
+  //
+  // isCurrentTrackLastInPlaylist(): boolean {
+  //   return _.indexOf(this.playlist, this.currentTrack) === this.playlist.length - 1;
+  // }
 
   // Artists
 
@@ -580,9 +575,9 @@ export class LibraryService {
   //   });
   // }
 
-  private _playTrack(track: Track) {
-    this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`);
-    this.audioService.play(LibraryService.resolveUrl(track.url));
-  }
+  // private _playTrack(track: Track) {
+  //   this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`);
+  //   this.audioService.play(LibraryService.resolveUrl(track.url));
+  // }
 
 }

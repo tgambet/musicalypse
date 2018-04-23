@@ -45,10 +45,10 @@
           <span>Playlist</span>
         </ng-template>
         <mat-list *ngIf="smallScreen" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <mat-list-item *ngFor="let track of library.playlist; trackBy: trackByURL"
+          <mat-list-item *ngFor="let track of playlist; trackBy: trackByURL"
                          class="divider hover"
                          [class.current]="track == currentTrack"
-                         (click)="library.playTrack(track)">
+                         (click)="playTrack(track)">
             <span matLine class="title">
               <mat-icon *ngIf="track == currentTrack && playing">equalizer</mat-icon>
               <span>{{ track.metadata.title }}</span>
@@ -61,8 +61,8 @@
           </mat-list-item>
         </mat-list>
         <ul *ngIf="!smallScreen" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <ng-container *ngFor="let track of library.playlist; trackBy: trackByURL">
-            <li [class.current]="track == currentTrack" class="divider" (click)="library.playTrack(track)">
+          <ng-container *ngFor="let track of playlist; trackBy: trackByURL">
+            <li [class.current]="track == currentTrack" class="divider" (click)="playTrack(track)">
               <span class="title c">
                 <mat-icon *ngIf="track == currentTrack && playing">equalizer</mat-icon>
                 <span>{{ track.metadata.title }}</span>
@@ -104,32 +104,32 @@
   <div class="menu">
     <button mat-button mat-icon-button
             class="shuffle"
-            [color]="library.shuffle ? 'primary' : ''"
-            (click)="library.shuffle ? library.unShufflePlaylist() : library.shufflePlaylist()">
+            [color]="shuffle ? 'primary' : ''"
+            (click)="setShuffle(!shuffle)">
       <mat-icon>shuffle</mat-icon>
     </button>
     <button mat-button mat-icon-button
             class="repeat"
-            [color]="library.repeat ? 'primary' : ''"
-            (click)="library.repeat = !library.repeat">
+            [color]="repeat ? 'primary' : ''"
+            (click)="setRepeat(!repeat)">
       <mat-icon>repeat</mat-icon>
     </button>
     <button mat-button mat-icon-button
             class="previous"
-            (click)="library.playPreviousTrackInPlaylist()"
-            [disabled]="!currentTrack || library.playlist.length <= 1">
+            (click)="playPrevious()"
+            [disabled]="!currentTrack || playlist.length <= 1">
       <mat-icon>skip_previous</mat-icon>
     </button>
     <button mat-button mat-icon-button
             class="playPause"
-            [disabled]="(!library.playlist || library.playlist.length == 0) && !currentTrack"
-            (click)="playing ? pause() : (currentTrack ? play() : library.playNextTrackInPlaylist())">
+            [disabled]="playlist.length === 0 && !currentTrack"
+            (click)="playing ? pause() : (currentTrack ? resume() : playNext())">
       <mat-icon>{{ playing ? 'pause' : 'play_arrow' }}</mat-icon>
     </button>
     <button mat-button mat-icon-button
             class="next"
-            (click)="library.playNextTrackInPlaylist()"
-            [disabled]="!currentTrack || library.playlist.length <= 1">
+            (click)="playNext()"
+            [disabled]="!currentTrack || playlist.length <= 1">
       <mat-icon>skip_next</mat-icon>
     </button>
     <button mat-button mat-icon-button
@@ -154,7 +154,7 @@
       <span>Details</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.library.playlist.length == 0">
+    <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.playlist.length == 0">
       <mat-icon>delete</mat-icon>
       <span>Clear playlist</span>
     </button>

@@ -8,6 +8,10 @@ import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
+import * as fromLibrary from '@app/library/library.reducers';
+import {Store} from '@ngrx/store';
+import {AddTracksToPlaylist, PlayTrack, PlayTrackNext, SetPlaylist} from '@app/library/actions/player.actions';
+import {is} from 'immutable';
 
 @Component({
   selector: 'app-tracks',
@@ -25,7 +29,7 @@ import {AudioService} from '@app/core/services/audio.service';
       </app-controls>
 
       <mat-menu #tracksMenu>
-        <button mat-menu-item (click)="library.addTracksToPlaylist(tracks.filter(filter))" [disabled]="tracks.filter(filter).length == 0">
+        <button mat-menu-item (click)="addTracksToPlaylist()" [disabled]="tracks.filter(filter).length == 0">
           <mat-icon>playlist_add</mat-icon>
           <span>Add all to current playlist</span>
         </button>
@@ -44,21 +48,21 @@ import {AudioService} from '@app/core/services/audio.service';
           <ng-container *ngFor="let track of sort(tracks.filter(filter)).slice(0,300); trackBy: trackByURL">
             <app-track [track]="track"
                        [warn]="track.warn && settings.warnOnMissingTags"
-                       [currentTrack]="track.url === (library.currentTrack ? library.currentTrack.url : '')"
+                       [isCurrentTrack]="isCurrentTrack(track)"
                        [search]="search"
                        [playing]="audioService.playing$ | async"
                        [loading]="audioService.loading$ | async"
                        [favorite]="favorites.isFavorite(track)"
                        [currentTime]="audioService.currentTime$ | async"
                        [duration]="audioService.duration$ | async"
-                       (click)="library.playTracks(tracks.filter(filter).slice(0,300), track); next.emit()"
+                       (click)="trackClicked(track)"
                        (addToFavorites)="favorites.addToFavorites(track)"
-                       (addTrackToPlaylist)="library.addTrackToPlaylist(track)"
+                       (addTrackToPlaylist)="addTrackToPlaylist(track)"
                        (audioPause)="pause()"
-                       (audioPlay)="play()"
+                       (audioPlay)="resume()"
                        (openDetailsDialog)="openDetailsDialog(track)"
-                       (playTrack)="library.playTrack(track)"
-                       (playTrackNext)="library.playTrackNext(track)"
+                       (playTrack)="playTrack(track)"
+                       (playTrackNext)="playTrackNext(track)"
                        (removeFromFavorites)="favorites.removeFromFavorites(track)">
             </app-track>
           </ng-container>
@@ -77,6 +81,7 @@ import {AudioService} from '@app/core/services/audio.service';
     }
     .list-wrapper {
       overflow-y: scroll;
+      overflow-x: hidden;
       height: 100%;
     }
     .list {
@@ -97,6 +102,7 @@ export class TracksComponent implements OnInit, OnDestroy {
   @Output() previous: EventEmitter<void> = new EventEmitter();
 
   @Input() tracks: Track[];
+  @Input() currentTrack: Track;
 
   @ViewChild('list') list: ElementRef;
   @ViewChild('tracksMenu') tracksMenu: MatMenu;
@@ -126,7 +132,8 @@ export class TracksComponent implements OnInit, OnDestroy {
     public favorites: FavoritesService,
     public dialog: MatDialog,
     public settings: SettingsService,
-    public audioService: AudioService
+    public audioService: AudioService,
+    private store: Store<fromLibrary.State>
   ) { }
 
   ngOnInit() {}
@@ -181,12 +188,39 @@ export class TracksComponent implements OnInit, OnDestroy {
     }
   }
 
-  play() {
+  resume() {
     this.audioService.resume();
   }
 
   pause() {
     this.audioService.pause();
+  }
+
+  trackClicked(track: Track) {
+    // this.library.playTracks(this.tracks.filter(this.filter).slice(0, 300), track);
+    this.next.emit();
+    this.store.dispatch(new SetPlaylist(this.tracks.filter(this.filter).slice(0, 300)));
+    this.store.dispatch(new PlayTrack(track));
+  }
+
+  addTrackToPlaylist(track: Track) {
+    this.store.dispatch(new AddTracksToPlaylist([track]));
+  }
+
+  addTracksToPlaylist() {
+    this.store.dispatch(new AddTracksToPlaylist(this.tracks.filter(this.filter).slice(0, 300)));
+  }
+
+  isCurrentTrack(track: Track): boolean {
+    return is(track, this.currentTrack);
+  }
+
+  playTrack(track: Track) {
+    this.store.dispatch(new PlayTrack(track));
+  }
+
+  playTrackNext(track: Track) {
+    this.store.dispatch(new PlayTrackNext(track));
   }
 
 }

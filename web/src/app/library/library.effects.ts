@@ -14,7 +14,9 @@ import {LibraryService} from './services/library.service';
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
-import {catchError, map, mergeMap, switchMap, filter, take, scan} from 'rxjs/operators';
+import {catchError, filter, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
+import {Title} from '@angular/platform-browser';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Injectable()
 export class LibraryEffects {
@@ -115,21 +117,37 @@ export class LibraryEffects {
       map(() => new DeselectAllAlbums())
     );
 
+  /**
+   * Scan tracks (WebSocket)
+   */
   @Effect()
   scanTracks$: Observable<Action> =
     this.actions$.pipe(
       ofType(TracksActionTypes.ScanTracks),
-      switchMap(() => {
-        return this.scanTracks().pipe(
+      switchMap(() =>
+        this.scanTracks().pipe(
           map(tracks => new LoadTrackSuccess(tracks))
-        );
-      })
+        )
+      )
+    );
+
+  /**
+   * Play Track
+   */
+  @Effect({dispatch: false})
+  playTrack$: Observable<Track> =
+    this.store.select(fromLibrary.getCurrentTrack).pipe(
+      filter(track => !!track),
+      tap(track => this.audioService.play(LibraryService.resolveUrl(track.url))),
+      tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`))
     );
 
   constructor(
     private actions$: Actions,
     private httpSocketClient: HttpSocketClientService,
-    private store: Store<fromLibrary.State>
+    private store: Store<fromLibrary.State>,
+    private titleService: Title,
+    private audioService: AudioService
   ) {}
 
   public scanTracks(): Observable<Track[]> {

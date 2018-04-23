@@ -1,15 +1,12 @@
 import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import * as _ from 'lodash';
 
 import {Artist} from '@app/model';
 
+import {LibraryService} from '../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
-
-import {DeselectAllArtists, DeselectArtist, SelectAllArtists, SelectArtist, SelectArtists} from '../actions/artists.actions';
-import * as fromLibrary from '../library.reducers';
 
 @Component({
   selector: 'app-artists',
@@ -124,7 +121,7 @@ export class ArtistsComponent {
   constructor(
     public settings: SettingsService,
     private sanitizer: DomSanitizer,
-    private store: Store<fromLibrary.State>
+    private library: LibraryService
   ) {}
 
   trackByName(index: number, artist: Artist) {
@@ -150,31 +147,31 @@ export class ArtistsComponent {
   }
 
   selectAll() {
-    this.store.dispatch(new SelectAllArtists());
+    this.library.selectAllArtists();
   }
 
   select(artist: Artist) {
-    this.store.dispatch(new SelectArtists([artist]));
+    this.library.selectArtists([artist]);
     this.showChipList = false;
   }
 
   add(artist: Artist) {
-    this.store.dispatch(new SelectArtist(artist));
+    this.library.selectArtist(artist);
   }
 
   isSelected(artist: Artist): Observable<boolean> {
-    return this.store.select(fromLibrary.isSelectedArtist(artist));
+    return this.library.isSelectedArtist(artist);
   }
 
   deselect(artist: Artist) {
-    this.store.dispatch(new DeselectArtist(artist));
+    this.library.deselectArtist(artist);
     if (this.selectedArtists.length < 4) {
       this.showChipList = false;
     }
   }
 
   deselectAll() {
-    this.store.dispatch(new DeselectAllArtists());
+    this.library.deselectAllArtists();
     this.showChipList = false;
   }
 

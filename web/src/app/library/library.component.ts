@@ -89,17 +89,17 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     public audioService: AudioService,
-    private libraryService: LibraryService
+    private library: LibraryService
   ) {
-    this.artists$         = libraryService.getArtists();
-    this.selectedArtists$ = libraryService.getSelectedArtists();
-    this.albums$          = libraryService.getAlbums();
-    this.selectedAlbums$  = libraryService.getSelectedAlbums();
-    this.tracks$          = libraryService.getTracks();
-    this.currentTrack$    = libraryService.getCurrentTrack();
-    this.shuffle$         = libraryService.getShuffle();
-    this.repeat$          = libraryService.getRepeat();
-    this.playlist$        = libraryService.getPlaylist();
+    this.artists$         = library.getArtists();
+    this.selectedArtists$ = library.getSelectedArtists();
+    this.albums$          = library.getAlbums();
+    this.selectedAlbums$  = library.getSelectedAlbums();
+    this.tracks$          = library.getTracks();
+    this.currentTrack$    = library.getCurrentTrack();
+    this.shuffle$         = library.getShuffle();
+    this.repeat$          = library.getRepeat();
+    this.playlist$        = library.getPlaylist();
   }
 
   @HostListener('window:resize') onResize() {

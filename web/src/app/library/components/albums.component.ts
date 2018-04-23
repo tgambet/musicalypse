@@ -1,15 +1,12 @@
 import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import * as _ from 'lodash';
 
 import {Album} from '@app/model';
 
 import {SettingsService} from '@app/settings/services/settings.service';
-
-import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAllAlbums} from '../actions/albums.actions';
-import * as fromLibrary from '../library.reducers';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-albums',
@@ -54,9 +51,9 @@ import * as fromLibrary from '../library.reducers';
                            [warn]="album.warn && settings.warnOnMissingTags"
                            [primaryHTML]="album.title | sgSearch:search"
                            [secondaryHTML]="album.songs + ' songs • ' + album.artist"
-                           (click)="select(album); next.emit()"
-                           (arrowClicked)="add(album); next.emit()"
-                           (checked)="$event ? add(album) : deselect(album)">
+                           (click)="selectOnly(album); next.emit()"
+                           (arrowClicked)="select(album); next.emit()"
+                           (checked)="$event ? select(album) : deselect(album)">
             </app-list-item>
           </ng-container>
         </mat-list>
@@ -127,7 +124,7 @@ export class AlbumsComponent {
   constructor(
     public settings: SettingsService,
     private sanitizer: DomSanitizer,
-    private store: Store<fromLibrary.State>
+    private library: LibraryService
   ) {
   }
 
@@ -154,31 +151,31 @@ export class AlbumsComponent {
   }
 
   selectAll() {
-    this.store.dispatch(new SelectAllAlbums());
+    this.library.selectAllAlbums();
   }
 
-  select(album: Album) {
-    this.store.dispatch(new SelectAlbums([album]));
+  selectOnly(album: Album) {
+    this.library.selectAlbums([album]);
     this.showChipList = false;
   }
 
-  add(album: Album) {
-    this.store.dispatch(new SelectAlbum(album));
+  select(album: Album) {
+    this.library.selectAlbum(album);
   }
 
   isSelected(album: Album): Observable<boolean> {
-    return this.store.select(fromLibrary.isSelectedAlbum(album));
+    return this.library.isSelectedAlbum(album);
   }
 
   deselect(album: Album) {
-    this.store.dispatch(new DeselectAlbum(album));
+    this.library.deselectAlbum(album);
     if (this.selectedAlbums.length < 4) {
       this.showChipList = false;
     }
   }
 
   deselectAll() {
-    this.store.dispatch(new DeselectAllAlbums());
+    this.library.deselectAllAlbums();
     this.showChipList = false;
   }
 

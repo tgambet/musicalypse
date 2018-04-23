@@ -2,9 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Track} from '@app/model';
 import {AudioService} from '@app/core/services/audio.service';
-import * as fromLibrary from '@app/library/library.reducers';
-import {Store} from '@ngrx/store';
-import {PlayNextTrackInPlaylist, PlayPreviousTrackInPlaylist} from '@app/library/actions/player.actions';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-mini-player',
@@ -143,7 +141,7 @@ export class MiniPlayerComponent implements OnInit {
   constructor(
     private sanitizer: DomSanitizer,
     private audioService: AudioService,
-    private store: Store<fromLibrary.State>
+    private library: LibraryService
   ) { }
 
   ngOnInit() {
@@ -163,11 +161,11 @@ export class MiniPlayerComponent implements OnInit {
   }
 
   playPrevious() {
-    this.store.dispatch(new PlayPreviousTrackInPlaylist());
+    this.library.playPreviousTrack();
   }
 
   playNext() {
-    this.store.dispatch(new PlayNextTrackInPlaylist());
+    this.library.playNextTrack();
   }
 
 }

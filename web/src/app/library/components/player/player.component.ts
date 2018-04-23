@@ -7,16 +7,7 @@ import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
-import {Store} from '@ngrx/store';
-import * as fromLibrary from '../../library.reducers';
-import {
-  PlayNextTrackInPlaylist,
-  PlayPreviousTrackInPlaylist,
-  PlayTrack,
-  ResetPlaylist,
-  SetRepeat,
-  SetShuffle
-} from '@app/library/actions/player.actions';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-player',
@@ -56,7 +47,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     // public snackBar: MatSnackBar,
     private dialog: MatDialog,
     private audioService: AudioService,
-    private store: Store<fromLibrary.State>
+    private library: LibraryService
   ) {
     this.loading$ = this.audioService.loading$;
     this.duration$ = this.audioService.duration$;
@@ -91,12 +82,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     } else {
       this.previous.emit();
     }
-  }
-
-  clearPlaylist() {
-    // this.library.resetPlaylist();
-    // this.snackBar.open('Playlist cleared', '', { duration: 1500 });
-    this.store.dispatch(new ResetPlaylist());
   }
 
   openDetailsDialog(track: Track) {
@@ -136,26 +121,28 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.audioService.unmute();
   }
 
-  playPrevious() {
-    // this.library.playPreviousTrackInPlaylist();
-    this.store.dispatch(new PlayPreviousTrackInPlaylist());
+  clearPlaylist() {
+    this.library.clearPlaylist();
+  }
+
+  playPrevious(): void {
+    this.library.playPreviousTrack();
   }
 
   playNext() {
-    // this.library.playNextTrackInPlaylist();
-    this.store.dispatch(new PlayNextTrackInPlaylist());
+    this.library.playNextTrack();
   }
 
   setShuffle(value: boolean) {
-    this.store.dispatch(new SetShuffle(value));
+    this.library.setShuffle(value);
   }
 
   setRepeat(value: boolean) {
-    this.store.dispatch(new SetRepeat(value));
+    this.library.setRepeat(value);
   }
 
   playTrack(track: Track) {
-    this.store.dispatch(new PlayTrack(track));
+    this.library.playTrack(track);
   }
 
 }

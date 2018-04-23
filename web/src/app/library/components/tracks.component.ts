@@ -7,10 +7,8 @@ import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
-import * as fromLibrary from '@app/library/library.reducers';
-import {Store} from '@ngrx/store';
-import {AddTracksToPlaylist, PlayTrack, PlayTrackNext, SetPlaylist} from '@app/library/actions/player.actions';
 import {is} from 'immutable';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-tracks',
@@ -131,7 +129,7 @@ export class TracksComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     public settings: SettingsService,
     public audioService: AudioService,
-    private store: Store<fromLibrary.State>
+    private library: LibraryService
   ) { }
 
   ngOnInit() {}
@@ -195,30 +193,29 @@ export class TracksComponent implements OnInit, OnDestroy {
   }
 
   trackClicked(track: Track) {
-    // this.library.playTracks(this.tracks.filter(this.filter).slice(0, 300), track);
     this.next.emit();
-    this.store.dispatch(new SetPlaylist(this.tracks.filter(this.filter).slice(0, 300)));
-    this.store.dispatch(new PlayTrack(track));
+    this.library.setPlaylist(this.tracks.filter(this.filter).slice(0, 300));
+    this.library.playTrack(track);
   }
 
   addTrackToPlaylist(track: Track) {
-    this.store.dispatch(new AddTracksToPlaylist([track]));
+    this.library.addTracksToPlaylist([track]);
   }
 
   addTracksToPlaylist() {
-    this.store.dispatch(new AddTracksToPlaylist(this.tracks.filter(this.filter).slice(0, 300)));
+    this.library.addTracksToPlaylist(this.tracks.filter(this.filter).slice(0, 300));
+  }
+
+  playTrack(track: Track) {
+    this.library.playTrack(track);
+  }
+
+  playTrackNext(track: Track) {
+    this.library.playTrackNext(track);
   }
 
   isCurrentTrack(track: Track): boolean {
     return is(track, this.currentTrack);
-  }
-
-  playTrack(track: Track) {
-    this.store.dispatch(new PlayTrack(track));
-  }
-
-  playTrackNext(track: Track) {
-    this.store.dispatch(new PlayTrackNext(track));
   }
 
 }

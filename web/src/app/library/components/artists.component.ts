@@ -1,4 +1,14 @@
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Observable} from 'rxjs';
 import * as _ from 'lodash';
@@ -44,7 +54,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
 
       <div #list class="list-wrapper" (swipeleft)="next.emit()">
         <mat-list class="list" dense>
-          <ng-container *ngFor="let artist of artists.filter(filter); trackBy: trackByName">
+          <ng-container *ngFor="let artist of filteredArtists; trackBy: trackByName">
             <app-list-item [selected]="isSelected(artist) | async"
                            [avatarStyle]="getAvatarStyle(artist)"
                            [warn]="artist.warn && settings.warnOnMissingTags"
@@ -99,17 +109,26 @@ import {SettingsService} from '@app/settings/services/settings.service';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtistsComponent {
+export class ArtistsComponent implements OnChanges {
 
   @Output() next: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('list') list: ElementRef;
 
-  @Input() artists: Artist[];
+  @Input() private artists: Artist[];
   @Input() selectedArtists: Artist[];
 
+  filteredArtists: Artist[];
   showChipList = false;
-  search = '';
+
+  _search = '';
+  get search() {
+    return this._search;
+  }
+  set search(val: string) {
+    this._search = val;
+    this.filteredArtists = this.artists.filter(this.filter);
+  }
 
   filter = ((artist: Artist) => {
     if (this.search !== '') {
@@ -123,6 +142,12 @@ export class ArtistsComponent {
     private sanitizer: DomSanitizer,
     private library: LibraryService
   ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.artists) {
+      this.filteredArtists = changes.artists.currentValue.filter(this.filter);
+    }
+  }
 
   trackByName(index: number, artist: Artist) {
     return artist.name;

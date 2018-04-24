@@ -1,4 +1,14 @@
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Observable} from 'rxjs';
 import * as _ from 'lodash';
@@ -45,7 +55,7 @@ import {LibraryService} from '@app/library/services/library.service';
 
       <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
         <mat-list class="list" dense>
-          <ng-container *ngFor="let album of albums.filter(filter); trackBy: trackByTitle">
+          <ng-container *ngFor="let album of filteredAlbums; trackBy: trackByTitle">
             <app-list-item [selected]="isSelected(album) | async"
                            [avatarStyle]="getAvatarStyle(album)"
                            [warn]="album.warn && settings.warnOnMissingTags"
@@ -100,19 +110,29 @@ import {LibraryService} from '@app/library/services/library.service';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AlbumsComponent {
+export class AlbumsComponent implements OnChanges {
 
   @Output() next: EventEmitter<void> = new EventEmitter();
   @Output() previous: EventEmitter<void> = new EventEmitter();
 
-  @Input() albums: Album[];
+  @Input() private albums: Album[];
   @Input() selectedAlbums: Album[];
+
+  filteredAlbums: Album[];
 
   @ViewChild('list')
   list: ElementRef;
 
   showChipList = false;
-  search = '';
+
+  _search = '';
+  get search() {
+    return this._search;
+  }
+  set search(val: string) {
+    this._search = val;
+    this.filteredAlbums = this.albums.filter(this.filter);
+  }
 
   filter = ((album: Album) => {
     if (this.search !== '') {
@@ -125,7 +145,12 @@ export class AlbumsComponent {
     public settings: SettingsService,
     private sanitizer: DomSanitizer,
     private library: LibraryService
-  ) {
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.albums) {
+      this.filteredAlbums = changes.albums.currentValue.filter(this.filter);
+    }
   }
 
   trackByTitle(index: number, album: Album) {

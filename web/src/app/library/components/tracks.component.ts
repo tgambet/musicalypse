@@ -1,10 +1,19 @@
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {MatDialog, MatMenu} from '@angular/material';
 import {Track} from '@app/model';
 import {SettingsService} from '@app/settings/services/settings.service';
 import {FavoritesService} from '../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
-import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {LibraryService} from '@app/library/services/library.service';
 
@@ -19,12 +28,12 @@ import {LibraryService} from '@app/library/services/library.service';
                     [backButton]="true"
                     (backClicked)="previous.emit()">
         <span class="select-text">
-          Total tracks: {{ tracks.filter(filter).length }}
+          Total tracks: {{ filteredTracks.length }}
         </span>
       </app-controls>
 
       <mat-menu #tracksMenu>
-        <button mat-menu-item (click)="addTracksToPlaylist()" [disabled]="tracks.filter(filter).length == 0">
+        <button mat-menu-item (click)="addTracksToPlaylist()" [disabled]="filteredTracks.length == 0">
           <mat-icon>playlist_add</mat-icon>
           <span>Add all to current playlist</span>
         </button>
@@ -40,21 +49,20 @@ import {LibraryService} from '@app/library/services/library.service';
 
       <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
         <mat-list class="list" [class.sorted-alpha]="sortedAlphabetically" dense>
-          <ng-container *ngFor="let track of sort(tracks.filter(filter)).slice(0,300); trackBy: trackByURL">
-            <app-track [track]="track"
-                       [warn]="track.warn && settings.warnOnMissingTags"
-                       [isCurrentTrack]="isCurrentTrack(track)"
-                       [search]="search"
-                       [favorite]="isFavorite(track)"
-                       (click)="trackClicked(track)"
-                       (addToFavorites)="favorites.addToFavorites(track)"
-                       (addTrackToPlaylist)="addTrackToPlaylist(track)"
-                       (openDetailsDialog)="openDetailsDialog(track)"
-                       (playTrack)="playTrack(track)"
-                       (playTrackNext)="playTrackNext(track)"
-                       (removeFromFavorites)="favorites.removeFromFavorites(track)">
-            </app-track>
-          </ng-container>
+          <app-track *ngFor="let track of filteredTracks.slice(0,300); trackBy: trackByURL"
+                     [track]="track"
+                     [warn]="track.warn && settings.warnOnMissingTags"
+                     [isCurrentTrack]="isCurrentTrack(track)"
+                     [search]="search"
+                     [favorite]="isFavorite(track)"
+                     (click)="trackClicked(track)"
+                     (addToFavorites)="favorites.addToFavorites(track)"
+                     (addTrackToPlaylist)="addTrackToPlaylist(track)"
+                     (openDetailsDialog)="openDetailsDialog(track)"
+                     (playTrack)="playTrack(track)"
+                     (playTrackNext)="playTrackNext(track)"
+                     (removeFromFavorites)="favorites.removeFromFavorites(track)">
+          </app-track>
         </mat-list>
       </div>
 
@@ -85,26 +93,27 @@ import {LibraryService} from '@app/library/services/library.service';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TracksComponent implements OnInit, OnDestroy {
+export class TracksComponent implements OnChanges {
 
   @Output() next: EventEmitter<void> = new EventEmitter();
   @Output() previous: EventEmitter<void> = new EventEmitter();
 
-  @Input() tracks: Track[];
+  @Input() private tracks: Track[];
   @Input() currentTrack: Track;
+
+  filteredTracks: Track[];
 
   @ViewChild('list') list: ElementRef;
   @ViewChild('tracksMenu') tracksMenu: MatMenu;
 
-  // TODO filter and sort on setting search
-  search_ = '';
+  _search = '';
   get search() {
-    return this.search_;
+    return this._search;
   }
   set search(val: string) {
-    this.search_ = val;
+    this._search = val;
+    this.filteredTracks = this.sort(this.tracks.filter(this.filter));
   }
-
 
   sortedAlphabetically = false;
 
@@ -123,8 +132,6 @@ export class TracksComponent implements OnInit, OnDestroy {
     }
   });
 
-  private subscriptions: Subscription[] = [];
-
   constructor(
     public favorites: FavoritesService,
     private dialog: MatDialog,
@@ -132,30 +139,15 @@ export class TracksComponent implements OnInit, OnDestroy {
     private library: LibraryService
   ) { }
 
-  ngOnInit() {}
-
-  ngOnDestroy(): void {
-    _.forEach(this.subscriptions, sub => sub.unsubscribe());
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.tracks) {
+      this.filteredTracks = this.sort(changes.tracks.currentValue.filter(this.filter));
+    }
   }
 
   trackByURL(index: number, track: Track) {
     return track.url;
   }
-
-  // isMultipleAlbumsSelected(): boolean {
-  //   return this.selectedAlbums.length > 1;
-  // }
-
-  // addAllToPlaylist() {
-  //   this.library.addTracksToPlaylist(this.filteredTracks);
-  //   const tracks = this.filteredTracks.length > 1 ? 'tracks' : 'track';
-  //   this.snackBar.open(`${this.filteredTracks.length} ${tracks} added to current playlist`, '', { duration: 1500 });
-  // }
-
-  // addTrackToPlaylist(track: Track) {
-  //   this.library.addTrackToPlaylist(track);
-  //   this.snackBar.open('Track added to current playlist', '', { duration: 1500 });
-  // }
 
   openDetailsDialog(track: Track) {
     const dialogRef = this.dialog.open(DetailsComponent, {
@@ -166,7 +158,6 @@ export class TracksComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       console.log(result);
-      // this.animal = result;
     });
   }
 

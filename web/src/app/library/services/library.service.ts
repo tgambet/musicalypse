@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
+import * as _ from 'lodash';
 
 import {CoreUtils} from '@app/core/core.utils';
 import {LoadTracks} from '../actions/tracks.actions';
@@ -176,8 +177,8 @@ export class LibraryService {
   }
 
   selectInLibrary(playlist: Track[]) {
-    const artistsIds = playlist.map(track => track.metadata.albumArtist);
-    const albumsIds = playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album);
+    const artistsIds = _.uniq(playlist.map(track => track.metadata.albumArtist));
+    const albumsIds = _.uniq(playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album));
     this.store.dispatch(new SelectArtistsByIds(artistsIds));
     this.store.dispatch(new SelectAlbumsByIds(albumsIds));
   }

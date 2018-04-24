@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {AudioService} from '../core/services/audio.service';
@@ -63,7 +63,8 @@ import {LibraryService} from '@app/library/services/library.service';
       </div>
     </div>
   `,
-  styleUrls: ['./library.component.scss']
+  styleUrls: ['./library.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 

@@ -154,6 +154,10 @@
       <span>Details</span>
     </button>
     <mat-divider></mat-divider>
+    <button mat-menu-item (click)="showInLibrary()" [disabled]="this.playlist.length == 0">
+      <mat-icon>queue_music</mat-icon>
+      <span>Select in Library</span>
+    </button>
     <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.playlist.length == 0">
       <mat-icon>delete</mat-icon>
       <span>Clear playlist</span>

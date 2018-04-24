@@ -145,4 +145,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.library.playTrack(track);
   }
 
+  showInLibrary() {
+    this.library.selectInLibrary(this.playlist);
+  }
+
 }

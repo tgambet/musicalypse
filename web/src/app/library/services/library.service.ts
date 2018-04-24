@@ -175,4 +175,10 @@ export class LibraryService {
     this.store.dispatch(new SetRepeat(value));
   }
 
+  selectInLibrary(playlist: Track[]) {
+    const artistsIds = playlist.map(track => track.metadata.albumArtist);
+    const albumsIds = playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album);
+    this.store.dispatch(new SelectArtistsByIds(artistsIds));
+    this.store.dispatch(new SelectAlbumsByIds(albumsIds));
+  }
 }

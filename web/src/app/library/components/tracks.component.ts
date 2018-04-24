@@ -7,7 +7,6 @@ import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
-import {is} from 'immutable';
 import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
@@ -215,7 +214,11 @@ export class TracksComponent implements OnInit, OnDestroy {
   }
 
   isCurrentTrack(track: Track): boolean {
-    return is(track, this.currentTrack);
+    if (!this.currentTrack) {
+      return null;
+    } else {
+      return track.url === this.currentTrack.url;
+    }
   }
 
 }

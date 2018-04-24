@@ -6,7 +6,6 @@ import {FavoritesService} from '../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Subscription} from 'rxjs';
 import * as _ from 'lodash';
-import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
@@ -46,16 +45,10 @@ import {LibraryService} from '@app/library/services/library.service';
                        [warn]="track.warn && settings.warnOnMissingTags"
                        [isCurrentTrack]="isCurrentTrack(track)"
                        [search]="search"
-                       [playing]="audioService.playing$ | async"
-                       [loading]="audioService.loading$ | async"
-                       [favorite]="favorites.isFavorite(track)"
-                       [currentTime]="audioService.currentTime$ | async"
-                       [duration]="audioService.duration$ | async"
+                       [favorite]="isFavorite(track)"
                        (click)="trackClicked(track)"
                        (addToFavorites)="favorites.addToFavorites(track)"
                        (addTrackToPlaylist)="addTrackToPlaylist(track)"
-                       (audioPause)="pause()"
-                       (audioPlay)="resume()"
                        (openDetailsDialog)="openDetailsDialog(track)"
                        (playTrack)="playTrack(track)"
                        (playTrackNext)="playTrackNext(track)"
@@ -103,7 +96,16 @@ export class TracksComponent implements OnInit, OnDestroy {
   @ViewChild('list') list: ElementRef;
   @ViewChild('tracksMenu') tracksMenu: MatMenu;
 
-  search = '';
+  // TODO filter and sort on setting search
+  search_ = '';
+  get search() {
+    return this.search_;
+  }
+  set search(val: string) {
+    this.search_ = val;
+  }
+
+
   sortedAlphabetically = false;
 
   filter: (track: Track) => boolean = ((track: Track) => {
@@ -127,7 +129,6 @@ export class TracksComponent implements OnInit, OnDestroy {
     public favorites: FavoritesService,
     private dialog: MatDialog,
     public settings: SettingsService,
-    public audioService: AudioService,
     private library: LibraryService
   ) { }
 
@@ -183,14 +184,6 @@ export class TracksComponent implements OnInit, OnDestroy {
     }
   }
 
-  resume() {
-    this.audioService.resume();
-  }
-
-  pause() {
-    this.audioService.pause();
-  }
-
   trackClicked(track: Track) {
     this.next.emit();
     this.library.setPlaylist(this.tracks.filter(this.filter).slice(0, 300));
@@ -215,10 +208,14 @@ export class TracksComponent implements OnInit, OnDestroy {
 
   isCurrentTrack(track: Track): boolean {
     if (!this.currentTrack) {
-      return null;
+      return false;
     } else {
       return track.url === this.currentTrack.url;
     }
+  }
+
+  isFavorite(track: Track) {
+    return this.favorites.isFavorite(track);
   }
 
 }

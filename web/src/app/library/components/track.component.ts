@@ -1,5 +1,9 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Track} from '@app/model';
+import {AudioService} from '@app/core/services/audio.service';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {take} from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-track',
@@ -65,18 +69,7 @@ import {Track} from '@app/model';
           Playlist2
         </button>
       </mat-menu>
-      <button mat-button mat-icon-button
-              class="playPause"
-              *ngIf="isCurrentTrack"
-              (click)="playing ? audioPause.emit() : audioPlay.emit(); $event.stopPropagation()">
-        <mat-icon>{{ playing ? 'pause' : 'play_arrow' }}</mat-icon>
-      </button>
-      <span class="spinner" *ngIf="isCurrentTrack">
-        <mat-progress-spinner [diameter]="40"
-                              [mode]="loading ? 'indeterminate' : 'determinate'"
-                              [value]="currentTime / duration * 100">
-        </mat-progress-spinner>
-      </span>
+      <app-track-control *ngIf="isCurrentTrack"></app-track-control>
       <mat-divider></mat-divider>
     </a>
   `,
@@ -84,18 +77,7 @@ import {Track} from '@app/model';
     .track {
       cursor: pointer;
     }
-    .spinner {
-      display: inline-block;
-      height: 40px;
-      width: 40px;
-      position: absolute;
-      right: 0.5rem;
-      z-index: 1;
-    }
-    .playPause {
-      position: relative;
-      z-index: 2;
-    }
+
     .favorite-icon {
       height: 14px;
       width: 14px;
@@ -126,10 +108,6 @@ export class TrackComponent {
   @Input() warn: boolean;
   @Input() favorite: boolean;
   @Input() search: string;
-  @Input() playing: boolean;
-  @Input() loading: boolean;
-  @Input() currentTime: number;
-  @Input() duration: number;
 
   @Output() playTrack = new EventEmitter<void>();
   @Output() playTrackNext = new EventEmitter<void>();
@@ -137,7 +115,69 @@ export class TrackComponent {
   @Output() addToFavorites = new EventEmitter<void>();
   @Output() removeFromFavorites = new EventEmitter<void>();
   @Output() openDetailsDialog = new EventEmitter<void>();
-  @Output() audioPlay = new EventEmitter<void>();
-  @Output() audioPause = new EventEmitter<void>();
+
+}
+
+@Component({
+  selector: 'app-track-control',
+  template: `
+    <button mat-button mat-icon-button
+            class="playPause"
+            (click)="playPause(); $event.stopPropagation()">
+      <mat-icon>{{ (playing$ | async) ? 'pause' : 'play_arrow' }}</mat-icon>
+    </button>
+    <span class="spinner">
+      <mat-progress-spinner [diameter]="40"
+                            [mode]="(loading$ | async) ? 'indeterminate' : 'determinate'"
+                            [value]="(currentTime$ | async) / (duration$ | async) * 100">
+      </mat-progress-spinner>
+    </span>
+  `,
+  styles: [`
+    .spinner {
+      display: inline-block;
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      right: 0.5rem;
+      z-index: 1;
+    }
+    .playPause {
+      position: relative;
+      z-index: 2;
+    }
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class TrackControlComponent {
+
+  currentTime$: Observable<number>;
+  duration$: Observable<number>;
+  playing$: Observable<boolean>;
+  loading$: Observable<boolean>;
+
+  constructor(
+    private audio: AudioService
+  ) {
+    this.currentTime$ = this.audio.currentTime$;
+    this.duration$ = this.audio.duration$;
+    this.playing$ = this.audio.playing$;
+    this.loading$ = this.audio.loading$;
+  }
+
+  play() {
+    this.audio.resume();
+  }
+
+  pause() {
+    this.audio.pause();
+  }
+
+  playPause() {
+    this.playing$.pipe(
+      take(1),
+      tap(playing => playing ? this.pause() : this.play())
+    ).subscribe();
+  }
 
 }

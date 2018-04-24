@@ -16,7 +16,7 @@ import {TracksComponent} from './components/tracks.component';
 import {ControlsComponent} from './components/shared/controls.component';
 import {ChipsComponent} from './components/shared/chips.component';
 import {ListItemComponent} from './components/shared/list-item.component';
-import {TrackComponent} from './components/track.component';
+import {TrackComponent, TrackControlComponent} from './components/track.component';
 import {ProgressComponent} from './components/player/progress.component';
 
 import {LibraryEffects} from './library.effects';
@@ -34,7 +34,8 @@ export const COMPONENTS = [
   ChipsComponent,
   ListItemComponent,
   TrackComponent,
-  ProgressComponent
+  ProgressComponent,
+  TrackControlComponent
 ];
 
 @NgModule({

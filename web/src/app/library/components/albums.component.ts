@@ -55,17 +55,16 @@ import {LibraryService} from '@app/library/services/library.service';
 
       <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
         <mat-list class="list" dense>
-          <ng-container *ngFor="let album of filteredAlbums; trackBy: trackByTitle">
-            <app-list-item [selected]="isSelected(album) | async"
-                           [avatarStyle]="getAvatarStyle(album)"
-                           [warn]="album.warn && settings.warnOnMissingTags"
-                           [primaryHTML]="album.title | sgSearch:search"
-                           [secondaryHTML]="album.songs + ' songs • ' + album.artist"
-                           (click)="selectOnly(album); next.emit()"
-                           (arrowClicked)="select(album); next.emit()"
-                           (checked)="$event ? select(album) : deselect(album)">
-            </app-list-item>
-          </ng-container>
+          <app-list-item *ngFor="let album of filteredAlbums; trackBy: trackByTitle"
+                         [selected]="isSelected(album) | async"
+                         [avatarStyle]="getAvatarStyle(album)"
+                         [warn]="album.warn && settings.warnOnMissingTags"
+                         [primaryHTML]="album.title | sgSearch:search"
+                         [secondaryHTML]="album.songs + ' songs • ' + album.artist"
+                         (click)="selectOnly(album); next.emit()"
+                         (arrowClicked)="select(album); next.emit()"
+                         (checked)="$event ? select(album) : deselect(album)">
+          </app-list-item>
         </mat-list>
       </div>
 
@@ -89,6 +88,9 @@ import {LibraryService} from '@app/library/services/library.service';
     }
     .select-text {
       font-weight: 300;
+    }
+    .select-text mat-chip {
+      vertical-align: middle;
     }
     mat-chip-list {
       width: 100%;

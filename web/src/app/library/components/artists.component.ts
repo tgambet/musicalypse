@@ -54,17 +54,16 @@ import {SettingsService} from '@app/settings/services/settings.service';
 
       <div #list class="list-wrapper" (swipeleft)="next.emit()">
         <mat-list class="list" dense>
-          <ng-container *ngFor="let artist of filteredArtists; trackBy: trackByName">
-            <app-list-item [selected]="isSelected(artist) | async"
-                           [avatarStyle]="getAvatarStyle(artist)"
-                           [warn]="artist.warn && settings.warnOnMissingTags"
-                           [primaryHTML]="artist.name | sgSearch:search"
-                           [secondaryHTML]="artist.songs + ' songs'"
-                           (click)="select(artist); next.emit()"
-                           (arrowClicked)="add(artist); next.emit()"
-                           (checked)="$event ? add(artist) : deselect(artist)">
-            </app-list-item>
-          </ng-container>
+          <app-list-item *ngFor="let artist of filteredArtists; trackBy: trackByName"
+                         [selected]="isSelected(artist) | async"
+                         [avatarStyle]="getAvatarStyle(artist)"
+                         [warn]="artist.warn && settings.warnOnMissingTags"
+                         [primaryHTML]="artist.name | sgSearch:search"
+                         [secondaryHTML]="artist.songs + ' songs'"
+                         (click)="select(artist); next.emit()"
+                         (arrowClicked)="add(artist); next.emit()"
+                         (checked)="$event ? add(artist) : deselect(artist)">
+          </app-list-item>
         </mat-list>
       </div>
 
@@ -88,6 +87,9 @@ import {SettingsService} from '@app/settings/services/settings.service';
     }
     .select-text {
       font-weight: 300;
+    }
+    .select-text mat-chip {
+      vertical-align: middle;
     }
     mat-chip-list {
       width: 100%;

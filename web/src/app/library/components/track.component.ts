@@ -77,7 +77,6 @@ import {take} from 'rxjs/internal/operators';
     .track {
       cursor: pointer;
     }
-
     .favorite-icon {
       height: 14px;
       width: 14px;

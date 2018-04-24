@@ -53,8 +53,9 @@ export function reducer(
 
     case PlayerActionTypes.AddTracksToPlaylist: {
       let playlist = state.playlist;
+      const urls = playlist.map(track => track.url);
       const tracks = action.payload;
-      playlist = playlist.push(...tracks.filter(track => !playlist.includes(track)));
+      playlist = playlist.push(...tracks.filter(track => !urls.includes(track.url)));
       return {
         ...state,
         playlist: playlist

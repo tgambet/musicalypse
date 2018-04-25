@@ -97,7 +97,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
     mat-chip {
       cursor: pointer;
       font-size: 12px;
-      max-width: calc(50% - 16px);
+      max-width: calc(50% - 27px);
     }
     mat-chip:only-child {
       max-width: 100%;

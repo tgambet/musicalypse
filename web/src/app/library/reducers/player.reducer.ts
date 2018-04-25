@@ -26,7 +26,7 @@ export function reducer(
     case PlayerActionTypes.PlayTrack: {
       let playlist = state.playlist;
       const track = action.payload;
-      if (!playlist.includes(track)) {
+      if (!playlist.some(t => _.isEqual(t, track))) {
         playlist = playlist.push(track);
       }
       return {
@@ -40,10 +40,12 @@ export function reducer(
       const next = action.payload;
       const currentTrack = state.currentTrack;
       let playlist = state.playlist;
-      if (playlist.includes(next)) {
-        playlist = playlist.delete(playlist.indexOf(next));
+      const nextIndex = playlist.findIndex(t => _.isEqual(t, next));
+      if (nextIndex > -1) {
+        playlist = playlist.delete(nextIndex);
       }
-      playlist = playlist.splice(playlist.indexOf(currentTrack) + 1, 0, next);
+      const currentIndex = playlist.findIndex(t => _.isEqual(t, currentTrack));
+      playlist = playlist.splice(currentIndex + 1, 0, next);
       return {
         ...state,
         currentTrack: currentTrack ? currentTrack : next,
@@ -53,9 +55,8 @@ export function reducer(
 
     case PlayerActionTypes.AddTracksToPlaylist: {
       let playlist = state.playlist;
-      const urls = playlist.map(track => track.url);
       const tracks = action.payload;
-      playlist = playlist.push(...tracks.filter(track => !urls.includes(track.url)));
+      playlist = playlist.push(...tracks.filter(track => !playlist.some(t => _.isEqual(t, track))));
       return {
         ...state,
         playlist: playlist

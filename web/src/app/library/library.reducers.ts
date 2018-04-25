@@ -9,6 +9,8 @@ import * as fromAlbums from './reducers/albums.reducers';
 import * as fromPlayer from './reducers/player.reducer';
 import * as fromFavorites from './reducers/favorites.reducers';
 
+import * as _ from 'lodash';
+
 export interface LibraryState {
   tracks: fromTracks.State;
   artists: fromArtists.State;
@@ -170,6 +172,6 @@ export const getFavorites = createSelector(
 
 export const isFavorite = (track: Track) => createSelector(
   getFavorites,
-  favorites => favorites.indexOf(track) > -1
+  favorites => favorites.some(fav => _.isEqual(fav, track))
 );
 

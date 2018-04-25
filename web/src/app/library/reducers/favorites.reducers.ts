@@ -1,6 +1,7 @@
 import {List} from 'immutable';
 import {Track} from '@app/model';
 import {FavoritesActionsUnion, FavoritesActionTypes} from '../actions/favorites.actions';
+import * as _ from 'lodash';
 
 export interface State {
   favorites: List<Track>;
@@ -24,11 +25,10 @@ export function reducer(
     }
 
     case FavoritesActionTypes.RemoveFromFavorites: {
+      const index = state.favorites.findIndex(f => _.isEqual(f, action.payload));
       return {
         ...state,
-        favorites: state.favorites.indexOf(action.payload) > -1 ?
-          state.favorites.delete(state.favorites.indexOf(action.payload)) :
-          state.favorites
+        favorites: index > -1 ? state.favorites.delete(index) : state.favorites
       };
     }
 

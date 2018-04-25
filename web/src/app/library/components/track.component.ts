@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Track} from '@app/model';
 import {AudioService} from '@app/core/services/audio.service';
 import {Observable} from 'rxjs';
@@ -82,7 +82,8 @@ import {take} from 'rxjs/internal/operators';
       width: 14px;
       font-size: 14px;
       line-height: 14px;
-      vertical-align: text-bottom;
+      vertical-align: middle;
+      margin-right: 0.2rem;
     }
     .primary-text {
       font-size: 14px !important;

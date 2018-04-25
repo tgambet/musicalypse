@@ -135,10 +135,9 @@
     <button mat-button mat-icon-button
             class="favorites"
             [disabled]="!currentTrack"
-            [color]="favorites.isFavorite(currentTrack) ? 'warn' : ''"
-            (click)="favorites.isFavorite(currentTrack) ?
-                     favorites.removeFromFavorites(currentTrack) : favorites.addToFavorites(currentTrack)">
-      <mat-icon>{{ favorites.isFavorite(currentTrack) ? 'favorite' : 'favorite_border' }}</mat-icon>
+            [color]="(isFavorite(currentTrack) | async) ? 'warn' : ''"
+            (click)="addOrRemoveFromFavorites(currentTrack)">
+      <mat-icon>{{ (isFavorite(currentTrack) | async) ? 'favorite' : 'favorite_border' }}</mat-icon>
     </button>
     <button mat-button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>

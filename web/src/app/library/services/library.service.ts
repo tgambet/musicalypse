@@ -8,15 +8,16 @@ import {SelectArtistsByIds} from '../actions/artists.actions';
 import {SelectAlbumsByIds} from '../actions/albums.actions';
 import * as fromLibrary from '../library.reducers';
 import * as fromRoot from 'app/core/core.reducers';
-
-import {map} from 'rxjs/operators';
 import {
   AddTracksToPlaylist,
   PlayNextTrackInPlaylist,
   PlayPreviousTrackInPlaylist,
   PlayTrack,
-  PlayTrackNext, ResetPlaylist,
-  SetPlaylist, SetRepeat, SetShuffle
+  PlayTrackNext,
+  ResetPlaylist,
+  SetPlaylist,
+  SetRepeat,
+  SetShuffle
 } from '@app/library/actions/player.actions';
 import {Album, Artist, Track} from '@app/model';
 import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAllAlbums} from '@app/library/actions/albums.actions';
@@ -89,7 +90,7 @@ export class LibraryService {
   }
 
   getPlaylist() {
-    return this.store.select(fromLibrary.getPlaylist).pipe(map(p => p.toArray()));
+    return this.store.select(fromLibrary.getPlaylist);
   }
 
   selectAllArtists() {

@@ -156,4 +156,4 @@ export function reducer(
 export const getCurrentTrack = (state: State) => state.currentTrack;
 export const getRepeat = (state: State) => state.repeat;
 export const getShuffle = (state: State) => state.shuffle;
-export const getPlaylist = (state: State) => state.playlist;
+export const getPlaylist = (state: State) => state.playlist.toArray();

@@ -16,6 +16,7 @@ import {FavoritesService} from '../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import * as _ from 'lodash';
 import {LibraryService} from '@app/library/services/library.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-tracks',
@@ -54,14 +55,14 @@ import {LibraryService} from '@app/library/services/library.service';
                      [warn]="track.warn && settings.warnOnMissingTags"
                      [isCurrentTrack]="isCurrentTrack(track)"
                      [search]="search"
-                     [favorite]="isFavorite(track)"
+                     [favorite]="isFavorite(track) | async"
                      (click)="trackClicked(track)"
-                     (addToFavorites)="favorites.addToFavorites(track)"
                      (addTrackToPlaylist)="addTrackToPlaylist(track)"
                      (openDetailsDialog)="openDetailsDialog(track)"
                      (playTrack)="playTrack(track)"
                      (playTrackNext)="playTrackNext(track)"
-                     (removeFromFavorites)="favorites.removeFromFavorites(track)">
+                     (addToFavorites)="addToFavorites(track)"
+                     (removeFromFavorites)="removeFromFavorites(track)">
           </app-track>
         </mat-list>
       </div>
@@ -133,7 +134,7 @@ export class TracksComponent implements OnChanges {
   });
 
   constructor(
-    public favorites: FavoritesService,
+    private favorites: FavoritesService,
     private dialog: MatDialog,
     public settings: SettingsService,
     private library: LibraryService
@@ -205,8 +206,16 @@ export class TracksComponent implements OnChanges {
     }
   }
 
-  isFavorite(track: Track) {
+  isFavorite(track: Track): Observable<boolean> {
     return this.favorites.isFavorite(track);
+  }
+
+  addToFavorites(track: Track) {
+    this.favorites.addToFavorites(track);
+  }
+
+  removeFromFavorites(track: Track) {
+    this.favorites.removeFromFavorites(track);
   }
 
 }

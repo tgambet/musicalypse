@@ -8,6 +8,7 @@ import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
+import {take, tap} from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-player',
@@ -147,6 +148,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   showInLibrary() {
     this.library.selectInLibrary(this.playlist);
+  }
+
+  isFavorite(track: Track): Observable<boolean> {
+    return this.favorites.isFavorite(track);
+  }
+
+  addOrRemoveFromFavorites(track: Track) {
+    this.favorites.isFavorite(track).pipe(
+      take(1),
+      tap(isFav => isFav ? this.favorites.removeFromFavorites(track) : this.favorites.addToFavorites(track))
+    ).subscribe();
   }
 
 }

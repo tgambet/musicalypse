@@ -6,16 +6,25 @@ import * as fromLibrary from '../library.reducers';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
 export class FavoritesService {
 
   constructor(
     private store: Store<fromLibrary.State>
-  ) { }
+  ) {
+    const savedFavorites = CoreUtils.load('favorites');
+    if (savedFavorites) {
+      this.store.dispatch(new AddToFavorites(JSON.parse(savedFavorites)));
+    }
+    this.store.select(fromLibrary.getFavorites).subscribe(
+      favs => CoreUtils.save('favorites', JSON.stringify(favs))
+    );
+  }
 
   addToFavorites(track: Track) {
-    this.store.dispatch(new AddToFavorites(track));
+    this.store.dispatch(new AddToFavorites([track]));
   }
 
   removeFromFavorites(track: Track) {

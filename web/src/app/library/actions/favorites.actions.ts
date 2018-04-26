@@ -8,7 +8,7 @@ export enum FavoritesActionTypes {
 
 export class AddToFavorites implements Action {
   readonly type = FavoritesActionTypes.AddToFavorites;
-  constructor(public payload: Track) {}
+  constructor(public payload: Track[]) {}
 }
 
 export class RemoveFromFavorites implements Action {

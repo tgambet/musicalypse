@@ -20,7 +20,7 @@ export function reducer(
     case FavoritesActionTypes.AddToFavorites: {
       return {
         ...state,
-        favorites: state.favorites.push(action.payload)
+        favorites: state.favorites.push(...action.payload)
       };
     }
 

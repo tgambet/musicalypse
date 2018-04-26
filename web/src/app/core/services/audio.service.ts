@@ -19,6 +19,7 @@ export class AudioService {
   loading$: Observable<boolean>;
   playing$: Observable<boolean>;
   ended$: Observable<void>;
+  errors$: Observable<MediaError>;
 
   private _renderer: Renderer2;
   private _appRoot: ElementRef;
@@ -37,6 +38,7 @@ export class AudioService {
   private _loading = new Subject<boolean>();
   private _playing = new Subject<boolean>();
   private _ended = new Subject<void>();
+  private _error = new Subject<MediaError>();
 
   private audioElement: HTMLMediaElement;
 
@@ -50,6 +52,7 @@ export class AudioService {
     this.loading$ = this._loading.asObservable().pipe(publishReplay(1), refCount());
     this.playing$ = this._playing.asObservable().pipe(publishReplay(1), refCount());
     this.ended$ = this._ended.asObservable();
+    this.errors$ = this._error.asObservable();
     this._volume.next(this.volume);
     this._muted.next(this.muted);
     this._loading.next(false);
@@ -140,7 +143,10 @@ export class AudioService {
       this._renderer.listen(audio, 'ended', () => this._playing.next(false)),
       this._renderer.listen(audio, 'canplay', () => this._loading.next(false)),
       this._renderer.listen(audio, 'ended', () => this._ended.next()),
-      // this._renderer.listen(audio, 'error', () => this._loading.next(false))
+      this._renderer.listen(audio, 'error', (event) => {
+        this._loading.next(false);
+        this._error.next(event.target.error);
+      })
     );
     return audio;
   }

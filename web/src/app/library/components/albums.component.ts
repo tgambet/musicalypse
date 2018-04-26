@@ -178,7 +178,7 @@ export class AlbumsComponent implements OnChanges {
   }
 
   selectAll() {
-    this.library.selectAllAlbums();
+    this.library.selectAlbums(this.albums);
   }
 
   selectOnly(album: Album) {

@@ -31,13 +31,6 @@ export function reducer(
     case ArtistsActionTypes.LoadArtists:
       return adapter.upsertMany(action.payload, state);
 
-    case ArtistsActionTypes.SelectAllArtists: {
-      return {
-        ...state,
-        selectedIds: state.ids
-      };
-    }
-
     case ArtistsActionTypes.DeselectAllArtists: {
       return {
         ...state,

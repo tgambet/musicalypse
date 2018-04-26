@@ -174,7 +174,7 @@ export class ArtistsComponent implements OnChanges {
   }
 
   selectAll() {
-    this.library.selectAllArtists();
+    this.library.selectArtists(this.artists);
   }
 
   select(artist: Artist) {

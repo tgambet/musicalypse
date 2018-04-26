@@ -20,9 +20,9 @@ import {
   SetShuffle
 } from '@app/library/actions/player.actions';
 import {Album, Artist, Track} from '@app/model';
-import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAllAlbums} from '@app/library/actions/albums.actions';
+import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums} from '@app/library/actions/albums.actions';
 import {Observable} from 'rxjs';
-import {DeselectAllArtists, DeselectArtist, SelectAllArtists, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
+import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
 import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
 
 @Injectable()
@@ -101,10 +101,6 @@ export class LibraryService {
     return this.store.select(fromLibrary.getPlaylist);
   }
 
-  selectAllArtists() {
-    this.store.dispatch(new SelectAllArtists());
-  }
-
   selectArtists(artists: Artist[]) {
     this.store.dispatch(new SelectArtists(artists));
   }
@@ -123,10 +119,6 @@ export class LibraryService {
 
   isSelectedArtist(artist: Artist): Observable<boolean> {
     return this.store.select(fromLibrary.isSelectedArtist(artist));
-  }
-
-  selectAllAlbums() {
-    this.store.dispatch(new SelectAllAlbums());
   }
 
   selectAlbums(albums: Album[]) {
@@ -205,7 +197,7 @@ export class LibraryService {
   }
 
   getFavorites(): Observable<Track[]> {
-    return this.store.select(fromLibrary.getFavorites);
+    return this.store.select(fromLibrary.getDisplayedFavorites);
   }
 
   getFavoriteArtists(): Observable<Artist[]> {
@@ -213,7 +205,7 @@ export class LibraryService {
   }
 
   getFavoriteAlbums(): Observable<Album[]> {
-    return this.store.select(fromLibrary.getFavoritesAlbums);
+    return this.store.select(fromLibrary.getDisplayedFavoriteAlbums);
   }
 
 }

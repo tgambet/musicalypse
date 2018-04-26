@@ -12,7 +12,7 @@ import {Album, Artist, Track} from '@app/model';
 import {LibraryUtils} from './library.utils';
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes, LoadArtists} from './actions/artists.actions';
-import {AlbumsActionTypes, DeselectAlbum, DeselectAllAlbums, LoadAlbums, SelectAlbums} from './actions/albums.actions';
+import {DeselectAlbum, DeselectAllAlbums, LoadAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
@@ -62,21 +62,6 @@ export class LibraryEffects {
       map((tracks: Track[]) =>
         new LoadAlbums(LibraryUtils.extractAlbums(tracks))
       ),
-    );
-
-  /**
-   * Select All *displayed* albums when SelectAllAlbums is called
-   */
-  @Effect()
-  selectAllAlbums$: Observable<Action> =
-    this.actions$.pipe(
-      ofType(AlbumsActionTypes.SelectAllAlbums),
-      switchMap(() =>
-        this.store.select(fromLibrary.getDisplayedAlbums).pipe(
-          take(1),
-          map(albums => new SelectAlbums(albums))
-        )
-      )
     );
 
   /**

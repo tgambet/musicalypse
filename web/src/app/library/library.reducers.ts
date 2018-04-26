@@ -192,3 +192,17 @@ export const getFavoritesAlbums = createSelector(
     return albums.filter(artist => favAlbums.includes(artist.title));
   }
 );
+
+export const getDisplayedFavorites = createSelector(
+  getSelectedAlbumsIds,
+  getFavorites,
+  (ids, tracks) =>
+    tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
+);
+
+export const getDisplayedFavoriteAlbums = createSelector(
+  getSelectedArtistsIds,
+  getFavoritesAlbums,
+  (artistsIds, albums) =>
+    albums.filter(album => artistsIds.indexOf(album.artist) > -1)
+);

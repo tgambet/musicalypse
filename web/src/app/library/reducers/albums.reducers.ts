@@ -78,7 +78,6 @@ export function reducer(
         selectedIds: []
       });
 
-    case AlbumsActionTypes.SelectAllAlbums: // Cf. Effects
     default: {
       return state;
     }

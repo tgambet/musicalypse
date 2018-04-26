@@ -43,8 +43,8 @@ export class AudioService {
   private listeners: (() => void)[] = [];
 
   constructor () {
-    this.volume$ = this._volume.asObservable();
-    this.muted$ = this._muted.asObservable();
+    this.volume$ = this._volume.asObservable().pipe(publishReplay(1), refCount());
+    this.muted$ = this._muted.asObservable().pipe(publishReplay(1), refCount());
     this.currentTime$ = this._currentTime.asObservable().pipe(throttleTime(500));
     this.duration$ = this._duration.asObservable().pipe(publishReplay(1), refCount());
     this.loading$ = this._loading.asObservable().pipe(publishReplay(1), refCount());

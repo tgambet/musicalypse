@@ -11,6 +11,7 @@ import {CoreUtils, Theme} from './core.utils';
 
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {ChangeTheme} from '@app/core/core.actions';
 
 @Component({
   selector: 'app-root',
@@ -144,6 +145,8 @@ export class CoreComponent {
     const savedTheme = CoreUtils.load('theme');
     if (savedTheme) {
       this.changeTheme(JSON.parse(savedTheme));
+    } else {
+      this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]));
     }
 
     // Configure Audio Service

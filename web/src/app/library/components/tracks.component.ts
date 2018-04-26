@@ -12,7 +12,6 @@ import {
 import {MatDialog, MatMenu} from '@angular/material';
 import {Track} from '@app/model';
 import {SettingsService} from '@app/settings/services/settings.service';
-import {FavoritesService} from '../services/favorites.service';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import * as _ from 'lodash';
 import {LibraryService} from '@app/library/services/library.service';
@@ -134,7 +133,6 @@ export class TracksComponent implements OnChanges {
   });
 
   constructor(
-    private favorites: FavoritesService,
     private dialog: MatDialog,
     public settings: SettingsService,
     private library: LibraryService
@@ -207,15 +205,15 @@ export class TracksComponent implements OnChanges {
   }
 
   isFavorite(track: Track): Observable<boolean> {
-    return this.favorites.isFavorite(track);
+    return this.library.isFavorite(track);
   }
 
   addToFavorites(track: Track) {
-    this.favorites.addToFavorites(track);
+    this.library.addToFavorites(track);
   }
 
   removeFromFavorites(track: Track) {
-    this.favorites.removeFromFavorites(track);
+    this.library.removeFromFavorites(track);
   }
 
 }

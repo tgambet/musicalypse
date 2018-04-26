@@ -23,6 +23,7 @@ import {Album, Artist, Track} from '@app/model';
 import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAllAlbums} from '@app/library/actions/albums.actions';
 import {Observable} from 'rxjs';
 import {DeselectAllArtists, DeselectArtist, SelectAllArtists, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
+import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
 
 @Injectable()
 export class LibraryService {
@@ -44,6 +45,10 @@ export class LibraryService {
     if (savedPlaylist) {
       this.store.dispatch(new SetPlaylist(JSON.parse(savedPlaylist)));
     }
+    const savedFavorites = CoreUtils.load('favorites');
+    if (savedFavorites) {
+      this.store.dispatch(new AddToFavorites(JSON.parse(savedFavorites)));
+    }
 
     // Save selection state and playlist on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
@@ -54,6 +59,9 @@ export class LibraryService {
     );
     this.store.select(fromLibrary.getPlaylist).subscribe(
       playlist => CoreUtils.save('playlist', JSON.stringify(playlist))
+    );
+    this.store.select(fromLibrary.getFavorites).subscribe(
+      favs => CoreUtils.save('favorites', JSON.stringify(favs))
     );
   }
 
@@ -183,4 +191,29 @@ export class LibraryService {
     this.store.dispatch(new SelectArtistsByIds(artistsIds));
     this.store.dispatch(new SelectAlbumsByIds(albumsIds));
   }
+
+  addToFavorites(track: Track) {
+    this.store.dispatch(new AddToFavorites([track]));
+  }
+
+  removeFromFavorites(track: Track) {
+    this.store.dispatch(new RemoveFromFavorites(track));
+  }
+
+  isFavorite(track: Track): Observable<boolean> {
+    return this.store.select(fromLibrary.isFavorite(track));
+  }
+
+  getFavorites(): Observable<Track[]> {
+    return this.store.select(fromLibrary.getFavorites);
+  }
+
+  getFavoriteArtists(): Observable<Artist[]> {
+    return this.store.select(fromLibrary.getFavoritesArtists);
+  }
+
+  getFavoriteAlbums(): Observable<Album[]> {
+    return this.store.select(fromLibrary.getFavoritesAlbums);
+  }
+
 }

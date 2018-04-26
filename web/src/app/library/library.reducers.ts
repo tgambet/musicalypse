@@ -175,3 +175,20 @@ export const isFavorite = (track: Track) => createSelector(
   favorites => favorites.some(fav => _.isEqual(fav, track))
 );
 
+export const getFavoritesArtists = createSelector(
+  getAllArtists,
+  getFavorites,
+  (artists, favorites) => {
+    const favArtists = favorites.map(fav => fav.metadata.albumArtist);
+    return artists.filter(artist => favArtists.includes(artist.name));
+  }
+);
+
+export const getFavoritesAlbums = createSelector(
+  getAllAlbums,
+  getFavorites,
+  (albums, favorites) => {
+    const favAlbums = favorites.map(fav => fav.metadata.album);
+    return albums.filter(artist => favAlbums.includes(artist.title));
+  }
+);

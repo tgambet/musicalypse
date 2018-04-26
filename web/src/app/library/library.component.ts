@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {AudioService} from '../core/services/audio.service';
 import {Album, Artist, Track} from '../model';
@@ -7,6 +7,7 @@ import {Album, Artist, Track} from '../model';
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
 import {LibraryService} from '@app/library/services/library.service';
+import {take} from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-library',
@@ -90,17 +91,10 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     public audioService: AudioService,
-    private library: LibraryService
+    private library: LibraryService,
+    private route: ActivatedRoute
   ) {
-    this.artists$         = library.getArtists();
-    this.selectedArtists$ = library.getSelectedArtists();
-    this.albums$          = library.getAlbums();
-    this.selectedAlbums$  = library.getSelectedAlbums();
-    this.tracks$          = library.getTracks();
-    this.currentTrack$    = library.getCurrentTrack();
-    this.shuffle$         = library.getShuffle();
-    this.repeat$          = library.getRepeat();
-    this.playlist$        = library.getPlaylist();
+
   }
 
   @HostListener('window:resize') onResize() {
@@ -154,6 +148,30 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   // }
 
   ngOnInit() {
+
+    this.route.data.pipe(
+      take(1),
+    ).subscribe(data => {
+      if (data.favorites) {
+        this.artists$ = this.library.getFavoriteArtists();
+        this.albums$  = this.library.getFavoriteAlbums();
+        this.tracks$  = this.library.getFavorites();
+      } else {
+        this.artists$ = this.library.getArtists();
+        this.albums$  = this.library.getAlbums();
+        this.tracks$  = this.library.getTracks();
+      }
+    });
+
+    this.selectedArtists$ = this.library.getSelectedArtists();
+    this.selectedAlbums$  = this.library.getSelectedAlbums();
+    this.currentTrack$    = this.library.getCurrentTrack();
+    this.shuffle$         = this.library.getShuffle();
+    this.repeat$          = this.library.getRepeat();
+    this.playlist$        = this.library.getPlaylist();
+
+
+
 
     // Update the url based on the library state
     // if (this.library.selectedArtists.length > 0) {

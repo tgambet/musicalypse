@@ -4,7 +4,6 @@ import {EffectsModule} from '@ngrx/effects';
 
 import {SharedModule} from '@app/shared/shared.module';
 
-import {FavoritesService} from './services/favorites.service';
 import {LibraryService} from './services/library.service';
 import {DictionaryComponent} from './components/shared/dictionary.component';
 import {MiniPlayerComponent} from './components/mini-player.component';
@@ -47,8 +46,7 @@ export const COMPONENTS = [
   declarations: COMPONENTS,
   exports: COMPONENTS,
   providers: [
-    LibraryService,
-    FavoritesService
+    LibraryService
   ]
 })
 export class LibraryModule {}

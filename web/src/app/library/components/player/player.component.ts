@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {FavoritesService} from '../../services/favorites.service';
 import {Track} from '@app/model';
 import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 import {Observable, Subscription} from 'rxjs';
@@ -44,7 +43,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    public favorites: FavoritesService,
     // public snackBar: MatSnackBar,
     private dialog: MatDialog,
     private audioService: AudioService,
@@ -151,13 +149,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   isFavorite(track: Track): Observable<boolean> {
-    return this.favorites.isFavorite(track);
+    return this.library.isFavorite(track);
   }
 
   addOrRemoveFromFavorites(track: Track) {
-    this.favorites.isFavorite(track).pipe(
+    this.library.isFavorite(track).pipe(
       take(1),
-      tap(isFav => isFav ? this.favorites.removeFromFavorites(track) : this.favorites.addToFavorites(track))
+      tap(isFav => isFav ? this.library.removeFromFavorites(track) : this.library.addToFavorites(track))
     ).subscribe();
   }
 

@@ -37,6 +37,6 @@ export function reducer(
   }
 }
 
-export const getFavorites = (state: State) => state.favorites;
+export const getFavorites = (state: State) => state.favorites.toArray();
 
 

@@ -2,6 +2,7 @@ import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
 import {Artist} from '@app/model';
 import {ArtistsActionsUnion, ArtistsActionTypes} from '@app/library/actions/artists.actions';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
+import {LibraryUtils} from '@app/library/library.utils';
 
 /**
  * State
@@ -75,6 +76,11 @@ export function reducer(
         ...state,
         selectedIds: []
       });
+
+    case TracksActionTypes.LoadTracksSuccess: {
+      const artists = LibraryUtils.extractArtists(action.payload);
+      return adapter.upsertMany(artists, state);
+    }
 
     default: {
       return state;

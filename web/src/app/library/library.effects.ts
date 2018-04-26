@@ -11,13 +11,13 @@ import {Album, Artist, Track} from '@app/model';
 
 import {LibraryUtils} from './library.utils';
 import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
-import {ArtistsActionTypes, LoadArtists} from './actions/artists.actions';
-import {DeselectAlbum, DeselectAllAlbums, LoadAlbums} from './actions/albums.actions';
+import {ArtistsActionTypes} from './actions/artists.actions';
+import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
-import {catchError, filter, map, mergeMap, scan, switchMap, take, tap, finalize} from 'rxjs/operators';
+import {catchError, filter, finalize, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
 import {LoaderService} from '@app/core/services/loader.service';
 
 @Injectable()
@@ -36,33 +36,6 @@ export class LibraryEffects {
           map(tracks => new LoadTrackSuccess(tracks)),
           catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error)))
         )
-      ),
-    );
-
-  // TODO move the two following effects to reducer
-  /**
-   * Extract Artists from loaded Tracks
-   */
-  @Effect()
-  extractArtists$: Observable<Action> =
-    this.actions$.pipe(
-      ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
-      map(action => action.payload),
-      map((tracks: Track[]) =>
-        new LoadArtists(LibraryUtils.extractArtists(tracks))
-      ),
-    );
-
-  /**
-   * Extract Albums from loaded Tracks
-   */
-  @Effect()
-  extractAlbums$: Observable<Action> =
-    this.actions$.pipe(
-      ofType<LoadTrackSuccess>(TracksActionTypes.LoadTracksSuccess),
-      map(action => action.payload),
-      map((tracks: Track[]) =>
-        new LoadAlbums(LibraryUtils.extractAlbums(tracks))
       ),
     );
 

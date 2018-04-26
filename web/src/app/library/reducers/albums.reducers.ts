@@ -84,6 +84,15 @@ export function reducer(
       return adapter.upsertMany(albums, state);
     }
 
+    case TracksActionTypes.AddTrack: {
+      const album = LibraryUtils.extractAlbums([action.payload])[0];
+      const old = state.entities[getAlbumId(album)];
+      if (old) {
+        album.songs += old.songs;
+      }
+      return adapter.upsertOne(album, state);
+    }
+
     default: {
       return state;
     }

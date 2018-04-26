@@ -10,14 +10,14 @@ import {AudioService} from '@app/core/services/audio.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LibraryUtils} from './library.utils';
-import {LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
+import {AddTrack, LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
-import {catchError, filter, finalize, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {LoaderService} from '@app/core/services/loader.service';
 
 @Injectable()
@@ -88,7 +88,7 @@ export class LibraryEffects {
       tap(() => this.loader.load()),
       switchMap(() =>
         this.scanTracks().pipe(
-          map(tracks => new LoadTrackSuccess(tracks)),
+          map(track => new AddTrack(LibraryUtils.fixTags(track))),
           finalize(() => this.loader.unload())
         )
       )
@@ -123,11 +123,7 @@ export class LibraryEffects {
     private loader: LoaderService
   ) {}
 
-  public scanTracks(): Observable<Track[]> {
-    return this._scanTracksObs().pipe(scan((acc: Track[], track: Track) => [LibraryUtils.fixTags(track), ...acc], []));
-  }
-
-  public _scanTracksObs(): Observable<Track> {
+  public scanTracks(): Observable<Track> {
     return Observable.create((observer) => {
       const currentId = ++this.httpSocketClient.id;
       const subscription1 = this.httpSocketClient

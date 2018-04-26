@@ -17,7 +17,8 @@ import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
-import {catchError, filter, map, mergeMap, scan, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, filter, map, mergeMap, scan, switchMap, take, tap, finalize} from 'rxjs/operators';
+import {LoaderService} from '@app/core/services/loader.service';
 
 @Injectable()
 export class LibraryEffects {
@@ -38,6 +39,7 @@ export class LibraryEffects {
       ),
     );
 
+  // TODO move the two following effects to reducer
   /**
    * Extract Artists from loaded Tracks
    */
@@ -110,9 +112,11 @@ export class LibraryEffects {
   scanTracks$: Observable<Action> =
     this.actions$.pipe(
       ofType(TracksActionTypes.ScanTracks),
+      tap(() => this.loader.load()),
       switchMap(() =>
         this.scanTracks().pipe(
-          map(tracks => new LoadTrackSuccess(tracks))
+          map(tracks => new LoadTrackSuccess(tracks)),
+          finalize(() => this.loader.unload())
         )
       )
     );
@@ -142,7 +146,8 @@ export class LibraryEffects {
     private httpSocketClient: HttpSocketClientService,
     private store: Store<fromLibrary.State>,
     private titleService: Title,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private loader: LoaderService
   ) {}
 
   public scanTracks(): Observable<Track[]> {

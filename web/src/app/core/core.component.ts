@@ -36,7 +36,7 @@ import {ChangeTheme} from '@app/core/core.actions';
 
       <mat-progress-bar class="main-loader"
                         mode="indeterminate"
-                        [class.show]="isLoading()">
+                        [class.show]="isLoading() | async">
       </mat-progress-bar>
 
       <app-side-menu [sideNavOpened]="showSidenav$ | async"
@@ -161,7 +161,7 @@ export class CoreComponent {
     }
   }
 
-  isLoading(): boolean {
+  isLoading(): Observable<boolean> {
     return this.loader.isLoading();
   }
 

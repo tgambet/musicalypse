@@ -7,6 +7,7 @@ import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks
  */
 export interface State extends EntityState<Track> {
   error: string;
+  loading: boolean;
 }
 
 export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>({
@@ -15,7 +16,8 @@ export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>({
 });
 
 export const initialState: State = adapter.getInitialState({
-  error: ''
+  error: '',
+  loading: false
 });
 
 /**
@@ -35,20 +37,29 @@ export function reducer(
     }
 
     case TracksActionTypes.LoadTracksSuccess: {
-      return adapter.addMany(action.payload, state);
+      return adapter.addMany(action.payload, {
+        ...state,
+        loading: false
+      });
     }
 
     case TracksActionTypes.LoadTracksFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
     }
 
     case TracksActionTypes.ScanTracks:
       return adapter.removeAll(state);
 
-    case TracksActionTypes.LoadTracks:
+    case TracksActionTypes.LoadTracks: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
 
     default: {
       return state;
@@ -60,3 +71,4 @@ export function reducer(
  * Selectors
  */
 export const getError = (state: State) => state.error;
+export const getLoading = (state: State) => state.loading;

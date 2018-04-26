@@ -24,15 +24,19 @@ import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums} from '@app/
 import {Observable} from 'rxjs';
 import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
 import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
+import {LoaderService} from '@app/core/services/loader.service';
 
 @Injectable()
 export class LibraryService {
 
-  constructor(private store: Store<fromRoot.State>) {
+  constructor(
+    private store: Store<fromRoot.State>,
+    private loader: LoaderService
+  ) {
     // Load Tracks
     store.dispatch(new LoadTracks());
 
-    // Restore selection state and playlist
+    // Restore selection state, playlist, and favorites
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
       this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
@@ -50,7 +54,7 @@ export class LibraryService {
       this.store.dispatch(new AddToFavorites(JSON.parse(savedFavorites)));
     }
 
-    // Save selection state and playlist on change
+    // Save selection state, playlist, and favorites on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
       ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
     );
@@ -62,6 +66,11 @@ export class LibraryService {
     );
     this.store.select(fromLibrary.getFavorites).subscribe(
       favs => CoreUtils.save('favorites', JSON.stringify(favs))
+    );
+
+    // Set up loader
+    this.store.select(fromLibrary.getTracksLoading).subscribe(
+      loading => loading ? this.loader.load() : this.loader.unload()
     );
   }
 

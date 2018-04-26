@@ -46,6 +46,11 @@ export const getTracksError = createSelector(
   fromTracks.getError
 );
 
+export const getTracksLoading = createSelector(
+  getTracksState,
+  fromTracks.getLoading
+);
+
 export const {
   selectIds: getTrackIds,
   selectEntities: getTrackEntities,

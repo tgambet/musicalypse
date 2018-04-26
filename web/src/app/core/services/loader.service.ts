@@ -16,7 +16,9 @@ export class LoaderService {
   }
 
   unload() {
-    this.loadings -= 1;
+    if (this.loadings > 0) {
+      this.loadings -= 1;
+    }
   }
 
 }

@@ -7,7 +7,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       <span class="time-elapsed">{{ currentTime ? (currentTime | sgTime) : '00:00' }}</span>
       <mat-progress-bar
         *ngIf="loading"
-        mode="indeterminate" ></mat-progress-bar>
+        mode="query"></mat-progress-bar>
       <mat-slider
         *ngIf="!loading"
         color="primary"

@@ -77,14 +77,6 @@ import {take} from 'rxjs/internal/operators';
     .track {
       cursor: pointer;
     }
-    .favorite-icon {
-      height: 14px;
-      width: 14px;
-      font-size: 14px;
-      line-height: 14px;
-      vertical-align: middle;
-      margin-right: 0.2rem;
-    }
     .primary-text {
       font-size: 14px !important;
     }
@@ -93,7 +85,8 @@ import {take} from 'rxjs/internal/operators';
       width: 14px;
       font-size: 14px;
       line-height: 14px;
-      vertical-align: text-bottom;
+      vertical-align: middle;
+      margin-right: 0.2rem;
     }
     .secondary-text {
       font-size: 12px;

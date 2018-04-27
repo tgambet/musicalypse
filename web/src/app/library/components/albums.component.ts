@@ -37,7 +37,7 @@ import {LibraryService} from '@app/library/services/library.service';
                     (backClicked)="previous.emit()">
         <span class="select-text" *ngIf="selectedAlbums.length == 0">
           Select an album or
-          <mat-chip (click)="selectAll()">Select All</mat-chip>
+          <mat-chip class="select-all" (click)="selectAll()">Select All</mat-chip>
         </span>
         <mat-chip-list *ngIf="selectedAlbums.length > 0">
           <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"

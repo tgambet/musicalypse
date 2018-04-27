@@ -36,7 +36,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
                     [backButton]="false">
         <span class="select-text" *ngIf="selectedArtists.length == 0">
           Select an artist or
-          <mat-chip (click)="selectAll()">Select All</mat-chip>
+          <mat-chip class="select-all" (click)="selectAll()">Select All</mat-chip>
         </span>
         <mat-chip-list *ngIf="selectedArtists.length > 0">
           <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"

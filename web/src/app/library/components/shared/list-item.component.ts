@@ -73,7 +73,8 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       width: 14px;
       font-size: 14px;
       line-height: 14px;
-      vertical-align: text-bottom;
+      vertical-align: middle;
+      margin-right: 0.2rem;
     }
     .secondary-text {
       font-size: 12px;

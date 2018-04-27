@@ -24,6 +24,9 @@ $sideMenuWidth: 44px;
   overflow-y: hidden;
   &.no-animation {
     transition-property: none;
+    app-mini-player {
+      transition-property: none;
+    }
   }
   .column {
     position: relative;
@@ -80,7 +83,6 @@ $sideMenuWidth: 44px;
 
 @media screen and (min-width: 599px) {
   .content {
-    padding-left: $sideMenuWidth;
     .column {
       width: calc(50vw - #{$sideMenuWidth} / 2);
       &.a4 {
@@ -88,7 +90,7 @@ $sideMenuWidth: 44px;
       }
     }
     app-mini-player {
-      left: $sideMenuWidth;
+      left: 0;
       width: calc(100vw - #{$sideMenuWidth});
     }
     &.t1 {

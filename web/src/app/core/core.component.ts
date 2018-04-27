@@ -85,7 +85,7 @@ import {ChangeTheme} from '@app/core/core.actions';
       width: 250px;
     }
     @media screen and (min-width: 599px){
-      mat-sidenav {
+      mat-sidenav-container {
         padding-left: 44px;
       }
     }

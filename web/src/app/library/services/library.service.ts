@@ -1,13 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
 import * as _ from 'lodash';
 
+import {Album, Artist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
+import {LoaderService} from '@app/core/services/loader.service';
+
 import {LoadTracks} from '../actions/tracks.actions';
-import {SelectArtistsByIds} from '../actions/artists.actions';
-import {SelectAlbumsByIds} from '../actions/albums.actions';
-import * as fromLibrary from '../library.reducers';
-import * as fromRoot from 'app/core/core.reducers';
+import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
+import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
 import {
   AddTracksToPlaylist,
   PlayNextTrackInPlaylist,
@@ -18,20 +20,17 @@ import {
   SetPlaylist,
   SetRepeat,
   SetShuffle
-} from '@app/library/actions/player.actions';
-import {Album, Artist, Track} from '@app/model';
-import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums} from '@app/library/actions/albums.actions';
-import {Observable} from 'rxjs';
-import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
-import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
-import {LoaderService} from '@app/core/services/loader.service';
-import {AddToRecent} from '@app/library/actions/recent.actions';
+} from '../actions/player.actions';
+import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions';
+import {AddToRecent} from '../actions/recent.actions';
+
+import * as fromLibrary from '../library.reducers';
 
 @Injectable()
 export class LibraryService {
 
   constructor(
-    private store: Store<fromRoot.State>,
+    private store: Store<fromLibrary.State>,
     private loader: LoaderService
   ) {
     // Load Tracks

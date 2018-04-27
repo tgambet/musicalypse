@@ -4,8 +4,8 @@ import {Observable, Subject} from 'rxjs';
 @Injectable()
 export class LoaderService {
 
+  private readonly loadings$: Observable<boolean>;
   private loadings = 0;
-  private loadings$: Observable<boolean>;
   private loadingSubject = new Subject<boolean>();
 
   constructor() {

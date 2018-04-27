@@ -19,17 +19,17 @@ import {take} from 'rxjs/internal/operators';
            [class.no-animation]="noAnimation">
         <div class="column a1">
           <app-artists #artistsComponent
-                       (next)="translateContent(1)"
                        [artists]="artists$ | async"
-                       [selectedArtists]="selectedArtists$ | async">
+                       [selectedArtists]="selectedArtists$ | async"
+                       (next)="translateContent(1)">
           </app-artists>
         </div>
         <div class="column a2">
           <app-albums #albumsComponent
-                      (next)="translateContent(2)"
-                      (previous)="translateContent(0)"
                       [albums]="albums$ | async"
-                      [selectedAlbums]="selectedAlbums$ | async">
+                      [selectedAlbums]="selectedAlbums$ | async"
+                      (next)="translateContent(2)"
+                      (previous)="translateContent(0)">
           </app-albums>
         </div>
         <div class="column a3">

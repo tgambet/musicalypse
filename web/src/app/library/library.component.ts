@@ -156,6 +156,10 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
         this.artists$ = this.library.getFavoriteArtists();
         this.albums$  = this.library.getFavoriteAlbums();
         this.tracks$  = this.library.getFavorites();
+      } else if (data.recent) {
+        this.artists$ = this.library.getRecentArtists();
+        this.albums$  = this.library.getRecentAlbums();
+        this.tracks$  = this.library.getRecentTracks();
       } else {
         this.artists$ = this.library.getArtists();
         this.albums$  = this.library.getAlbums();

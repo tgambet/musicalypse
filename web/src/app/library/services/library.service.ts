@@ -25,6 +25,7 @@ import {Observable} from 'rxjs';
 import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists} from '@app/library/actions/artists.actions';
 import {AddToFavorites, RemoveFromFavorites} from '@app/library/actions/favorites.actions';
 import {LoaderService} from '@app/core/services/loader.service';
+import {AddToRecent} from '@app/library/actions/recent.actions';
 
 @Injectable()
 export class LibraryService {
@@ -36,7 +37,7 @@ export class LibraryService {
     // Load Tracks
     store.dispatch(new LoadTracks());
 
-    // Restore selection state, playlist, and favorites
+    // Restore selection state, playlist, favorites and recent tracks
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
       this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
@@ -53,8 +54,12 @@ export class LibraryService {
     if (savedFavorites) {
       this.store.dispatch(new AddToFavorites(JSON.parse(savedFavorites)));
     }
+    const savedRecent = CoreUtils.load('recent');
+    if (savedRecent) {
+      this.store.dispatch(new AddToRecent(JSON.parse(savedRecent)));
+    }
 
-    // Save selection state, playlist, and favorites on change
+    // Save selection state, playlist, favorites, and recent tracks on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
       ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
     );
@@ -66,6 +71,9 @@ export class LibraryService {
     );
     this.store.select(fromLibrary.getFavorites).subscribe(
       favs => CoreUtils.save('favorites', JSON.stringify(favs))
+    );
+    this.store.select(fromLibrary.getRecentTracks).subscribe(
+      tracks => CoreUtils.save('recent', JSON.stringify(tracks))
     );
 
     // Set up loader
@@ -215,6 +223,18 @@ export class LibraryService {
 
   getFavoriteAlbums(): Observable<Album[]> {
     return this.store.select(fromLibrary.getDisplayedFavoriteAlbums);
+  }
+
+  getRecentTracks(): Observable<Track[]> {
+    return this.store.select(fromLibrary.getDisplayedRecentTracks);
+  }
+
+  getRecentArtists(): Observable<Artist[]> {
+    return this.store.select(fromLibrary.getRecentArtists);
+  }
+
+  getRecentAlbums(): Observable<Album[]> {
+    return this.store.select(fromLibrary.getDisplayedRecentAlbums);
   }
 
 }

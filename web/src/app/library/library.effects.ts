@@ -7,6 +7,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {CoreUtils} from '@app/core/core.utils';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {AudioService} from '@app/core/services/audio.service';
+import {LoaderService} from '@app/core/services/loader.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LibraryUtils} from './library.utils';
@@ -18,7 +19,7 @@ import * as fromLibrary from './library.reducers';
 
 import {from, Observable, of} from 'rxjs';
 import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
-import {LoaderService} from '@app/core/services/loader.service';
+import {AddToRecent} from '@app/library/actions/recent.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -39,6 +40,7 @@ export class LibraryEffects {
       ),
     );
 
+  // TODO move following two effect to reducer
   /**
    * Deselect Albums when Artists selection changes
    */
@@ -97,12 +99,13 @@ export class LibraryEffects {
   /**
    * Play Track
    */
-  @Effect({dispatch: false})
-  playTrack$: Observable<Track> =
+  @Effect()
+  playTrack$: Observable<Action> =
     this.store.select(fromLibrary.getCurrentTrack).pipe(
       filter(track => !!track),
       tap(track => this.audioService.play(CoreUtils.resolveUrl(track.url))),
-      tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`))
+      tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`)),
+      map(track => new AddToRecent([track]))
     );
 
   /**

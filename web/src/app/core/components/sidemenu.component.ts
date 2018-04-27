@@ -14,7 +14,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               (click)="closeSidenav.emit()">
         <mat-icon>queue_music</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button routerLink="/recent" routerLinkActive="active" (click)="closeSidenav.emit()">
         <mat-icon>schedule</mat-icon>
       </button>
       <button mat-icon-button routerLink="/favorites" routerLinkActive="active" (click)="closeSidenav.emit()">

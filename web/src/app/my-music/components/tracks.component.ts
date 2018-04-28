@@ -103,7 +103,7 @@ import {PageEvent} from '@angular/material/paginator/typings/paginator';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TracksComponent implements OnInit, OnChanges {
+export class TracksComponent implements OnChanges {
 
   @Input() tracks: Track[];
 
@@ -136,13 +136,8 @@ export class TracksComponent implements OnInit, OnChanges {
     length: 0
   };
   set pageEvent(value: PageEvent) {
-    console.log(value);
     this._pageEvent = value;
     this._update();
-  }
-
-  ngOnInit(): void {
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -158,7 +153,6 @@ export class TracksComponent implements OnInit, OnChanges {
   }
 
   sort(tracks: Track[]): Track[] {
-    console.log(this._sortState);
     function compare(a, b, isAsc) {
       return (a.localeCompare(b)) * (isAsc ? 1 : -1);
     }

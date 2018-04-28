@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Album, Artist} from '@app/model';
 import {DomSanitizer} from '@angular/platform-browser';
 
@@ -24,7 +24,7 @@ import {DomSanitizer} from '@angular/platform-browser';
     </div>
 
     <app-box-list [center]="true"
-                  [list]="artists"
+                  [list]="displayedArtists"
                   [primaryFunc]="primaryFunc"
                   [secondaryFunc]="secondaryFunc"
                   (itemClicked)="play($event)">
@@ -39,7 +39,7 @@ import {DomSanitizer} from '@angular/platform-browser';
       flex-wrap: wrap;
     }
     .play-all {
-      margin-top: 1rem;
+      margin: 1rem 0
     }
     .play-all mat-icon {
       vertical-align: middle;
@@ -54,16 +54,32 @@ import {DomSanitizer} from '@angular/platform-browser';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtistsComponent {
+export class ArtistsComponent implements OnChanges {
 
   @Input() artists: Artist[];
 
-  search: '';
+  displayedArtists: Artist[];
+
+  _search = '';
+  set search(value: string) {
+    this._search = value;
+    this.displayedArtists = this.filter(this.artists);
+  }
+  get search() {
+    return this._search;
+  }
 
   primaryFunc = (artist: Artist) => artist.name;
   secondaryFunc = (artist: Artist) => artist.songs + ' song' + (artist.songs > 1 ? 's' : '');
 
   constructor(private sanitizer: DomSanitizer) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.artists) {
+      const artists = changes.artists.currentValue;
+      this.displayedArtists = this.filter(artists);
+    }
+  }
 
   getAvatarStyle(artist: Artist) {
     return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
@@ -71,6 +87,11 @@ export class ArtistsComponent {
 
   play(album: Artist | Album) {
     console.log(album);
+  }
+
+  filter(artists: Artist[]): Artist[] {
+    const toStringAlbum = (artist: Artist) => `${artist.name}`;
+    return artists.filter(artist => toStringAlbum(artist).toLowerCase().includes(this._search.toLowerCase().trim()));
   }
 
 }

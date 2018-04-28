@@ -23,7 +23,10 @@ import {Album, Artist, Track} from '@app/model';
       </mat-tab-group>
     </div>
   `,
-  styles: [``],
+  styles: [`
+    .my-music {
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyMusicComponent {

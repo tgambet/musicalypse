@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Album, Artist} from '@app/model';
 import {DomSanitizer} from '@angular/platform-browser';
 
@@ -12,7 +12,7 @@ import {DomSanitizer} from '@angular/platform-browser';
       </a>
       <div class="filler"></div>
       <mat-form-field floatLabel="never" class="search">
-        <input #searchInput matInput title="Search" [(ngModel)]="search" spellcheck="false">
+        <input matInput title="Search" [(ngModel)]="search" spellcheck="false">
         <mat-placeholder>
           <mat-icon class="search-icon">search</mat-icon>
           Search
@@ -24,7 +24,7 @@ import {DomSanitizer} from '@angular/platform-browser';
     </div>
 
     <app-box-list [center]="false"
-                  [list]="albums"
+                  [list]="displayedAlbums"
                   [primaryFunc]="primaryFunc"
                   [secondaryFunc]="secondaryFunc"
                   (itemClicked)="play($event)">
@@ -39,7 +39,7 @@ import {DomSanitizer} from '@angular/platform-browser';
       flex-wrap: wrap;
     }
     .play-all {
-      margin-top: 1rem;
+      margin: 1rem 0;
     }
     .play-all mat-icon {
       vertical-align: middle;
@@ -54,16 +54,32 @@ import {DomSanitizer} from '@angular/platform-browser';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AlbumsComponent {
+export class AlbumsComponent implements OnChanges {
 
   @Input() albums: Album[];
 
-  search: '';
+  displayedAlbums: Album[];
+
+  _search = '';
+  set search(value: string) {
+    this._search = value;
+    this.displayedAlbums = this.filter(this.albums);
+  }
+  get search() {
+    return this._search;
+  }
 
   primaryFunc = (album: Album) => album.title;
   secondaryFunc = (album: Album) => album.artist;
 
   constructor(private sanitizer: DomSanitizer) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.albums) {
+      const albums = changes.albums.currentValue;
+      this.displayedAlbums = this.filter(albums);
+    }
+  }
 
   getAvatarStyle(album: Album) {
     return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
@@ -71,6 +87,11 @@ export class AlbumsComponent {
 
   play(album: Artist | Album) {
     console.log(album);
+  }
+
+  filter(albums: Album[]): Album[] {
+    const toStringAlbum = (album: Album) => `${album.artist} ${album.title}`;
+    return albums.filter(album => toStringAlbum(album).toLowerCase().includes(this._search.toLowerCase().trim()));
   }
 
 }

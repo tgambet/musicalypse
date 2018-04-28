@@ -12,7 +12,7 @@ import {MatTableDataSource} from '@angular/material';
       </a>
       <div class="filler"></div>
       <mat-form-field floatLabel="never" class="search">
-        <input matInput title="Search" (keyup)="filter($event.target.value)" spellcheck="false">
+        <input matInput title="Search" [(ngModel)]="search" spellcheck="false">
         <mat-placeholder>
           <mat-icon class="search-icon">search</mat-icon>
           Search
@@ -73,7 +73,7 @@ import {MatTableDataSource} from '@angular/material';
       flex-wrap: wrap;
     }
     .play-all {
-      margin-top: 1rem;
+      margin: 1rem 0
     }
     .play-all mat-icon {
       vertical-align: middle;
@@ -110,7 +110,13 @@ export class TracksComponent implements OnInit {
 
   tracksSource: MatTableDataSource<Track>;
 
-  search = '';
+  _search = '';
+  set search(value: string) {
+    this._search = value;
+  }
+  get search() {
+    return this._search;
+  }
 
   ngOnInit(): void {
     this.tracksSource = new MatTableDataSource(this.tracks);

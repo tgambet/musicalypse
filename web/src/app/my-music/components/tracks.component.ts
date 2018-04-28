@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Track} from '@app/model';
-import {MatTableDataSource} from '@angular/material';
+import {Sort} from '@angular/material';
+import {PageEvent} from '@angular/material/paginator/typings/paginator';
 
 @Component({
   selector: 'app-my-music-tracks',
@@ -23,7 +24,7 @@ import {MatTableDataSource} from '@angular/material';
       </mat-form-field>
     </div>
 
-    <mat-table [dataSource]="tracks.slice(0, 500)" matSort (matSortChange)="sort($event)">
+    <mat-table [dataSource]="displayedTracks" matSort (matSortChange)="sortState = $event">
 
       <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
@@ -32,7 +33,7 @@ import {MatTableDataSource} from '@angular/material';
 
       <ng-container matColumnDef="artist">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Artist</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.artist }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.metadata.albumArtist }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="album">
@@ -56,12 +57,12 @@ import {MatTableDataSource} from '@angular/material';
 
     </mat-table>
     <mat-paginator #paginator
-                   [length]="tracks.length"
+                   [length]="displayedTracks.length"
                    [pageIndex]="0"
                    [pageSize]="500"
                    [pageSizeOptions]="[500, 1000, 2000]"
                    [showFirstLastButtons]="true"
-                   (page)="paginate($event)">
+                   (page)="pageEvent = $event">
     </mat-paginator>
 `,
   styles: [`
@@ -102,36 +103,99 @@ import {MatTableDataSource} from '@angular/material';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TracksComponent implements OnInit {
+export class TracksComponent implements OnInit, OnChanges {
 
   @Input() tracks: Track[];
 
   columns = ['title', 'artist', 'album', 'year', 'duration'];
 
-  tracksSource: MatTableDataSource<Track>;
+  displayedTracks: Track[];
 
-  _search = '';
+  private _search = '';
   set search(value: string) {
     this._search = value;
+    this._update();
   }
   get search() {
     return this._search;
   }
 
+  private _sortState: Sort = {
+    active: 'url',
+    direction: 'asc'
+  };
+  set sortState(value: Sort) {
+    this._sortState = value;
+    this._update();
+  }
+
+  private _pageEvent: PageEvent = {
+    pageIndex: 0,
+    previousPageIndex: 0,
+    pageSize: 500,
+    length: 0
+  };
+  set pageEvent(value: PageEvent) {
+    console.log(value);
+    this._pageEvent = value;
+    this._update();
+  }
+
   ngOnInit(): void {
-    this.tracksSource = new MatTableDataSource(this.tracks);
+
   }
 
-  filter(filter: string) {
-    console.log(filter);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.tracks) {
+      this._update();
+    }
   }
 
-  sort(event) {
-    console.log(event);
+  filter(tracks: Track[]): Track[] {
+    const toString = (track: Track) => `${track.metadata.album}${track.metadata.albumArtist}`
+      + `${track.metadata.artist}${track.metadata.title}${track.metadata.year}`;
+    return tracks.filter(track => toString(track).toLowerCase().includes(this.search.toLowerCase().trim()));
   }
 
-  paginate(event) {
-    console.log(event);
+  sort(tracks: Track[]): Track[] {
+    console.log(this._sortState);
+    function compare(a, b, isAsc) {
+      return (a.localeCompare(b)) * (isAsc ? 1 : -1);
+    }
+    function compareNum(a, b, isAsc) {
+      return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+    return tracks.sort((a, b) => {
+      let isAsc = this._sortState.direction === 'asc';
+      let active = this._sortState.active;
+      if (!this._sortState.direction) {
+        active = 'url';
+        isAsc = true;
+      }
+      switch (active) {
+        case 'url': return compare(a.url, b.url, isAsc);
+        case 'title': return compare(a.metadata.title, b.metadata.title, isAsc);
+        case 'artist': return compare(a.metadata.albumArtist, b.metadata.albumArtist, isAsc);
+        case 'album': return compare(a.metadata.album, b.metadata.album, isAsc);
+        case 'year': return compare(
+          a.metadata.year ? a.metadata.year : '3000',
+          b.metadata.year ? b.metadata.year : '3000',
+          isAsc
+        );
+        case 'duration': return compareNum(a.metadata.duration, b.metadata.duration.toString(), isAsc);
+        default: return 0;
+      }
+    });
+  }
+
+  paginate(tracks: Track[]): Track[] {
+    const index = this._pageEvent.pageIndex;
+    const size = this._pageEvent.pageSize;
+    return tracks.slice(index * size, (index + 1) * size);
+  }
+
+  _update() {
+    this.displayedTracks = this.paginate(this.sort(this.filter(this.tracks)));
   }
 
 }

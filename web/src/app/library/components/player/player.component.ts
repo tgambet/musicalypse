@@ -7,7 +7,7 @@ import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
-import {take, tap} from 'rxjs/internal/operators';
+import {take, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-player',

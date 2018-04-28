@@ -81,7 +81,7 @@ export class LibraryService {
     );
   }
 
-  getArtists() {
+  getAllArtists() {
     return this.store.select(fromLibrary.getAllArtists);
   }
 
@@ -89,7 +89,11 @@ export class LibraryService {
     return this.store.select(fromLibrary.getSelectedArtists);
   }
 
-  getAlbums() {
+  getAllAlbums() {
+    return this.store.select(fromLibrary.getAllAlbums);
+  }
+
+  getDisplayedAlbums() {
     return this.store.select(fromLibrary.getDisplayedAlbums);
   }
 
@@ -97,7 +101,11 @@ export class LibraryService {
     return this.store.select(fromLibrary.getSelectedAlbums);
   }
 
-  getTracks() {
+  getAllTracks() {
+    return this.store.select(fromLibrary.getAllTracks);
+  }
+
+  getDisplayedTracks() {
     return this.store.select(fromLibrary.getDisplayedTracks);
   }
 

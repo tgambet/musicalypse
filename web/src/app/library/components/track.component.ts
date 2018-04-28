@@ -2,8 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {Track} from '@app/model';
 import {AudioService} from '@app/core/services/audio.service';
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
-import {take} from 'rxjs/internal/operators';
+import {tap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-track',

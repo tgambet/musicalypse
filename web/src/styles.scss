@@ -99,10 +99,12 @@ $pink-theme:  (
 
 @import 'app/core/core.theme';
 @import 'app/library/library.theme';
+@import 'app/my-music/my-music.theme';
 
 @mixin custom-components-theme($theme) {
   @include core-theme($theme);
   @include library-component-theme($theme);
+  @include my-music-component-theme($theme);
 }
 
 .light-theme {

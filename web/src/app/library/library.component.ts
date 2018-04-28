@@ -3,11 +3,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {AudioService} from '../core/services/audio.service';
 import {Album, Artist, Track} from '../model';
+import {LibraryService} from './services/library.service';
 
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
-import {LibraryService} from '@app/library/services/library.service';
-import {take} from 'rxjs/internal/operators';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-library',
@@ -161,9 +161,9 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
         this.albums$  = this.library.getRecentAlbums();
         this.tracks$  = this.library.getRecentTracks();
       } else {
-        this.artists$ = this.library.getArtists();
-        this.albums$  = this.library.getAlbums();
-        this.tracks$  = this.library.getTracks();
+        this.artists$ = this.library.getAllArtists();
+        this.albums$  = this.library.getDisplayedAlbums();
+        this.tracks$  = this.library.getDisplayedTracks();
       }
     });
 

@@ -18,6 +18,17 @@
       border: 1px solid mat-color($foreground, divider);
     }
 
+    mat-tab-header {
+      position: fixed;
+      width: 100%;
+      z-index: 2;
+      background-color: mat-color($background, background);
+    }
+
+    mat-tab-body {
+      padding-top: 50px;
+    }
+
   }
 
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Album, Artist} from '@app/model';
 import {DomSanitizer} from '@angular/platform-browser';
 
@@ -7,8 +7,12 @@ import {DomSanitizer} from '@angular/platform-browser';
   template: `
     <ul class="list" [class.center]="center">
       <li class="item" *ngFor="let item of list">
-        <div class="cover" [style]="getAvatarStyle(item)" [ngClass]="{ noArt: !item.avatarUrl }">
+        <div class="cover"
+             [ngClass]="{ noArt: !item.avatarUrl }"
+             [style]="getAvatarStyle(item)"
+             (click)="itemClicked.emit(item)">
           <mat-icon *ngIf="!item.avatarUrl" class="avatar-icon">music_note</mat-icon>
+          <mat-icon class="play-icon">play_circle_outline</mat-icon>
         </div>
         <span class="primary">{{ primaryFunc(item) }}</span>
         <span class="secondary">{{ secondaryFunc(item) }}</span>
@@ -43,6 +47,7 @@ import {DomSanitizer} from '@angular/platform-browser';
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
     .cover mat-icon {
       width: 60px;
@@ -50,6 +55,17 @@ import {DomSanitizer} from '@angular/platform-browser';
       line-height: 60px;
       font-size: 60px;
       user-select: none;
+    }
+    .play-icon {
+      color: white;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    .cover:hover .play-icon {
+      display: unset;
+    }
+    .cover:hover .avatar-icon {
+      display: none;
     }
     .primary {
       font-weight: 500;
@@ -79,6 +95,8 @@ export class BoxListComponent {
   @Input() list: (Artist[] | Album[]);
   @Input() primaryFunc: (item: Artist | Album) => string;
   @Input() secondaryFunc: (item: Artist | Album) => string;
+
+  @Output() itemClicked = new EventEmitter<Artist | Album>();
 
   constructor(private sanitizer: DomSanitizer) {}
 

@@ -10,8 +10,9 @@ import {MatTableDataSource} from '@angular/material';
         <mat-icon>shuffle</mat-icon>
         Play all randomly ({{ tracks.length }})
       </a>
+      <div class="filler"></div>
       <mat-form-field floatLabel="never" class="search">
-        <input #searchInput matInput title="Search" [(ngModel)]="search" spellcheck="false">
+        <input matInput title="Search" (keyup)="filter($event.target.value)" spellcheck="false">
         <mat-placeholder>
           <mat-icon class="search-icon">search</mat-icon>
           Search
@@ -22,7 +23,7 @@ import {MatTableDataSource} from '@angular/material';
       </mat-form-field>
     </div>
 
-    <mat-table [dataSource]="tracks" matSort (matSortChange)="sort($event)">
+    <mat-table [dataSource]="tracks.slice(0, 500)" matSort (matSortChange)="sort($event)">
 
       <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
@@ -54,6 +55,14 @@ import {MatTableDataSource} from '@angular/material';
       <mat-row *matRowDef="let row; columns: columns;"></mat-row>
 
     </mat-table>
+    <mat-paginator #paginator
+                   [length]="tracks.length"
+                   [pageIndex]="0"
+                   [pageSize]="500"
+                   [pageSizeOptions]="[500, 1000, 2000]"
+                   [showFirstLastButtons]="true"
+                   (page)="paginate($event)">
+    </mat-paginator>
 `,
   styles: [`
     .controls {
@@ -65,12 +74,13 @@ import {MatTableDataSource} from '@angular/material';
     }
     .play-all {
       margin-top: 1rem;
-      margin-right: 1rem;
-      margin-bottom: 1rem;
     }
     .play-all mat-icon {
       vertical-align: middle;
       margin-right: 0.2rem;
+    }
+    .filler {
+      flex-grow: 1;
     }
     .search {
       min-width: 13rem;
@@ -106,7 +116,15 @@ export class TracksComponent implements OnInit {
     this.tracksSource = new MatTableDataSource(this.tracks);
   }
 
+  filter(filter: string) {
+    console.log(filter);
+  }
+
   sort(event) {
+    console.log(event);
+  }
+
+  paginate(event) {
     console.log(event);
   }
 

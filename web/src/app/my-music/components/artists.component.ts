@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {Artist} from '@app/model';
+import {Album, Artist} from '@app/model';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
@@ -10,6 +10,7 @@ import {DomSanitizer} from '@angular/platform-browser';
         <mat-icon>shuffle</mat-icon>
         Play all randomly ({{ artists.length }})
       </a>
+      <div class="filler"></div>
       <mat-form-field floatLabel="never" class="search">
         <input #searchInput matInput title="Search" [(ngModel)]="search" spellcheck="false">
         <mat-placeholder>
@@ -25,7 +26,8 @@ import {DomSanitizer} from '@angular/platform-browser';
     <app-box-list [center]="true"
                   [list]="artists"
                   [primaryFunc]="primaryFunc"
-                  [secondaryFunc]="secondaryFunc">
+                  [secondaryFunc]="secondaryFunc"
+                  (itemClicked)="play($event)">
     </app-box-list>
   `,
   styles: [`
@@ -38,12 +40,13 @@ import {DomSanitizer} from '@angular/platform-browser';
     }
     .play-all {
       margin-top: 1rem;
-      margin-right: 1rem;
-      margin-bottom: 1rem;
     }
     .play-all mat-icon {
       vertical-align: middle;
       margin-right: 0.2rem;
+    }
+    .filler {
+      flex-grow: 1;
     }
     .search {
       min-width: 13rem;
@@ -64,6 +67,10 @@ export class ArtistsComponent {
 
   getAvatarStyle(artist: Artist) {
     return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
+  }
+
+  play(album: Artist | Album) {
+    console.log(album);
   }
 
 }

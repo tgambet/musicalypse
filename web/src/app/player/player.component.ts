@@ -38,7 +38,9 @@ import {take, tap, mergeMap} from 'rxjs/operators';
                            (setMute)="setMute($event)"
                            (setVolume)="setVolume($event)">
       </app-player-controls>
-      <app-player-playlist>
+      <app-player-playlist [playlist]="playlist$ | async"
+                           [currentTrack]="currentTrack$ | async"
+                           (trackClicked)="play($event)">
       </app-player-playlist>
     </div>
   `,
@@ -67,6 +69,13 @@ import {take, tap, mergeMap} from 'rxjs/operators';
       z-index: 2;
       height: 100%;
       background-size: cover;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    app-player-playlist {
+      flex-grow: 1;
+      overflow-y: auto;
     }
   `]
 })
@@ -148,6 +157,10 @@ export class PlayerComponent {
 
   setVolume(volume: number) {
     this.audio.setVolume(volume);
+  }
+
+  play(track: Track) {
+    this.library.playTrack(track);
   }
 
 }

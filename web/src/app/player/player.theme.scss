@@ -25,6 +25,14 @@
       color: mat-color($foreground, disabled);
     }
 
+    mat-row:hover {
+      background-color: mat-color($background, hover);
+    }
+
+    mat-row.current mat-cell {
+      color: mat-color($primary);
+    }
+
   }
 
 }

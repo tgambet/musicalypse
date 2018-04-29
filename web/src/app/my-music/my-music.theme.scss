@@ -29,6 +29,10 @@
       padding-top: 50px;
     }
 
+    mat-row:hover {
+      background-color: mat-color($background, hover);
+    }
+
   }
 
 }

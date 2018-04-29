@@ -41,15 +41,15 @@ import {take} from 'rxjs/operators';
           </app-tracks>
         </div>
         <div class="column a4">
-          <app-player [currentTrack]="currentTrack$ | async"
-                      [playlist]="playlist$ | async"
-                      [muted]="audioService.muted$ | async"
-                      [volume]="audioService.volume$ | async"
-                      [playing]="audioService.playing$ | async"
-                      [shuffle]="shuffle$ | async"
-                      [repeat]="repeat$ | async"
-                      (previous)="translateContent(2)">
-          </app-player>
+          <app-library-player [currentTrack]="currentTrack$ | async"
+                              [playlist]="playlist$ | async"
+                              [muted]="audioService.muted$ | async"
+                              [volume]="audioService.volume$ | async"
+                              [playing]="audioService.playing$ | async"
+                              [shuffle]="shuffle$ | async"
+                              [repeat]="repeat$ | async"
+                              (previous)="translateContent(2)">
+          </app-library-player>
         </div>
         <app-mini-player [currentTrack]="currentTrack$ | async"
                          [playlist]="playlist$ | async"

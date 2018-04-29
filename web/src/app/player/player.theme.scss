@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+
+@mixin player-component-theme($theme) {
+
+  $is-dark: map-get($theme, is-dark);
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .player-background {
+    .b2 {
+      background-color: rgba(mat-color($background, background), 0.75);
+    }
+  }
+
+  .player {
+
+    .no-art {
+      border: 1px solid mat-color($foreground, disabled);
+    }
+
+    .cover mat-icon {
+      color: mat-color($foreground, disabled);
+    }
+
+  }
+
+}

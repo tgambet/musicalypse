@@ -17,7 +17,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
          routerLink="/mymusic"
          routerLinkActive="active"
          (click)="closeSidenav.emit()">
-        <mat-icon matListIcon>view_module</mat-icon>
+        <mat-icon matListIcon>apps</mat-icon>
         <span matLine>My Music</span>
       </a>
       <a mat-list-item

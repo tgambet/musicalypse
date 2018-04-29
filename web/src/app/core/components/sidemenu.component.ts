@@ -17,7 +17,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               routerLink="/mymusic"
               routerLinkActive="active"
               (click)="closeSidenav.emit()">
-        <mat-icon>view_module</mat-icon>
+        <mat-icon>apps</mat-icon>
       </button>
       <button mat-icon-button
               class="last-of-category"

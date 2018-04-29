@@ -10,7 +10,7 @@ import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-player',
+  selector: 'app-library-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

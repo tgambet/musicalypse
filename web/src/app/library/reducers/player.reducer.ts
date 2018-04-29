@@ -73,10 +73,9 @@ export function reducer(
     case PlayerActionTypes.PlayNextTrackInPlaylist: {
       const playlist = state.playlist;
       const currentTrack = state.currentTrack;
-      if (playlist.size === 0 || (playlist.indexOf(currentTrack) === playlist.size - 1) && !state.repeat) {
+      if (playlist.size === 0 || (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && !state.repeat) {
         return {
-          ...state,
-          currentTrack: null // TODO review whether to leave current track as set is better
+          ...state
         };
       }
       if (!currentTrack ||

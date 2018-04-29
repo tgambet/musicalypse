@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChan
 import {Track} from '@app/model';
 import {Sort} from '@angular/material';
 import {PageEvent} from '@angular/material/paginator/typings/paginator';
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-my-music-tracks',
@@ -24,7 +25,24 @@ import {PageEvent} from '@angular/material/paginator/typings/paginator';
       </mat-form-field>
     </div>
 
-    <mat-table [dataSource]="displayedTracks" matSort (matSortChange)="sortState = $event">
+    <mat-table [dataSource]="paginatedTracks" matSort (matSortChange)="sortState = $event">
+
+      <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                        color="primary">
+          </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)"
+                        color="primary">
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
 
       <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
@@ -57,14 +75,14 @@ import {PageEvent} from '@angular/material/paginator/typings/paginator';
 
     </mat-table>
     <mat-paginator #paginator
-                   [length]="displayedTracks.length"
+                   [length]="filteredTracks.length"
                    [pageIndex]="0"
                    [pageSize]="500"
                    [pageSizeOptions]="[500, 1000, 2000]"
                    [showFirstLastButtons]="true"
                    (page)="pageEvent = $event">
     </mat-paginator>
-`,
+  `,
   styles: [`
     .controls {
       padding: 0 1rem;
@@ -92,6 +110,11 @@ import {PageEvent} from '@angular/material/paginator/typings/paginator';
     mat-row, mat-header-row {
       min-height: 40px;
     }
+    mat-cell {
+      /*white-space: nowrap;*/
+      /*overflow: hidden;*/
+      /*text-overflow: ellipsis;*/
+    }
     .mat-column-year, .mat-column-duration {
       max-width: 5rem;
       justify-content: flex-end;
@@ -100,6 +123,10 @@ import {PageEvent} from '@angular/material/paginator/typings/paginator';
     .mat-column-artist, .mat-column-album, .mat-column-year, .mat-column-duration {
       font-size: 12px;
     }
+    .mat-column-select {
+      overflow: initial;
+      max-width: 2.5rem;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -107,9 +134,14 @@ export class TracksComponent implements OnChanges {
 
   @Input() tracks: Track[];
 
-  columns = ['title', 'artist', 'album', 'year', 'duration'];
+  columns = ['select', 'title', 'artist', 'album', 'year', 'duration'];
 
-  displayedTracks: Track[];
+  paginatedTracks: Track[];
+  filteredTracks: Track[];
+
+  initialSelection = [];
+  allowMultiSelect = true;
+  selection = new SelectionModel<Track>(this.allowMultiSelect, this.initialSelection);
 
   private _search = '';
   set search(value: string) {
@@ -169,7 +201,11 @@ export class TracksComponent implements OnChanges {
       switch (active) {
         case 'url': return compare(a.url, b.url, isAsc);
         case 'title': return compare(a.metadata.title, b.metadata.title, isAsc);
-        case 'artist': return compare(a.metadata.albumArtist, b.metadata.albumArtist, isAsc);
+        case 'artist': return compare(
+          a.metadata.albumArtist + a.metadata.album,
+          b.metadata.albumArtist + b.metadata.album,
+          isAsc
+        );
         case 'album': return compare(a.metadata.album, b.metadata.album, isAsc);
         case 'year': return compare(
           a.metadata.year ? a.metadata.year : '3000',
@@ -189,7 +225,22 @@ export class TracksComponent implements OnChanges {
   }
 
   _update() {
-    this.displayedTracks = this.paginate(this.sort(this.filter(this.tracks)));
+    this.filteredTracks = this.sort(this.filter(this.tracks));
+    this.paginatedTracks = this.paginate(this.filteredTracks);
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.filteredTracks.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.filteredTracks.forEach(row => this.selection.select(row));
   }
 
 }

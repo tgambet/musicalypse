@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, Subject, concat} from 'rxjs';
-import {websocket} from 'rxjs/websocket';
+import {webSocket} from 'rxjs/websocket';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
@@ -18,7 +18,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   private preferHttpOverSocket = false;
 
-  private socket: Subject<Object> = websocket({
+  private socket: Subject<Object> = webSocket({
     url: HttpSocketClientService.getSocketUrl(),
     openObserver: {
       next: () => this.socketOpened = true

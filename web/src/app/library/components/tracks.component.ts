@@ -49,7 +49,7 @@ import {Observable} from 'rxjs';
 
       <div #list class="list-wrapper" (swiperight)="previous.emit()" (swipeleft)="next.emit()">
         <mat-list class="list" [class.sorted-alpha]="sortedAlphabetically" dense>
-          <app-track *ngFor="let track of filteredTracks.slice(0,300); trackBy: trackByURL"
+          <app-track *ngFor="let track of filteredTracks; trackBy: trackByURL"
                      [track]="track"
                      [warn]="track.warn && settings.warnOnMissingTags"
                      [isCurrentTrack]="isCurrentTrack(track)"
@@ -176,7 +176,7 @@ export class TracksComponent implements OnChanges {
 
   trackClicked(track: Track) {
     this.next.emit();
-    this.library.setPlaylist(this.tracks.filter(this.filter).slice(0, 300));
+    this.library.setPlaylist(this.tracks.filter(this.filter));
     this.library.playTrack(track);
   }
 
@@ -185,7 +185,7 @@ export class TracksComponent implements OnChanges {
   }
 
   addTracksToPlaylist() {
-    this.library.addTracksToPlaylist(this.tracks.filter(this.filter).slice(0, 300));
+    this.library.addTracksToPlaylist(this.tracks.filter(this.filter));
   }
 
   playTrack(track: Track) {

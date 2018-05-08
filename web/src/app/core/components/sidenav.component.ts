@@ -13,13 +13,13 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
         <mat-icon matListIcon>play_circle_outline</mat-icon>
         <span matLine>Playing now</span>
       </a>
-      <a mat-list-item
-         routerLink="/mymusic"
-         routerLinkActive="active"
-         (click)="closeSidenav.emit()">
-        <mat-icon matListIcon>apps</mat-icon>
-        <span matLine>My Music</span>
-      </a>
+      <!--<a mat-list-item-->
+         <!--routerLink="/mymusic"-->
+         <!--routerLinkActive="active"-->
+         <!--(click)="closeSidenav.emit()">-->
+        <!--<mat-icon matListIcon>apps</mat-icon>-->
+        <!--<span matLine>My Music</span>-->
+      <!--</a>-->
       <a mat-list-item
          routerLink="/playlists"
          routerLinkActive="active"
@@ -53,13 +53,13 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
         <span matLine>Favorites</span>
       </a>
       <mat-divider></mat-divider>
-      <a mat-list-item
-         routerLink="/editor"
-         routerLinkActive="active"
-         (click)="closeSidenav.emit()">
-        <mat-icon matListIcon>mode_edit</mat-icon>
-        <span matLine>Tag editor</span>
-      </a>
+      <!--<a mat-list-item-->
+         <!--routerLink="/editor"-->
+         <!--routerLinkActive="active"-->
+         <!--(click)="closeSidenav.emit()">-->
+        <!--<mat-icon matListIcon>mode_edit</mat-icon>-->
+        <!--<span matLine>Tag editor</span>-->
+      <!--</a>-->
       <a mat-list-item
          routerLink="/settings"
          routerLinkActive="active"

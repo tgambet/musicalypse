@@ -13,12 +13,12 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               (click)="closeSidenav.emit()">
         <mat-icon>play_circle_outline</mat-icon>
       </button>
-      <button mat-icon-button
-              routerLink="/mymusic"
-              routerLinkActive="active"
-              (click)="closeSidenav.emit()">
-        <mat-icon>apps</mat-icon>
-      </button>
+      <!--<button mat-icon-button-->
+              <!--routerLink="/mymusic"-->
+              <!--routerLinkActive="active"-->
+              <!--(click)="closeSidenav.emit()">-->
+        <!--<mat-icon>apps</mat-icon>-->
+      <!--</button>-->
       <button mat-icon-button
               class="last-of-category"
               routerLink="/playlists"
@@ -45,12 +45,12 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               (click)="closeSidenav.emit()">
         <mat-icon>favorite_border</mat-icon>
       </button>
-      <button mat-icon-button
-              routerLink="/editor"
-              routerLinkActive="active"
-              (click)="closeSidenav.emit()">
-        <mat-icon>mode_edit</mat-icon>
-      </button>
+      <!--<button mat-icon-button-->
+              <!--routerLink="/editor"-->
+              <!--routerLinkActive="active"-->
+              <!--(click)="closeSidenav.emit()">-->
+        <!--<mat-icon>mode_edit</mat-icon>-->
+      <!--</button>-->
       <button mat-icon-button
               routerLink="/settings"
               routerLinkActive="active"

@@ -144,15 +144,15 @@
     </button>
   </div>
   <mat-menu #playerMenu="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item [matMenuTriggerFor]="playlistsMenu3">
+    <button mat-menu-item [matMenuTriggerFor]="AddToPlaylist">
       <mat-icon>playlist_add</mat-icon>
-      <span>Add to playlist</span>
+      <span>Add all to playlist</span>
     </button>
-    <button mat-menu-item [disabled]="!currentTrack" (click)="openDetailsDialog(currentTrack)">
+    <!--<button mat-menu-item [disabled]="!currentTrack" (click)="openDetailsDialog(currentTrack)">
       <mat-icon>details</mat-icon>
       <span>Details</span>
-    </button>
-    <mat-divider></mat-divider>
+    </button>-->
+    <!--<mat-divider></mat-divider>-->
     <button mat-menu-item (click)="showInLibrary()" [disabled]="this.playlist.length == 0">
       <mat-icon>queue_music</mat-icon>
       <span>Select in Library</span>
@@ -165,34 +165,30 @@
       <mat-icon>save</mat-icon>
       <span>Save playlist</span>
     </button>
-    <button mat-menu-item [matMenuTriggerFor]="playlistsMenu2">
+    <button mat-menu-item [matMenuTriggerFor]="LoadPlaylist" [disabled]="playlists.length === 0">
       <mat-icon>playlist_play</mat-icon>
       <span>Load playlist</span>
     </button>
   </mat-menu>
-  <mat-menu #playlistsMenu2="matMenu">
-    <button mat-menu-item>
-      <mat-icon>album</mat-icon>
-      Playlist1
-    </button>
-    <button mat-menu-item>
-      <mat-icon>album</mat-icon>
-      Playlist2
-    </button>
+  <mat-menu #LoadPlaylist="matMenu">
+    <ng-container *ngFor="let pl of playlists">
+      <button mat-menu-item (click)="loadPlaylist(pl)">
+        <mat-icon>album</mat-icon>
+        {{pl.name}}
+      </button>
+    </ng-container>
   </mat-menu>
-  <mat-menu #playlistsMenu3="matMenu">
+  <mat-menu #AddToPlaylist="matMenu">
     <button mat-menu-item disabled>
       <mat-icon>add</mat-icon>
       New playlist
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item>
-      <mat-icon>album</mat-icon>
-      Playlist1
-    </button>
-    <button mat-menu-item>
-      <mat-icon>album</mat-icon>
-      Playlist2
-    </button>
+    <ng-container *ngFor="let pl of playlists">
+      <button mat-menu-item (click)="addAllToPlaylist(pl)">
+        <mat-icon>album</mat-icon>
+        {{pl.name}}
+      </button>
+    </ng-container>
   </mat-menu>
 </div>

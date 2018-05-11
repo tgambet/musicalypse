@@ -25,7 +25,7 @@ export function reducer(
           state.playlists.indexOf(playlist),
           {
             name: playlist.name,
-            tracks: [...playlist.tracks, action.track]
+            tracks: [...playlist.tracks, ...action.tracks]
           }
         )
       };
@@ -45,8 +45,11 @@ export function reducer(
       };
     }
 
-    case PlaylistsActionTypes.LoadPlaylist: {
-      return state;
+    case PlaylistsActionTypes.LoadPlaylists: {
+      return {
+        ...state,
+        playlists: List.of(...action.playlists)
+      };
     }
 
     case PlaylistsActionTypes.SavePlaylist: {

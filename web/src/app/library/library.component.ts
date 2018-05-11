@@ -2,7 +2,7 @@ import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestr
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AudioService} from '../core/services/audio.service';
-import {Album, Artist, Track} from '../model';
+import {Album, Artist, Playlist, Track} from '../model';
 import {LibraryService} from './services/library.service';
 
 import * as _ from 'lodash';
@@ -43,6 +43,7 @@ import {take} from 'rxjs/operators';
         <div class="column a4">
           <app-library-player [currentTrack]="currentTrack$ | async"
                               [playlist]="playlist$ | async"
+                              [playlists]="playlists$ | async"
                               [muted]="audioService.muted$ | async"
                               [volume]="audioService.volume$ | async"
                               [playing]="audioService.playing$ | async"
@@ -76,6 +77,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   tracks$: Observable<Track[]>;
   currentTrack$: Observable<Track>;
   playlist$: Observable<Track[]>;
+  playlists$: Observable<Playlist[]>;
   shuffle$: Observable<boolean>;
   repeat$: Observable<boolean>;
 
@@ -173,9 +175,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.shuffle$         = this.library.getShuffle();
     this.repeat$          = this.library.getRepeat();
     this.playlist$        = this.library.getPlaylist();
-
-
-
+    this.playlists$       = this.library.getPlaylists();
 
     // Update the url based on the library state
     // if (this.library.selectedArtists.length > 0) {

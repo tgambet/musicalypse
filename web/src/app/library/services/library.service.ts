@@ -25,7 +25,14 @@ import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions'
 import {AddToRecent} from '../actions/recent.actions';
 
 import * as fromLibrary from '../library.reducers';
-import {AddToPlaylist, DeletePlaylist, LoadPlaylist, RemoveFromPlaylist, SavePlaylist} from '@app/library/actions/playlists.actions';
+import {
+  AddToPlaylist,
+  DeletePlaylist,
+  LoadPlaylist,
+  LoadPlaylists,
+  RemoveFromPlaylist,
+  SavePlaylist
+} from '@app/library/actions/playlists.actions';
 
 @Injectable()
 export class LibraryService {
@@ -58,6 +65,10 @@ export class LibraryService {
     if (savedRecent) {
       this.store.dispatch(new AddToRecent(JSON.parse(savedRecent)));
     }
+    const savedPlaylists = CoreUtils.load('playlists');
+    if (savedPlaylists) {
+      this.store.dispatch(new LoadPlaylists(JSON.parse(savedPlaylists)));
+    }
 
     // Save selection state, playlist, favorites, and recent tracks on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
@@ -74,6 +85,9 @@ export class LibraryService {
     );
     this.store.select(fromLibrary.getRecentTracks).subscribe(
       tracks => CoreUtils.save('recent', JSON.stringify(tracks))
+    );
+    this.store.select(fromLibrary.getPlaylists).subscribe(
+      playlists => CoreUtils.save('playlists', JSON.stringify(playlists))
     );
 
     // Set up loader
@@ -257,8 +271,8 @@ export class LibraryService {
     this.store.dispatch(new DeletePlaylist(name));
   }
 
-  addToPlaylist(track: Track, playlist: string) {
-    this.store.dispatch(new AddToPlaylist(track, playlist));
+  addToPlaylist(tracks: Track[], playlist: string) {
+    this.store.dispatch(new AddToPlaylist(tracks, playlist));
   }
 
   removeFromPlaylist(track: Track, playlist: string) {

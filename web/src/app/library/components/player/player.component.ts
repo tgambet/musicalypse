@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Track} from '@app/model';
-import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
+import {Playlist, Track} from '@app/model';
 import {Observable, Subscription} from 'rxjs';
 import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
+import {PlaylistsComponent} from '@app/shared/dialogs/playlists.component';
 
 @Component({
   selector: 'app-library-player',
@@ -24,6 +24,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   @Input() shuffle: boolean;
   @Input() repeat: boolean;
   @Input() playlist: Track[];
+  @Input() playlists: Playlist[];
 
   loading$: Observable<boolean>;
   duration$: Observable<number>;
@@ -83,18 +84,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
-  openDetailsDialog(track: Track) {
-    const dialogRef = this.dialog.open(DetailsComponent, {
-      // maxWidth: '500px',
-      data: { track: track }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      // console.log('The dialog was closed');
-      console.log(result);
-      // this.animal = result;
-    });
-  }
+  // openDetailsDialog(track: Track) {
+  //   const dialogRef = this.dialog.open(DetailsComponent, {
+  //     // maxWidth: '500px',
+  //     data: { track: track }
+  //   });
+  //
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     // console.log('The dialog was closed');
+  //     console.log(result);
+  //     // this.animal = result;
+  //   });
+  // }
 
   resume() {
     this.audioService.resume();
@@ -160,7 +161,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   savePlaylist() {
-    this.library.savePlaylist('test-playlist', this.playlist);
+    const dialogRef = this.dialog.open(PlaylistsComponent, {});
+    dialogRef.afterClosed().subscribe(playlistName => {
+      if (playlistName) {
+        this.library.savePlaylist(playlistName, this.playlist);
+      }
+    });
   }
 
+  loadPlaylist(playlist: Playlist) {
+    this.library.loadPlaylist(playlist);
+  }
+
+  addAllToPlaylist(playlist: Playlist) {
+    this.library.addToPlaylist(this.playlist, playlist.name);
+  }
 }

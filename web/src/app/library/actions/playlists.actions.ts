@@ -2,11 +2,17 @@ import {Action} from '@ngrx/store';
 import {Playlist, Track} from '@app/model';
 
 export enum PlaylistsActionTypes {
+  LoadPlaylists = '[Playlists] Load Playlists',
   LoadPlaylist = '[Playlists] Load Playlist',
   SavePlaylist = '[Playlists] Save Playlist',
   DeletePlaylist = '[Playlists] Delete Playlist',
   AddToPlaylist = '[Playlists] Add To Playlist',
   RemoveFromPlaylist = '[Playlists] Remove From Playlist'
+}
+
+export class LoadPlaylists implements Action {
+  readonly type = PlaylistsActionTypes.LoadPlaylists;
+  constructor(public playlists: Playlist[]) {}
 }
 
 export class LoadPlaylist implements Action {
@@ -26,7 +32,7 @@ export class DeletePlaylist implements Action {
 
 export class AddToPlaylist implements Action {
   readonly type = PlaylistsActionTypes.AddToPlaylist;
-  constructor(public track: Track, public playlist: string) {}
+  constructor(public tracks: Track[], public playlist: string) {}
 }
 
 export class RemoveFromPlaylist implements Action {
@@ -35,6 +41,7 @@ export class RemoveFromPlaylist implements Action {
 }
 
 export type PlaylistsActionUnion =
+  LoadPlaylists |
   LoadPlaylist |
   SavePlaylist |
   DeletePlaylist |

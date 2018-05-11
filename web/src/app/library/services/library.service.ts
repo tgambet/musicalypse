@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import * as _ from 'lodash';
 
-import {Album, Artist, Track} from '@app/model';
+import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {LoaderService} from '@app/core/services/loader.service';
 
@@ -25,6 +25,7 @@ import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions'
 import {AddToRecent} from '../actions/recent.actions';
 
 import * as fromLibrary from '../library.reducers';
+import {AddToPlaylist, DeletePlaylist, LoadPlaylist, RemoveFromPlaylist, SavePlaylist} from '@app/library/actions/playlists.actions';
 
 @Injectable()
 export class LibraryService {
@@ -242,6 +243,30 @@ export class LibraryService {
 
   getRecentAlbums(): Observable<Album[]> {
     return this.store.select(fromLibrary.getDisplayedRecentAlbums);
+  }
+
+  loadPlaylist(playlist: Playlist) {
+    this.store.dispatch(new LoadPlaylist(playlist));
+  }
+
+  savePlaylist(name: string, tracks: Track[]) {
+    this.store.dispatch(new SavePlaylist(name, tracks));
+  }
+
+  deletePlaylist(name: string) {
+    this.store.dispatch(new DeletePlaylist(name));
+  }
+
+  addToPlaylist(track: Track, playlist: string) {
+    this.store.dispatch(new AddToPlaylist(track, playlist));
+  }
+
+  removeFromPlaylist(track: Track, playlist: string) {
+    this.store.dispatch(new RemoveFromPlaylist(track, playlist));
+  }
+
+  getPlaylists(): Observable<Playlist[]> {
+    return this.store.select(fromLibrary.getPlaylists);
   }
 
 }

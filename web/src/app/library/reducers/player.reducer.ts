@@ -2,6 +2,7 @@ import {Track} from '@app/model';
 import {PlayerActionsUnion, PlayerActionTypes} from '@app/library/actions/player.actions';
 import {List} from 'immutable';
 import * as _ from 'lodash';
+import {PlaylistsActionTypes, PlaylistsActionUnion} from '@app/library/actions/playlists.actions';
 
 export interface State {
   currentTrack: Track;
@@ -19,7 +20,7 @@ export const initialState: State = {
 
 export function reducer(
   state = initialState,
-  action: PlayerActionsUnion
+  action: PlayerActionsUnion | PlaylistsActionUnion
 ): State {
   switch (action.type) {
 
@@ -54,9 +55,8 @@ export function reducer(
     }
 
     case PlayerActionTypes.AddTracksToPlaylist: {
-      let playlist = state.playlist;
-      const tracks = action.payload;
-      playlist = playlist.push(...tracks.filter(track => !playlist.some(t => _.isEqual(t, track))));
+      let playlist: List<Track> = state.playlist;
+      playlist = playlist.push(...action.payload.filter(track => !playlist.some(t => _.isEqual(t, track))));
       return {
         ...state,
         playlist: playlist
@@ -146,6 +146,13 @@ export function reducer(
         ...state,
         playlist: List.of(...action.payload)
       };
+
+    case PlaylistsActionTypes.LoadPlaylist: {
+      return {
+        ...state,
+        playlist: List.of(...action.playlist.tracks)
+      };
+    }
 
     default: {
       return state;

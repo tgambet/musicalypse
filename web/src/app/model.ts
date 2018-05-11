@@ -30,3 +30,8 @@ export interface TrackMetadata {
   year: string;
   duration: number;
 }
+
+export interface Playlist {
+  name: string;
+  tracks: Track[];
+}

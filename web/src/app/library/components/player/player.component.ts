@@ -159,4 +159,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
+  savePlaylist() {
+    this.library.savePlaylist('test-playlist', this.playlist);
+  }
+
 }

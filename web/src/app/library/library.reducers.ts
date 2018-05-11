@@ -9,6 +9,7 @@ import * as fromAlbums from './reducers/albums.reducers';
 import * as fromPlayer from './reducers/player.reducer';
 import * as fromFavorites from './reducers/favorites.reducers';
 import * as fromRecent from './reducers/recent.reducer';
+import * as fromPlaylists from './reducers/playlists.reducers';
 
 import * as _ from 'lodash';
 
@@ -19,6 +20,7 @@ export interface LibraryState {
   player: fromPlayer.State;
   favorites: fromFavorites.State;
   recent: fromRecent.State;
+  playlists: fromPlaylists.State;
 }
 
 export interface State extends fromRoot.State {
@@ -31,7 +33,8 @@ export const reducers: ActionReducerMap<LibraryState> = {
   albums: fromAlbums.reducer,
   player: fromPlayer.reducer,
   favorites: fromFavorites.reducer,
-  recent: fromRecent.reducer
+  recent: fromRecent.reducer,
+  playlists: fromPlaylists.reducer
 };
 
 export const getLibraryState = createFeatureSelector<LibraryState>('library');
@@ -260,3 +263,15 @@ export const getDisplayedRecentAlbums = createSelector(
     albums.filter(album => artistsIds.indexOf(album.artist) > -1)
 );
 
+/**
+ * Playlists selectors
+ */
+export const getPlaylistsState = createSelector(
+  getLibraryState,
+  state => state.playlists
+);
+
+export const getPlaylists = createSelector(
+  getPlaylistsState,
+  fromPlaylists.getPlaylists
+);

@@ -1,0 +1,23 @@
+@import '~@angular/material/theming';
+
+@mixin playlists-component-theme($theme) {
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .playlists {
+
+    .avatar-icon {
+      color: mat-color($foreground, disabled-text);
+    }
+
+    .covers {
+      border: 1px solid mat-color($foreground, divider);
+    }
+
+  }
+
+}

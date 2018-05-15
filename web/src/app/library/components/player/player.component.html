@@ -179,11 +179,11 @@
     </ng-container>
   </mat-menu>
   <mat-menu #AddToPlaylist="matMenu">
-    <button mat-menu-item disabled>
-      <mat-icon>add</mat-icon>
-      New playlist
-    </button>
-    <mat-divider></mat-divider>
+    <!--<button mat-menu-item disabled>-->
+      <!--<mat-icon>add</mat-icon>-->
+      <!--New playlist-->
+    <!--</button>-->
+    <!--<mat-divider></mat-divider>-->
     <ng-container *ngFor="let pl of playlists">
       <button mat-menu-item (click)="addAllToPlaylist(pl)">
         <mat-icon>album</mat-icon>

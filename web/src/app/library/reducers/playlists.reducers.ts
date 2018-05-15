@@ -25,7 +25,7 @@ export function reducer(
           state.playlists.indexOf(playlist),
           {
             name: playlist.name,
-            tracks: [...playlist.tracks, ...action.tracks]
+            tracks: _.uniq([...playlist.tracks, ...action.tracks])
           }
         )
       };

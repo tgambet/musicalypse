@@ -33,13 +33,15 @@ import {
   RemoveFromPlaylist,
   SavePlaylist
 } from '@app/library/actions/playlists.actions';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Injectable()
 export class LibraryService {
 
   constructor(
     private store: Store<fromLibrary.State>,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private audioService: AudioService
   ) {
     // Load Tracks
     store.dispatch(new LoadTracks());
@@ -69,6 +71,11 @@ export class LibraryService {
     if (savedPlaylists) {
       this.store.dispatch(new LoadPlaylists(JSON.parse(savedPlaylists)));
     }
+    const savedCurrent = CoreUtils.load('current');
+    if (savedCurrent) {
+      this.store.dispatch(new PlayTrack(JSON.parse(savedCurrent)));
+      this.audioService.pause();
+    }
 
     // Save selection state, playlist, favorites, and recent tracks on change
     this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
@@ -88,6 +95,9 @@ export class LibraryService {
     );
     this.store.select(fromLibrary.getPlaylists).subscribe(
       playlists => CoreUtils.save('playlists', JSON.stringify(playlists))
+    );
+    this.store.select(fromLibrary.getCurrentTrack).subscribe(
+      track => CoreUtils.save('current', JSON.stringify(track))
     );
 
     // Set up loader

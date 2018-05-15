@@ -78,7 +78,7 @@ export class PlayerPlaylistComponent {
 
   @Output() trackClicked = new EventEmitter<Track>();
 
-  columns = ['select', 'title', 'artist', 'album', 'year', 'duration'];
+  columns = [/*'select',*/ 'title', 'artist', 'album', 'year', 'duration'];
 
   initialSelection = [];
   allowMultiSelect = true;

@@ -85,7 +85,7 @@
           <mat-icon *ngIf="!currentTrack || !currentTrack.coverUrl">music_note</mat-icon>
         </div>
       </mat-tab>
-      <mat-tab label="Lyrics" >
+      <!--<mat-tab label="Lyrics" >
         <ng-template mat-tab-label>
           <mat-icon>format_align_center</mat-icon>
           <span>Lyrics</span>
@@ -93,7 +93,7 @@
         <div class="lyrics" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
 
         </div>
-      </mat-tab>
+      </mat-tab>-->
     </mat-tab-group>
   </div>
   <app-progress [loading]="loading$ | async"

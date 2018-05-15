@@ -11,7 +11,10 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
          routerLinkActive="active"
          (click)="closeSidenav.emit()">
         <mat-icon matListIcon>play_circle_outline</mat-icon>
-        <span matLine>Playing now</span>
+        <span matLine>
+          <mat-icon *ngIf="playing" class="playing-icon">volume_up</mat-icon>
+          Playing now
+        </span>
       </a>
       <!--<a mat-list-item-->
          <!--routerLink="/mymusic"-->
@@ -33,10 +36,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
          routerLinkActive="active"
          (click)="closeSidenav.emit()">
         <mat-icon matListIcon>queue_music</mat-icon>
-        <span matLine>
-          <mat-icon *ngIf="playing" class="playing-icon">volume_up</mat-icon>
-          Library
-        </span>
+        <span matLine>Library</span>
       </a>
       <a mat-list-item
          routerLink="/recent"

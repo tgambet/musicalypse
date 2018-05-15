@@ -8,13 +8,15 @@ import {FormsModule} from '@angular/forms';
 import {ConfirmComponent} from './confirm/confirm.component';
 import {DetailsComponent} from './details/details.component';
 import {FolderComponent} from './folder/folder.component';
-import {PlaylistsComponent} from './playlists.component';
+import {PlaylistsDialogComponent} from './playlists-dialog.component';
+import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialog.component';
 
 export const COMPONENTS = [
   ConfirmComponent,
   DetailsComponent,
   FolderComponent,
-  PlaylistsComponent
+  PlaylistsDialogComponent,
+  NewPlaylistDialogComponent
 ];
 
 @NgModule({

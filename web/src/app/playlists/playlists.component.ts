@@ -6,6 +6,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 import * as _ from 'lodash';
 import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material';
+import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialog.component';
 
 @Component({
   selector: 'app-playlists',
@@ -15,7 +17,8 @@ import {Router} from '@angular/router';
         <h2>Playlists</h2>
         <span class="filler"></span>
         <button mat-button
-                color="primary">
+                color="primary"
+                (click)="newPlaylistDialog()">
           <mat-icon>add</mat-icon>
           New playlist
         </button>
@@ -36,7 +39,20 @@ import {Router} from '@angular/router';
               <div [style]="getStyle(cover)" class="cover">&nbsp;</div>
             </ng-container>
             <mat-icon class="play-icon">play_circle_outline</mat-icon>
+            <button mat-button mat-icon-button class="more" (click)="$event.stopPropagation()" [matMenuTriggerFor]="playlistMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
           </div>
+          <mat-menu #playlistMenu="matMenu">
+            <button mat-menu-item (click)="itemClicked(item)">
+              <mat-icon>playlist_play</mat-icon>
+              <span>Load Playlist</span>
+            </button>
+            <button mat-menu-item (click)="deletePlaylist(item)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete Playlist</span>
+            </button>
+          </mat-menu>
           <span class="primary">{{ item.name }}</span>
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
@@ -46,7 +62,7 @@ import {Router} from '@angular/router';
   styles: [`
     header {
       display: flex;
-      padding: 0.5rem;
+      padding: 0.5rem 0.5rem 0.5rem 1rem;
     }
     h2 {
       margin: 0;
@@ -85,10 +101,10 @@ import {Router} from '@angular/router';
       display: flex;
       cursor: pointer;
       flex-wrap: wrap;
-      align-content: center;
-      align-items: center;
+      /*align-content: center;*/
+      /*align-items: center;*/
     }
-    .covers mat-icon {
+    .covers .play-icon, .covers .avatar-icon {
       width: 60px;
       height: 60px;
       line-height: 60px;
@@ -128,7 +144,13 @@ import {Router} from '@angular/router';
       left: 45px;
       top: 45px;
     }
-    .covers:hover .play-icon {
+    .more {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      display: none;
+    }
+    .covers:hover .play-icon, .covers:hover .more {
       display: unset;
     }
     .covers .avatar-icon {
@@ -174,7 +196,8 @@ export class PlaylistsComponent {
   constructor(
     private library: LibraryService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     this.playlists = library.getPlaylists();
   }
@@ -197,6 +220,19 @@ export class PlaylistsComponent {
       this.library.playTrack(item.tracks[0]);
     }
     this.router.navigate(['/playing']);
+  }
+
+  deletePlaylist(item: Playlist) {
+    this.library.deletePlaylist(item.name);
+  }
+
+  newPlaylistDialog() {
+    const dialogRef = this.dialog.open(NewPlaylistDialogComponent, {});
+    dialogRef.afterClosed().subscribe(playlistName => {
+      if (playlistName) {
+        this.library.savePlaylist(playlistName, []);
+      }
+    });
   }
 
 }

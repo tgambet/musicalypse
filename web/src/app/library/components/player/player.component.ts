@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
-import {PlaylistsComponent} from '@app/shared/dialogs/playlists.component';
+import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
 
 @Component({
   selector: 'app-library-player',
@@ -161,7 +161,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   savePlaylist() {
-    const dialogRef = this.dialog.open(PlaylistsComponent, {});
+    const dialogRef = this.dialog.open(PlaylistsDialogComponent, {});
     dialogRef.afterClosed().subscribe(playlistName => {
       if (playlistName) {
         this.library.savePlaylist(playlistName, this.playlist);

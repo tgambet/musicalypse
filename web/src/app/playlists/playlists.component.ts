@@ -7,13 +7,12 @@ import {DomSanitizer} from '@angular/platform-browser';
 import * as _ from 'lodash';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
-import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialog.component';
 
 @Component({
   selector: 'app-playlists',
   template: `
     <div class="playlists">
-      <header>
+      <!--<header>
         <h2>Playlists</h2>
         <span class="filler"></span>
         <button mat-button
@@ -22,7 +21,14 @@ import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialo
           <mat-icon>add</mat-icon>
           New playlist
         </button>
-      </header>
+      </header>-->
+      <div class="empty" *ngIf="(playlists | async).length === 0">
+        <span>
+          You don't have any playlist yet. Go to the
+          library, play some music and then click on "Save Playlist"
+          from the player menu to create a new playlist.
+        </span>
+      </div>
       <ul class="list center">
         <li class="item" *ngFor="let item of playlists | async">
           <div class="covers"
@@ -60,7 +66,7 @@ import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialo
     </div>
   `,
   styles: [`
-    header {
+    /*header {
       display: flex;
       padding: 0.5rem 0.5rem 0.5rem 1rem;
     }
@@ -72,6 +78,20 @@ import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialo
     }
     header button {
       align-self: flex-end;
+    }*/
+    .playlists {
+      height: 95%;
+    }
+    .empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .empty span {
+      display: inline-block;
+      max-width: 250px;
+      text-align: center;
     }
     .list {
       display: flex;
@@ -226,13 +246,13 @@ export class PlaylistsComponent {
     this.library.deletePlaylist(item.name);
   }
 
-  newPlaylistDialog() {
+/*  newPlaylistDialog() {
     const dialogRef = this.dialog.open(NewPlaylistDialogComponent, {});
     dialogRef.afterClosed().subscribe(playlistName => {
       if (playlistName) {
         this.library.savePlaylist(playlistName, []);
       }
     });
-  }
+  }*/
 
 }

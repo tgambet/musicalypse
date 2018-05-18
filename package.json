@@ -1,7 +1,7 @@
 {
   "name": "Musicalypse",
   "description": "An HTML5 powered mp3 player.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Thomas Gambet <thomas.gambet@gmail.com> (https://github.com/tgambet/)",
   "license": "MIT",
   "main": "target/electron/out-tsc/main.js",

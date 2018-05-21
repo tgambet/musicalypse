@@ -55,9 +55,9 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   val cacheFolder: String = application.config.getString("music.cacheFolder")
 
-  val tracksFile: File = new File(cacheFolder + "/tracks")
+  val tracksFile: File = new File(cacheFolder + "/tracks.json")
 
-  val librariesFile: File = new File(cacheFolder + "/libraries")
+  val librariesFile: File = new File(cacheFolder + "/libraries.json")
 
   tracksFile.createNewFile()
   loadTracksFromFile()

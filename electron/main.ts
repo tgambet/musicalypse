@@ -84,6 +84,7 @@ try {
   } else {
     if (!serve) {
       const musicFolder = app.getPath('music');
+      const cacheFolder = app.getPath('userData') + '/data';
 
       serverProcess = require('child_process')
         .spawn(
@@ -92,7 +93,7 @@ try {
           {
             cwd: './target/universal/stage',
             env: {
-              'JAVA_OPTS': '-Dmusic.library=' + musicFolder
+              'JAVA_OPTS': `-Dmusic.library=${musicFolder} -Dmusic.cacheFolder=${cacheFolder}`
             }
           }
         ).addListener('exit', code => {

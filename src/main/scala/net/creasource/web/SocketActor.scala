@@ -40,8 +40,6 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
   client ! JsonMessage("Connected", 0, JsNull).toJson
 
-  val audioLibraries: List[String] = app.config.getStringList("music.libraries").asScala.toList
-
   val askTimeout: akka.util.Timeout = 2.seconds
 
   override def receive: Receive = {

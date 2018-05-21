@@ -83,6 +83,8 @@ try {
     app.quit();
   } else {
     if (!serve) {
+      const musicFolder = app.getPath('music');
+
       serverProcess = require('child_process')
         .spawn(
           'bin\\musicalypse.bat',
@@ -90,7 +92,7 @@ try {
           {
             cwd: './target/universal/stage',
             env: {
-              'JAVA_OPTS': '-Dmusic.uploadFolder=./uploads'
+              'JAVA_OPTS': '-Dmusic.library=' + musicFolder
             }
           }
         ).addListener('exit', code => {

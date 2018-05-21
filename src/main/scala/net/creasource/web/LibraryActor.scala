@@ -47,7 +47,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   import context.dispatcher
 
-  var libraries: List[String] = application.config.getStringList("music.libraries").asScala.toList
+  var libraries: List[String] = List(application.config.getString("music.library"))
 
   var tracks: Seq[Track] = Seq.empty[Track]
 
@@ -71,7 +71,9 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(libraries :+ new File(uploadFolder).toPath.toRealPath().toString)
+    case GetLibraries => sender ! Libraries(
+      libraries.map(lib => new File(lib).getAbsolutePath)
+    )
 
     case AddLibrary(library) =>
       if (libraries.contains(library)) {

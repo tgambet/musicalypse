@@ -20,10 +20,11 @@ export class LoaderService {
   private initializingSubject = new Subject<boolean>();
 
   constructor(private httpSocketClient: HttpSocketClientService) {
-    this.loadings$ = this.loadingSubject.asObservable();
+    this.loadings$ = this.loadingSubject.asObservable().pipe(publishReplay(1), refCount());
     this.initializing$ = this.initializingSubject.asObservable().pipe(publishReplay(1), refCount());
     this.initializingLog$ = this.initializingLogSubject.asObservable().pipe(publishReplay(1), refCount());
     this.hasInitializingErrors$ = this.hasInitializingErrorsSubject.asObservable().pipe(publishReplay(1), refCount());
+    this.loadings$.subscribe();
     this.initializing$.subscribe();
     this.initializingLog$.subscribe();
     this.hasInitializingErrors$.subscribe();
@@ -39,7 +40,9 @@ export class LoaderService {
   }
 
   unload() {
-    this.loadings -= 1;
+    if (this.loadings > 0) {
+      this.loadings -= 1;
+    }
     this._update();
   }
 

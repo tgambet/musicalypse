@@ -34,10 +34,10 @@ export class LibraryEffects {
       tap(() => this.loader.load()),
       switchMap(() =>
         this.httpSocketClient.get('/api/libraries/tracks').pipe(
-          tap(() => this.loader.unload()),
           map((tracks: Track[]) => tracks.map(LibraryUtils.fixTags)),
           map(tracks => new LoadTrackSuccess(tracks)),
-          catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error)))
+          catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error))),
+          finalize(() => this.loader.unload())
         )
       ),
     );

@@ -104,11 +104,6 @@ export class LibraryService {
     this.store.select(fromLibrary.getCurrentTrack).subscribe(
       track => CoreUtils.save('current', JSON.stringify(track))
     );
-
-    // Set up loader
-    this.store.select(fromLibrary.getTracksLoading).subscribe(
-      loading => loading ? this.loader.load() : this.loader.unload()
-    );
   }
 
   getAllArtists() {

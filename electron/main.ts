@@ -124,24 +124,7 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', () => {
-    if (serve) {
-      createWindow();
-    } else {
-      const waitOn = require('wait-on');
-      const opts = {
-        resources: ['http://127.0.0.1:8080/api/libraries/tracks'],
-        delay: 0,
-        interval: 200,
-        timeout: 10000,
-        headers: {'Accept': 'application/json'}
-      };
-      waitOn(opts, err => {
-        if (err) {
-          throw err;
-        }
-        createWindow();
-      });
-    }
+    createWindow();
   });
 
   // Quit when all windows are closed.

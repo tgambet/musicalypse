@@ -22,6 +22,11 @@
     display: none;
   }
 
+  .app-loader {
+    background-color: mat-color($background, background);
+    color: mat-color($foreground, text);
+  }
+
   .divider {
     border-bottom: 1px solid mat-color($foreground, divider);
   }

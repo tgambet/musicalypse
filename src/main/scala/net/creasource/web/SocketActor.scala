@@ -38,6 +38,8 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
   private val client = context.parent
 
+  client ! JsonMessage("Connected", 0, JsNull).toJson
+
   val audioLibraries: List[String] = app.config.getStringList("music.libraries").asScala.toList
 
   val askTimeout: akka.util.Timeout = 2.seconds
@@ -93,7 +95,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
   val toHttpResponse: HttpRequest => Future[HttpResponse] = route2Response(xhrRoutes)
 
   def route2Response(route: Route)(implicit materializer: ActorMaterializer): HttpRequest => Future[HttpResponse] =
-    (request) => route2HandlerFlow(route).runWith(Source[HttpRequest](Seq(request)), Sink.head)._2
+    request => route2HandlerFlow(route).runWith(Source[HttpRequest](Seq(request)), Sink.head)._2
 
 }
 

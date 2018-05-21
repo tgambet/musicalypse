@@ -1,15 +1,32 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {concat, Observable, Subject, throwError} from 'rxjs';
+import {delay, publishReplay, refCount, retryWhen, take, tap} from 'rxjs/operators';
+import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 
 @Injectable()
 export class LoaderService {
 
-  private readonly loadings$: Observable<boolean>;
   private loadings = 0;
+  private readonly loadings$: Observable<boolean>;
   private loadingSubject = new Subject<boolean>();
 
-  constructor() {
+  hasInitializingErrors$: Observable<boolean>;
+  private hasInitializingErrorsSubject = new Subject<boolean>();
+
+  initializingLog$: Observable<string>;
+  private initializingLogSubject = new Subject<string>();
+
+  initializing$: Observable<boolean>;
+  private initializingSubject = new Subject<boolean>();
+
+  constructor(private httpSocketClient: HttpSocketClientService) {
     this.loadings$ = this.loadingSubject.asObservable();
+    this.initializing$ = this.initializingSubject.asObservable().pipe(publishReplay(1), refCount());
+    this.initializingLog$ = this.initializingLogSubject.asObservable().pipe(publishReplay(1), refCount());
+    this.hasInitializingErrors$ = this.hasInitializingErrorsSubject.asObservable().pipe(publishReplay(1), refCount());
+    this.initializing$.subscribe();
+    this.initializingLog$.subscribe();
+    this.hasInitializingErrors$.subscribe();
   }
 
   isLoading(): Observable<boolean> {
@@ -24,6 +41,30 @@ export class LoaderService {
   unload() {
     this.loadings -= 1;
     this._update();
+  }
+
+  initialize() {
+    this.initializingSubject.next(true);
+    this.hasInitializingErrorsSubject.next(false);
+    this.initializingLogSubject.next('Connecting to backend server...');
+    this.httpSocketClient.getSocket().pipe(
+      tap(
+        x => {
+          if (x.method === 'Connected') {
+            this.initializingSubject.next(false);
+          }
+        }
+      ),
+      retryWhen(
+        errors => concat(errors.pipe(delay(500), take(20)), throwError('Impossible to connect'))
+      ),
+    ).subscribe(
+      () => {},
+      () => {
+        this.hasInitializingErrorsSubject.next(true);
+        this.initializingLogSubject.next('Connection to backend server failed!');
+      }
+    );
   }
 
   private _update() {

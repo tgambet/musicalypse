@@ -44,7 +44,12 @@ export class LibraryService {
     private audioService: AudioService
   ) {
     // Load Tracks
-    store.dispatch(new LoadTracks());
+    loader.initializing$.subscribe(initializing => {
+        if (!initializing) {
+          store.dispatch(new LoadTracks());
+        }
+      }
+    );
 
     // Restore selection state, playlist, favorites and recent tracks
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');

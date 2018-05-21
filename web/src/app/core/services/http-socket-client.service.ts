@@ -1,11 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Observable, Subject, concat} from 'rxjs';
+import {concat, Observable, Subject} from 'rxjs';
 import {webSocket} from 'rxjs/websocket';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
-import {publish, refCount, map, filter, take} from 'rxjs/operators';
+import {filter, map, share, take} from 'rxjs/operators';
 
 @Injectable()
 export class HttpSocketClientService implements OnDestroy {
@@ -28,7 +28,7 @@ export class HttpSocketClientService implements OnDestroy {
     }
   });
 
-  private socketObs: Observable<SocketMessage> = this.socket.asObservable().pipe(publish(), refCount()) as Observable<SocketMessage>;
+  private socketObs: Observable<SocketMessage> = this.socket.asObservable().pipe(share()) as Observable<SocketMessage>;
 
   private static getSocketUrl() {
     let socketUrl = '';
@@ -185,7 +185,7 @@ export class HttpSocketClientService implements OnDestroy {
       observer.complete();
       return () => {};
     });
-    return sendRequest.concat(expectResponse);
+    return concat(sendRequest, expectResponse);
   }
 
 }

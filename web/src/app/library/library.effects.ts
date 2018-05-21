@@ -31,8 +31,10 @@ export class LibraryEffects {
   loadTracks$: Observable<Action> =
     this.actions$.pipe(
       ofType(TracksActionTypes.LoadTracks),
+      tap(() => this.loader.load()),
       switchMap(() =>
         this.httpSocketClient.get('/api/libraries/tracks').pipe(
+          tap(() => this.loader.unload()),
           map((tracks: Track[]) => tracks.map(LibraryUtils.fixTags)),
           map(tracks => new LoadTrackSuccess(tracks)),
           catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error)))

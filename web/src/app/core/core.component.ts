@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {environment} from '@env/environment';
 
@@ -20,6 +20,12 @@ import {ChangeTheme} from '@app/core/core.actions';
          [class]="currentThemeCssClass$ | async"
          [class.focused]="isElectronFocused"
          [class.electron]="isElectron">
+
+      <app-initializer [initializing]="initializing$ | async"
+                       [initializingLog]="initializingLog$ | async"
+                       [hasErrors]="hasErrors$ | async"
+                       (retry)="initialize()">
+      </app-initializer>
 
       <app-toolbar [sideNavOpened]="showSidenav$ | async"
                    [themes]="featuredThemes"
@@ -92,7 +98,7 @@ import {ChangeTheme} from '@app/core/core.actions';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreComponent {
+export class CoreComponent implements OnInit {
 
   showSidenav$: Observable<boolean>;
   currentTheme$: Observable<Theme>;
@@ -106,14 +112,29 @@ export class CoreComponent {
 
   featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
+  initializing$: Observable<boolean>;
+  initializingLog$: Observable<string>;
+  hasErrors$: Observable<boolean>;
+
   constructor(
     private ref: ChangeDetectorRef,
     private store: Store<fromRoot.State>,
     private loader: LoaderService,
     private audioService: AudioService,
     private renderer: Renderer2,
-    private appRoot: ElementRef
+    private appRoot: ElementRef,
+    // private httpSocketClient: HttpSocketClientService
   ) {
+    this.initializing$ = this.loader.initializing$;
+    this.hasErrors$ = this.loader.hasInitializingErrors$;
+    this.initializingLog$ = this.loader.initializingLog$;
+
+    this.loader.initialize();
+  }
+
+  ngOnInit(): void {
+
+
     // Set up electron listeners
     if (environment.electron) {
       const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
@@ -141,6 +162,10 @@ export class CoreComponent {
     this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
     this.playing$ = this.audioService.playing$;
 
+    // Configure Audio Service
+    this.audioService.renderer = this.renderer;
+    this.audioService.appRoot = this.appRoot;
+
     // Load the last theme
     const savedTheme = CoreUtils.load('theme');
     if (savedTheme) {
@@ -148,10 +173,10 @@ export class CoreComponent {
     } else {
       this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]));
     }
+  }
 
-    // Configure Audio Service
-    this.audioService.renderer = renderer;
-    this.audioService.appRoot = appRoot;
+  initialize() {
+    this.loader.initialize();
   }
 
   @HostListener('window:storage', ['$event'])

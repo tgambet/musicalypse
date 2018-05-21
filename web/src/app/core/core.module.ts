@@ -14,13 +14,15 @@ import {HttpSocketClientService} from './services/http-socket-client.service';
 import {AudioService} from './services/audio.service';
 
 import {CoreEffects} from './core.effects';
+import {InitializerComponent} from '@app/core/components/initializer.component';
 
 export const COMPONENTS = [
   CoreComponent,
   AboutComponent,
   SideMenuComponent,
   SidenavComponent,
-  ToolbarComponent
+  ToolbarComponent,
+  InitializerComponent
 ];
 
 @NgModule({

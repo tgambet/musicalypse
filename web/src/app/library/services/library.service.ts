@@ -102,7 +102,9 @@ export class LibraryService {
       playlists => CoreUtils.save('playlists', JSON.stringify(playlists))
     );
     this.store.select(fromLibrary.getCurrentTrack).subscribe(
-      track => CoreUtils.save('current', JSON.stringify(track))
+      track => {
+        if (track) { CoreUtils.save('current', JSON.stringify(track)); }
+      }
     );
   }
 

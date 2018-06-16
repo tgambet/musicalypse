@@ -1,5 +1,6 @@
 package net.creasource.http
 
+import akka.Done
 import akka.actor.{ActorRef, Props, Status}
 import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.http.scaladsl.server.Directives._
@@ -10,7 +11,6 @@ import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-
 import net.creasource.http.actors.{SocketSinkActor, SocketSinkSupervisor}
 
 /**
@@ -42,7 +42,7 @@ trait SocketWebServer extends WebServer { self: WebServer =>
     }
   }
 
-  override def stop(): Future[Unit] = {
+  override def stop(): Future[Done] = {
     system.log.info("Killing open sockets.")
     socketsKillSwitch.shutdown()
     super.stop()

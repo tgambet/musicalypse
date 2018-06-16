@@ -1,5 +1,6 @@
 package net.creasource.http
 
+import akka.Done
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server._
@@ -34,7 +35,7 @@ trait WebServer {
     }
   }
 
-  def stop(): Future[Unit] = {
+  def stop(): Future[Done] = {
     require(bindingFuture != null, "No binding found. Have you called start() before?")
     system.log.info("Unbinding.")
     bindingFuture.flatMap(_.unbind())

@@ -4,8 +4,8 @@ import scala.sys.process._
 
 import scala.sys.process.Process
 
-lazy val akkaHttpVersion = "10.1.0-RC2"
-lazy val akkaVersion    = "2.5.11"
+lazy val akkaHttpVersion = "10.1.3"
+lazy val akkaVersion    = "2.5.13"
 
 //val ng = inputKey[Int]("The angular-cli command.")
 //val ngBuild = taskKey[Int]("ng build -prod -aot.")
@@ -19,7 +19,7 @@ lazy val root = (project in file(".")).
     version         := "0.1",
     licenses        := Seq("MIT" -> new URL("https://choosealicense.com/licenses/mit/")),
     organization    := "net.creasource",
-    scalaVersion    := "2.12.4",
+    scalaVersion    := "2.12.6",
     scalacOptions   := Seq("-unchecked", "-deprecation", "-feature"),
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,

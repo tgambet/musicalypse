@@ -47,7 +47,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   import context.dispatcher
 
-  var libraries: List[String] = List(application.config.getString("music.library"))
+  var libraries: List[String] =
+    List(application.config.getString("music.library")).map(lib => new File(lib).getAbsolutePath)
 
   var tracks: Seq[Track] = Seq.empty[Track]
 
@@ -71,9 +72,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   def receive: Receive = {
 
-    case GetLibraries => sender ! Libraries(
-      libraries.map(lib => new File(lib).getAbsolutePath)
-    )
+    case GetLibraries => sender ! Libraries(libraries)
 
     case AddLibrary(library) =>
       if (libraries.contains(library)) {
@@ -82,7 +81,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         val file = new File(library)
         // TODO manage exception, e.g. read access denied
         if (file.isDirectory) {
-          libraries +:= file.toString
+          libraries +:= file.getAbsolutePath
           sender() ! LibraryChangeSuccess
         } else {
           sender() ! LibraryChangeFailed(s"'$file' is not a directory")

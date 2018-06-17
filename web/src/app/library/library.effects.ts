@@ -11,7 +11,7 @@ import {LoaderService} from '@app/core/services/loader.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LibraryUtils} from './library.utils';
-import {AddTrack, LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
+import {AddTracks, LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
@@ -92,7 +92,7 @@ export class LibraryEffects {
       tap(() => this.loader.load()),
       switchMap(() =>
         this.scanTracks().pipe(
-          map(track => new AddTrack(LibraryUtils.fixTags(track))),
+          map(tracks => new AddTracks(tracks.map(t => LibraryUtils.fixTags(t)))),
           finalize(() => this.loader.unload())
         )
       )
@@ -128,13 +128,13 @@ export class LibraryEffects {
     private loader: LoaderService
   ) {}
 
-  public scanTracks(): Observable<Track> {
+  public scanTracks(): Observable<Track[]> {
     return Observable.create((observer) => {
       const currentId = ++this.httpSocketClient.id;
       const subscription1 = this.httpSocketClient
         .getSocket()
         .pipe(
-          filter((r: SocketMessage) => r.method === 'TrackAdded' && r.id === currentId),
+          filter((r: SocketMessage) => r.method === 'TracksAdded' && r.id === currentId),
           map((r: SocketMessage) => r.entity),
           map((e: Track) => e)
         )

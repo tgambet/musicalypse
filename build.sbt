@@ -21,6 +21,7 @@ lazy val root = (project in file(".")).
     organization    := "net.creasource",
     scalaVersion    := "2.12.6",
     scalacOptions   := Seq("-unchecked", "-deprecation", "-feature"),
+    resolvers       += "jaudiotagger-repository" at "https://dl.bintray.com/ijabz/maven",
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
@@ -30,6 +31,7 @@ lazy val root = (project in file(".")).
       "com.typesafe.akka" %% "akka-slf4j"           % akkaVersion,
       "ch.qos.logback"    %  "logback-classic"      % "1.2.3",
       "com.mpatric"       %  "mp3agic"              % "0.9.1",
+      "net.jthink"        %  "jaudiotagger"         % "2.2.3",
 
       "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,

@@ -5,6 +5,10 @@ import java.nio.file.Files
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Source, StreamConverters}
+import org.jaudiotagger.audio.AudioHeader
+import org.jaudiotagger.tag.{FieldKey, Tag}
+
+import scala.util.Try
 
 object LibraryScanner {
 
@@ -54,6 +58,40 @@ object LibraryScanner {
     }
   }
 
+  private def getMetadata2(audioFile: File): (TrackMetadata, AlbumCover) = {
+    import org.jaudiotagger.audio.AudioFileIO
+    val f = AudioFileIO.read(audioFile)
+    val tag: Option[Tag] = Option(f.getTag)
+    val audioHeader: AudioHeader = f.getAudioHeader
+    tag match {
+      case Some(tags) =>
+        val metadata = TrackMetadata(
+          location = audioFile.getAbsolutePath,
+          title = Option(tags.getFirst(FieldKey.TITLE)).map(_.trim),
+          artist = Option(tags.getFirst(FieldKey.ARTIST)).map(_.trim),
+          albumArtist = Option(tags.getFirst(FieldKey.ALBUM_ARTIST)).map(_.trim),
+          album = Option(tags.getFirst(FieldKey.ALBUM)).map(_.trim),
+          year = Option(tags.getFirst(FieldKey.YEAR)).map(_.trim),
+          duration = audioHeader.getTrackLength)
+        val albumCover = if (tags.getFirstArtwork != null) {
+          Some(tags.getFirstArtwork.getBinaryData, tags.getFirstArtwork.getMimeType)
+        } else {
+          None
+        }
+        (metadata, albumCover)
+      case None =>
+        val metadata = TrackMetadata(
+          location = audioFile.getAbsolutePath,
+          title = None,
+          artist = None,
+          albumArtist = None,
+          album = None,
+          year = None,
+          duration = audioHeader.getTrackLength)
+        (metadata, None)
+    }
+  }
+
   private def getAlbumCover(audioFile: File): AlbumCover = {
     import com.mpatric.mp3agic.Mp3File
     val mp3file = new Mp3File(audioFile)
@@ -70,7 +108,7 @@ object LibraryScanner {
     StreamConverters
       .fromJavaStream(() => Files.walk(folder.toPath))
       .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
-      .map(path => getMetadata(path.toFile))
+      .map(path => Try(getMetadata2(path.toFile)).recover{case _ => getMetadata(path.toFile)}.get)
   }
 
 

@@ -32,6 +32,9 @@ export function reducer(
     case TracksActionTypes.AddTrack:
       return adapter.addOne(action.payload, state);
 
+    case TracksActionTypes.AddTracks:
+      return adapter.addMany(action.payload, state);
+
     case TracksActionTypes.RemoveTrack: {
       return adapter.removeOne(action.payload.url, state);
     }

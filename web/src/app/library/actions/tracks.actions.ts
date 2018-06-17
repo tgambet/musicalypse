@@ -3,6 +3,7 @@ import {Track} from '@app/model';
 
 export enum TracksActionTypes {
   AddTrack = '[Tracks] Add Track',
+  AddTracks = '[Tracks] Add Tracks',
   RemoveTrack = '[Tracks] Remove Track',
   LoadTracks = '[Tracks] Load Tracks',
   LoadTracksSuccess = '[Tracks] Load Tracks Success',
@@ -13,6 +14,11 @@ export enum TracksActionTypes {
 export class AddTrack implements Action {
   readonly type = TracksActionTypes.AddTrack;
   constructor(public payload: Track) {}
+}
+
+export class AddTracks implements Action {
+  readonly type = TracksActionTypes.AddTracks;
+  constructor(public payload: Track[]) {}
 }
 
 export class RemoveTrack implements Action {
@@ -40,6 +46,7 @@ export class ScanTracks implements Action {
 
 export type TracksActionsUnion =
   AddTrack |
+  AddTracks |
   RemoveTrack |
   LoadTracks |
   LoadTrackSuccess |

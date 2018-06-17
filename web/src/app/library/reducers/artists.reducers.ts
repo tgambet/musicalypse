@@ -91,6 +91,18 @@ export function reducer(
       return adapter.upsertOne(artist, state);
     }
 
+    case TracksActionTypes.AddTracks: {
+      const artists = LibraryUtils.extractArtists(action.payload);
+      artists.map(artist => {
+        const old = state.entities[artist.name];
+        if (old) {
+          artist.songs += old.songs;
+        }
+        return artist;
+      });
+      return adapter.upsertMany(artists, state);
+    }
+
     default: {
       return state;
     }

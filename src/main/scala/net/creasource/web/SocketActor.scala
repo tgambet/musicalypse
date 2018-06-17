@@ -14,7 +14,6 @@ import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
 import spray.json._
 
-import scala.collection.JavaConverters._
 import scala.collection.immutable.Seq
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -62,10 +61,11 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
     case JsonMessage("ScanLibrary", id, _) =>
       logger.info("Scanning library")
       val scanFuture: Future[Done] = for {
-        f1 <- (app.libraryActor ? ScanLibrary)(askTimeout)
-                .mapTo[Source[Track, NotUsed]]
-                .map(_.map(track => JsonMessage("TrackAdded", id, track.toJson).toJson))
-        f2 <- f1.watch(self).runWith(Sink.foreach(client ! _))
+        f1 <- (app.libraryActor ? ScanLibrary)(askTimeout).mapTo[Source[Track, NotUsed]]
+        f2 <- f1.watch(self)
+                .groupedWithin(50, 200.milliseconds)
+                .map(tracks => JsonMessage("TracksAdded", id, tracks.toJson).toJson)
+                .runWith(Sink.foreach(client ! _))
       } yield f2
       scanFuture onComplete {
         case Success(Done) =>
@@ -77,16 +77,10 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
       }
 
     case a @ JsonMessage(_, _, _) =>
-      logger.info("test")
-      client ! a
+      logger.warning("Unhandled JsonMessage: " + a.prettyPrint)
 
-    case str: JsString =>
-      logger.info("test2")
-      client ! str
-
-    case obj: JsObject =>
-      logger.info("test3")
-      client ! obj
+    case v: JsValue =>
+      logger.warning("Unhandled JsValue message: " + v.prettyPrint)
 
   }
 

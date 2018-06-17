@@ -104,10 +104,17 @@ object LibraryScanner {
   }
 
   def scan(folder: File): Source[(TrackMetadata, AlbumCover), NotUsed] = {
-    assert(folder.isDirectory, s"Library folder $folder is not a directory")
+    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac", "m4a", "wma")
     StreamConverters
       .fromJavaStream(() => Files.walk(folder.toPath))
-      .filter(path => !path.toFile.isDirectory && path.toString.endsWith(".mp3"))
+      .filter{ path =>
+        def isSupportedFile: Boolean = {
+          val chunks = path.getFileName.toString.split("""\.""")
+          val extension = chunks(chunks.size - 1).toLowerCase
+          supportedFormats.contains(extension)
+        }
+        !path.toFile.isDirectory && isSupportedFile
+      }
       .map(path => Try(getMetadata2(path.toFile)).recover{case _ => getMetadata(path.toFile)}.get)
   }
 

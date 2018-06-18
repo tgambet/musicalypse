@@ -49,7 +49,7 @@ export class LoaderService {
   initialize() {
     this.initializingSubject.next(true);
     this.hasInitializingErrorsSubject.next(false);
-    this.initializingLogSubject.next('Connecting to backend server...');
+    this.initializingLogSubject.next('Loading...');
     this.httpSocketClient.getSocket().pipe(
       tap(
         x => {

@@ -104,7 +104,7 @@ object LibraryScanner {
   }
 
   def scan(folder: File): Source[(TrackMetadata, AlbumCover), NotUsed] = {
-    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac", "m4a", "wma")
+    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac") // wma, m4a
     StreamConverters
       .fromJavaStream(() => Files.walk(folder.toPath))
       .filter{ path =>

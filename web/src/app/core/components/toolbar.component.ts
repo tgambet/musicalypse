@@ -10,9 +10,8 @@ import {Theme} from '@app/core/core.utils';
         <mat-icon>{{ sideNavOpened ? 'close' : 'menu' }}</mat-icon>
       </button>
       <h1>
-        <a routerLink="/" class="link" tabindex="-1">
-          Musicalypse
-        </a>
+        <!--<img src="assets/logo_green_optimized.svg" alt="Logo" height="30">-->
+        Musicalypse
       </h1>
       <div class="filler"></div>
       <div class="electron-buttons" *ngIf="isElectron">

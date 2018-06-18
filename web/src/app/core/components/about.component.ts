@@ -7,12 +7,19 @@ import { Component, OnInit } from '@angular/core';
       <h2>About</h2>
       <p class="bolder">Version 0.2.2</p>
       <p>
+        <img src="assets/logo_grey.svg" height="100" style="float: left; margin: 0 1rem 1rem 0;">
         Musicalypse is an open source software developed and maintained by Thomas GAMBET, available on all desktop platforms
         as an online or native version.
         You can support its development by <u>making a donation</u>, buying the windows version on the <u>Microsoft store</u>, or
         joining the development on <u>Github</u>.
       </p>
-      <p>Find out more on <a href="http://www.musicalypse.com">www.musicalypse.com</a></p>
+      <p>
+        Find out more on <a href="https://musicalypse.creasource.net" target="_blank">https://musicalypse.creasource.net</a>
+      </p>
+      <h3 style="clear: both;">Contributors</h3>
+      <ul>
+        <li>Logo design: <a href="https://github.com/nunojesus" target="_blank">Nuno Jesus</a></li>
+      </ul>
       <h3>License</h3>
       <p class="bolder">Copyright © 2018 Thomas GAMBET</p>
       <p>
@@ -45,6 +52,9 @@ import { Component, OnInit } from '@angular/core';
     }
     .bolder {
       font-weight: 500;
+    }
+    ul {
+      padding-left: 1rem;
     }
   `]
 })

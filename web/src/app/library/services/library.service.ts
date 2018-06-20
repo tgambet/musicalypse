@@ -7,7 +7,7 @@ import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {LoaderService} from '@app/core/services/loader.service';
 
-import {AddTracks, LoadTracks, RemoveTrack} from '../actions/tracks.actions';
+import {LoadTracks} from '../actions/tracks.actions';
 import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
 import {
@@ -34,8 +34,6 @@ import {
   SavePlaylist
 } from '@app/library/actions/playlists.actions';
 import {AudioService} from '@app/core/services/audio.service';
-import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
-import {LibraryUtils} from '@app/library/library.utils';
 
 @Injectable()
 export class LibraryService {
@@ -43,8 +41,7 @@ export class LibraryService {
   constructor(
     private store: Store<fromLibrary.State>,
     private loader: LoaderService,
-    private audioService: AudioService,
-    private httpSocketClient: HttpSocketClientService
+    private audioService: AudioService
   ) {
     // Load Tracks
     loader.initializing$.subscribe(initializing => {
@@ -108,20 +105,6 @@ export class LibraryService {
       track => {
         if (track) { CoreUtils.save('current', JSON.stringify(track)); }
       }
-    );
-
-    this.httpSocketClient.getSocket().subscribe(
-      next => {
-        if (next.method === 'TracksAdded' && next.id === 0) {
-          const tracks = next.entity;
-          store.dispatch(new AddTracks(tracks.map(track => LibraryUtils.fixTags(track))));
-        }
-        if (next.method === 'TracksDeleted' && next.id === 0) {
-          const track = next.entity[0];
-          store.dispatch(new RemoveTrack(LibraryUtils.fixTags(track)));
-        }
-      },
-      error => console.error(error)
     );
   }
 

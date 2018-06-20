@@ -20,6 +20,7 @@ import * as fromLibrary from './library.reducers';
 import {from, Observable, of} from 'rxjs';
 import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {AddToRecent} from '@app/library/actions/recent.actions';
+import {RemoveTrack} from '@app/library/actions/tracks.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -117,6 +118,22 @@ export class LibraryEffects {
   playNextTrack$: Observable<Action> =
     this.audioService.ended$.pipe(
       map(() => new PlayNextTrackInPlaylist())
+    );
+
+  @Effect()
+  subscribeToNewTracks: Observable<Action> =
+    this.httpSocketClient.getSocket().pipe(
+      filter(next => (next.method === 'TracksAdded' || next.method === 'TracksDeleted') && next.id === 0),
+      map(next => {
+        if (next.method === 'TracksAdded') {
+          const tracks = next.entity;
+          return new AddTracks(tracks.map(track => LibraryUtils.fixTags(track)));
+        }
+        if (next.method === 'TracksDeleted') {
+          const track = next.entity[0];
+          return new RemoveTrack(LibraryUtils.fixTags(track));
+        }
+      })
     );
 
   constructor(

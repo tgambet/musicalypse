@@ -105,6 +105,21 @@ export function reducer(
       return adapter.upsertMany(albums, state);
     }
 
+    case TracksActionTypes.RemoveTrack: {
+      const album = LibraryUtils.extractAlbums([action.payload])[0];
+      const old = state.entities[getAlbumId(album)];
+      if (old) {
+        old.songs -= album.songs;
+        if (old.songs === 0) {
+          return adapter.removeOne(getAlbumId(old), state);
+        } else {
+          return adapter.upsertOne(old, state);
+        }
+      }
+      console.warn('Could not find album: ' + getAlbumId(album));
+      return state;
+    }
+
     default: {
       return state;
     }

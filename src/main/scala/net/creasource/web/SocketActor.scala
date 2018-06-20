@@ -39,15 +39,24 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
 
   client ! JsonMessage("Connected", 0, JsNull).toJson
 
+  app.libraryActor ! Register
+
   val askTimeout: akka.util.Timeout = 2.seconds
 
   override def receive: Receive = {
 
     case value: JsValue =>
-      handleMessages.applyOrElse(value, (v: JsValue) => logger.warning("Unhandled Json message:\n{}", v.prettyPrint))
+      handleMessages.applyOrElse(value, (v: JsValue) => logger.warning("Unhandled client Json message:\n{}", v.prettyPrint))
 
-    case value =>
-      logger.error("SocketActor should only receive Json Messages: {}", value.toString)
+    case NewTrack(track) =>
+      logger.debug("Received a new track. Sending notification to client: " + track.toJson.prettyPrint)
+      client ! JsonMessage("TracksAdded", 0, List(track).toJson).toJson
+
+    case DeletedTrack(track) =>
+      logger.debug("A track has been deleted. Sending notification to client: " + track.toJson.prettyPrint)
+      client ! JsonMessage("TracksDeleted", 0, List(track).toJson).toJson
+
+    case value => logger.error("Unhandled message: {}", value.toString)
 
   }
 

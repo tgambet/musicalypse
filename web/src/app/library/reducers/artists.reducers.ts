@@ -103,6 +103,21 @@ export function reducer(
       return adapter.upsertMany(artists, state);
     }
 
+    case TracksActionTypes.RemoveTrack: {
+      const artist = LibraryUtils.extractArtists([action.payload])[0];
+      const old = state.entities[artist.name];
+      if (old) {
+        old.songs -= artist.songs;
+        if (old.songs === 0) {
+          return adapter.removeOne(old.name, state);
+        } else {
+          return adapter.upsertOne(old, state);
+        }
+      }
+      console.warn('Could not find artist: ' + artist.name);
+      return state;
+    }
+
     default: {
       return state;
     }

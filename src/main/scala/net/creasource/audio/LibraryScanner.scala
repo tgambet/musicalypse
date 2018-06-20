@@ -1,20 +1,12 @@
 package net.creasource.audio
 
 import java.io.File
-import java.nio.file.Files
-
-import akka.NotUsed
-import akka.stream.scaladsl.{Source, StreamConverters}
-import org.jaudiotagger.audio.AudioHeader
-import org.jaudiotagger.tag.{FieldKey, Tag}
-
-import scala.util.Try
 
 object LibraryScanner {
 
-  type AlbumCover = Option[(Array[Byte], String)]
+  type AlbumCoverOpt = Option[(Array[Byte], String)]
 
-  private def getMetadata(audioFile: File): (TrackMetadata, AlbumCover) = {
+  def getMetadata(audioFile: File): (TrackMetadata, AlbumCoverOpt) = {
     import com.mpatric.mp3agic.Mp3File
     val mp3file = new Mp3File(audioFile)
     if (mp3file.hasId3v2Tag) {
@@ -58,8 +50,10 @@ object LibraryScanner {
     }
   }
 
-  private def getMetadata2(audioFile: File): (TrackMetadata, AlbumCover) = {
+  def getMetadata2(audioFile: File): (TrackMetadata, AlbumCoverOpt) = {
     import org.jaudiotagger.audio.AudioFileIO
+    import org.jaudiotagger.audio.AudioHeader
+    import org.jaudiotagger.tag.{FieldKey, Tag}
     val f = AudioFileIO.read(audioFile)
     val tag: Option[Tag] = Option(f.getTag)
     val audioHeader: AudioHeader = f.getAudioHeader
@@ -91,33 +85,5 @@ object LibraryScanner {
         (metadata, None)
     }
   }
-
-  private def getAlbumCover(audioFile: File): AlbumCover = {
-    import com.mpatric.mp3agic.Mp3File
-    val mp3file = new Mp3File(audioFile)
-    if (mp3file.hasId3v2Tag) {
-      val tags = mp3file.getId3v2Tag
-      Some(tags.getAlbumImage, tags.getAlbumImageMimeType)
-    } else {
-      None
-    }
-  }
-
-  def scan(folder: File): Source[(TrackMetadata, AlbumCover), NotUsed] = {
-    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac") // wma, m4a
-    StreamConverters
-      .fromJavaStream(() => Files.walk(folder.toPath))
-      .filter{ path =>
-        def isSupportedFile: Boolean = {
-          val chunks = path.getFileName.toString.split("""\.""")
-          val extension = chunks(chunks.size - 1).toLowerCase
-          supportedFormats.contains(extension)
-        }
-        !path.toFile.isDirectory && isSupportedFile
-      }
-      .map(path => Try(getMetadata2(path.toFile)).recover{case _ => getMetadata(path.toFile)}.get)
-  }
-
-
 
 }

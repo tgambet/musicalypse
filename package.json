@@ -1,7 +1,7 @@
 {
   "name": "Musicalypse",
   "description": "An HTML5 powered mp3 player.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "author": "Thomas Gambet <thomas.gambet@gmail.com> (https://github.com/tgambet/)",
   "license": "MIT",
   "main": "target/electron/out-tsc/main.js",
@@ -38,7 +38,7 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.5.6",
+    "@angular-devkit/build-angular": "~0.6.8",
     "@angular/animations": "^6.0.5",
     "@angular/cdk": "^6.3.0",
     "@angular/cli": "~6.0.8",

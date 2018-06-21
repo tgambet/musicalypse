@@ -95,7 +95,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   }
 
   override def postStop(): Unit = {
-    writeTracksToFile()
+    // writeTracksToFile()
   }
 
   def receive: Receive = {

@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   template: `
     <div class="about">
       <h2>About</h2>
-      <p class="bolder">Version 0.2.2</p>
+      <p class="bolder">Version 0.3.0</p>
       <p>
         <img src="assets/logo_grey.svg" height="100" style="float: left; margin: 0 1rem 1rem 0;">
         Musicalypse is an open source software developed and maintained by Thomas GAMBET, available on all desktop platforms

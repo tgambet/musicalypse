@@ -21,7 +21,7 @@
     <appender-ref ref="STDOUT" />
   </appender>
 
-  <logger name="net.creasource" level="DEBUG" />
+  <logger name="net.creasource" level="INFO" />
   <logger name="akka.event.slf4j.Slf4jLogger" level="WARN" />
 
   <root level="INFO">

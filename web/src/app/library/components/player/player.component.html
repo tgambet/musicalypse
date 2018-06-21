@@ -161,7 +161,7 @@
       <mat-icon>delete</mat-icon>
       <span>Clear playlist</span>
     </button>
-    <button mat-menu-item (click)="savePlaylist()">
+    <button mat-menu-item (click)="savePlaylist()" [disabled]="this.playlist.length == 0">
       <mat-icon>save</mat-icon>
       <span>Save playlist</span>
     </button>

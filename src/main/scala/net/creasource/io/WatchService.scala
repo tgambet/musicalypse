@@ -23,7 +23,7 @@ class WatchService(notifyActor: ActorRef, logger: LoggingAdapter) extends Runnab
     Files.walk(root, 1).forEach(path =>
       if (path.toFile.isDirectory && path != root) {
         watch(path)
-      } else {
+      } else if (!path.toFile.isDirectory) {
         // Ugly hack to wait for the file to be unlocked
         while (path.toFile.exists() && !path.toFile.renameTo(path.toFile)) {
           Thread.sleep(100)
@@ -61,9 +61,7 @@ class WatchService(notifyActor: ActorRef, logger: LoggingAdapter) extends Runnab
               case ENTRY_DELETE =>
                 notifyActor ! Deleted(path.toFile)
                 logger.debug("Entry deleted: " + path)
-              case ENTRY_MODIFY =>
-                notifyActor ! Modified(path.toFile)
-                logger.debug("Entry modified: " + path)
+
               case e =>
                 logger.warning("Unknown event received: " + e.toString)
             }

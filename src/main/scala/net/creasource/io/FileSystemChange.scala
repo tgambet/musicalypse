@@ -11,6 +11,4 @@ case class Created(file: File) extends FileSystemChange
 
 case class Deleted(file: File) extends FileSystemChange
 
-case class Modified(file: File) extends FileSystemChange
-
 case class WatchDir(path: Path)

@@ -57,8 +57,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   import context.dispatcher
   import application.materializer
 
-  var libraries: List[String] =
-    List(application.config.getString("music.library")).map(lib => new File(lib).getAbsolutePath)
+  var libraries: List[String] = _
 
   var tracks: Seq[Track] = Seq.empty[Track]
 
@@ -81,21 +80,24 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     new File(cacheFolder + "/covers").mkdirs()
 
     tracksFile.createNewFile()
-    loadTracksFromFile().foreach(_ => self ! CheckTracks)
+    librariesFile.createNewFile()
 
-    if (librariesFile.exists()) {
-      loadLibrariesFromFile().foreach(libs => {
-        libs.foreach(lib => watchActor ! WatchDir(lib))
-        self ! SetLibraries(libs.map(_.toString)) // TODO use Path instead of String
-      })
-    } else {
-      librariesFile.createNewFile()
-      writeLibrariesToFile()
+    val init: Future[Done] = for {
+      _ <- loadTracksFromFile()
+      _ = self ! CheckTracks
+      libs <- loadLibrariesFromFile()
+    } yield {
+      val libraries: List[Path] = libs match {
+        case Nil => List(Paths.get(application.config.getString("music.library")))
+        case list => list
+      }
+      libraries.foreach(lib => watchActor ! WatchDir(lib))
+      self ! SetLibraries(libraries.map(_.toString)) // TODO use Path instead of String
+      Done
     }
   }
 
   override def postStop(): Unit = {
-    // writeTracksToFile()
   }
 
   def receive: Receive = {
@@ -146,14 +148,16 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
       writeLibrariesToFile()
 
-    case SetLibraries(libs) => libraries = libs
+    case SetLibraries(libs) =>
+      libraries = libs
+      writeLibrariesToFile()
 
     case ScanLibrary =>
       import context.dispatcher
       tracks = Seq.empty
       val a: Source[Track, NotUsed] = getTrackSource
         .watchTermination()((_, f) => {
-          f.onComplete(_ => self ! MarkForSaving)
+          // f.onComplete(_ => self ! MarkForSaving)
           NotUsed
         })
       sender() ! a
@@ -171,11 +175,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
     case Created(file) =>
       logger.debug("File creation: " + file.toString)
-      handleNewFile(file)
-
-    case Modified(file) =>
-      logger.debug("File modification: " + file.toString)
-      handleNewFile(file)
+      if (!file.isDirectory && !tracks.exists(track => track.metadata.location == file.toString)) {
+        handleNewFile(file)
+        markedForSaving = true
+      }
 
     case Deleted(file) =>
       logger.debug("File deletion notification: " + file.toString)
@@ -194,7 +197,6 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   }
 
   def handleNewFile(file: File): Unit = {
-
     if (!file.isDirectory) {
       val libOpt = libraries.find(lib => file.toPath.startsWith(lib))
       libOpt match {
@@ -204,7 +206,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             .via(metadataToTrackFlow(new File(lib)))
             .runWith(Sink.foreach(track => {
               self ! AddTrack(track, broadcast = true)
-              self ! MarkForSaving
+              // self ! MarkForSaving
             }))
             .onComplete {
               case Success(Done) =>

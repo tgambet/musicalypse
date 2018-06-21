@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'app-about',
@@ -9,16 +10,23 @@ import { Component, OnInit } from '@angular/core';
       <p>
         <img src="assets/logo_grey.svg" height="100" style="float: left; margin: 0 1rem 1rem 0;">
         Musicalypse is an open source software developed and maintained by Thomas GAMBET, available on all desktop platforms
-        as an online or native version.
-        You can support its development by <u>making a donation</u>, buying the windows version on the <u>Microsoft store</u>, or
-        joining the development on <u>Github</u>.
+        as an online or native version. You can support its development by
+        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
+           target="_blank"
+           (click)="openExternally($event)">making a donation</a>,
+        buying the windows version on the <u>Microsoft store</u>, or
+        joining the development on
+        <a href="https://github.com/tgambet/musicalypse"
+           target="_blank"
+           (click)="openExternally($event)">Github</a>.
       </p>
       <p>
-        Find out more on <a href="https://musicalypse.creasource.net" target="_blank">https://musicalypse.creasource.net</a>
+        Find out more on
+        <a href="https://musicalypse.creasource.net" target="_blank" (click)="openExternally($event)">https://musicalypse.creasource.net</a>
       </p>
       <h3 style="clear: both;">Contributors</h3>
       <ul>
-        <li>Logo design: <a href="https://github.com/nunojesus" target="_blank">Nuno Jesus</a></li>
+        <li>Logo design: <a href="https://github.com/nunojesus" target="_blank" (click)="openExternally($event)">Nuno Jesus</a></li>
       </ul>
       <h3>License</h3>
       <p class="bolder">Copyright © 2018 Thomas GAMBET</p>
@@ -60,9 +68,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
+  isElectron = environment.electron;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  openExternally(event: Event) {
+    if (this.isElectron) {
+      const shell = (<any>window).require('electron').shell;
+      shell.openExternal(event.srcElement.getAttribute('href'));
+      event.preventDefault();
+    }
   }
 
 }

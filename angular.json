@@ -22,6 +22,11 @@
                 "output": "/"
               },
               {
+                "glob": "manifest.json",
+                "input": "web/src",
+                "output": "/"
+              },
+              {
                 "glob": "**/*",
                 "input": "web/src/assets",
                 "output": "/assets"
@@ -108,6 +113,11 @@
               {
                 "glob": "favicon.ico",
                 "input": "web/src/",
+                "output": "/"
+              },
+              {
+                "glob": "manifest.json",
+                "input": "web/src",
                 "output": "/"
               },
               {

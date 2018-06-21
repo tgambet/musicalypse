@@ -1,8 +1,8 @@
 {
-  "name": "MyApp",
-  "short_name": "MyApp",
-  "theme_color": "#363636",
-  "background_color": "#363636",
+  "name": "Musicalypse",
+  "short_name": "Musicalypse",
+  "theme_color": "#303030",
+  "background_color": "#303030",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

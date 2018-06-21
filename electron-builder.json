@@ -1,6 +1,9 @@
 {
+  "appId": "musicalypse",
+  "copyright": "Copyright © 2018 Thomas GAMBET",
   "productName": "Musicalypse",
   "directories": {
+    "buildResources": "electron-build/",
     "output": "target/electron/"
   },
   "nsis": {

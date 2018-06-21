@@ -7,23 +7,17 @@ let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-// const asar = process.mainModule.filename.indexOf('app.asar') !== -1;
-
-// try {
-//     require('dotenv').config();
-// } catch {
-//     console.log('asar');
-// }
-
 function createWindow() {
 
   const size = screen.getPrimaryDisplay().workAreaSize;
 
+  const windowSize = Math.min(size.height, size.width);
+
   // Create the browser window.
   win = new BrowserWindow({
     frame: false,
-    width: size.width - 200,
-    height: size.height - 200,
+    width: windowSize - 50,
+    height: windowSize - 200,
     minHeight: 450,
     minWidth: 350,
     show: false,

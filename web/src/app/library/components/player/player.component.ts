@@ -8,6 +8,7 @@ import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
 import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
+import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
 
 @Component({
   selector: 'app-library-player',
@@ -179,6 +180,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   isTrackCurrent(track: Track) {
     return this.currentTrack && this.currentTrack.url === track.url;
+  }
+
+  openDetailsDialog(track: Track) {
+    const dialogRef = this.dialog.open(DetailsComponent, {
+      data: { track: track }
+    });
+    dialogRef.afterClosed().subscribe(() => {
+
+    });
   }
 
 }

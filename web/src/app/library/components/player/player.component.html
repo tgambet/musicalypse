@@ -144,18 +144,31 @@
     </button>
   </div>
   <mat-menu #playerMenu="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item [disabled]="!currentTrack" (click)="addOrRemoveFromFavorites(currentTrack)">
+      <mat-icon>{{ (isFavorite(currentTrack) | async) ? 'favorite' : 'favorite_border' }}</mat-icon>
+      <span>{{ (isFavorite(currentTrack) | async) ? 'Remove from favorites' : 'Add to favorites' }}</span>
+    </button>
+    <button mat-menu-item [disabled]="!currentTrack" (click)="openDetailsDialog(currentTrack)">
+      <mat-icon>details</mat-icon>
+      <span>Details</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="setShuffle(!shuffle)">
+      <mat-icon>shuffle</mat-icon>
+      <span>Shuffle</span>
+    </button>
+    <button mat-menu-item (click)="setRepeat(!repeat)">
+      <mat-icon>repeat</mat-icon>
+      <span>Repeat</span>
+    </button>
+    <mat-divider></mat-divider>
     <button mat-menu-item [matMenuTriggerFor]="AddToPlaylist">
       <mat-icon>playlist_add</mat-icon>
       <span>Add all to playlist</span>
     </button>
-    <!--<button mat-menu-item [disabled]="!currentTrack" (click)="openDetailsDialog(currentTrack)">
-      <mat-icon>details</mat-icon>
-      <span>Details</span>
-    </button>-->
-    <!--<mat-divider></mat-divider>-->
     <button mat-menu-item (click)="showInLibrary()" [disabled]="this.playlist.length == 0">
       <mat-icon>queue_music</mat-icon>
-      <span>Select in Library</span>
+      <span>Select in library</span>
     </button>
     <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.playlist.length == 0">
       <mat-icon>delete</mat-icon>

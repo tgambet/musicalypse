@@ -19,8 +19,8 @@ import {SelectionModel} from '@angular/cdk/collections';
 
       <ng-container matColumnDef="title">
         <mat-cell *matCellDef="let track" class="title">
+          <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
           <div class="inner">
-            <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
             {{ track.metadata.title }}
           </div>
         </mat-cell>

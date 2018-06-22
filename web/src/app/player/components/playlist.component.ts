@@ -33,7 +33,7 @@ import {SelectionModel} from '@angular/cdk/collections';
       </ng-container>
 
       <ng-container matColumnDef="year">
-        <mat-cell *matCellDef="let track" class="year">{{ track.metadata.year }}</mat-cell>
+        <mat-cell *matCellDef="let track" class="year">{{ track.metadata.year | sgYear }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="duration">

@@ -69,7 +69,7 @@
               </span>
               <span class="artist c">{{ track.metadata.artist }}</span>
               <span class="album c">{{ track.metadata.album }}</span>
-              <span class="year c">{{ track.metadata.year }}</span>
+              <span class="year c">{{ track.metadata.year | sgYear }}</span>
               <span class="duration c">{{ track.metadata.duration | sgTime }}</span>
             </li>
           </ng-container>

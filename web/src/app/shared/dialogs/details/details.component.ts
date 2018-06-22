@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {CoreUtils} from '@app/core/core.utils';
+// import {CoreUtils} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-details',
@@ -21,9 +21,9 @@ export class DetailsComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  download() {
+/*  download() {
     window.open(CoreUtils.resolveUrl(this.data.track.url), '_blank');
-  }
+  }*/
 
 }
 

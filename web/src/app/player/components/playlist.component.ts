@@ -19,17 +19,27 @@ import {SelectionModel} from '@angular/cdk/collections';
 
       <ng-container matColumnDef="title">
         <mat-cell *matCellDef="let track" class="title">
-          <mat-icon class="equalizer">equalizer</mat-icon>
-          {{ track.metadata.title }}
+          <div class="inner">
+            <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
+            {{ track.metadata.title }}
+          </div>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="artist">
-        <mat-cell *matCellDef="let track" class="artist">{{ track.metadata.artist }}</mat-cell>
+        <mat-cell *matCellDef="let track" class="artist">
+          <div class="inner">
+            {{ track.metadata.artist }}
+          </div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="album">
-        <mat-cell *matCellDef="let track" class="album">{{ track.metadata.album }}</mat-cell>
+        <mat-cell *matCellDef="let track" class="album">
+          <div class="inner">
+            {{ track.metadata.album }}
+          </div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="year">
@@ -50,6 +60,12 @@ import {SelectionModel} from '@angular/cdk/collections';
   styles: [`
     mat-table {
       background: none !important;
+    }
+    .inner {
+      padding-right: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .select {
       max-width: 2.5rem;

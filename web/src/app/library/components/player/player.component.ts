@@ -176,4 +176,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   addAllToPlaylist(playlist: Playlist) {
     this.library.addToPlaylist(this.playlist, playlist.name);
   }
+
+  isTrackCurrent(track: Track) {
+    return this.currentTrack && this.currentTrack.url === track.url;
+  }
+
 }

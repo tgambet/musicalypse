@@ -12,7 +12,7 @@ import {
 import {MatDialog, MatMenu} from '@angular/material';
 import {Track} from '@app/model';
 import {SettingsService} from '@app/settings/services/settings.service';
-import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
+import {DetailsComponent} from '@app/shared/dialogs/details.component';
 import * as _ from 'lodash';
 import {LibraryService} from '@app/library/services/library.service';
 import {Observable} from 'rxjs';
@@ -153,11 +153,7 @@ export class TracksComponent implements OnChanges {
       // maxWidth: '500px',
       data: { track: track }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result);
-    });
+    dialogRef.afterClosed().subscribe(() => {});
   }
 
   scrollTo(letter: string) {

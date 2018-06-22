@@ -8,7 +8,7 @@ import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
 import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
-import {DetailsComponent} from '@app/shared/dialogs/details/details.component';
+import {DetailsComponent} from '@app/shared/dialogs/details.component';
 
 @Component({
   selector: 'app-library-player',

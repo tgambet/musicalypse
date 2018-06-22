@@ -4,10 +4,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 @Component({
   selector: 'app-playlists-dialog',
   template: `
-    <h3 mat-dialog-title>Choose Playlist</h3>
+    <h3 mat-dialog-title>Save playlist</h3>
     <div mat-dialog-content>
       <mat-form-field>
-        <input matInput placeholder="New playlist" [(ngModel)]="playlistName" spellcheck="false">
+        <input matInput placeholder="Name" [(ngModel)]="playlistName" spellcheck="false">
       </mat-form-field>
     </div>
     <div mat-dialog-actions>

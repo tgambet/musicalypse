@@ -162,25 +162,25 @@
       <span>Repeat</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item [matMenuTriggerFor]="AddToPlaylist">
-      <mat-icon>playlist_add</mat-icon>
-      <span>Add all to playlist</span>
-    </button>
-    <button mat-menu-item (click)="showInLibrary()" [disabled]="this.playlist.length == 0">
-      <mat-icon>queue_music</mat-icon>
-      <span>Select in library</span>
-    </button>
-    <button mat-menu-item (click)="clearPlaylist()" [disabled]="this.playlist.length == 0">
-      <mat-icon>delete</mat-icon>
-      <span>Clear playlist</span>
-    </button>
-    <button mat-menu-item (click)="savePlaylist()" [disabled]="this.playlist.length == 0">
-      <mat-icon>save</mat-icon>
-      <span>Save playlist</span>
-    </button>
     <button mat-menu-item [matMenuTriggerFor]="LoadPlaylist" [disabled]="playlists.length === 0">
       <mat-icon>playlist_play</mat-icon>
       <span>Load playlist</span>
+    </button>
+    <button mat-menu-item [matMenuTriggerFor]="AddToPlaylist" [disabled]="playlists.length === 0">
+      <mat-icon>playlist_add</mat-icon>
+      <span>Add all to playlist</span>
+    </button>
+    <button mat-menu-item (click)="showInLibrary()" [disabled]="playlist.length == 0">
+      <mat-icon>queue_music</mat-icon>
+      <span>Select in library</span>
+    </button>
+    <button mat-menu-item (click)="clearPlaylist()" [disabled]="playlist.length == 0">
+      <mat-icon>delete</mat-icon>
+      <span>Clear playlist</span>
+    </button>
+    <button mat-menu-item (click)="savePlaylist()" [disabled]="playlist.length == 0">
+      <mat-icon>save</mat-icon>
+      <span>Save playlist</span>
     </button>
   </mat-menu>
   <mat-menu #LoadPlaylist="matMenu">

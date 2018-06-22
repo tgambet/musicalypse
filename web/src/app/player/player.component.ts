@@ -1,10 +1,13 @@
 import {Component} from '@angular/core';
 import {LibraryService} from '@app/library/services/library.service';
 import {Observable} from 'rxjs';
-import {Track} from '@app/model';
+import {Playlist, Track} from '@app/model';
 import {DomSanitizer} from '@angular/platform-browser';
 import {AudioService} from '@app/core/services/audio.service';
 import {take, tap, mergeMap} from 'rxjs/operators';
+import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-player',
@@ -26,6 +29,7 @@ import {take, tap, mergeMap} from 'rxjs/operators';
                            [playing]="playing$ | async"
                            [isFavorite]="isFavorite$ | async"
                            [playlist]="playlist$ | async"
+                           [playlists]="playlists$ | async"
                            [repeat]="repeat$ | async"
                            [shuffle]="shuffle$ | async"
                            (pause)="pause()"
@@ -36,7 +40,12 @@ import {take, tap, mergeMap} from 'rxjs/operators';
                            (playPrevious)="playPrevious()"
                            (toggleFavorite)="toggleFavorite($event)"
                            (setMute)="setMute($event)"
-                           (setVolume)="setVolume($event)">
+                           (setVolume)="setVolume($event)"
+                           (showInLibrary)="showInLibrary()"
+                           (clearPlaylist)="clearPlaylist()"
+                           (savePlaylist)="savePlaylist()"
+                           (loadPlaylist)="loadPlaylist($event)"
+                           (addAllToPlaylist)="addAllToPlaylist($event)">
       </app-player-controls>
       <app-player-playlist [playlist]="playlist$ | async"
                            [currentTrack]="currentTrack$ | async"
@@ -82,6 +91,7 @@ export class PlayerComponent {
 
   currentTrack$: Observable<Track>;
   playlist$: Observable<Track[]>;
+  playlists$: Observable<Playlist[]>;
   repeat$: Observable<boolean>;
   shuffle$: Observable<boolean>;
   isFavorite$: Observable<boolean>;
@@ -96,10 +106,13 @@ export class PlayerComponent {
   constructor(
     private library: LibraryService,
     private audio: AudioService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private dialog: MatDialog,
+    private router: Router
   ) {
     this.currentTrack$ = library.getCurrentTrack();
     this.playlist$ = library.getPlaylist();
+    this.playlists$ = library.getPlaylists();
     this.repeat$ = library.getRepeat();
     this.shuffle$ = library.getShuffle();
     this.volume$ = audio.volume$;
@@ -160,6 +173,39 @@ export class PlayerComponent {
 
   play(track: Track) {
     this.library.playTrack(track);
+  }
+
+  showInLibrary() {
+    this.router.navigate(['library']).then(() => {
+      this.playlist$.pipe(take(1)).subscribe(
+        next => this.library.selectInLibrary(next)
+      );
+    });
+  }
+
+  clearPlaylist() {
+    this.library.clearPlaylist();
+  }
+
+  savePlaylist() {
+    const dialogRef = this.dialog.open(PlaylistsDialogComponent, {});
+    dialogRef.afterClosed().subscribe(playlistName => {
+      if (playlistName) {
+        this.playlist$.pipe(take(1)).subscribe(
+          next => this.library.savePlaylist(playlistName, next)
+        );
+      }
+    });
+  }
+
+  loadPlaylist(playlist: Playlist) {
+    this.library.loadPlaylist(playlist);
+  }
+
+  addAllToPlaylist(playlist: Playlist) {
+    this.playlist$.pipe(take(1)).subscribe(
+      next => this.library.addToPlaylist(next, playlist.name)
+    );
   }
 
 }

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Track} from '@app/model';
+import {Playlist, Track} from '@app/model';
 
 @Component({
   selector: 'app-player-controls',
@@ -42,9 +42,52 @@ import {Track} from '@app/model';
               (click)="toggleFavorite.emit(currentTrack)">
         <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
-      <!--<button mat-button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more">-->
-        <!--<mat-icon>more_horiz</mat-icon>-->
-      <!--</button>-->
+      <button mat-button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #playerMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="LoadPlaylist" [disabled]="playlists.length === 0">
+          <mat-icon>playlist_play</mat-icon>
+          <span>Load playlist</span>
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="AddToPlaylist" [disabled]="playlists.length == 0">
+          <mat-icon>playlist_add</mat-icon>
+          <span>Add all to playlist</span>
+        </button>
+        <button mat-menu-item (click)="showInLibrary.emit()" [disabled]="playlist.length == 0">
+          <mat-icon>queue_music</mat-icon>
+          <span>Select in library</span>
+        </button>
+        <button mat-menu-item (click)="clearPlaylist.emit()" [disabled]="playlist.length == 0">
+          <mat-icon>delete</mat-icon>
+          <span>Clear playlist</span>
+        </button>
+        <button mat-menu-item (click)="savePlaylist.emit()" [disabled]="playlist.length == 0">
+          <mat-icon>save</mat-icon>
+          <span>Save playlist</span>
+        </button>
+      </mat-menu>
+      <mat-menu #LoadPlaylist="matMenu">
+        <ng-container *ngFor="let pl of playlists">
+          <button mat-menu-item (click)="loadPlaylist.emit(pl)">
+            <mat-icon>album</mat-icon>
+            {{pl.name}}
+          </button>
+        </ng-container>
+      </mat-menu>
+      <mat-menu #AddToPlaylist="matMenu">
+        <!--<button mat-menu-item disabled>-->
+        <!--<mat-icon>add</mat-icon>-->
+        <!--New playlist-->
+        <!--</button>-->
+        <!--<mat-divider></mat-divider>-->
+        <ng-container *ngFor="let pl of playlists">
+          <button mat-menu-item (click)="addAllToPlaylist.emit(pl)">
+            <mat-icon>album</mat-icon>
+            {{pl.name}}
+          </button>
+        </ng-container>
+      </mat-menu>
       <div class="filler"></div>
       <mat-slider
         [disabled]="muted"
@@ -52,7 +95,8 @@ import {Track} from '@app/model';
         (input)="setVolume.emit($event.value)"
         [max]="1"
         [step]="0.01"
-        color="primary"></mat-slider>
+        color="primary"
+        class="volume-slider"></mat-slider>
       <button mat-button mat-icon-button
               class="mute"
               (click)="setMute.emit(!muted)">
@@ -65,7 +109,7 @@ import {Track} from '@app/model';
   `,
   styles: [`
     .controls {
-      padding: 0.5rem 1rem 1rem 1rem;
+      padding: 0.5rem 1rem 0.5rem 1rem;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -75,6 +119,14 @@ import {Track} from '@app/model';
     }
     .filler {
       flex-grow: 1;
+    }
+    .volume-slider, .mute {
+      display: none;
+    }
+    @media screen and (min-width: 599px) {
+      .volume-slider, .mute {
+        display: flex;
+      }
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -89,6 +141,7 @@ export class PlayerControlsComponent {
   @Input() isFavorite: boolean;
   @Input() currentTrack: Track;
   @Input() playlist: Track[];
+  @Input() playlists: Playlist[] = [];
 
   @Output() setShuffle = new EventEmitter<boolean>();
   @Output() setRepeat = new EventEmitter<boolean>();
@@ -99,5 +152,10 @@ export class PlayerControlsComponent {
   @Output() toggleFavorite = new EventEmitter<Track>();
   @Output() setVolume = new EventEmitter<number>();
   @Output() setMute = new EventEmitter<boolean>();
+  @Output() showInLibrary = new EventEmitter<void>();
+  @Output() clearPlaylist = new EventEmitter<void>();
+  @Output() savePlaylist = new EventEmitter<void>();
+  @Output() loadPlaylist = new EventEmitter<Playlist>();
+  @Output() addAllToPlaylist = new EventEmitter<Playlist>();
 
 }

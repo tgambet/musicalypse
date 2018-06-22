@@ -5,6 +5,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 @Component({
   selector: 'app-player-playlist',
   template: `
+    <em *ngIf="playlist.length === 0" class="empty">Playlist is empty</em>
     <mat-table [dataSource]="playlist" #table>
 
       <ng-container matColumnDef="select">
@@ -58,6 +59,9 @@ import {SelectionModel} from '@angular/cdk/collections';
     </mat-table>
   `,
   styles: [`
+    .empty {
+      margin: 1rem;
+    }
     mat-table {
       background: none !important;
     }
@@ -83,6 +87,14 @@ import {SelectionModel} from '@angular/cdk/collections';
     }
     .current .equalizer {
       display: inline-block;
+    }
+    .album, .year {
+      display: none;
+    }
+    @media screen and (min-width: 599px) {
+      .album, .year {
+        display: flex;
+      }
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

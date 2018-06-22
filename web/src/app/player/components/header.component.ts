@@ -29,8 +29,8 @@ import {DomSanitizer} from '@angular/platform-browser';
       align-items: center;
     }
     .cover {
-      height: 150px;
-      min-width: 150px;
+      height: 100px;
+      min-width: 100px;
       margin-right: 1rem;
       background-size: cover;
       box-sizing: border-box;
@@ -49,15 +49,29 @@ import {DomSanitizer} from '@angular/platform-browser';
       flex-direction: column;
     }
     .title {
-      font-size: 35px;
-      line-height: 35px;
+      font-size: 25px;
+      line-height: 25px;
       font-weight: 500;
       margin-bottom: 1rem;
     }
     .artist-album {
-      font-size: 20px;
-      line-height: 20px;
+      font-size: 15px;
+      line-height: 15px;
       font-weight: 300;
+    }
+    @media screen and (min-width: 599px) {
+      .cover {
+        height: 150px;
+        min-width: 150px;
+      }
+      .title {
+        font-size: 35px;
+        line-height: 35px;
+      }
+      .artist-album {
+        font-size: 20px;
+        line-height: 20px;
+      }
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

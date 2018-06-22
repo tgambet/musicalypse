@@ -82,7 +82,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     tracksFile.createNewFile()
     librariesFile.createNewFile()
 
-    val init: Future[Done] = for {
+    for {
       _ <- loadTracksFromFile()
       _ = self ! CheckTracks
       libs <- loadLibrariesFromFile()
@@ -93,11 +93,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
       libraries.foreach(lib => watchActor ! WatchDir(lib))
       self ! SetLibraries(libraries.map(_.toString)) // TODO use Path instead of String
-      Done
     }
-  }
-
-  override def postStop(): Unit = {
   }
 
   def receive: Receive = {

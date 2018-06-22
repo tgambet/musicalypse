@@ -15,6 +15,7 @@ import * as _ from 'lodash';
 
 import {Artist} from '@app/model';
 
+import {DisplayType} from '../library.component';
 import {LibraryService} from '../services/library.service';
 import {SettingsService} from '@app/settings/services/settings.service';
 
@@ -59,7 +60,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
                          [avatarStyle]="getAvatarStyle(artist)"
                          [warn]="artist.warn && settings.warnOnMissingTags"
                          [primaryHTML]="artist.name | sgSearch:search"
-                         [secondaryHTML]="artist.songs + ' songs'"
+                         [secondaryHTML]="getSecondaryHTML(artist)"
                          (click)="select(artist); next.emit()"
                          (arrowClicked)="add(artist); next.emit()"
                          (checked)="$event ? add(artist) : deselect(artist)">
@@ -119,6 +120,7 @@ export class ArtistsComponent implements OnChanges {
 
   @Input() private artists: Artist[];
   @Input() selectedArtists: Artist[];
+  @Input() displayType: DisplayType;
 
   filteredArtists: Artist[];
   showChipList = false;
@@ -157,6 +159,20 @@ export class ArtistsComponent implements OnChanges {
 
   getAvatarStyle(artist: Artist) {
     return artist.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${artist.avatarUrl}")`) : '';
+  }
+
+  getSecondaryHTML(artist: Artist) {
+    switch (this.displayType) {
+      case DisplayType.Default: {
+        return artist.songs + ' songs';
+      }
+      case DisplayType.Recent: {
+        return '<em>Recently played</em>';
+      }
+      case DisplayType.Favorites: {
+        return '<em>Has favorites</em>';
+      }
+    }
   }
 
   scrollTo(letter: string) {

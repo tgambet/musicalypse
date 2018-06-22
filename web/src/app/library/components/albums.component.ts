@@ -17,6 +17,7 @@ import {Album} from '@app/model';
 
 import {SettingsService} from '@app/settings/services/settings.service';
 import {LibraryService} from '@app/library/services/library.service';
+import {DisplayType} from '@app/library/library.component';
 
 @Component({
   selector: 'app-albums',
@@ -60,7 +61,7 @@ import {LibraryService} from '@app/library/services/library.service';
                          [avatarStyle]="getAvatarStyle(album)"
                          [warn]="album.warn && settings.warnOnMissingTags"
                          [primaryHTML]="album.title | sgSearch:search"
-                         [secondaryHTML]="album.songs + ' songs • ' + album.artist"
+                         [secondaryHTML]="getSecondaryHTML(album)"
                          (click)="selectOnly(album); next.emit()"
                          (arrowClicked)="select(album); next.emit()"
                          (checked)="$event ? select(album) : deselect(album)">
@@ -119,6 +120,7 @@ export class AlbumsComponent implements OnChanges {
 
   @Input() private albums: Album[];
   @Input() selectedAlbums: Album[];
+  @Input() displayType: DisplayType;
 
   filteredAlbums: Album[];
 
@@ -161,6 +163,20 @@ export class AlbumsComponent implements OnChanges {
 
   getAvatarStyle(album: Album) {
     return album.avatarUrl ? this.sanitizer.bypassSecurityTrustStyle(`background-image: url("${album.avatarUrl}")`) : '';
+  }
+
+  getSecondaryHTML(album: Album) {
+    switch (this.displayType) {
+      case DisplayType.Default: {
+        return album.songs + ' songs • ' + album.artist;
+      }
+      case DisplayType.Recent: {
+        return '<em>Recently played</em>';
+      }
+      case DisplayType.Favorites: {
+        return '<em>Has favorites</em>';
+      }
+    }
   }
 
   scrollTo(letter: string) {

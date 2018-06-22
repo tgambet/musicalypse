@@ -21,6 +21,7 @@ import {take} from 'rxjs/operators';
           <app-artists #artistsComponent
                        [artists]="artists$ | async"
                        [selectedArtists]="selectedArtists$ | async"
+                       [displayType]="displayType"
                        (next)="translateContent(1)">
           </app-artists>
         </div>
@@ -28,6 +29,7 @@ import {take} from 'rxjs/operators';
           <app-albums #albumsComponent
                       [albums]="albums$ | async"
                       [selectedAlbums]="selectedAlbums$ | async"
+                      [displayType]="displayType"
                       (next)="translateContent(2)"
                       (previous)="translateContent(0)">
           </app-albums>
@@ -86,6 +88,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   // urlData: Object = {};
 
   contentTranslation = 0;
+  displayType: DisplayType;
 
   noAnimation = false;
   private animationTimeout;
@@ -155,14 +158,17 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
       take(1),
     ).subscribe(data => {
       if (data.favorites) {
+        this.displayType = DisplayType.Favorites;
         this.artists$ = this.library.getFavoriteArtists();
         this.albums$  = this.library.getFavoriteAlbums();
         this.tracks$  = this.library.getFavorites();
       } else if (data.recent) {
+        this.displayType = DisplayType.Recent;
         this.artists$ = this.library.getRecentArtists();
         this.albums$  = this.library.getRecentAlbums();
         this.tracks$  = this.library.getRecentTracks();
       } else {
+        this.displayType = DisplayType.Default;
         this.artists$ = this.library.getAllArtists();
         this.albums$  = this.library.getDisplayedAlbums();
         this.tracks$  = this.library.getDisplayedTracks();
@@ -253,4 +259,10 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.updateUrl();
   }
 
+}
+
+export enum DisplayType {
+  Default,
+  Favorites,
+  Recent
 }

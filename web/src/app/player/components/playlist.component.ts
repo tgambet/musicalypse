@@ -72,6 +72,12 @@ import {SelectionModel} from '@angular/cdk/collections';
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .title {
+      flex-grow: 2;
+    }
+    .artist, .album {
+      flex-grow: 1;
+    }
     .select {
       max-width: 2.5rem;
     }

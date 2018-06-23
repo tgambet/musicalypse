@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {LibraryComponent} from './library/library.component';
-import {SettingsComponent} from './settings/components/settings.component';
+import {SettingsComponent} from './settings/settings.component';
 import {AboutComponent} from './core/components/about.component';
 import {PlayerComponent} from '@app/player/player.component';
 import {MyMusicComponent} from '@app/my-music/my-music.component';

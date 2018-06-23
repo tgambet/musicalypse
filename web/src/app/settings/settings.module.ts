@@ -5,7 +5,7 @@ import {EffectsModule} from '@ngrx/effects';
 import {SharedModule} from '@app/shared/shared.module';
 
 import {LibraryFoldersComponent} from './components/library-folders.component';
-import {SettingsComponent} from './components/settings.component';
+import {SettingsComponent} from './settings.component';
 import {UploadsComponent} from './components/uploads.component';
 import {ThemesComponent} from './components/themes.component';
 

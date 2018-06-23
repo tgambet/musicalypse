@@ -13,6 +13,7 @@ import akka.pattern.ask
 import net.creasource.audio.Track
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
+import net.creasource.web.SettingsActor.GetHost
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 import spray.json.{JsString, JsValue}
@@ -20,14 +21,9 @@ import spray.json.{JsString, JsValue}
 import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
-/**
-  * This is where you define your XHR routes.
-  *
-  * @param application an Application
-  */
 class APIRoutes(application: Application) {
 
-  implicit val settings: RoutingSettings = RoutingSettings.apply(application.config)
+  implicit val routingSettings: RoutingSettings = RoutingSettings.apply(application.config)
 
   val askTimeout: akka.util.Timeout = 10.seconds
 
@@ -84,6 +80,7 @@ class APIRoutes(application: Application) {
     new File(s"$uploadFolder/${fileInfo.fileName}")
   }
 
+  // TODO accept ogg and flac
   def filesUpload: Route =
     path("upload") {
       withSizeLimit(20000000) {
@@ -98,6 +95,15 @@ class APIRoutes(application: Application) {
       }
     }
 
+  def settings: Route =
+    path("host") {
+      get {
+        onSuccess((application.settingsActor ? GetHost)(askTimeout).mapTo[String]) {
+          host => complete(StatusCodes.OK, host.toJson)
+        }
+      }
+    }
+
 
   def routes: Route = {
     pathPrefix("api") {
@@ -105,6 +111,7 @@ class APIRoutes(application: Application) {
         Route.seal(concat(
           librariesRoutes,
           filesUpload,
+          settings,
           options {
             val corsHeaders: Seq[HttpHeader] = Seq(
               RawHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"),

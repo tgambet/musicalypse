@@ -8,7 +8,7 @@ import {environment} from '@env/environment';
       <h2>About</h2>
       <p class="bolder">Version 0.4.0</p>
       <p>
-        <img src="assets/logo_grey.svg" height="100" style="float: left; margin: 0 1rem 1rem 0;">
+        <img src="assets/logo_grey.svg" height="120" style="float: left; margin: 0 1rem 1rem 0;">
         Musicalypse is an open source software developed and maintained by Thomas GAMBET, available on all desktop platforms
         as an online or native version. You can support its development by
         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
@@ -23,6 +23,9 @@ import {environment} from '@env/environment';
       <p>
         Find out more on
         <a href="https://musicalypse.creasource.net" target="_blank" (click)="openExternally($event)">https://musicalypse.creasource.net</a>
+      </p>
+      <p>
+        Contact: creasource.net@gmail.com
       </p>
       <h3 style="clear: both;">Contributors</h3>
       <ul>
@@ -57,6 +60,7 @@ import {environment} from '@env/environment';
     .about {
       padding: 0.5rem 1rem;
       font-weight: 300;
+      max-width: 900px;
     }
     .bolder {
       font-weight: 500;

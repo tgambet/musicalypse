@@ -90,7 +90,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      max-width: 500px;
+      max-width: 900px;
       width: 100%;
       padding: 0.75rem 1rem;
     }

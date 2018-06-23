@@ -102,6 +102,7 @@ $pink-theme:  (
 //@import 'app/my-music/my-music.theme';
 @import 'app/player/player.theme';
 @import 'app/playlists/playlists.theme';
+@import 'app/settings/settings.theme';
 
 @mixin custom-components-theme($theme) {
   @include core-theme($theme);
@@ -109,6 +110,7 @@ $pink-theme:  (
   //@include my-music-component-theme($theme);
   @include player-component-theme($theme);
   @include playlists-component-theme($theme);
+  @include settings-theme($theme);
 }
 
 .light-theme {

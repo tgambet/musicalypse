@@ -94,9 +94,6 @@ import {CoreUtils, Theme} from '../core/core.utils';
       width: 100%;
       padding: 0.75rem 1rem;
     }
-    a, a:visited {
-      color: white;
-    }
     mat-divider {
       margin: 1rem 0;
     }

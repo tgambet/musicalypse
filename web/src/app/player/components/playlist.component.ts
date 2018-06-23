@@ -60,7 +60,8 @@ import {SelectionModel} from '@angular/cdk/collections';
   `,
   styles: [`
     .empty {
-      margin: 1rem;
+      margin: 0.5rem 1rem;
+      display: inline-block;
     }
     mat-table {
       background: none !important;

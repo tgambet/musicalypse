@@ -248,6 +248,10 @@ export class LibraryService {
   }
 
   getFavorites(): Observable<Track[]> {
+    return this.store.select(fromLibrary.getFavorites);
+  }
+
+  getDisplayedFavorites(): Observable<Track[]> {
     return this.store.select(fromLibrary.getDisplayedFavorites);
   }
 
@@ -260,6 +264,10 @@ export class LibraryService {
   }
 
   getRecentTracks(): Observable<Track[]> {
+    return this.store.select(fromLibrary.getRecentTracks);
+  }
+
+  getDisplayedRecentTracks(): Observable<Track[]> {
     return this.store.select(fromLibrary.getDisplayedRecentTracks);
   }
 

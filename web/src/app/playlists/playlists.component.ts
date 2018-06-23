@@ -7,6 +7,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import * as _ from 'lodash';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-playlists',
@@ -22,14 +23,31 @@ import {MatDialog} from '@angular/material';
           New playlist
         </button>
       </header>-->
-      <div class="empty" *ngIf="(playlists | async).length === 0">
-        <span>
-          You don't have any playlist yet. Go to the
-          library, play some music and then click on "Save Playlist"
-          from the player menu to create a new playlist.
-        </span>
-      </div>
       <ul class="list center">
+        <li class="item favorites" *ngIf="favoritePlaylist | async; let pl;">
+          <div class="covers noCover" (click)="itemClicked(pl)">
+            <mat-icon class="avatar-icon">favorite</mat-icon>
+            <mat-icon class="play-icon">play_circle_outline</mat-icon>
+          </div>
+          <span class="primary">Favorites</span>
+          <span class="secondary">{{ pl.tracks.length }} songs</span>
+        </li>
+        <li class="item favorites" *ngIf="recentPlaylist | async; let pl;">
+          <div class="covers noCover" (click)="itemClicked(pl)">
+            <mat-icon class="avatar-icon">schedule</mat-icon>
+            <mat-icon class="play-icon">play_circle_outline</mat-icon>
+          </div>
+          <span class="primary">Recently Played</span>
+          <span class="secondary">{{ pl.tracks.length }} songs</span>
+        </li>
+        <li class="item favorites" *ngIf="allPlaylist | async; let pl;">
+          <div class="covers noCover" (click)="itemClicked(pl)">
+            <mat-icon class="avatar-icon">music_note</mat-icon>
+            <mat-icon class="play-icon">play_circle_outline</mat-icon>
+          </div>
+          <span class="primary">All songs</span>
+          <span class="secondary">{{ pl.tracks.length }} songs</span>
+        </li>
         <li class="item" *ngFor="let item of playlists | async">
           <div class="covers"
                [ngClass]="{
@@ -63,6 +81,13 @@ import {MatDialog} from '@angular/material';
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
+      <div class="empty" *ngIf="(playlists | async).length === 0">
+        <span>
+          You don't have any custom playlist yet. Go to the
+          library, play some music and then click on "Save playlist"
+          from the player menu to create a new playlist.
+        </span>
+      </div>
     </div>
   `,
   styles: [`
@@ -80,10 +105,12 @@ import {MatDialog} from '@angular/material';
       align-self: flex-end;
     }*/
     .playlists {
-      height: 95%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .empty {
-      height: 100%;
+      flex-grow: 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -212,14 +239,25 @@ import {MatDialog} from '@angular/material';
 export class PlaylistsComponent {
 
   playlists: Observable<Playlist[]>;
+  favoritePlaylist: Observable<Playlist>;
+  recentPlaylist: Observable<Playlist>;
+  allPlaylist: Observable<Playlist>;
 
   constructor(
     private library: LibraryService,
     private sanitizer: DomSanitizer,
-    private router: Router,
-    private dialog: MatDialog
+    private router: Router
   ) {
     this.playlists = library.getPlaylists();
+    this.favoritePlaylist = this.library.getFavorites().pipe(
+      map(favorites => ({ name: '_favorites', tracks: favorites}))
+    );
+    this.recentPlaylist = this.library.getRecentTracks().pipe(
+      map(favorites => ({ name: '_recent', tracks: favorites}))
+    );
+    this.allPlaylist = this.library.getAllTracks().pipe(
+      map(favorites => ({ name: '_all', tracks: favorites}))
+    );
   }
 
   getCovers(playlist: Playlist) {
@@ -245,14 +283,5 @@ export class PlaylistsComponent {
   deletePlaylist(item: Playlist) {
     this.library.deletePlaylist(item.name);
   }
-
-/*  newPlaylistDialog() {
-    const dialogRef = this.dialog.open(NewPlaylistDialogComponent, {});
-    dialogRef.afterClosed().subscribe(playlistName => {
-      if (playlistName) {
-        this.library.savePlaylist(playlistName, []);
-      }
-    });
-  }*/
 
 }

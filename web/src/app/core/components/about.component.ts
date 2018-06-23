@@ -14,7 +14,7 @@ import {environment} from '@env/environment';
         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
            target="_blank"
            (click)="openExternally($event)">making a donation</a>,
-        buying the windows version on the <u>Microsoft store</u>, or
+        buying the Windows version on the <u>Microsoft store</u>, or
         joining the development on
         <a href="https://github.com/tgambet/musicalypse"
            target="_blank"
@@ -59,7 +59,7 @@ import {environment} from '@env/environment';
   styles: [`
     .about {
       padding: 0.5rem 1rem;
-      font-weight: 300;
+      font-weight: 400;
       max-width: 900px;
     }
     .bolder {

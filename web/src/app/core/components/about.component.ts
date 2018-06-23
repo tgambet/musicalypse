@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {environment} from '@env/environment';
 
 @Component({
@@ -68,16 +68,12 @@ import {environment} from '@env/environment';
     ul {
       padding-left: 1rem;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
 
   isElectron = environment.electron;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
 
   openExternally(event: Event) {
     if (this.isElectron) {

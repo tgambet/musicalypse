@@ -1,4 +1,4 @@
-import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {FolderComponent} from '../shared/dialogs/folder/folder.component';
@@ -102,7 +102,8 @@ import {CoreUtils, Theme} from '../core/core.utils';
     }
     @media screen and (max-width: 598px){
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 

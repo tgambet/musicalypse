@@ -18,7 +18,7 @@ class WatchService(notifyActor: ActorRef, logger: LoggingAdapter) extends Runnab
   private val watchService = FileSystems.getDefault.newWatchService()
 
   def watch(root: Path) {
-    logger.info("Watching folder: " + root)
+    logger.debug("Watching folder: " + root)
     register(root)
     Files.walk(root, 1).forEach(path =>
       if (path.toFile.isDirectory && path != root) {

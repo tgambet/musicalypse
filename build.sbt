@@ -16,7 +16,7 @@ lazy val akkaVersion    = "2.5.13"
 lazy val root = (project in file(".")).
   settings(
     name            := "Musicalypse",
-    version         := "0.4.0",
+    version         := "0.4.1",
     licenses        := Seq("MIT" -> new URL("https://choosealicense.com/licenses/mit/")),
     organization    := "net.creasource",
     scalaVersion    := "2.12.6",

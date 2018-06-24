@@ -21,6 +21,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
   template: `
     <div class="wrapper">
       <div class="settings">
+        <h2>Settings</h2>
         <h3 class="secondary-text">Library</h3>
         <p>
           Specify which folders contain your music and make up your library.<br>
@@ -92,7 +93,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
       flex-wrap: wrap;
       max-width: 900px;
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.5rem 1rem;
     }
     mat-divider {
       margin: 1rem 0;

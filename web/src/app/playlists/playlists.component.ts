@@ -6,23 +6,13 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 import * as _ from 'lodash';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material';
 import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-playlists',
   template: `
     <div class="playlists">
-      <!--<header>
-        <h2>Playlists</h2>
-        <span class="filler"></span>
-        <button mat-button
-                color="primary"
-                (click)="newPlaylistDialog()">
-          <mat-icon>add</mat-icon>
-          New playlist
-        </button>
-      </header>-->
+      <h2>Playlists</h2>
       <ul class="list center">
         <li class="item favorites" *ngIf="favoritePlaylist | async; let pl;">
           <div class="covers noCover" (click)="itemClicked(pl)">
@@ -91,19 +81,9 @@ import {map} from 'rxjs/operators';
     </div>
   `,
   styles: [`
-    /*header {
-      display: flex;
-      padding: 0.5rem 0.5rem 0.5rem 1rem;
-    }
     h2 {
-      margin: 0;
+      margin: 0.5rem 1rem 0;
     }
-    .filler {
-      flex-grow: 1;
-    }
-    header button {
-      align-self: flex-end;
-    }*/
     .playlists {
       height: 100%;
       display: flex;
@@ -148,8 +128,6 @@ import {map} from 'rxjs/operators';
       display: flex;
       cursor: pointer;
       flex-wrap: wrap;
-      /*align-content: center;*/
-      /*align-items: center;*/
     }
     .covers .play-icon, .covers .avatar-icon {
       width: 60px;

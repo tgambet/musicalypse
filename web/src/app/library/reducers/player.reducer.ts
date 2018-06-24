@@ -79,8 +79,8 @@ export function reducer(
         };
       }
       if (!currentTrack ||
-          !playlist.includes(currentTrack) ||
-          (playlist.indexOf(currentTrack) === playlist.size - 1) && state.repeat) {
+          playlist.findIndex(t => _.isEqual(t, currentTrack)) === -1 ||
+          (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && state.repeat) {
         return {
           ...state,
           currentTrack: playlist.get(0)
@@ -88,7 +88,7 @@ export function reducer(
       }
       return {
         ...state,
-        currentTrack: playlist.get(playlist.indexOf(currentTrack) + 1)
+        currentTrack: playlist.get(playlist.findIndex(t => _.isEqual(t, currentTrack)) + 1)
       };
     }
 

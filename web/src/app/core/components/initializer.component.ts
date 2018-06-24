@@ -12,6 +12,9 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
     </div>
   `,
   styles: [`
+    :host-context(.electron) .app-loader {
+      top: 34px;
+    }
     .app-loader {
       position: absolute;
       left: 0;

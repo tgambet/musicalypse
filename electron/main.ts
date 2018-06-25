@@ -4,6 +4,7 @@ import * as url from 'url';
 import {ChildProcess} from 'child_process';
 
 let win, serve;
+const spawn = require('child_process').spawn;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
@@ -60,7 +61,19 @@ function createWindow() {
 
 }
 
+function checkJava(): boolean {
+  try {
+    require('child_process').execSync('java.exe -version');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 try {
+
+  const ipc = require('electron').ipcMain;
+  const dialog = require('electron').dialog;
 
   const shouldQuit = app.makeSingleInstance(() => {
     if (win) {
@@ -73,6 +86,16 @@ try {
 
   let serverProcess: ChildProcess;
 
+  if (!checkJava()) {
+    dialog.showErrorBox(
+      'Java is not installed or can\'t be found',
+      'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
+      'If you think this message is an error, please check your PATH environment variable to see if "java.exe" is accessible.'
+    );
+    console.error('Java couldn\'t be found');
+    app.exit(1);
+  }
+
   if (shouldQuit) {
     app.quit();
   } else {
@@ -80,8 +103,7 @@ try {
       const musicFolder = app.getPath('music');
       const cacheFolder = app.getPath('userData') + '/data';
 
-      serverProcess = require('child_process')
-        .spawn(
+      serverProcess = spawn(
           'bin\\musicalypse.bat',
           [],
           {
@@ -103,9 +125,6 @@ try {
       });
     }
   }
-
-  const ipc = require('electron').ipcMain;
-  const dialog = require('electron').dialog;
 
   ipc.on('open-file-dialog', function (event) {
     dialog.showOpenDialog({

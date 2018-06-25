@@ -17,7 +17,7 @@ trait SPAWebServer extends WebServer { self: WebServer =>
         val serveIndexIfNotFound: RejectionHandler =
           RejectionHandler.newBuilder()
             .handleNotFound {
-              if (accept.contains("text/html") || accept.contains("*/*")) {
+              if (accept.contains("text/html")) { // || accept.contains("*/*")) {
                 respondWithHeader(RawHeader("Cache-Control", "no-cache")) {
                   getFromResource("web/index.html")
                 }

@@ -31,7 +31,17 @@ object Main extends App with SPAWebServer with SocketWebServer {
   override val keepAliveTimeout: FiniteDuration = keepAliveInSec.seconds
   override val routes: Route = libraryRoutes.routes ~ apiRoutes.routes ~ super.routes
 
-  start(host, port) foreach { _ =>
+  val startFuture = start(host, port)
+
+  startFuture.failed.foreach(t => {
+    stop().onComplete(_ => {
+      system.log.error(t, "An error occurred while starting the server!")
+      app.shutdown()
+      System.exit(1)
+    })
+  })
+
+  startFuture foreach { _ =>
     if (stopOnReturn) {
       system.log.info(s"Press RETURN to stop...")
       StdIn.readLine()

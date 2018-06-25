@@ -63,6 +63,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
   def handleMessages: PartialFunction[JsValue, Unit] = {
 
     case JsonMessage("HttpRequest", id, entity) =>
+      // TODO Handle exception
       toHttpResponse(entity.convertTo[HttpRequest]) foreach { response =>
         client ! JsonMessage("HttpResponse", id, response.toJson).toJson
       }

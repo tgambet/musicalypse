@@ -1,7 +1,12 @@
 <configuration>
 
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>${application.home:-.}/logs/application.log</file>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/application.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>./logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>10</maxHistory>
+      <totalSizeCap>10MB</totalSizeCap>
+    </rollingPolicy>
     <encoder>
       <pattern>%date{ISO8601} %-5level [%logger] [%X{sourceThread}] [%X{akkaSource}] - %msg%n</pattern>
     </encoder>
@@ -9,7 +14,7 @@
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%X{akkaTimestamp} %-5level - %msg%n</pattern>
+      <pattern>%X{akkaTimestamp} %-5level [%logger] - %msg%n</pattern>
     </encoder>
   </appender>
 

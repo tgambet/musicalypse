@@ -86,22 +86,22 @@ import {CoreUtils, Theme} from '../core/core.utils';
         </p>
         <ul class="cache">
           <li>
-            <mat-checkbox [(ngModel)]="cache_favorites">Favorites</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_favorites">Favorites</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_recent">Recent tracks</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_recent">Recent tracks</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_playlist">Current playlist</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_playlist">Current playlist</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_playlists">Saved playlists</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_playlists">Saved playlists</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_theme">Theme</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_theme">Theme</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_covers">Covers <em>(requires library scan afterwards)</em></mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache_covers">Covers <em>(requires library scan afterwards)</em></mat-checkbox>
           </li>
         </ul>
         <button mat-button
@@ -311,7 +311,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .subscribe(
         reload => {
           if (reload) {
-            document.location.reload();
+            if (environment.electron) {
+              const currentWindow = (<any> window).require('electron').remote.getCurrentWindow();
+              currentWindow.loadURL(document.location.toString() + '/../index.html');
+            } else {
+              document.location.reload();
+            }
           }
         }
       );

@@ -51,7 +51,7 @@ export class SettingsEffects {
       ofType<RemoveLibraryFolder>(SettingsActionTypes.RemoveLibraryFolder),
       map(action => action.payload),
       mergeMap(folder =>
-        this.httpSocketClient._delete('/api/libraries/' + encodeURIComponent(folder)).pipe(
+        this.httpSocketClient.delete('/api/libraries/' + encodeURIComponent(folder)).pipe(
           map(() => new RemoveLibraryFolderSuccess(folder)),
           catchError((error: HttpErrorResponse) => of(new RemoveLibraryFolderFailure(error.error)))
         )

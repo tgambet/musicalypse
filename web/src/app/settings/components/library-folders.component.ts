@@ -17,7 +17,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       </button>
       <button mat-menu-item [disabled]="folders.length == 0" tabindex="0" (click)="scanRequest.emit()">
         <mat-icon mat-list-icon>sync</mat-icon>
-        <span matLine>Scan Library</span>
+        <span matLine>Scan library</span>
       </button>
     </mat-list>
     <mat-menu></mat-menu>

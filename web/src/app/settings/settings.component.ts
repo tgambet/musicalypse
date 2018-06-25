@@ -42,7 +42,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
                      (clearUploads)="settings.clearUploads()">
         </app-uploads>
         <mat-divider></mat-divider>-->
-        <h3 class="secondary-text">Themes</h3>
+        <h3 class="secondary-text">Theme</h3>
         <app-themes [themes]="themes"
                     [currentTheme]="currentTheme$ | async"
                     (changeTheme)="changeTheme($event)">
@@ -78,6 +78,43 @@ import {CoreUtils, Theme} from '../core/core.utils';
             <a [href]="localhost$ | async" (click)="openExternally($event)" target="_blank">{{ localhost$ | async }}</a>.
           </p>
         </div>
+        <h3 class="secondary-text">Cache</h3>
+        <p>
+          Musicalypse stores some data in a local cache.<br>
+          If you experience any issue or want a clean slate you can clear your cache here.
+        </p>
+        <ul class="cache">
+          <li>
+            <mat-checkbox [(ngModel)]="cache_favorites">Favorites</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox [(ngModel)]="cache_recent">Recent tracks</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox [(ngModel)]="cache_playlist">Current playlist</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox [(ngModel)]="cache_playlists">Saved playlists</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox [(ngModel)]="cache_theme">Theme</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox [(ngModel)]="cache_covers">Covers <em>(requires library scan)</em></mat-checkbox>
+          </li>
+        </ul>
+        <button mat-button
+                class="clear"
+                (click)="clearCache()"
+                [disabled]="!(
+                  cache_theme ||
+                  cache_playlists ||
+                  cache_playlist ||
+                  cache_recent ||
+                  cache_favorites ||
+                  cache_covers)">
+          Clear selected
+        </button>
       </div>
     </div>
   `,
@@ -98,6 +135,19 @@ import {CoreUtils, Theme} from '../core/core.utils';
     mat-divider {
       margin: 1rem 0;
     }
+    .cache {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .cache li {
+      list-style: none;
+      padding-left: 1rem;
+      margin-bottom: 1rem;
+    }
+    button.clear {
+      max-width: 8rem;
+    }
     @media screen and (max-width: 598px){
     }
   `],
@@ -108,6 +158,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   isElectron = environment.electron;
 
   themes = CoreUtils.allThemes;
+
+  cache_favorites = false;
+  cache_recent = false;
+  cache_playlist = false;
+  cache_playlists = false;
+  cache_theme = false;
+  cache_covers = false;
 
   error$: Observable<string>;
   libraryFolders$: Observable<string[]>;
@@ -214,6 +271,41 @@ export class SettingsComponent implements OnInit, OnDestroy {
       const shell = (<any>window).require('electron').shell;
       shell.openExternal(event.srcElement.getAttribute('href'));
       event.preventDefault();
+    }
+  }
+
+  clearCache() {
+    console.log('clearing');
+    if (this.cache_favorites) {
+      console.log('clearing favorites');
+      CoreUtils.save('favorites', JSON.stringify([]));
+      this.cache_favorites = false;
+    }
+    if (this.cache_recent) {
+      console.log('clearing recent tracks');
+      CoreUtils.save('recent', JSON.stringify([]));
+      this.cache_recent = false;
+    }
+    if (this.cache_playlist) {
+      console.log('clearing current playlist');
+      CoreUtils.save('playlist', JSON.stringify([]));
+      this.cache_playlist = false;
+    }
+    if (this.cache_playlists) {
+      console.log('clearing playlists');
+      CoreUtils.save('playlists', JSON.stringify([]));
+      this.cache_playlists = false;
+    }
+    if (this.cache_theme) {
+      console.log('clearing saved theme');
+      CoreUtils.remove('theme');
+      this.cache_theme = false;
+    }
+    if (this.cache_covers) {
+      // TODO Open a confirmation dialog inviting to rescan library afterwards
+      console.log('clearing covers');
+      this.httpSocketClient.delete('/api/covers').subscribe();
+      this.cache_covers = false;
     }
   }
 

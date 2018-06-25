@@ -144,7 +144,7 @@ export class HttpSocketClientService implements OnDestroy {
     );
   }
 
-  _delete(path: string): Observable<Object> {
+  delete(path: string): Observable<Object> {
     if (this.preferHttpOverSocket || !this.socketOpened) {
       return this.httpClient.delete(
         HttpSocketClientService.getAPIUrl(path)/*,

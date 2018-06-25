@@ -15,6 +15,10 @@ export class CoreUtils {
     window.localStorage.setItem(key, value);
   }
 
+  static remove(key: string) {
+    window.localStorage.removeItem(key);
+  }
+
   static load(key: string): string {
     return window.localStorage.getItem(key);
   }

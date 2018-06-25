@@ -77,6 +77,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
             You can stream your music to your home devices on your local network by connecting to
             <a [href]="localhost$ | async" (click)="openExternally($event)" target="_blank">{{ localhost$ | async }}</a>.
           </p>
+          <mat-divider></mat-divider>
         </div>
         <h3 class="secondary-text">Cache</h3>
         <p>
@@ -100,7 +101,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
             <mat-checkbox [(ngModel)]="cache_theme">Theme</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox [(ngModel)]="cache_covers">Covers <em>(requires library scan)</em></mat-checkbox>
+            <mat-checkbox [(ngModel)]="cache_covers">Covers <em>(requires library scan afterwards)</em></mat-checkbox>
           </li>
         </ul>
         <button mat-button
@@ -275,38 +276,45 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   clearCache() {
-    console.log('clearing');
     if (this.cache_favorites) {
       console.log('clearing favorites');
       CoreUtils.save('favorites', JSON.stringify([]));
-      this.cache_favorites = false;
     }
     if (this.cache_recent) {
       console.log('clearing recent tracks');
       CoreUtils.save('recent', JSON.stringify([]));
-      this.cache_recent = false;
     }
     if (this.cache_playlist) {
       console.log('clearing current playlist');
       CoreUtils.save('playlist', JSON.stringify([]));
-      this.cache_playlist = false;
+      CoreUtils.remove('current');
     }
     if (this.cache_playlists) {
       console.log('clearing playlists');
       CoreUtils.save('playlists', JSON.stringify([]));
-      this.cache_playlists = false;
     }
     if (this.cache_theme) {
       console.log('clearing saved theme');
       CoreUtils.remove('theme');
-      this.cache_theme = false;
     }
     if (this.cache_covers) {
-      // TODO Open a confirmation dialog inviting to rescan library afterwards
       console.log('clearing covers');
       this.httpSocketClient.delete('/api/covers').subscribe();
-      this.cache_covers = false;
     }
+    this.dialog.open(
+      ConfirmComponent,
+      { data: {
+        title: 'Cache cleared!',
+        message: 'You have cleared your cache. You should reload Musicalypse for it to take effect. Reload now?'
+      }}
+    ).afterClosed()
+      .subscribe(
+        reload => {
+          if (reload) {
+            document.location.reload();
+          }
+        }
+      );
   }
 
 }

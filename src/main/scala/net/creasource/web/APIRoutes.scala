@@ -13,10 +13,9 @@ import akka.pattern.ask
 import net.creasource.audio.Track
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
-import net.creasource.web.SettingsActor.GetHost
-import spray.json._
+import net.creasource.web.SettingsActor.{DeleteCovers, GetHost}
 import spray.json.DefaultJsonProtocol._
-import spray.json.{JsString, JsValue}
+import spray.json.{JsString, JsValue, _}
 
 import scala.collection.immutable.Seq
 import scala.concurrent.duration._
@@ -102,6 +101,13 @@ class APIRoutes(application: Application) {
           host => complete(StatusCodes.OK, host.toJson)
         }
       }
+    } ~
+    path("covers") {
+      delete {
+        onSuccess((application.settingsActor ? DeleteCovers)(askTimeout).mapTo[String]) {
+          ok => complete(StatusCodes.OK, ok.toJson)
+        }
+      }
     }
 
 
@@ -112,13 +118,15 @@ class APIRoutes(application: Application) {
           librariesRoutes,
           filesUpload,
           settings,
-          options {
-            val corsHeaders: Seq[HttpHeader] = Seq(
-              RawHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"),
-              RawHeader("Access-Control-Allow-Headers", "Content-Type")
-            )
-            respondWithHeaders(corsHeaders) {
-              complete(StatusCodes.OK, "")
+          pathEndOrSingleSlash {
+            options {
+              val corsHeaders: Seq[HttpHeader] = Seq(
+                RawHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"),
+                RawHeader("Access-Control-Allow-Headers", "Content-Type")
+              )
+              respondWithHeaders(corsHeaders) {
+                complete(StatusCodes.OK, "")
+              }
             }
           }
         ))

@@ -174,6 +174,7 @@ import {map} from 'rxjs/operators';
       right: 0;
       bottom: 0;
       display: none;
+      background-color: #303030;
     }
     .covers:hover .play-icon, .covers:hover .more {
       display: unset;

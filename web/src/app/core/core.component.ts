@@ -13,7 +13,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ChangeTheme} from '@app/core/core.actions';
 import {MatDialog} from '@angular/material';
-import {ConfirmComponent} from '@app/shared/dialogs/confirm/confirm.component';
+import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
 import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Component({

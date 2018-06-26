@@ -4,7 +4,7 @@ import {MatDialog} from '@angular/material';
 import {FolderComponent} from '../shared/dialogs/folder/folder.component';
 import {HttpSocketClientService} from '../core/services/http-socket-client.service';
 import {SettingsService} from './services/settings.service';
-import {ConfirmComponent} from '../shared/dialogs/confirm/confirm.component';
+import {ConfirmComponent} from '../shared/dialogs/confirm.component';
 import {environment} from '@env/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromSettings from './settings.reducers';

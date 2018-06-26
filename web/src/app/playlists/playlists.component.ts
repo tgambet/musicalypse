@@ -171,10 +171,9 @@ import {map} from 'rxjs/operators';
     }
     .more {
       position: absolute;
-      right: 0;
-      bottom: 0;
+      right: 2px;
+      bottom: 2px;
       display: none;
-      background-color: #303030;
     }
     .covers:hover .play-icon, .covers:hover .more {
       display: unset;

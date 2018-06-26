@@ -33,6 +33,7 @@
     "electron:jre": "node copyJRE.js",
     "electron:stage": "npm-run-all electron:build electron:windows",
     "electron:windows": "electron-builder build --windows",
+    "electron:windows:jre": "electron-builder build --windows --config electron-builder-jre.json",
     "postinstall": "electron-builder install-app-deps",
     "heroku-postbuild": "npm run ng:build:prod"
   },

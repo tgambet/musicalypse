@@ -1,7 +1,7 @@
 {
   "appId": "musicalypse",
   "copyright": "Copyright © 2018 Thomas GAMBET",
-  "productName": "Musicalypse",
+  "productName": "Musicalypse (JRE)",
   "directories": {
     "buildResources": "electron-build/",
     "output": "target/electron/"
@@ -11,7 +11,7 @@
   },
   "win": {
     "files": ["target/electron/out-tsc", "target/dist/electron"],
-    "extraFiles": ["target/universal/stage"],
+    "extraFiles": ["target/universal/stage", "target/jre"],
     "target": [
       "nsis"
     ]

@@ -11,7 +11,7 @@
   },
   "win": {
     "files": ["target/electron/out-tsc", "target/dist/electron"],
-    "extraFiles": ["target/universal/stage"],
+    "extraFiles": ["target/universal/stage", "target/jre"],
     "target": [
       "nsis"
     ]

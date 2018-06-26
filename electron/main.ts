@@ -103,12 +103,17 @@ try {
       const musicFolder = app.getPath('music');
       const cacheFolder = app.getPath('userData') + '/data';
 
+      const fs = require('fs');
+      const pathToJava = __dirname + '/../../jre/bin/java.exe';
+      const JAVACMD = fs.existsSync(pathToJava) ? pathToJava : '';
+
       serverProcess = spawn(
           'bin\\musicalypse.bat',
           [],
           {
             cwd: './target/universal/stage',
             env: {
+              'JAVACMD': JAVACMD,
               'JAVA_OPTS': `-Dmusic.library=${musicFolder} -Dmusic.cacheFolder=${cacheFolder}`
             }
           }

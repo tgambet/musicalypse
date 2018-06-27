@@ -26,7 +26,7 @@ class APIRoutes(application: Application) {
 
   val askTimeout: akka.util.Timeout = 10.seconds
 
-  val uploadFolder: String = application.config.getString("music.uploadFolder")
+/*  val uploadFolder: String = application.config.getString("music.uploadFolder")
 
   val uploadFolderFile = new File(uploadFolder)
 
@@ -36,7 +36,7 @@ class APIRoutes(application: Application) {
 
   if (!uploadFolderFile.isDirectory) {
     throw new IllegalArgumentException(s"Config music.uploadFolder ($uploadFolder) is not a folder!")
-  }
+  }*/
 
   def librariesRoutes: Route =
     pathPrefix("libraries") {
@@ -75,12 +75,12 @@ class APIRoutes(application: Application) {
       }
     }
 
-  def uploadDestination(fileInfo: FileInfo): File = {
+/*  def uploadDestination(fileInfo: FileInfo): File = {
     new File(s"$uploadFolder/${fileInfo.fileName}")
-  }
+  }*/
 
   // TODO accept ogg and flac
-  def filesUpload: Route =
+/*  def filesUpload: Route =
     path("upload") {
       withSizeLimit(20000000) {
         storeUploadedFile("file", uploadDestination) { (metadata, file) =>
@@ -92,7 +92,7 @@ class APIRoutes(application: Application) {
           }
         }
       }
-    }
+    }*/
 
   def settings: Route =
     path("host") {
@@ -116,7 +116,7 @@ class APIRoutes(application: Application) {
       respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
         Route.seal(concat(
           librariesRoutes,
-          filesUpload,
+          // filesUpload,
           settings,
           pathEndOrSingleSlash {
             options {

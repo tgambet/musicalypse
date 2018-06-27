@@ -61,7 +61,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   var tracks: Seq[Track] = Seq.empty[Track]
 
-  val uploadFolder: String = application.config.getString("music.uploadFolder")
+  // val uploadFolder: String = application.config.getString("music.uploadFolder")
 
   val cacheFolder: String = application.config.getString("music.cacheFolder")
 
@@ -252,7 +252,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   }
 
   def getTrackSource: Source[Track, NotUsed] = {
-    (libraries :+ uploadFolder)
+    libraries // Add upload folder here whn reimplemented
       .map(new File(_))
       .map(scan)
       .fold(Source.empty)(_ concat _)

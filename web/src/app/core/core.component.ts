@@ -25,7 +25,7 @@ import {ScanTracks} from '@app/library/actions/tracks.actions';
          [class.electron]="isElectron">
 
       <app-initializer [initializing]="initializing$ | async"
-                       [initializingLog]="initializingLog$ | async"
+                       [initializingLog]="logs$ | async"
                        [hasErrors]="hasErrors$ | async"
                        (retry)="initialize()">
       </app-initializer>
@@ -116,7 +116,7 @@ export class CoreComponent implements OnInit {
   featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
   initializing$: Observable<boolean>;
-  initializingLog$: Observable<string>;
+  logs$: Observable<string>;
   hasErrors$: Observable<boolean>;
 
   constructor(
@@ -130,8 +130,8 @@ export class CoreComponent implements OnInit {
     // private httpSocketClient: HttpSocketClientService
   ) {
     this.initializing$ = this.loader.initializing$;
-    this.hasErrors$ = this.loader.hasInitializingErrors$;
-    this.initializingLog$ = this.loader.initializingLog$;
+    this.hasErrors$ = this.loader.hasErrors$;
+    this.logs$ = this.loader.log$;
 
     this.loader.initialize();
   }

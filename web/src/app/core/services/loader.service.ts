@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {concat, Observable, Subject, throwError} from 'rxjs';
-import {delay, publishReplay, refCount, retryWhen, take, tap} from 'rxjs/operators';
+import {delay, publishReplay, refCount, retryWhen, take} from 'rxjs/operators';
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 
 @Injectable()
@@ -8,26 +8,28 @@ export class LoaderService {
 
   private loadings = 0;
   private readonly loadings$: Observable<boolean>;
-  private loadingSubject = new Subject<boolean>();
+  private loading = new Subject<boolean>();
 
-  hasInitializingErrors$: Observable<boolean>;
-  private hasInitializingErrorsSubject = new Subject<boolean>();
+  hasErrors$: Observable<boolean>;
+  private hasErrors = new Subject<boolean>();
 
-  initializingLog$: Observable<string>;
-  private initializingLogSubject = new Subject<string>();
+  log$: Observable<string>;
+  private log = new Subject<string>();
 
   initializing$: Observable<boolean>;
-  private initializingSubject = new Subject<boolean>();
+  private initializing = new Subject<boolean>();
 
-  constructor(private httpSocketClient: HttpSocketClientService) {
-    this.loadings$ = this.loadingSubject.asObservable().pipe(publishReplay(1), refCount());
-    this.initializing$ = this.initializingSubject.asObservable().pipe(publishReplay(1), refCount());
-    this.initializingLog$ = this.initializingLogSubject.asObservable().pipe(publishReplay(1), refCount());
-    this.hasInitializingErrors$ = this.hasInitializingErrorsSubject.asObservable().pipe(publishReplay(1), refCount());
+  constructor(
+    private httpSocketClient: HttpSocketClientService
+  ) {
+    this.loadings$ = this.loading.asObservable().pipe(publishReplay(1), refCount());
+    this.initializing$ = this.initializing.asObservable().pipe(publishReplay(1), refCount());
+    this.log$ = this.log.asObservable().pipe(publishReplay(1), refCount());
+    this.hasErrors$ = this.hasErrors.asObservable().pipe(publishReplay(1), refCount());
     this.loadings$.subscribe();
     this.initializing$.subscribe();
-    this.initializingLog$.subscribe();
-    this.hasInitializingErrors$.subscribe();
+    this.log$.subscribe();
+    this.hasErrors$.subscribe();
   }
 
   isLoading(): Observable<boolean> {
@@ -47,34 +49,30 @@ export class LoaderService {
   }
 
   initialize() {
-    this.initializingSubject.next(true);
-    this.hasInitializingErrorsSubject.next(false);
-    this.initializingLogSubject.next('Loading...');
+    this.initializing.next(true);
+    this.hasErrors.next(false);
+    this.log.next('Loading...');
     this.httpSocketClient.getSocket().pipe(
-      tap(
-        x => {
-          if (x.method === 'Connected') {
-            this.initializingSubject.next(false);
-          }
-        }
-      ),
       retryWhen(
-        errors => concat(errors.pipe(delay(500), take(20)), throwError('Connection to backend server failed!'))
+        errors => concat(errors.pipe(delay(500), take(10)), throwError('Connection to backend server failed!'))
       ),
+      take(1)
     ).subscribe(
-      () => {},
+      () => {
+        this.initializing.next(false);
+      },
       error => {
-        this.hasInitializingErrorsSubject.next(true);
-        this.initializingLogSubject.next(error);
+        this.hasErrors.next(true);
+        this.log.next(error);
       }
     );
   }
 
   private _update() {
     if (this.loadings > 0) {
-      this.loadingSubject.next(true);
+      this.loading.next(true);
     } else {
-      this.loadingSubject.next(false);
+      this.loading.next(false);
     }
   }
 

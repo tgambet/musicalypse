@@ -1,13 +1,10 @@
 package net.creasource.web
 
-import java.io.File
-
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.FileInfo
 import akka.http.scaladsl.settings.RoutingSettings
 import akka.pattern.ask
 import net.creasource.audio.Track
@@ -52,7 +49,7 @@ class APIRoutes(application: Application) {
       pathEndOrSingleSlash {
         get {
           onSuccess((application.libraryActor ? GetLibraries)(askTimeout).mapTo[Libraries]) {
-            case Libraries(libraries) => complete(libraries)
+            case Libraries(libraries) => complete(libraries.map(_.toString))
           }
         } ~
         post {
@@ -94,7 +91,7 @@ class APIRoutes(application: Application) {
       }
     }*/
 
-  def settings: Route =
+  def settingsRoutes: Route =
     path("host") {
       get {
         onSuccess((application.settingsActor ? GetHost)(askTimeout).mapTo[String]) {
@@ -117,7 +114,7 @@ class APIRoutes(application: Application) {
         Route.seal(concat(
           librariesRoutes,
           // filesUpload,
-          settings,
+          settingsRoutes,
           pathEndOrSingleSlash {
             options {
               val corsHeaders: Seq[HttpHeader] = Seq(

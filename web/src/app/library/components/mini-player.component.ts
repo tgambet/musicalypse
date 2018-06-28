@@ -23,7 +23,7 @@ import {LibraryService} from '@app/library/services/library.service';
       <div class="controls">
         <button mat-button mat-icon-button
                 class="previous"
-                (click)="playPrevious()"
+                (click)="playPrevious(); $event.stopPropagation()"
                 [disabled]="!currentTrack || playlist.length <= 1">
           <mat-icon>skip_previous</mat-icon>
         </button>

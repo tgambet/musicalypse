@@ -30,11 +30,11 @@ class SocketSinkActor(socketActorProps: Props)(implicit materializer: ActorMater
         case BinaryMessage.Streamed(stream)  => stream.runWith(Sink.ignore)
         case msg: JsValue if sender() == user => sourceActor ! TextMessage(msg.compactPrint)
         case Terminated(`user`) =>
-          logger.info("UserActor terminated. Terminating.")
+          logger.debug("UserActor terminated. Terminating.")
           sourceActor ! Status.Success(())
           context.stop(self)
         case s @ Status.Success(_) =>
-          logger.info("Socket closed. Terminating.")
+          logger.debug("Socket closed. Terminating.")
           sourceActor ! s
           context.stop(self)
         case f @ Status.Failure(cause) =>
@@ -52,7 +52,7 @@ class SocketSinkActor(socketActorProps: Props)(implicit materializer: ActorMater
     }
 
   override def postStop(): Unit = {
-    logger.info("SocketActor killed")
+    logger.debug("SocketActor killed")
     super.postStop()
   }
 

@@ -20,7 +20,7 @@ class AudioLibraryRoutes(application: Application) {
 
   var cacheFolder: String = application.config.getString("music.cacheFolder")
 
-  val uploadFolder: String = application.config.getString("music.uploadFolder")
+  // val uploadFolder: String = application.config.getString("music.uploadFolder")
 
   val cacheFolderFile = new File(cacheFolder)
 
@@ -35,7 +35,9 @@ class AudioLibraryRoutes(application: Application) {
   def routes: Route =
     pathPrefix("music") {
       onSuccess((application.libraryActor ? GetLibraries).mapTo[Libraries]) { libraries =>
-        Route.seal(libraries.libraries.+:(uploadFolder).map(getFromBrowseableDirectory).fold(reject())(_ ~ _))
+        //val libs = libraries.libraries.map(_.toString) +: uploadFolder
+        val libs = libraries.libraries.map(_.toString)
+        Route.seal(libs.map(getFromBrowseableDirectory).fold(reject())(_ ~ _))
       }
     } ~ pathPrefix("cache") {
       respondWithHeader(RawHeader("Cache-Control", "max-age=604800")) {

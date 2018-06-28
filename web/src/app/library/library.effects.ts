@@ -17,8 +17,8 @@ import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
-import {from, Observable, of} from 'rxjs';
-import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
+import {from, Observable, of, timer} from 'rxjs';
+import {catchError, filter, finalize, map, mergeMap, retryWhen, switchMap, take, tap} from 'rxjs/operators';
 import {AddToRecent} from '@app/library/actions/recent.actions';
 import {RemoveTrack} from '@app/library/actions/tracks.actions';
 
@@ -120,9 +120,22 @@ export class LibraryEffects {
       map(() => new PlayNextTrackInPlaylist())
     );
 
+  /**
+   * Subscribe to socket events
+   */
   @Effect()
   subscribeToNewTracks: Observable<Action> =
     this.httpSocketClient.getSocket().pipe(
+      retryWhen(errors => errors.pipe(
+        mergeMap(() => {
+          // if (window.navigator.onLine) {
+          console.warn(`WebSocket failed. Retrying in 500ms.`);
+          return timer(500);
+          // } else {
+          //   return fromEvent(window, 'online').pipe(take(1));
+          // }
+        })
+      )),
       filter(next => (next.method === 'TracksAdded' || next.method === 'TracksDeleted') && next.id === 0),
       map(next => {
         if (next.method === 'TracksAdded') {

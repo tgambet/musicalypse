@@ -59,13 +59,13 @@ export class LoaderService {
         }
       ),
       retryWhen(
-        errors => concat(errors.pipe(delay(500), take(20)), throwError('Impossible to connect'))
+        errors => concat(errors.pipe(delay(500), take(20)), throwError('Connection to backend server failed!'))
       ),
     ).subscribe(
       () => {},
-      () => {
+      error => {
         this.hasInitializingErrorsSubject.next(true);
-        this.initializingLogSubject.next('Connection to backend server failed!');
+        this.initializingLogSubject.next(error);
       }
     );
   }

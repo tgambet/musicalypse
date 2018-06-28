@@ -39,6 +39,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
     }
     .app-loader .retry {
       text-decoration: underline;
+      cursor: pointer;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

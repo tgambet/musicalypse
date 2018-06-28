@@ -1,14 +1,17 @@
 package net.creasource.io
 
-import java.io.File
 import java.nio.file.Path
 
-sealed trait FileSystemChange {
-  def file: File
+object FileSystemChange {
+
+  sealed trait FileSystemChange {
+    def path: Path
+  }
+
+  case class Created(path: Path) extends FileSystemChange
+
+  case class Deleted(path: Path) extends FileSystemChange
+
+  case class WatchDir(path: Path)
+
 }
-
-case class Created(file: File) extends FileSystemChange
-
-case class Deleted(file: File) extends FileSystemChange
-
-case class WatchDir(path: Path)

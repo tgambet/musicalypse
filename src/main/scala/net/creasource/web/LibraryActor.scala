@@ -107,6 +107,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       _  = logger.info("Watching library folders...")
       _  <- watchLibraryFolders(l1)
     } yield {
+      logger.info("Initialization done.")
       self ! SetLibraries(l1)
       self ! SetTracks(t3)
       Done
@@ -168,10 +169,12 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             if (lib.toFile.isDirectory && lib.toFile.canRead) {
               val client = sender()
               libraries +:= lib.toAbsolutePath
-              saveLibraries(libraries).foreach(_ => {
-                watchActor ! WatchDir(lib.toAbsolutePath)
+              for {
+                _ <- saveLibraries(libraries)
+                _ <- watchLibraryFolders(Seq(lib.toAbsolutePath))
+              } yield {
                 client ! LibraryChangeSuccess
-              })
+              }
             } else {
               sender() ! LibraryChangeFailed(s"'$lib' is not a directory or cannot be read")
             }
@@ -180,6 +183,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
 
     case RemoveLibrary(library) =>
+      // TODO compute deleted tracks
       Try(Paths.get(library)) match {
         case Success(lib) =>
           if (libraries.contains(lib)) {
@@ -212,27 +216,27 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         markedForSaving = true
       }
 
-    case Created(file) =>
-      logger.debug("File creation: " + file.getAbsolutePath)
-      if (!file.isDirectory && !tracks.exists(track => track.metadata.location == file.getAbsolutePath)) {
-        val libOpt = libraries.find(lib => file.toPath.startsWith(lib))
+    case FileSystemChange.Created(path) =>
+      logger.debug("File creation: " + path.toAbsolutePath)
+      if (!path.toFile.isDirectory && !tracks.exists(track => track.metadata.location == path.toAbsolutePath.toString)) {
+        val libOpt = libraries.find(lib => path.startsWith(lib))
         libOpt match {
           case Some(lib) =>
-            Source(Seq(file.toPath))
+            Source(Seq(path))
               .via(extractMetadataFlow)
-              .via(metadataToTrackFlow(lib.toFile))
+              .via(metadataToTrackFlow(lib))
               .runWith(Sink.foreach(track => self ! AddTrack(track, broadcast = true)))
               .onComplete {
                 case Success(Done) =>
                 case Failure(t) => logger.error(t, "An error occurred!")
               }
-          case None => logger.warning("Got noticed for a file not in libraries: " + file.getAbsolutePath)
+          case None => logger.warning("Got noticed for a file not in libraries: " + path.toAbsolutePath)
         }
       } else {
-        logger.debug("Ignoring file creation notification: " + file.getAbsolutePath)
+        logger.debug("Ignoring file creation notification: " + path.toAbsolutePath)
       }
 
-    case Deleted(file) =>
+    case FileSystemChange.Deleted(file) =>
       logger.debug("File deletion notification: " + file.toString)
       tracks.filter(track => track.metadata.location.startsWith(file.toString)).foreach { track =>
         logger.debug("Deleting track: " + track.toString)
@@ -263,10 +267,9 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
   }
 
-  def metadataToTrackFlow(libraryFolder: File): Flow[(TrackMetadata, Option[AlbumCover]), Track, NotUsed] = {
+  def metadataToTrackFlow(libraryFolder: Path): Flow[(TrackMetadata, Option[AlbumCover]), Track, NotUsed] = {
     Flow[(TrackMetadata, Option[AlbumCover])].map { case (metadata, coverOpt) =>
       val relativePath = libraryFolder
-        .toPath
         .relativize(Paths.get(metadata.location))
         .toString
         .replaceAll("""\\""", "/")
@@ -279,16 +282,15 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     }
   }
 
-  def scan(folder: File): Source[Track, NotUsed] = {
+  def scan(folder: Path): Source[Track, NotUsed] = {
     StreamConverters
-      .fromJavaStream(() => Files.walk(folder.toPath))
+      .fromJavaStream(() => Files.walk(folder))
       .via(extractMetadataFlow)
       .via(metadataToTrackFlow(folder))
   }
 
   def getTrackSource: Source[Track, NotUsed] = {
     libraries // Add upload folder here whn reimplemented
-      .map(_.toFile)
       .map(scan)
       .fold(Source.empty)(_ concat _)
       .alsoTo(Sink.foreach(track => self ! AddTrack(track)))
@@ -429,14 +431,16 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           .filter(path => !path.toFile.isDirectory)
           .filter(path => !oldTracks.exists(track => track.metadata.location == path.toString))
           .via(extractMetadataFlow)
-          .via(metadataToTrackFlow(lib.toFile)))
+          .via(metadataToTrackFlow(lib)))
       .fold(Source.empty)(_ concat _)
       .runWith(Sink.seq)
       .map(_ ++: oldTracks)
   }
 
   def watchLibraryFolders(libraryFolders: Seq[Path]): Future[Done] = {
-    Future.successful(Done)
+    import akka.pattern.ask
+    val fs = libraryFolders.map(lib => (watchActor ? FileSystemChange.WatchDir(lib))(120.seconds).mapTo[Done])
+    Future.sequence(fs).map(_ => Done)
   }
 
 }

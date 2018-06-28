@@ -17,7 +17,7 @@ object SocketSinkActor {
 class SocketSinkActor(socketActorProps: Props)(implicit materializer: ActorMaterializer) extends Actor with Stash {
   private val logger = Logging(context.system, this)
 
-  logger.info("Socket opened. Actor created.")
+  logger.debug("Socket opened. Actor created.")
 
   override def receive: Receive = {
     case sourceActor: ActorRef =>

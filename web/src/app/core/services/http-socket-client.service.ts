@@ -1,18 +1,18 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {concat, Observable, Subject} from 'rxjs';
 import {webSocket} from 'rxjs/websocket';
+import {concat, Observable, Subject} from 'rxjs';
+import {filter, map, share, take} from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
-import {filter, map, share, take} from 'rxjs/operators';
 
 @Injectable()
 export class HttpSocketClientService implements OnDestroy {
 
   constructor(private httpClient: HttpClient) { }
 
-  public id = 0;
+  public id = 1;
 
   private socketOpened = false;
 

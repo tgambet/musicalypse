@@ -20,26 +20,16 @@ import net.creasource.http.actors.{SocketSinkActor, SocketSinkSupervisor}
 trait SocketWebServer extends WebServer { self: WebServer =>
 
   protected val socketActorProps: Props
-  protected val keepAliveMessage: Option[TextMessage] = Some(TextMessage("""{"method":"keepAlive"}"""))
-  protected val keepAliveTimeout: FiniteDuration = 1.minute
 
   private lazy val sinkActorProps: Props = SocketSinkActor.props(socketActorProps)
   private lazy val socketsKillSwitch: SharedKillSwitch = KillSwitches.shared("sockets")
   private lazy val supervisor = system.actorOf(SocketSinkSupervisor.props(), "sockets")
 
   def socketFlow(sinkActor: ActorRef): Flow[Message, Message, Unit] = {
-    val flow: Flow[Message, Message, ActorRef] =
-      Flow.fromSinkAndSourceMat(
-        Sink.actorRef(sinkActor, Status.Success(())),
-        Source.actorRef(1000, OverflowStrategy.fail)
-      )(Keep.right)
-
-    val flow2: Flow[Message, Message, Unit] = flow.mapMaterializedValue(sourceActor => sinkActor ! sourceActor)
-
-    keepAliveMessage match {
-      case Some(message) => flow2.keepAlive(keepAliveTimeout, () => message)
-      case None          => flow2
-    }
+    Flow.fromSinkAndSourceMat(
+      Sink.actorRef(sinkActor, Status.Success(())),
+      Source.actorRef(1000, OverflowStrategy.fail)
+    )(Keep.right).mapMaterializedValue(sourceActor => sinkActor ! sourceActor)
   }
 
   override def stop(): Future[Done] = {

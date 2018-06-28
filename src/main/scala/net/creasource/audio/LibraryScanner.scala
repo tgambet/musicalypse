@@ -4,9 +4,9 @@ import java.io.File
 
 object LibraryScanner {
 
-  type AlbumCoverOpt = Option[(Array[Byte], String)]
+  type AlbumCover = (Array[Byte], String)
 
-  def getMetadata(audioFile: File): (TrackMetadata, AlbumCoverOpt) = {
+  def getMetadata(audioFile: File): (TrackMetadata, Option[AlbumCover]) = {
     import com.mpatric.mp3agic.Mp3File
     val mp3file = new Mp3File(audioFile)
     if (mp3file.hasId3v2Tag) {
@@ -50,7 +50,7 @@ object LibraryScanner {
     }
   }
 
-  def getMetadata2(audioFile: File): (TrackMetadata, AlbumCoverOpt) = {
+  def getMetadata2(audioFile: File): (TrackMetadata, Option[AlbumCover]) = {
     import org.jaudiotagger.audio.AudioFileIO
     import org.jaudiotagger.audio.AudioHeader
     import org.jaudiotagger.tag.{FieldKey, Tag}

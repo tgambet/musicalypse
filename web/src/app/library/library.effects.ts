@@ -133,7 +133,7 @@ export class LibraryEffects {
         } else {
           return this.httpSocketClient.getSocket().pipe(
             retryWhen(errors =>
-              concat(errors.pipe(delay(500), take(5)), throwError('Connection to server failed!'))
+              concat(errors.pipe(delay(500), take(5)), throwError('Connection to server lost!'))
             )
             /* errors => errors.pipe(
               switchMap(() => {

@@ -24,8 +24,8 @@ import scala.util.{Failure, Success, Try}
 object LibraryActor {
 
   case object Register
-  case class NewTrack(track: Track)
-  case class DeletedTrack(track: Track)
+  case class NewTracks(track: Seq[Track])
+  case class DeletedTracks(track: Seq[Track])
 
   case object ScanLibrary
   case object GetTracks
@@ -183,13 +183,26 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
 
     case RemoveLibrary(library) =>
-      // TODO compute deleted tracks
-      Try(Paths.get(library)) match {
+      Try(Paths.get(library).toAbsolutePath) match {
         case Success(lib) =>
           if (libraries.contains(lib)) {
             val client = sender()
+            logger.info(s"Removing library: $lib")
             libraries = libraries diff List(lib)
-            saveLibraries(libraries).foreach(_ => client ! LibraryChangeSuccess)
+            for {
+              _ <- saveLibraries(libraries)
+              _ = logger.info("Computing tracks to remove...")
+              deletedTracks = tracks.filter(track => track.metadata.location.startsWith(lib.toString))
+              _ = logger.info(deletedTracks.length + " tracks are to be removed")
+              remainingTracks = tracks diff deletedTracks
+              _ = self ! SetTracks(remainingTracks)
+              _ = logger.info(s"Broadcasting to ${listeners.length} listeners.")
+              _ = listeners.foreach(_ ! DeletedTracks(deletedTracks))
+              _ = logger.info("Saving tracks")
+              _ <- saveTracks(remainingTracks)
+            } yield {
+              client ! LibraryChangeSuccess
+            }
           } else {
             sender() ! LibraryChangeFailed(s"$lib is not a known library folder.")
           }
@@ -211,7 +224,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         logger.debug("New track added: " + track.metadata.location)
         tracks +:= track
         if (broadcast) {
-          listeners.foreach(listener => listener ! NewTrack(track))
+          listeners.foreach(_ ! NewTracks(Seq(track)))
         }
         markedForSaving = true
       }
@@ -241,7 +254,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       tracks.filter(track => track.metadata.location.startsWith(file.toString)).foreach { track =>
         logger.debug("Deleting track: " + track.toString)
         tracks = tracks diff List(track)
-        listeners.foreach(listener => listener ! DeletedTrack(track))
+        listeners.foreach(listener => listener ! DeletedTracks(Seq(track)))
         markedForSaving = true
       }
 

@@ -48,13 +48,13 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
     case value: JsValue =>
       handleMessages.applyOrElse(value, (v: JsValue) => logger.warning("Unhandled client Json message:\n{}", v.prettyPrint))
 
-    case NewTrack(track) =>
-      logger.debug("Received a new track. Sending notification to client: " + track.toJson.prettyPrint)
-      client ! JsonMessage("TracksAdded", 0, List(track).toJson).toJson
+    case NewTracks(tracks) =>
+      logger.debug("Received new tracks. Sending notification to client.")
+      client ! JsonMessage("TracksAdded", 0, tracks.toJson).toJson
 
-    case DeletedTrack(track) =>
-      logger.debug("A track has been deleted. Sending notification to client: " + track.toJson.prettyPrint)
-      client ! JsonMessage("TracksDeleted", 0, List(track).toJson).toJson
+    case DeletedTracks(tracks) =>
+      logger.debug("Tracks have been deleted. Sending notification to client.")
+      client ! JsonMessage("TracksDeleted", 0, tracks.toJson).toJson
 
     case value => logger.error("Unhandled message: {}", value.toString)
 

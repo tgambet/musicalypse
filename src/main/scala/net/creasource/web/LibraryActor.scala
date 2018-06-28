@@ -189,7 +189,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           } else {
             sender() ! LibraryChangeFailed(s"$lib is not a known library folder.")
           }
-        case Failure(t) => sender() ! LibraryChangeFailed(s"$library is not a valid path.")
+        case Failure(_) => sender() ! LibraryChangeFailed(s"$library is not a valid path.")
       }
 
     case ScanLibrary =>

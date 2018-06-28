@@ -73,7 +73,7 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
       val scanFuture: Future[Done] = for {
         f1 <- (app.libraryActor ? ScanLibrary)(askTimeout).mapTo[Source[Track, NotUsed]]
         f2 <- f1.watch(self)
-                .groupedWithin(50, 200.milliseconds)
+                .groupedWithin(50, 100.milliseconds)
                 .map(tracks => JsonMessage("TracksAdded", id, tracks.toJson).toJson)
                 .runWith(Sink.foreach(client ! _))
       } yield f2

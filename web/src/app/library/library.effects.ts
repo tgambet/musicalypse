@@ -11,7 +11,7 @@ import {LoaderService} from '@app/core/services/loader.service';
 import {Album, Artist, Track} from '@app/model';
 
 import {LibraryUtils} from './library.utils';
-import {AddTracks, LoadTrackFailure, LoadTrackSuccess, TracksActionTypes} from './actions/tracks.actions';
+import {AddTracks, LoadTrackFailure, LoadTrackSuccess, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
@@ -20,7 +20,6 @@ import * as fromLibrary from './library.reducers';
 import {concat, EMPTY, from, Observable, of, throwError} from 'rxjs';
 import {catchError, delay, filter, finalize, map, mergeMap, retryWhen, switchMap, take, tap} from 'rxjs/operators';
 import {AddToRecent} from '@app/library/actions/recent.actions';
-import {RemoveTrack} from '@app/library/actions/tracks.actions';
 import {MatSnackBar} from '@angular/material';
 
 @Injectable()
@@ -157,8 +156,8 @@ export class LibraryEffects {
                 return new AddTracks(tracks.map(track => LibraryUtils.fixTags(track)));
               }
               if (next.method === 'TracksDeleted') {
-                const track = next.entity[0];
-                return new RemoveTrack(LibraryUtils.fixTags(track));
+                const tracks = next.entity;
+                return new RemoveTracks(tracks.map(track => LibraryUtils.fixTags(track)));
               }
             })
           );

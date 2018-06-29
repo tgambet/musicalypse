@@ -3,6 +3,7 @@ import {Album} from '@app/model';
 import {AlbumsActionsUnion, AlbumsActionTypes} from '@app/library/actions/albums.actions';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {LibraryUtils} from '@app/library/library.utils';
+import * as _ from 'lodash';
 
 export const getAlbumId = (album: Album) => album.artist + '-' + album.title;
 
@@ -84,15 +85,6 @@ export function reducer(
       return adapter.upsertMany(albums, state);
     }
 
-    case TracksActionTypes.AddTrack: {
-      const album = LibraryUtils.extractAlbums([action.payload])[0];
-      const old = state.entities[getAlbumId(album)];
-      if (old) {
-        album.songs += old.songs;
-      }
-      return adapter.upsertOne(album, state);
-    }
-
     case TracksActionTypes.AddTracks: {
       const albums = LibraryUtils.extractAlbums(action.payload);
       albums.map(album => {
@@ -105,19 +97,20 @@ export function reducer(
       return adapter.upsertMany(albums, state);
     }
 
-    case TracksActionTypes.RemoveTrack: {
-      const album = LibraryUtils.extractAlbums([action.payload])[0];
-      const old = state.entities[getAlbumId(album)];
-      if (old) {
-        old.songs -= album.songs;
-        if (old.songs === 0) {
-          return adapter.removeOne(getAlbumId(old), state);
-        } else {
-          return adapter.upsertOne(old, state);
+    case TracksActionTypes.RemoveTracks: {
+      const albums = LibraryUtils.extractAlbums(action.payload);
+      const fn: (s: State, album: Album) => State = (s, album) => {
+        const old = s.entities[getAlbumId(album)];
+        if (old) {
+          old.songs -= album.songs;
+          if (old.songs === 0) {
+            return adapter.removeOne(getAlbumId(old), s);
+          } else {
+            return adapter.upsertOne(old, s);
+          }
         }
-      }
-      console.warn('Could not find album: ' + getAlbumId(album));
-      return state;
+      };
+      return _.reduce(albums, fn, state);
     }
 
     default: {

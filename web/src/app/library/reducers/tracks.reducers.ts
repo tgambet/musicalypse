@@ -29,14 +29,11 @@ export function reducer(
 ): State {
   switch (action.type) {
 
-    case TracksActionTypes.AddTrack:
-      return adapter.addOne(action.payload, state);
-
     case TracksActionTypes.AddTracks:
       return adapter.addMany(action.payload, state);
 
-    case TracksActionTypes.RemoveTrack: {
-      return adapter.removeOne(action.payload.url, state);
+    case TracksActionTypes.RemoveTracks: {
+      return adapter.removeMany(action.payload.map(t => t.url), state);
     }
 
     case TracksActionTypes.LoadTracksSuccess: {

@@ -2,18 +2,12 @@ import {Action} from '@ngrx/store';
 import {Track} from '@app/model';
 
 export enum TracksActionTypes {
-  AddTrack = '[Tracks] Add Track',
   AddTracks = '[Tracks] Add Tracks',
-  RemoveTrack = '[Tracks] Remove Track',
+  RemoveTracks = '[Tracks] Remove Tracks',
   LoadTracks = '[Tracks] Load Tracks',
   LoadTracksSuccess = '[Tracks] Load Tracks Success',
   LoadTracksFailure = '[Tracks] Load Tracks Failure',
   ScanTracks = '[Tracks] Scan Tracks',
-}
-
-export class AddTrack implements Action {
-  readonly type = TracksActionTypes.AddTrack;
-  constructor(public payload: Track) {}
 }
 
 export class AddTracks implements Action {
@@ -21,9 +15,9 @@ export class AddTracks implements Action {
   constructor(public payload: Track[]) {}
 }
 
-export class RemoveTrack implements Action {
-  readonly type = TracksActionTypes.RemoveTrack;
-  constructor(public payload: Track) {}
+export class RemoveTracks implements Action {
+  readonly type = TracksActionTypes.RemoveTracks;
+  constructor(public payload: Track[]) {}
 }
 
 export class LoadTracks implements Action {
@@ -45,9 +39,8 @@ export class ScanTracks implements Action {
 }
 
 export type TracksActionsUnion =
-  AddTrack |
   AddTracks |
-  RemoveTrack |
+  RemoveTracks |
   LoadTracks |
   LoadTrackSuccess |
   LoadTrackFailure |

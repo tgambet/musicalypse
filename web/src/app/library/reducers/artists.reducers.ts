@@ -3,6 +3,7 @@ import {Artist} from '@app/model';
 import {ArtistsActionsUnion, ArtistsActionTypes} from '@app/library/actions/artists.actions';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {LibraryUtils} from '@app/library/library.utils';
+import * as _ from 'lodash';
 
 /**
  * State
@@ -82,15 +83,6 @@ export function reducer(
       return adapter.upsertMany(artists, state);
     }
 
-    case TracksActionTypes.AddTrack: {
-      const artist = LibraryUtils.extractArtists([action.payload])[0];
-      const old = state.entities[artist.name];
-      if (old) {
-        artist.songs += old.songs;
-      }
-      return adapter.upsertOne(artist, state);
-    }
-
     case TracksActionTypes.AddTracks: {
       const artists = LibraryUtils.extractArtists(action.payload);
       artists.map(artist => {
@@ -103,19 +95,20 @@ export function reducer(
       return adapter.upsertMany(artists, state);
     }
 
-    case TracksActionTypes.RemoveTrack: {
-      const artist = LibraryUtils.extractArtists([action.payload])[0];
-      const old = state.entities[artist.name];
-      if (old) {
-        old.songs -= artist.songs;
-        if (old.songs === 0) {
-          return adapter.removeOne(old.name, state);
-        } else {
-          return adapter.upsertOne(old, state);
+    case TracksActionTypes.RemoveTracks: {
+      const artists = LibraryUtils.extractArtists(action.payload);
+      const fn: (s: State, artist: Artist) => State = (s, artist) => {
+        const old = s.entities[artist.name];
+        if (old) {
+          old.songs -= artist.songs;
+          if (old.songs === 0) {
+            return adapter.removeOne(old.name, s);
+          } else {
+            return adapter.upsertOne(old, s);
+          }
         }
-      }
-      console.warn('Could not find artist: ' + artist.name);
-      return state;
+      };
+      return _.reduce(artists, fn, state);
     }
 
     default: {

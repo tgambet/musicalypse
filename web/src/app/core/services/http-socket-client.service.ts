@@ -2,7 +2,7 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {webSocket} from 'rxjs/websocket';
 import {concat, Observable, Subject} from 'rxjs';
-import {filter, map, shareReplay, take} from 'rxjs/operators';
+import {filter, map, share, take} from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
@@ -28,7 +28,7 @@ export class HttpSocketClientService implements OnDestroy {
     }
   });
 
-  private socketObs: Observable<SocketMessage> = this.socket.asObservable().pipe(shareReplay(1)) as Observable<SocketMessage>;
+  private socketObs: Observable<SocketMessage> = this.socket.asObservable().pipe(share()) as Observable<SocketMessage>;
 
   private static getSocketUrl() {
     let socketUrl = '';
@@ -69,10 +69,6 @@ export class HttpSocketClientService implements OnDestroy {
 
   getSocket(): Observable<SocketMessage> {
     return this.socketObs;
-  }
-
-  isSocketOpen(): boolean {
-    return this.socketOpened;
   }
 
   send(message: any): void {

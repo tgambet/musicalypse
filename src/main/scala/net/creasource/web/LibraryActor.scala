@@ -26,6 +26,7 @@ object LibraryActor {
   case object Register
   case class NewTracks(track: Seq[Track])
   case class DeletedTracks(track: Seq[Track])
+  case class Notify[T](message: T)(implicit val writer: JsonWriter[T])
 
   case object ScanLibrary
   case object GetTracks
@@ -53,6 +54,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   private case class AddTrack(track: Track, broadcast: Boolean = false)
   private case object MarkForSaving
   private case object WriteTracksFile
+  private case class NotifyListeners[T](message: T)(implicit val writer: JsonWriter[T])
   // private case object CheckTracks
 
   private val logger = Logging(context.system, this)
@@ -77,6 +79,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   override def preStart(): Unit = {
     coversFolder.toFile.mkdirs()
+
+    if (isFirstLaunch) {
+      self ! NotifyListeners("First_Launch")
+    }
 
     logger.info("Loading libraries...")
     for {
@@ -149,7 +155,13 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       listeners = listeners diff List(listener)
       logger.debug("Listener unregistered: " + listener)
 
-    // case NotifyListeners() =>
+    case notify @ NotifyListeners(message) =>
+      implicit val writer: JsonWriter[Any] = notify.writer
+      if (listeners.isEmpty) {
+        stash()
+      } else {
+        listeners.foreach(listener => listener ! Notify(message))
+      }
 
     case MarkForSaving => markedForSaving = true
 

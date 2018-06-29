@@ -56,6 +56,11 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
       logger.debug("Tracks have been deleted. Sending notification to client.")
       client ! JsonMessage("TracksDeleted", 0, tracks.toJson).toJson
 
+    case a @ Notify(message) =>
+      implicit val writer: JsonWriter[Any] = a.writer
+      logger.debug("Notifying client: " + message.toJson)
+      client ! JsonMessage("Notify", 0, message.toJson).toJson
+
     case value => logger.error("Unhandled message: {}", value.toString)
 
   }

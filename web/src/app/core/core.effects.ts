@@ -11,6 +11,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
 import {MatDialog} from '@angular/material';
 import * as fromRoot from '@app/app.reducers';
 import {Store} from '@ngrx/store';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class CoreEffects {
@@ -35,6 +36,7 @@ export class CoreEffects {
           const title = 'Thank you for using Musicalypse!';
           const message = 'It looks like this is your first launch of Musicalypse.<br> ' +
             'Before you can listen to your music you need to go to Settings and scan your library.<br> ' +
+            'By default Musicalypse will use the "music" folder in your user home if it exists.<br> ' +
             'Do you want to scan it now?';
           this.dialog.open(ConfirmComponent, {data: {title: title, message: message}})
             .afterClosed()
@@ -42,6 +44,8 @@ export class CoreEffects {
               ok => {
                 if (ok) {
                   this.store.dispatch(new ScanTracks());
+                } else {
+                  this.router.navigate(['/settings']);
                 }
               }
             );
@@ -55,6 +59,7 @@ export class CoreEffects {
     private loader: LoaderService,
     private dialog: MatDialog,
     private store: Store<fromRoot.State>,
+    private router: Router
   ) {}
 
 }

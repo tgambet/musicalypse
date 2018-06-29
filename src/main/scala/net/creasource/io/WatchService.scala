@@ -6,6 +6,7 @@ package net.creasource.io
   * Substantial modifications have been made, including changing the package name, and fixing the code for fast copy.
   */
 
+import java.io.UncheckedIOException
 import java.nio.file.StandardWatchEventKinds._
 import java.nio.file._
 
@@ -26,10 +27,14 @@ class WatchService(notifyActor: ActorRef, logger: LoggingAdapter)(implicit mater
 
   def watch(root: Path): Future[Done] = {
     logger.debug("Watching folder: " + root)
+    register(root)
     StreamConverters
       .fromJavaStream(() => Files.walk(root))
+      .recover {
+        case _: UncheckedIOException => root
+      }
       .runWith(Sink.foreach(path =>
-        if (path.toFile.isDirectory) {
+        if (path.toFile.isDirectory && path != root) {
           logger.debug("Registering folder: " + path)
           register(path)
         }

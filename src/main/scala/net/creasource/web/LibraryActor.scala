@@ -1,7 +1,7 @@
 package net.creasource.web
 
 import java.io._
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file._
 
 import akka.actor.{Actor, ActorRef, Props, Stash, Terminated}
 import akka.event.Logging
@@ -46,8 +46,8 @@ object LibraryActor {
 
 class LibraryActor()(implicit application: Application) extends Actor with Stash with JsonSupport {
 
-  import context.dispatcher
   import application.materializer
+  import context.dispatcher
 
   private case class SetLibraries(libraries: Seq[Path])
   private case class SetTracks(tracks: Seq[Track])
@@ -81,11 +81,12 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     coversFolder.toFile.mkdirs()
 
     if (isFirstLaunch) {
+      logger.info("First launch")
       self ! NotifyListeners("First_Launch")
     }
 
     logger.info("Loading libraries...")
-    for {
+    val initF = for {
       l0 <- loadLibraries()
       _  = logger.info(l0.length + " libraries have been loaded")
       _  = logger.info("Filtering libraries...")
@@ -113,11 +114,16 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       _  = logger.info("Watching library folders...")
       _  <- watchLibraryFolders(l1)
     } yield {
-      logger.info("Initialization done.")
       self ! SetLibraries(l1)
       self ! SetTracks(t3)
       Done
     }
+
+    initF.onComplete {
+      case Success(Done) => logger.info("Initialization successful.")
+      case Failure(t) => logger.error(t, "Error initializing LibraryActor!")
+    }
+
   }
 
   def receive: Receive = {
@@ -179,8 +185,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             sender() ! LibraryChangeFailed(s"'$lib' is already a library folder")
           } else {
             if (lib.toFile.isDirectory && lib.toFile.canRead) {
+              logger.info(s"Adding library: $lib")
               val client = sender()
               libraries +:= lib.toAbsolutePath
+              // TODO Manage exceptions
               for {
                 _ <- saveLibraries(libraries)
                 _ <- watchLibraryFolders(Seq(lib.toAbsolutePath))
@@ -201,6 +209,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             val client = sender()
             logger.info(s"Removing library: $lib")
             libraries = libraries diff List(lib)
+            // TODO Manage exceptions
             for {
               _ <- saveLibraries(libraries)
               _ = logger.info("Computing tracks to remove...")
@@ -287,7 +296,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       .filter(path => !path.toFile.isDirectory && isSupportedFile(path))
       .map(path => path.toFile)
       .map(file => Try(getMetadata2(file)).recover{case _ => getMetadata(file)})
-      .collect{
+      .collect {
         case tr if tr.isSuccess => tr.get
       }
   }
@@ -439,7 +448,11 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       libs match {
         case Nil =>
           application.config.getString("music.library") match {
-            case "" => Nil
+            case "" =>
+              Try(Paths.get(System.getProperty("user.home")).resolve("music")) match {
+                case Success(musicFolder) if musicFolder.toFile.exists() => List(musicFolder)
+                case _ => Nil
+              }
             case lib => List(Paths.get(lib))
           }
         case list => list
@@ -456,7 +469,14 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           .filter(path => !path.toFile.isDirectory)
           .filter(path => !oldTracks.exists(track => track.metadata.location == path.toString))
           .via(extractMetadataFlow)
-          .via(metadataToTrackFlow(lib)))
+          .via(metadataToTrackFlow(lib))
+          .map(Some(_))
+          .recover {
+            case _: UncheckedIOException => None
+          }.collect{
+            case opt if opt.isDefined => opt.get
+          }
+      )
       .fold(Source.empty)(_ concat _)
       .runWith(Sink.seq)
       .map(_ ++: oldTracks)

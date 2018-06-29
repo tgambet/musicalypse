@@ -17,10 +17,9 @@ import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
 import {PlayNextTrackInPlaylist} from './actions/player.actions';
 import * as fromLibrary from './library.reducers';
 
-import {concat, EMPTY, from, Observable, of, throwError} from 'rxjs';
-import {catchError, delay, filter, finalize, map, mergeMap, retryWhen, switchMap, take, tap} from 'rxjs/operators';
+import {from, Observable, of} from 'rxjs';
+import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {AddToRecent} from '@app/library/actions/recent.actions';
-import {MatSnackBar} from '@angular/material';
 
 @Injectable()
 export class LibraryEffects {
@@ -124,43 +123,17 @@ export class LibraryEffects {
    * Subscribe to socket events
    */
   @Effect()
-  subscribeToNewTracks: Observable<Action> =
-    this.loader.initializing$.pipe(
-      switchMap(initializing => {
-        if (initializing) {
-          return EMPTY;
-        } else {
-          return this.httpSocketClient.getSocket().pipe(
-            retryWhen(errors =>
-              concat(errors.pipe(delay(500), take(5)), throwError('Connection to server lost!'))
-            )
-            /* errors => errors.pipe(
-              switchMap(() => {
-                // if (window.navigator.onLine) {
-                console.warn(`WebSocket failed. Retrying in 500ms.`);
-                return timer(500);
-                // } else {
-                //   return fromEvent(window, 'online').pipe(take(1));
-                // }
-              }),
-            ))*/,
-            catchError((error, caught) =>
-              this.snack.open(error, 'Retry')
-                .afterDismissed()
-                .pipe(mergeMap(() => caught))
-            ),
-            filter(next => (next.method === 'TracksAdded' || next.method === 'TracksDeleted') && next.id === 0),
-            map(next => {
-              if (next.method === 'TracksAdded') {
-                const tracks = next.entity;
-                return new AddTracks(tracks.map(track => LibraryUtils.fixTags(track)));
-              }
-              if (next.method === 'TracksDeleted') {
-                const tracks = next.entity;
-                return new RemoveTracks(tracks.map(track => LibraryUtils.fixTags(track)));
-              }
-            })
-          );
+  subscribeToTracks: Observable<Action> =
+    this.loader.getSharedSocket().pipe(
+      filter(next => (next.method === 'TracksAdded' || next.method === 'TracksDeleted') && next.id === 0),
+      map(next => {
+        if (next.method === 'TracksAdded') {
+          const tracks = next.entity;
+          return new AddTracks(tracks.map(track => LibraryUtils.fixTags(track)));
+        }
+        if (next.method === 'TracksDeleted') {
+          const tracks = next.entity;
+          return new RemoveTracks(tracks.map(track => LibraryUtils.fixTags(track)));
         }
       })
     );
@@ -171,8 +144,7 @@ export class LibraryEffects {
     private store: Store<fromLibrary.State>,
     private titleService: Title,
     private audioService: AudioService,
-    private loader: LoaderService,
-    private snack: MatSnackBar
+    private loader: LoaderService
   ) {}
 
   public scanTracks(): Observable<Track[]> {

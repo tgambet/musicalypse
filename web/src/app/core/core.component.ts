@@ -12,9 +12,6 @@ import {CoreUtils, Theme} from './core.utils';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ChangeTheme} from '@app/core/core.actions';
-import {MatDialog} from '@angular/material';
-import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
-import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Component({
   selector: 'app-root',
@@ -125,9 +122,7 @@ export class CoreComponent implements OnInit {
     private loader: LoaderService,
     private audioService: AudioService,
     private renderer: Renderer2,
-    private appRoot: ElementRef,
-    private dialog: MatDialog
-    // private httpSocketClient: HttpSocketClientService
+    private appRoot: ElementRef
   ) {
     this.initializing$ = this.loader.initializing$;
     this.hasErrors$ = this.loader.hasErrors$;
@@ -175,27 +170,6 @@ export class CoreComponent implements OnInit {
       this.changeTheme(JSON.parse(savedTheme));
     } else {
       this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]));
-    }
-
-    // Move to library module?
-    if (this.isElectron) {
-      const hasLaunchedBefore = !!CoreUtils.load('hasLaunchedBefore');
-      if (!hasLaunchedBefore) {
-        const title = 'Thank you for using Musicalypse!';
-        const message = 'It looks like this is your first launch of Musicalypse.<br> ' +
-          'Before you can listen to your music you need to go to Settings and scan your library.<br> ' +
-          'Do you want to scan it now?';
-        this.dialog.open(ConfirmComponent, {data: {title: title, message: message}})
-          .afterClosed()
-          .subscribe(
-            ok => {
-              if (ok) {
-                this.store.dispatch(new ScanTracks());
-              }
-              CoreUtils.save('hasLaunchedBefore', 'true');
-            }
-          );
-      }
     }
   }
 

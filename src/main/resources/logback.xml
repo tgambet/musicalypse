@@ -1,14 +1,15 @@
 <configuration>
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>./logs/application.log</file>
+    <file>${music.cacheFolder:-./data}/logs/application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <fileNamePattern>./logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>10</maxHistory>
       <totalSizeCap>10MB</totalSizeCap>
     </rollingPolicy>
     <encoder>
-      <pattern>%date{ISO8601} %-5level [%logger] [%X{sourceThread}] [%X{akkaSource}] - %msg%n</pattern>
+      <!--<pattern>%date{ISO8601} %-5level [%logger] [%X{sourceThread}] [%X{akkaSource}] - %msg%n</pattern>-->
+      <pattern>%date{ISO8601} %-5level [%logger] [%X{akkaSource}] - %msg%n</pattern>
     </encoder>
   </appender>
 
@@ -26,7 +27,9 @@
     <appender-ref ref="STDOUT" />
   </appender>
 
-  <logger name="net.creasource" level="INFO" />
+  <logger name="net.creasource.web.LibraryActor" level="INFO" />
+  <logger name="net.creasource.io" level="INFO" />
+
   <logger name="akka.event.slf4j.Slf4jLogger" level="WARN" />
 
   <root level="INFO">

@@ -3,15 +3,15 @@
   "copyright": "Copyright © 2018 Thomas GAMBET",
   "productName": "Musicalypse",
   "directories": {
-    "buildResources": "electron-build/",
-    "output": "dist/electron-jre/"
+    "buildResources": "build/electron/assets",
+    "output": "dist/electron/"
   },
   "nsis": {
     "oneClick": true
   },
   "win": {
     "files": ["target/electron/out-tsc", "target/dist/electron"],
-    "extraFiles": ["target/universal/stage", "target/jre"],
+    "extraFiles": ["target/universal/stage"],
     "target": [
       "nsis"
     ]

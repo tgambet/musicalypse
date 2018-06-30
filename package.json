@@ -69,6 +69,7 @@
     "electron": "^2.0.3",
     "electron-builder": "^20.15.1",
     "electron-reload": "^1.2.2",
+    "electron-windows-store": "^0.12.0",
     "fs-extra": "^6.0.1",
     "hammerjs": "^2.0.8",
     "immutable": "^4.0.0-rc.9",

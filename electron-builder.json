@@ -4,7 +4,7 @@
   "productName": "Musicalypse",
   "directories": {
     "buildResources": "electron-build/",
-    "output": "target/electron/"
+    "output": "dist/electron/"
   },
   "nsis": {
     "oneClick": true

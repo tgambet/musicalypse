@@ -3,10 +3,13 @@ import * as path from 'path';
 import * as url from 'url';
 import {ChildProcess} from 'child_process';
 
-let win, serve;
+const fs = require('fs');
+const ipc = require('electron').ipcMain;
+const dialog = require('electron').dialog;
 const spawn = require('child_process').spawn;
-const args = process.argv.slice(1);
-serve = args.some(val => val === '--serve');
+
+let win;
+const serve = process.argv.slice(1).some(val => val === '--serve');
 
 function createWindow() {
 
@@ -61,7 +64,7 @@ function createWindow() {
 
 }
 
-function checkJava(): boolean {
+function isJavaOnPath(): boolean {
   try {
     require('child_process').execSync('java.exe -version');
     return true;
@@ -70,65 +73,86 @@ function checkJava(): boolean {
   }
 }
 
-try {
+function isPackaged(): boolean {
+  return __dirname.indexOf('app.asar') !== -1;
+}
 
-  const ipc = require('electron').ipcMain;
-  const dialog = require('electron').dialog;
-
-  const shouldQuit = app.makeSingleInstance(() => {
-    if (win) {
-      if (win.isMinimized()) {
-        win.restore();
-      }
-      win.focus();
+const shouldQuit = app.makeSingleInstance(() => {
+  if (win) {
+    if (win.isMinimized()) {
+      win.restore();
     }
-  });
+    win.focus();
+  }
+});
+
+if (shouldQuit) {
+  app.exit();
+}
+
+try {
 
   let serverProcess: ChildProcess;
 
-  if (!checkJava()) {
-    dialog.showErrorBox(
-      'Java is not installed or can\'t be found',
-      'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
-      'If you think this message is an error, please check your PATH environment variable to see if "java.exe" is accessible.'
-    );
-    console.error('Java couldn\'t be found');
-    app.exit(1);
-  }
+  if (!serve) {
+    const musicFolder = app.getPath('music');
+    const cacheFolder = app.getPath('userData') + '/data';
 
-  if (shouldQuit) {
-    app.quit();
-  } else {
-    if (!serve) {
-      const musicFolder = app.getPath('music');
-      const cacheFolder = app.getPath('userData') + '/data';
+    const pathToJava = isPackaged() ?
+      __dirname + '/../../../../../target/jre/bin/java.exe' :
+      __dirname + '/../../jre/bin/java.exe';
+    const JAVACMD = fs.existsSync(pathToJava) ? path.normalize(pathToJava) : '';
 
-      const fs = require('fs');
-      const pathToJava = __dirname + '/../../jre/bin/java.exe';
-      const JAVACMD = fs.existsSync(pathToJava) ? pathToJava : '';
-
-      serverProcess = spawn(
-          'bin\\musicalypse.bat',
-          [],
-          {
-            cwd: './target/universal/stage',
-            env: {
-              'JAVACMD': JAVACMD,
-              'JAVA_OPTS': `-Dmusic.library=${musicFolder} -Dmusic.cacheFolder=${cacheFolder}`
-            }
-          }
-        ).addListener('exit', code => {
-          if (code === 1) {
-            throw Error('Server exited unexpectedly.');
-          }
-        });
-      serverProcess.stdout.addListener('data', chunk => {
-        console.log(chunk.toString().replace(/\n$/, ''));
-      });
-      serverProcess.stderr.addListener('data', chunk => {
-        console.error(chunk.toString().replace(/\n$/, ''));
-      });
+    if (JAVACMD === '' && !isJavaOnPath()) {
+      dialog.showErrorBox(
+        'Java is not installed or can\'t be found',
+        'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
+        'If you think this message is an error, please check your PATH environment variable to see if "java.exe" is accessible.'
+      );
+      console.error('Java couldn\'t be found');
+      app.exit(1);
     }
+
+    const pathToStage =
+      isPackaged() ?
+        __dirname + '/../../../../../target/universal/stage' :
+        __dirname + '/../../universal/stage';
+
+    serverProcess = spawn(
+        'bin\\musicalypse.bat',
+        [],
+        {
+          cwd: path.normalize(pathToStage),
+          env: {
+            'JAVACMD': JAVACMD,
+            'JAVA_OPTS': `-Dmusic.library=${musicFolder} -Dmusic.cacheFolder=${cacheFolder}`
+          }
+        }
+      ).addListener('exit', code => {
+        if (code === 1) {
+          throw Error('Server exited unexpectedly.');
+        } else {
+          app.exit(0);
+        }
+      }).addListener('error', (err: Error) => {
+        dialog.showErrorBox(
+          'Error',
+          err.message
+        );
+        app.exit(1);
+      });
+    serverProcess.stdout.addListener('data', chunk => {
+      console.log(chunk.toString().replace(/\n$/, ''));
+      dialog.showMessageBox(
+        {message: chunk.toString().replace(/\n$/, '')}
+      );
+    });
+    serverProcess.stderr.addListener('data', chunk => {
+      console.error(chunk.toString().replace(/\n$/, ''));
+      dialog.showMessageBox(
+        {message: chunk.toString().replace(/\n$/, '')}
+      );
+    });
   }
 
   ipc.on('open-file-dialog', function (event) {
@@ -180,6 +204,10 @@ try {
   });
 
 } catch (e) {
-  console.log(e);
+  dialog.showErrorBox(
+    'Error', e.toString()
+  );
+  console.error('An error occurred!');
+  console.error(e);
   app.exit(1);
 }

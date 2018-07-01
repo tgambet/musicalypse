@@ -151,15 +151,15 @@ try {
       });
     serverProcess.stdout.addListener('data', chunk => {
       console.log(chunk.toString().replace(/\n$/, ''));
-      dialog.showMessageBox(
+      /*dialog.showMessageBox(
         {message: chunk.toString().replace(/\n$/, '')}
-      );
+      );*/
     });
     serverProcess.stderr.addListener('data', chunk => {
       console.error(chunk.toString().replace(/\n$/, ''));
-      dialog.showMessageBox(
+      /*dialog.showMessageBox(
         {message: chunk.toString().replace(/\n$/, '')}
-      );
+      );*/
     });
   }
 

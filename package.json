@@ -30,10 +30,11 @@
     "electron:serve_": "wait-on http-get://localhost:4200 && electron . --serve",
     "electron:build": "npm-run-all --parallel electron:tsc ng:build:electron web:stage",
     "electron:tsc": "tsc --project electron",
-    "electron:jre": "node bin/copyJRE.js",
+    "electron:jre": "node bin/copy-jre.js",
     "electron:stage": "npm-run-all electron:build electron:windows",
     "electron:windows": "electron-builder build --windows --config build/electron/electron-builder.json",
     "electron:windows:jre": "electron-builder build --windows --config build/electron/electron-builder-jre.json",
+    "electron:windows:store": "node bin/electron-windows-store.js",
     "postinstall": "electron-builder install-app-deps",
     "heroku-postbuild": "npm run ng:build:prod"
   },

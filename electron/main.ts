@@ -66,7 +66,7 @@ function createWindow() {
 
 function isJavaOnPath(): boolean {
   try {
-    require('child_process').execSync('java.exe -version');
+    require('child_process').execSync('java -version');
     return true;
   } catch (e) {
     return false;
@@ -98,12 +98,12 @@ try {
     const musicFolder = app.getPath('music');
     const cacheFolder = app.getPath('userData') + '/data';
 
-    const pathToJava = isPackaged() ?
+    const javaPath = path.normalize(isPackaged() ?
       __dirname + '/../../../../../target/jre/bin/java.exe' :
-      __dirname + '/../../jre/bin/java.exe';
-    const JAVACMD = fs.existsSync(pathToJava) ? path.normalize(pathToJava) : '';
+      __dirname + '/../../jre/bin/java.exe');
+    const JAVACMD = fs.existsSync(javaPath) ? javaPath : 'java';
 
-    if (JAVACMD === '' && !isJavaOnPath()) {
+    if (JAVACMD === 'java' && !isJavaOnPath()) {
       dialog.showErrorBox(
         'Java is not installed or can\'t be found',
         'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
@@ -113,23 +113,31 @@ try {
       app.exit(1);
     }
 
-    const pathToStage =
-      isPackaged() ?
+    if (JAVACMD !== '') {
+      console.log('Using Java: ' + JAVACMD);
+    }
+
+    const stagePath =
+      path.normalize(isPackaged() ?
         __dirname + '/../../../../../target/universal/stage' :
-        __dirname + '/../../universal/stage';
+        __dirname + '/../../universal/stage');
+
+    const separator = (process.platform === 'win32') ? ';' : ':';
+    const libs = fs.readdirSync(stagePath + '/lib').map(val => 'lib/' + val);
+    const classPath = [
+      libs.filter(lib => lib.indexOf('musicalypse') !== -1),
+      ...libs.filter(lib => lib.indexOf('musicalypse') === -1)
+    ].join(separator);
 
     serverProcess = spawn(
-        'bin\\musicalypse.bat',
-        [],
+        JAVACMD,
+        [`-Dmusic.library=${musicFolder}`, `-Dmusic.cacheFolder=${cacheFolder}`, '-cp', classPath, 'net.creasource.Main'],
         {
-          cwd: path.normalize(pathToStage),
-          env: {
-            'JAVACMD': JAVACMD,
-            'JAVA_OPTS': `-Dmusic.library=${musicFolder} -Dmusic.cacheFolder=${cacheFolder}`
-          }
+          cwd: stagePath
         }
       ).addListener('exit', code => {
         if (code === 1) {
+          app.exit(1);
           throw Error('Server exited unexpectedly.');
         } else {
           app.exit(0);

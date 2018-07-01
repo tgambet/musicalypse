@@ -1,5 +1,3 @@
-//const convertToWindowsStore = require('electron-windows-store');
-
 const zip = require('electron-windows-store/lib/zip');
 const flatten = require('electron-windows-store/lib/flatten');
 const setup = require('electron-windows-store/lib/setup');
@@ -16,7 +14,7 @@ const fs = require('fs-extra');
 
 const options = {
   containerVirtualization: false,
-  inputDirectory: __dirname + '/../dist/electron/win-unpacked',
+  inputDirectory: __dirname + '/../dist/electron-jre/win-unpacked',
   outputDirectory: __dirname + '/../dist',
   flatten: false,
   packageVersion: '1.0.0.0',

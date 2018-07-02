@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
+import {ServiceWorkerModule} from '@angular/service-worker';
 import {StoreModule} from '@ngrx/store';
 import {EffectsModule} from '@ngrx/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
@@ -21,6 +22,7 @@ import {PlaylistsModule} from '@app/playlists/playlists.module';
   imports: [
     // Angular Modules
     RouterModule.forRoot(routes),
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
 
     // Ngrx Modules
     StoreModule.forRoot(reducers, { metaReducers }),

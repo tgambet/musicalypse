@@ -1,6 +1,6 @@
 {
   "name": "Musicalypse",
-  "description": "A modern audio player.",
+  "description": "A modern audio player built with Web technologies.",
   "version": "0.5.0",
   "author": "Thomas Gambet <thomas.gambet@gmail.com> (https://github.com/tgambet/)",
   "license": "MIT",
@@ -55,7 +55,9 @@
     "@angular/material": "^6.3.1",
     "@angular/platform-browser": "^6.0.7",
     "@angular/platform-browser-dynamic": "^6.0.7",
+    "@angular/pwa": "^0.6.8",
     "@angular/router": "^6.0.7",
+    "@angular/service-worker": "^6.0.7",
     "@ngrx/effects": "^6.0.1",
     "@ngrx/entity": "^6.0.1",
     "@ngrx/store": "^6.0.1",

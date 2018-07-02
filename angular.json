@@ -22,15 +22,11 @@
                 "output": "/"
               },
               {
-                "glob": "manifest.json",
-                "input": "web/src",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
                 "input": "web/src/assets",
                 "output": "/assets"
-              }
+              },
+              "web/src/manifest.json"
             ],
             "styles": [
               {
@@ -55,7 +51,8 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "serviceWorker": true
             },
             "electron": {
               "fileReplacements": [
@@ -72,7 +69,8 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "serviceWorker": false
             }
           }
         },
@@ -116,15 +114,11 @@
                 "output": "/"
               },
               {
-                "glob": "manifest.json",
-                "input": "web/src",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
                 "input": "web/src/assets",
                 "output": "/assets"
-              }
+              },
+              "web/src/manifest.json"
             ]
           }
         },

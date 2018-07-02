@@ -53,6 +53,8 @@ import {SettingsService} from '@app/settings/services/settings.service';
         </mat-chip-list>
       </app-controls>
 
+      <div class="emptyMess" *ngIf="artists.length === 0">{{ getEmptyMessage() }}</div>
+
       <div #list class="list-wrapper" (swipeleft)="next.emit()">
         <mat-list class="list" dense>
           <app-list-item *ngFor="let artist of filteredArtists; trackBy: trackByName"
@@ -109,6 +111,10 @@ import {SettingsService} from '@app/settings/services/settings.service';
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .emptyMess {
+      padding: 1rem;
+      font-style: italic;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -118,7 +124,7 @@ export class ArtistsComponent implements OnChanges {
 
   @ViewChild('list') list: ElementRef;
 
-  @Input() private artists: Artist[];
+  @Input() artists: Artist[];
   @Input() selectedArtists: Artist[];
   @Input() displayType: DisplayType;
 
@@ -171,6 +177,20 @@ export class ArtistsComponent implements OnChanges {
       }
       case DisplayType.Favorites: {
         return '<em>Has favorites</em>';
+      }
+    }
+  }
+
+  getEmptyMessage() {
+    switch (this.displayType) {
+      case DisplayType.Default: {
+        return 'You don\'t have any songs in your library yet.';
+      }
+      case DisplayType.Favorites: {
+        return 'You don\'t have any favorite songs yet!';
+      }
+      case DisplayType.Recent: {
+        return 'You haven\'t played any songs yet!';
       }
     }
   }

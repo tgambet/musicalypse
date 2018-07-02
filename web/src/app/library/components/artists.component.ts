@@ -184,7 +184,7 @@ export class ArtistsComponent implements OnChanges {
   getEmptyMessage() {
     switch (this.displayType) {
       case DisplayType.Default: {
-        return 'You don\'t have any songs in your library yet.';
+        return '';
       }
       case DisplayType.Favorites: {
         return 'You don\'t have any favorite songs yet!';

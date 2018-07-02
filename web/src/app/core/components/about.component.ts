@@ -14,7 +14,10 @@ import {environment} from '@env/environment';
         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
            target="_blank"
            (click)="openExternally($event)">making a donation</a>,
-        buying the Windows version on the <u>Microsoft store</u>, or
+        buying the Windows version on the
+        <a href="https://www.microsoft.com/store/apps/9MVSZGK1F230"
+           target="_blank"
+           (click)="openExternally($event)">Microsoft store</a>, or
         joining the development on
         <a href="https://github.com/tgambet/musicalypse"
            target="_blank"

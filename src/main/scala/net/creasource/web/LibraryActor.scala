@@ -94,6 +94,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       _  = logger.info(l0.length - l1.length + " libraries have been removed.")
       _  = logger.info("Saving libraries to file...")
       _  <- saveLibraries(l1)
+      _  = self ! SetLibraries(l1)
       _  = logger.info("Loading tracks...")
       t0 <- loadTracks()
       _  = logger.info(t0.length + " tracks have been loaded.")
@@ -111,13 +112,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       _  = logger.info(t3.length - t2.length + " tracks have been added.")
       _  = logger.info("Saving tracks to file...")
       _  <- saveTracks(t3)
+      _  = self ! SetTracks(t3)
       _  = logger.info("Watching library folders...")
       _  <- watchLibraryFolders(l1)
-    } yield {
-      self ! SetLibraries(l1)
-      self ! SetTracks(t3)
-      Done
-    }
+    } yield Done
 
     initF.onComplete {
       case Success(Done) => logger.info("Initialization successful.")

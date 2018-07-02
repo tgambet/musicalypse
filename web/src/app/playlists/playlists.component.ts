@@ -74,7 +74,7 @@ import {map} from 'rxjs/operators';
       <div class="empty" *ngIf="(playlists | async).length === 0">
         <span>
           You don't have any custom playlist yet. Go to the
-          library, play some music and then click on "Save playlist"
+          library, play some music and select "Save playlist"
           from the player menu to create a new playlist.
         </span>
       </div>
@@ -85,7 +85,7 @@ import {map} from 'rxjs/operators';
       margin: 0.5rem 1rem 0;
     }
     .playlists {
-      height: 100%;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
     }

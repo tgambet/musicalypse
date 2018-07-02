@@ -12,6 +12,11 @@
     a {
       color: mat-color($foreground, text);
     }
+
+    .error {
+      color: mat-color($warn);
+    }
+
   }
 
 }

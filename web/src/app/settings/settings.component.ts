@@ -22,12 +22,16 @@ import {CoreUtils, Theme} from '../core/core.utils';
     <div class="wrapper">
       <div class="settings">
         <h2>Settings</h2>
-        <h3 class="secondary-text">Library</h3>
+        <h3 class="secondary-text library">
+          Library
+          <mat-spinner [diameter]="16" *ngIf="loading$ | async"></mat-spinner>
+        </h3>
         <p>
           Specify which folders contain your music and make up your library.<br>
           Currently we are watching the following folder(s):
         </p>
         <app-library-folders [folders]="libraryFolders$ | async"
+                             [error]="error$ | async"
                              (addFolder)="addFolderDialog()"
                              (removeFolder)="removeFolderDialog($event)"
                              (scanRequest)="requestLibraryScan()">
@@ -133,6 +137,14 @@ import {CoreUtils, Theme} from '../core/core.utils';
       width: 100%;
       padding: 0.5rem 1rem;
     }
+    mat-spinner {
+      margin-left: 0.5rem;
+    }
+    h3.library {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
     mat-divider {
       margin: 1rem 0;
     }
@@ -168,8 +180,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   cache_covers = false;
 
   error$: Observable<string>;
+  loading$: Observable<boolean>;
   libraryFolders$: Observable<string[]>;
-  libraryFoldersLength$: Observable<number>;
+  // libraryFoldersLength$: Observable<number>;
   currentTheme$: Observable<Theme>;
   localhost$: Observable<string>;
 
@@ -184,9 +197,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private httpSocketClient: HttpSocketClientService
   ) {
     this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
+    this.loading$ = this.store.pipe(select(fromSettings.getSettingsLoading));
     this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
-    this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
+    // this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
     this.localhost$ = this.httpSocketClient.get('/api/host').pipe(
       map((response: string) => 'http://' + response + ':8080')
     );

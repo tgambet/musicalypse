@@ -6,11 +6,13 @@ import {SettingsActionsUnion, SettingsActionTypes} from '../settings.actions';
 export interface State {
   libraryFolders: string[];
   error: string;
+  loading: boolean;
 }
 
 const initialState: State = {
   libraryFolders: [],
-  error: ''
+  error: '',
+  loading: false
 };
 
 /**
@@ -26,44 +28,55 @@ export function reducer(
       return {
         ...state,
         libraryFolders: action.payload,
-        error: ''
+        error: '',
+        loading: false
       };
 
     case SettingsActionTypes.LoadLibraryFoldersFailure:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
 
     case SettingsActionTypes.AddLibraryFolderSuccess:
       return {
         ...state,
         libraryFolders: [...state.libraryFolders, action.payload],
-        error: ''
+        error: '',
+        loading: false
       };
 
     case SettingsActionTypes.AddLibraryFolderFailure:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
 
     case SettingsActionTypes.RemoveLibraryFolderSuccess:
       return {
         ...state,
         libraryFolders: state.libraryFolders.filter(folder => folder !== action.payload),
-        error: ''
+        error: '',
+        loading: false
       };
 
     case SettingsActionTypes.RemoveLibraryFolderFailure:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
 
     case SettingsActionTypes.LoadLibraryFolders:
     case SettingsActionTypes.AddLibraryFolder:
     case SettingsActionTypes.RemoveLibraryFolder:
+      return {
+        ...state,
+        loading: true
+      };
+
     default:
       return state;
   }
@@ -73,4 +86,5 @@ export function reducer(
  * Selectors
  */
 export const getLibraryFolders = (state: State) => state.libraryFolders;
-export const getSettingsError = (state: State) => state.error;
+export const getError = (state: State) => state.error;
+export const getLoading = (state: State) => state.loading;

@@ -29,5 +29,10 @@ export const getLibraryFolders = createSelector(
 
 export const getSettingsError = createSelector(
   getLibraryFoldersState,
-  fromLibraryFolders.getSettingsError
+  fromLibraryFolders.getError
+);
+
+export const getSettingsLoading = createSelector(
+  getLibraryFoldersState,
+  fromLibraryFolders.getLoading
 );

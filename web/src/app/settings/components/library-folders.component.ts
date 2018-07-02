@@ -20,6 +20,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
         <span matLine>Scan library</span>
       </button>
     </mat-list>
+    <p class="error" *ngIf="error">Error: {{ error }}</p>
     <mat-menu></mat-menu>
   `,
   styles: [`
@@ -36,6 +37,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 export class LibraryFoldersComponent {
 
   @Input() folders: string[];
+  @Input() error: string;
 
   @Output() addFolder = new EventEmitter<void>();
   @Output() removeFolder = new EventEmitter<string>();

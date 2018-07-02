@@ -34,6 +34,8 @@ import {
   SavePlaylist
 } from '@app/library/actions/playlists.actions';
 import {AudioService} from '@app/core/services/audio.service';
+import {MatSnackBar} from '@angular/material';
+import {filter} from 'rxjs/operators';
 
 @Injectable()
 export class LibraryService {
@@ -41,7 +43,8 @@ export class LibraryService {
   constructor(
     private store: Store<fromLibrary.State>,
     private loader: LoaderService,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private snack: MatSnackBar
   ) {
     // Load Tracks
     loader.initializing$.subscribe(initializing => {
@@ -50,6 +53,14 @@ export class LibraryService {
         }
       }
     );
+
+    this.store.select(fromLibrary.getTracksError)
+      .pipe(filter(error => !!error))
+      .subscribe(error =>
+        this.snack.open('Error retrieving tracks! ' + error, 'Retry').afterDismissed().subscribe(
+          () => store.dispatch(new LoadTracks())
+        )
+      );
 
     // Restore selection state, playlist, favorites and recent tracks
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');

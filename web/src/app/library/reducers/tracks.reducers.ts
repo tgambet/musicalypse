@@ -57,7 +57,8 @@ export function reducer(
     case TracksActionTypes.LoadTracks: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: ''
       };
     }
 

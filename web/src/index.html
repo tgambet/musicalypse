@@ -6,23 +6,16 @@
   <base href="./">
   <meta name="description" content="A modern audio player built with Web technologies.">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <!--<meta name="theme-color" content="#363636">-->
   <meta name="theme-color" content="#303030">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
-  <!--<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Cookie" rel="stylesheet">-->
-  <!--<link rel="preload" as=font type="font/woff2" href="https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2">
-  <link rel="preload" as=font type="font/woff2" href="https://fonts.gstatic.com/s/cookie/v8/syky-y18lb0tSbf9kgqS1NDNpg.woff2">
-  <link rel="preload" as=font type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2">
-  <link rel="preload" as=font type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2">-->
   <style>
     /* latin */
     @font-face {
       font-family: 'Cookie';
       font-style: normal;
       font-weight: 400;
-      src: local('Cookie-Regular'), url(https://fonts.gstatic.com/s/cookie/v8/syky-y18lb0tSbf9kgqS1NDNpg.woff2) format('woff2');
+      src: local('Cookie-Regular'), url(assets/fonts/cookie.woff2) format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     /* latin */
@@ -30,7 +23,7 @@
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 300;
-      src: local('Roboto Light'), local('Roboto-Light'), local('sans-serif-light'), url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fBBc4AMP6lQ.woff2) format('woff2');
+      src: local('Roboto Light'), local('Roboto-Light'), local('sans-serif-light'), url(assets/fonts/roboto_300.woff2) format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     /* latin */
@@ -38,7 +31,7 @@
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 400;
-      src: local('Roboto'), local('Roboto-Regular'), local('sans-serif'), url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2) format('woff2');
+      src: local('Roboto'), local('Roboto-Regular'), local('sans-serif'), url(assets/fonts/roboto_400.woff2) format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     /* latin */
@@ -46,7 +39,7 @@
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 500;
-      src: local('Roboto Medium'), local('Roboto-Medium'), local('sans-serif-medium'), url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2) format('woff2');
+      src: local('Roboto Medium'), local('Roboto-Medium'), local('sans-serif-medium'), url(assets/fonts/roboto_500.woff2) format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     body {

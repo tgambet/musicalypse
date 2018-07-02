@@ -53,7 +53,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
         </mat-chip-list>
       </app-controls>
 
-      <div class="emptyMess" *ngIf="artists.length === 0">{{ getEmptyMessage() }}</div>
+      <div class="emptyMess fake-scroll-y" *ngIf="artists.length === 0">{{ getEmptyMessage() }}</div>
 
       <div #list class="list-wrapper" (swipeleft)="next.emit()">
         <mat-list class="list" dense>

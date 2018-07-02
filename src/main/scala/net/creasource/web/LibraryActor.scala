@@ -188,12 +188,13 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
               logger.info(s"Adding library: $lib")
               val client = sender()
               libraries +:= lib.toAbsolutePath
-              // TODO Manage exceptions
-              for {
+              val result = for {
                 _ <- saveLibraries(libraries)
                 _ <- watchLibraryFolders(Seq(lib.toAbsolutePath))
-              } yield {
-                client ! LibraryChangeSuccess
+              } yield Done
+              result.onComplete {
+                case Success(Done) => client ! LibraryChangeSuccess
+                case Failure(t) => client ! LibraryChangeFailed(s"An error occurred: ${t.getMessage}")
               }
             } else {
               sender() ! LibraryChangeFailed(s"'$lib' is not a directory or cannot be read")
@@ -209,8 +210,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             val client = sender()
             logger.info(s"Removing library: $lib")
             libraries = libraries diff List(lib)
-            // TODO Manage exceptions
-            for {
+            val result = for {
               _ <- saveLibraries(libraries)
               _ = logger.info("Computing tracks to remove...")
               deletedTracks = tracks.filter(track => track.metadata.location.startsWith(lib.toString))
@@ -221,8 +221,10 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
               _ = listeners.foreach(_ ! DeletedTracks(deletedTracks))
               _ = logger.info("Saving tracks")
               _ <- saveTracks(remainingTracks)
-            } yield {
-              client ! LibraryChangeSuccess
+            } yield Done
+            result.onComplete {
+              case Success(Done) => client ! LibraryChangeSuccess
+              case Failure(t) => client ! LibraryChangeFailed(s"An error occurred: ${t.getMessage}")
             }
           } else {
             sender() ! LibraryChangeFailed(s"$lib is not a known library folder.")

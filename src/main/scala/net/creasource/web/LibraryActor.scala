@@ -102,7 +102,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       t1 = t0.filter(t => l1.exists(lib => t.metadata.location.startsWith(lib.toString)))
       t2 = t1.filter(t => new File(t.metadata.location).exists)
       _  = logger.info(t0.length - t2.length + " tracks have been removed.")
-      t3 <- if (isFirstLaunch) {
+      t3 <- if (isFirstLaunch || t0.isEmpty) {
               logger.info("First launch detected. Skipping looking for new tracks.")
               Future.successful(t2)
             } else {

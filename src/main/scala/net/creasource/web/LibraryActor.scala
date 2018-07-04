@@ -225,7 +225,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
               case Failure(t) => client ! LibraryChangeFailed(s"An error occurred: ${t.getMessage}")
             }
           } else {
-            sender() ! LibraryChangeFailed(s"$lib is not a known library folder.")
+            // Succeed even though the library folder was unknown
+            sender() ! LibraryChangeSuccess
           }
         case Failure(_) => sender() ! LibraryChangeFailed(s"$library is not a valid path.")
       }

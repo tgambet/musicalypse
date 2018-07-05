@@ -32,10 +32,10 @@
     "electron:tsc": "tsc --project electron",
     "electron:jre": "node bin/copy-jre.js",
     "electron:stage": "npm-run-all electron:build electron:windows",
-    "electron:windows": "npx electron-builder build --windows --config build/electron/electron-builder.json",
-    "electron:windows:jre": "npx electron-builder build --windows --config build/electron/electron-builder-jre.json",
+    "electron:windows": "electron-builder build --windows --config build/electron/electron-builder.json",
+    "electron:windows:jre": "electron-builder build --windows --config build/electron/electron-builder-jre.json",
     "electron:windows:store": "node bin/electron-windows-store.js",
-    "electron:linux": "npx electron-builder build --linux --config build/electron/electron-builder-jre.json",
+    "electron:linux": "electron-builder build --linux --config build/electron/electron-builder-jre.json",
     "postinstall": "electron-builder install-app-deps",
     "heroku-postbuild": "npm run ng:build:prod"
   },

@@ -97,7 +97,7 @@ export class LoaderService {
     this.log.next('Loading...');
     this.httpSocketClient.getSocket().pipe(
       retryWhen(
-        errors => concat(errors.pipe(delay(500), take(8)), throwError('Connection to server failed!'))
+        errors => concat(errors.pipe(delay(500), take(20)), throwError('Connection to server failed!'))
       ),
       take(1)
     ).subscribe(

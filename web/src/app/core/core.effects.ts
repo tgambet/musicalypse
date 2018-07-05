@@ -36,7 +36,7 @@ export class CoreEffects {
           const title = 'Thank you for using Musicalypse!';
           const message = 'It looks like this is your first launch of Musicalypse.<br> ' +
             'Before you can listen to your music you need to go to Settings and scan your library.<br> ' +
-            'By default Musicalypse will use the "music" folder in your user home if it exists.<br> ' +
+            'By default Musicalypse will use the "Music" folder in your user home if it exists.<br> ' +
             'Do you want to scan it now?';
           this.dialog.open(ConfirmComponent, {data: {title: title, message: message}})
             .afterClosed()

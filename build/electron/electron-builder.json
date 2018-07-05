@@ -22,6 +22,8 @@
     ]
   },
   "linux": {
+    "synopsis": "A modern audio player built with Web technologies.",
+    "category": "Audio",
     "target": [
       "AppImage"
     ]

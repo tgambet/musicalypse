@@ -98,9 +98,11 @@ try {
     const musicFolder = app.getPath('music');
     const cacheFolder = app.getPath('userData') + '/data';
 
+    const javaExecutable = (process.platform === 'win32') ? 'java.exe' : 'java';
+
     const javaPath = path.normalize(isPackaged() ?
-      __dirname + '/../../../../../target/jre/bin/java.exe' :
-      __dirname + '/../../jre/bin/java.exe');
+      __dirname + '/../../../../../target/jre/bin/' + javaExecutable :
+      __dirname + '/../../jre/bin/' + javaExecutable);
     const JAVACMD = fs.existsSync(javaPath) ? javaPath : 'java';
 
     if (JAVACMD === 'java' && !isJavaOnPath()) {

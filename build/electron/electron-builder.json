@@ -9,9 +9,9 @@
   "nsis": {
     "oneClick": true
   },
+  "files": ["target/electron/out-tsc", "target/dist/electron"],
+  "extraFiles": ["target/universal/stage"],
   "win": {
-    "files": ["target/electron/out-tsc", "target/dist/electron"],
-    "extraFiles": ["target/universal/stage"],
     "target": [
       "nsis"
     ]

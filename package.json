@@ -70,7 +70,7 @@
     "core-js": "^2.5.4",
     "dotenv": "^5.0.1",
     "electron": "^2.0.3",
-    "electron-builder": "^20.15.1",
+    "electron-builder": "^20.19.1",
     "electron-reload": "^1.2.2",
     "electron-windows-store": "^0.12.0",
     "fs-extra": "^6.0.1",

@@ -23,7 +23,7 @@
   },
   "linux": {
     "synopsis": "A modern audio player built with Web technologies.",
-    "category": "Audio",
+    "category": "AudioVideo;Audio",
     "target": [
       "AppImage"
     ]

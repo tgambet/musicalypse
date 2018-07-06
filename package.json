@@ -19,6 +19,8 @@
     "sbt:clean": "sbt clean",
     "sbt:compile": "sbt compile",
     "sbt:stage": "sbt stage",
+    "sbt:stage:zip": "sbt universal:packageBin",
+    "sbt:stage:tar": "sbt universal:packageZipTarball",
     "web:run": "npm-run-all ng:build:prod sbt:run",
     "web:serve": "npm-run-all --parallel ng:serve sbt:run",
     "web:serve:electron": "npm-run-all --parallel ng:serve:electron sbt:run",
@@ -35,7 +37,7 @@
     "electron:windows": "electron-builder build --windows --config build/electron/electron-builder.json",
     "electron:windows:jre": "electron-builder build --windows --config build/electron/electron-builder-jre.json",
     "electron:windows:store": "node bin/electron-windows-store.js",
-    "electron:linux": "electron-builder build --linux --config build/electron/electron-builder-jre.json",
+    "electron:linux": "electron-builder build --linux --x64 --config build/electron/electron-builder-jre.json",
     "postinstall": "electron-builder install-app-deps",
     "heroku-postbuild": "npm run ng:build:prod"
   },

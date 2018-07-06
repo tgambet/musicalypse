@@ -115,10 +115,6 @@ try {
       app.exit(1);
     }
 
-    if (JAVACMD !== '') {
-      console.log('Using Java: ' + JAVACMD);
-    }
-
     const stagePath =
       path.normalize(isPackaged() ?
         __dirname + '/../../../../../target/universal/stage' :

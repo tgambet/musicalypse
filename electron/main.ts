@@ -11,6 +11,14 @@ const spawn = require('child_process').spawn;
 let win;
 const serve = process.argv.slice(1).some(val => val === '--serve');
 
+const isPackaged: boolean = __dirname.indexOf('app.asar') !== -1;
+
+const rootDirectory = path.normalize(
+  isPackaged ?
+    path.join(__dirname, '../../../../../') :
+    path.join(__dirname, '../../../')
+);
+
 function createWindow() {
 
   const size = screen.getPrimaryDisplay().workAreaSize;
@@ -25,7 +33,8 @@ function createWindow() {
     minHeight: 450,
     minWidth: 350,
     show: false,
-    backgroundColor: '#000'
+    backgroundColor: '#000',
+    icon: path.join(rootDirectory, 'build/electron/assets/icons/64x64.png')
   });
 
   if (serve) {
@@ -73,10 +82,6 @@ function isJavaOnPath(): boolean {
   }
 }
 
-function isPackaged(): boolean {
-  return __dirname.indexOf('app.asar') !== -1;
-}
-
 const shouldQuit = app.makeSingleInstance(() => {
   if (win) {
     if (win.isMinimized()) {
@@ -100,9 +105,7 @@ try {
 
     const javaExecutable = (process.platform === 'win32') ? 'java.exe' : 'java';
 
-    const javaPath = path.normalize(isPackaged() ?
-      __dirname + '/../../../../../target/jre/bin/' + javaExecutable :
-      __dirname + '/../../jre/bin/' + javaExecutable);
+    const javaPath = path.join(rootDirectory, '/target/jre/bin/' + javaExecutable);
     const JAVACMD = fs.existsSync(javaPath) ? javaPath : 'java';
 
     if (JAVACMD === 'java' && !isJavaOnPath()) {
@@ -115,10 +118,7 @@ try {
       app.exit(1);
     }
 
-    const stagePath =
-      path.normalize(isPackaged() ?
-        __dirname + '/../../../../../target/universal/stage' :
-        __dirname + '/../../universal/stage');
+    const stagePath = path.join(rootDirectory, 'target/universal/stage');
 
     const separator = (process.platform === 'win32') ? ';' : ':';
     const libs = fs.readdirSync(stagePath + '/lib').map(val => 'lib/' + val);

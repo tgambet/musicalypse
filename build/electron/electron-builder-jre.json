@@ -10,7 +10,11 @@
     "oneClick": true
   },
   "files": ["target/electron/out-tsc", "target/dist/electron"],
-  "extraFiles": ["target/universal/stage", "target/jre"],
+  "extraFiles": [
+    "target/universal/stage",
+    "target/jre",
+    "build/electron/assets/icons"
+  ],
   "win": {
     "target": [
       "nsis"

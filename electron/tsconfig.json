@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "../target/electron/out-tsc",
-    "sourceMap": true,
+    "sourceMap": false,
     "moduleResolution": "node",
     "typeRoots": [
       "../node_modules/@types"

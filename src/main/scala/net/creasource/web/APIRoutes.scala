@@ -10,7 +10,7 @@ import akka.pattern.ask
 import net.creasource.audio.Track
 import net.creasource.core.Application
 import net.creasource.web.LibraryActor._
-import net.creasource.web.SettingsActor.{DeleteCovers, GetHost}
+import net.creasource.web.SettingsActor.{DeleteCovers, GetHostIps}
 import spray.json.DefaultJsonProtocol._
 import spray.json.{JsString, JsValue, _}
 
@@ -94,8 +94,8 @@ class APIRoutes(application: Application) {
   def settingsRoutes: Route =
     path("host") {
       get {
-        onSuccess((application.settingsActor ? GetHost)(askTimeout).mapTo[String]) {
-          host => complete(StatusCodes.OK, host.toJson)
+        onSuccess((application.settingsActor ? GetHostIps)(askTimeout).mapTo[Seq[String]]) {
+          ips => complete(StatusCodes.OK, ips.toJson)
         }
       }
     } ~

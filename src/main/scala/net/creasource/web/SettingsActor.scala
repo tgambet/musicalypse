@@ -1,16 +1,15 @@
 package net.creasource.web
 
-import java.net.InetAddress
 import java.nio.file.{Files, Path, Paths}
 
 import akka.actor.{Actor, Props, Stash}
 import akka.event.Logging
 import net.creasource.core.Application
-import net.creasource.web.SettingsActor.{DeleteCovers, GetHost}
+import net.creasource.web.SettingsActor.{DeleteCovers, GetHostIps}
 
 object SettingsActor {
 
-  case object GetHost
+  case object GetHostIps
   case object DeleteCovers
 
   def props()(implicit application: Application): Props = Props(new SettingsActor())
@@ -25,7 +24,22 @@ class SettingsActor()(implicit application: Application) extends Actor with Stas
 
   override def receive: Receive = {
 
-    case GetHost => sender() ! InetAddress.getLocalHost.getHostAddress
+    case GetHostIps =>
+      var ipAddresses = Seq.empty[String]
+      try {
+        val interfaces = java.net.NetworkInterface.getNetworkInterfaces
+        while (interfaces.hasMoreElements) {
+          val ips = interfaces.nextElement.getInetAddresses
+          while (ips.hasMoreElements) {
+            val ip = ips.nextElement.getHostAddress
+            if (ip.matches("([0-9]+.)+"))
+              ipAddresses +:= ip
+          }
+        }
+      } catch {
+        case _: Throwable => logger.error("Error retrieving network interface list")
+      }
+      sender() ! ipAddresses
 
     case DeleteCovers =>
       logger.info("Deleting covers")

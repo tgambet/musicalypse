@@ -9,7 +9,7 @@ import {environment} from '@env/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromSettings from './settings.reducers';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, share} from 'rxjs/operators';
 import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from './settings.actions';
 import * as LayoutActions from '../core/core.actions';
 import * as fromRoot from '../app.reducers';
@@ -78,9 +78,16 @@ import {CoreUtils, Theme} from '../core/core.utils';
         <div *ngIf="isElectron">
           <h3 class="secondary-text">Streaming</h3>
           <p>
-            You can stream your music to your home devices on your local network by connecting to
-            <a [href]="localhost$ | async" (click)="openExternally($event)" target="_blank">{{ localhost$ | async }}</a>.
+            You can stream your music to your home devices on your local network by connecting to:
           </p>
+          <div *ngIf="hostIps$ | async; let ips">
+            <ul>
+              <li *ngFor="let ip of ips">
+                <a [href]="'http://' + ip + ':8080'" (click)="openExternally($event)" target="_blank">{{ 'http://' + ip + ':8080' }}</a>
+              </li>
+            </ul>
+            <span *ngIf="ips.length === 0">No network connection detected.</span>
+          </div>
           <mat-divider></mat-divider>
         </div>
         <h3 class="secondary-text">Cache</h3>
@@ -184,7 +191,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   libraryFolders$: Observable<string[]>;
   // libraryFoldersLength$: Observable<number>;
   currentTheme$: Observable<Theme>;
-  localhost$: Observable<string>;
+  hostIps$: Observable<string[]>;
 
   ipcAddFolder = (event, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
@@ -201,8 +208,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
     // this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
-    this.localhost$ = this.httpSocketClient.get('/api/host').pipe(
-      map((response: string) => 'http://' + response + ':8080')
+    this.hostIps$ = this.httpSocketClient.get('/api/host').pipe(
+      map((response: string[]) => response),
+      share()
     );
   }
 

@@ -343,7 +343,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           compressed.append(ch)
         i += 1
       }
-      compressed.toString
+      val res = compressed.toString
+      res.substring(0, scala.math.min(res.length, 50))
     }
 
     val cover = albumCover._1
@@ -361,16 +362,17 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
           .toFile
       }
 
-      if (!file.exists()) {
-        val randomAccessFile = new RandomAccessFile(file, "rw")
-        try {
+      try {
+        if (!file.exists()) {
+          val randomAccessFile = new RandomAccessFile(file, "rw")
           randomAccessFile.write(cover)
-        } finally {
-          Try(randomAccessFile.close())
+          randomAccessFile.close()
         }
+        Some(file)
+      } catch {
+        case _: Throwable => None
       }
 
-      Some(file)
     } else {
       logger.warning("Found a mp3 with a cover but no tags, ignoring: " + metadata.location)
       None
@@ -382,7 +384,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     tracksFile.createNewFile()
     val f = StreamConverters
       .fromInputStream(() => new FileInputStream(tracksFile))
-      .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = 1000, allowTruncation = false))
+      .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = Int.MaxValue, allowTruncation = false))
       .map(_.utf8String)
       .map(_.parseJson.convertTo[Track])
       .runWith(Sink.seq)
@@ -412,7 +414,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
     librariesFile.createNewFile()
     val result: Future[List[Path]] = StreamConverters
       .fromInputStream(() => new FileInputStream(librariesFile))
-      .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = 1000, allowTruncation = false))
+      .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = Int.MaxValue, allowTruncation = false))
       .map(_.utf8String)
       .map(_.parseJson.convertTo[String])
       .runWith(Sink.fold(List.empty[String])((list, value) => list :+ value))

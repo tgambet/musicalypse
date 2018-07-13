@@ -10,6 +10,18 @@ Provided as a seemingly native application using [electron](https://electronjs.o
 
 Find out more on [the official website](https://musicalypse.creasource.net).
 
+## Features
+
+* Supports mp3, ogg, and flac
+* Streaming server for your local network or beyond
+* Accessible by computer, tablets, or phones
+* Themes
+* Playlists
+* Favorites and recents tracks
+* Multiple artists/albums selection
+
+[![Musicalypse_screenshot](https://musicalypse.creasource.net/img/musicalypse-ipad-4.png)](https://musicalypse.creasource.net)
+
 ## Build
 
 TODO

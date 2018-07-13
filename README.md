@@ -15,10 +15,10 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 * Supports mp3, ogg, and flac
 * Streaming server for your local network or beyond
 * Accessible by computer, tablets, or phones
-* Themes
 * Playlists
-* Favorites and recents tracks
+* Favorites and recent tracks
 * Multiple artists/albums selection
+* Themes
 
 [![Musicalypse_screenshot](https://musicalypse.creasource.net/img/musicalypse-ipad-4.png)](https://musicalypse.creasource.net)
 

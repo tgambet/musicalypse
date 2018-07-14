@@ -26,10 +26,16 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 
 TODO
 
+## Privacy Policy
+
+Musicalypse does not collect any personal information. 
+
+For more information, please see [PRIVACY_POLICY](https://github.com/tgambet/musicalypse/blob/master/PRIVACY_POLICY.md).
+
 ## License
 
-Licensed using the MIT License (MIT)
+Licensed under the MIT License.
 
 Copyright © Thomas GAMBET
 
-For more information, please see [LICENSE](https://github.com/tgambet/musicalypse/blob/master/LICENSE)
+For more information, please see [LICENSE](https://github.com/tgambet/musicalypse/blob/master/LICENSE).

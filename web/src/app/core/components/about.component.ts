@@ -6,10 +6,10 @@ import {environment} from '@env/environment';
   template: `
     <div class="about">
       <h2>About</h2>
-      <p class="bolder">Version 0.5.1</p>
+      <h3 class="secondary-text">Version 0.5.1</h3>
       <p>
         <img src="assets/logo_grey.svg" height="120" style="float: left; margin: 0 1rem 1rem 0;">
-        Musicalypse is an open source software developed and maintained by Thomas GAMBET, available on all desktop platforms
+        Musicalypse is an open source software developed and maintained by Thomas Gambet, available on all desktop platforms
         as an online or native version. You can support its development by
         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
            target="_blank"
@@ -30,12 +30,24 @@ import {environment} from '@env/environment';
       <p>
         Contact: creasource.net@gmail.com
       </p>
-      <h3 style="clear: both;">Contributors</h3>
+      <mat-divider></mat-divider>
+      <h3 class="secondary-text" style="clear: both;">Contributors</h3>
       <ul>
         <li>Logo design: <a href="https://github.com/nunojesus" target="_blank" (click)="openExternally($event)">Nuno Jesus</a></li>
       </ul>
-      <h3>License</h3>
-      <p class="bolder">Copyright © 2018 Thomas GAMBET</p>
+      <mat-divider></mat-divider>
+      <h3 class="secondary-text">Privacy Policy</h3>
+      <p>Musicalypse does not collect any personal information.</p>
+      <p>
+        For more information, please read our
+        <a href="https://github.com/tgambet/musicalypse/blob/master/PRIVACY_POLICY.md"
+           target="_blank"
+           (click)="openExternally($event)">full privacy policy</a>
+        on Github.
+      </p>
+      <mat-divider></mat-divider>
+      <h3 class="secondary-text">License</h3>
+      <p class="bolder">Copyright © 2018 Thomas Gambet</p>
       <p>
         Permission is hereby granted, free of charge, to any person obtaining a copy
         of this software and associated documentation files (the "Software"), to deal
@@ -70,6 +82,9 @@ import {environment} from '@env/environment';
     }
     ul {
       padding-left: 1rem;
+    }
+    mat-divider {
+      margin: 1rem 0;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

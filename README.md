@@ -36,6 +36,6 @@ For more information, please see [PRIVACY_POLICY](https://github.com/tgambet/mus
 
 Licensed under the MIT License.
 
-Copyright © Thomas GAMBET
+Copyright © Thomas Gambet
 
 For more information, please see [LICENSE](https://github.com/tgambet/musicalypse/blob/master/LICENSE).

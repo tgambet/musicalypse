@@ -6,7 +6,7 @@ import {environment} from '@env/environment';
   template: `
     <div class="about">
       <h2>About</h2>
-      <h3 class="secondary-text">Version 0.5.1</h3>
+      <h3 class="secondary-text">Version 0.5.2</h3>
       <p>
         <img src="assets/logo_grey.svg" height="120" style="float: left; margin: 0 1rem 1rem 0;">
         Musicalypse is an open source software developed and maintained by Thomas Gambet, available on all desktop platforms

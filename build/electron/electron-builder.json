@@ -4,7 +4,7 @@
   "productName": "Musicalypse",
   "directories": {
     "buildResources": "build/electron/assets",
-    "output": "dist/electron-jre/"
+    "output": "dist/electron/"
   },
   "nsis": {
     "oneClick": true

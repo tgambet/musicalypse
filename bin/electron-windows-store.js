@@ -14,7 +14,7 @@ const fs = require('fs-extra');
 
 const options = {
   containerVirtualization: false,
-  inputDirectory: __dirname + '/../dist/electron-jre/win-unpacked',
+  inputDirectory: __dirname + '/../dist/electron/win-unpacked',
   outputDirectory: __dirname + '/../dist',
   flatten: false,
   packageVersion: '1.0.0.0',

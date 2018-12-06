@@ -4,8 +4,8 @@ import scala.sys.process._
 
 import scala.sys.process.Process
 
-lazy val akkaHttpVersion = "10.1.3"
-lazy val akkaVersion    = "2.5.13"
+lazy val akkaHttpVersion = "10.1.5"
+lazy val akkaVersion    = "2.5.18"
 
 //val ng = inputKey[Int]("The angular-cli command.")
 //val ngBuild = taskKey[Int]("ng build -prod -aot.")
@@ -19,7 +19,7 @@ lazy val root = (project in file(".")).
     version         := "0.5.2",
     licenses        := Seq("MIT" -> new URL("https://choosealicense.com/licenses/mit/")),
     organization    := "net.creasource",
-    scalaVersion    := "2.12.6",
+    scalaVersion    := "2.12.8",
     scalacOptions   := Seq("-unchecked", "-deprecation", "-feature"),
     resolvers       += "jaudiotagger-repository" at "https://dl.bintray.com/ijabz/maven",
     libraryDependencies ++= Seq(

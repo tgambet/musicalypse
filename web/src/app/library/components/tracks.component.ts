@@ -106,7 +106,7 @@ export class TracksComponent implements OnChanges {
   @ViewChild('list') list: ElementRef;
   @ViewChild('tracksMenu') tracksMenu: MatMenu;
 
-  _search = '';
+  private _search = '';
   get search() {
     return this._search;
   }
@@ -115,7 +115,14 @@ export class TracksComponent implements OnChanges {
     this.filteredTracks = this.sort(this.tracks.filter(this.filter));
   }
 
-  sortedAlphabetically = false;
+  private _sortedAlphabetically = false;
+  get sortedAlphabetically() {
+    return this._sortedAlphabetically;
+  }
+  set sortedAlphabetically(val: boolean) {
+    this._sortedAlphabetically = val;
+    this.filteredTracks = this.sort(this.filteredTracks);
+  }
 
   filter: (track: Track) => boolean = ((track: Track) => {
     if (this.search !== '') {
@@ -128,7 +135,7 @@ export class TracksComponent implements OnChanges {
     if (this.sortedAlphabetically) {
       return _.sortBy(tracks, (track: Track) => track.metadata.title);
     } else {
-      return tracks;
+      return _.sortBy(tracks, (track: Track) => track.metadata.location);
     }
   });
 

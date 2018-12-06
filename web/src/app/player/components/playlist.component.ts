@@ -1,4 +1,15 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  QueryList,
+  SimpleChanges,
+  ViewChildren
+} from '@angular/core';
 import {Track} from '@app/model';
 import {SelectionModel} from '@angular/cdk/collections';
 
@@ -21,7 +32,7 @@ import {SelectionModel} from '@angular/cdk/collections';
       <ng-container matColumnDef="title">
         <mat-cell *matCellDef="let track" class="title">
           <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
-          <div class="inner">
+          <div #title class="inner">
             {{ track.metadata.title }}
           </div>
         </mat-cell>
@@ -106,7 +117,7 @@ import {SelectionModel} from '@angular/cdk/collections';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerPlaylistComponent {
+export class PlayerPlaylistComponent implements OnChanges {
 
   @Input() playlist: Track[];
   @Input() currentTrack: Track;
@@ -118,5 +129,26 @@ export class PlayerPlaylistComponent {
   initialSelection = [];
   allowMultiSelect = true;
   selection = new SelectionModel<Track>(this.allowMultiSelect, this.initialSelection);
+
+  @ViewChildren('title')
+  titles: QueryList<ElementRef>;
+
+  static isScrolledIntoView(el: Element) {
+    const rect = el.getBoundingClientRect();
+    const elemTop = rect.top;
+    const elemBottom = rect.bottom;
+    return (elemTop >= 0) && (elemBottom <= window.innerHeight);
+  }
+
+  // Scroll into view the current track if hidden
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.currentTrack && this.titles) {
+      const element = this.titles.find(el => el.nativeElement.innerHTML.trim() === changes.currentTrack.currentValue.metadata.title);
+      if (element && !PlayerPlaylistComponent.isScrolledIntoView(element.nativeElement)) {
+        const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+        element.nativeElement.parentElement.scrollIntoView(scrollOptions);
+      }
+    }
+  }
 
 }

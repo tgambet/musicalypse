@@ -66,7 +66,8 @@ export function reducer(
     case PlayerActionTypes.ResetPlaylist: {
       return {
         ...state,
-        playlist: List()
+        playlist: List(),
+        shuffle: false
       };
     }
 
@@ -144,13 +145,15 @@ export function reducer(
     case PlayerActionTypes.SetPlaylist:
       return {
         ...state,
-        playlist: List.of(...action.payload)
+        playlist: List.of(...action.payload),
+        shuffle: false
       };
 
     case PlaylistsActionTypes.LoadPlaylist: {
       return {
         ...state,
-        playlist: List.of(...action.playlist.tracks)
+        playlist: List.of(...action.playlist.tracks),
+        shuffle: false
       };
     }
 

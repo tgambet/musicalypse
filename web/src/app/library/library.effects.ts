@@ -106,7 +106,7 @@ export class LibraryEffects {
     this.store.select(fromLibrary.getCurrentTrack).pipe(
       filter(track => !!track),
       tap(track => this.audioService.play(CoreUtils.resolveUrl(track.url))),
-      tap(track => this.titleService.setTitle(`Musicalypse • ${track.metadata.artist} - ${track.metadata.title}`)),
+      tap(track => this.titleService.setTitle(`${track.metadata.artist} • ${track.metadata.title} | Musicalypse`)),
       map(track => new AddToRecent([track]))
     );
 

@@ -7,7 +7,6 @@
 .back-metadata {
   display: flex;
   flex-direction: row;
-  min-height: 40px;
   box-sizing: content-box;
   padding: 9px 1rem 0 1rem;
   .back {
@@ -19,10 +18,16 @@
 .metadata {
   flex-grow: 1;
   text-align: center;
-  min-height: 40px;
-  .title {}
+  min-height: 52px;
+  padding-top: 10px;
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+  }
   .artist {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 300;
+    margin-top: 5px;
   }
 }
 
@@ -38,9 +43,11 @@
 }
 
 .volume {
-  min-height: 22px;
-  height: 22px;
+  position: absolute;
+  right: 0;
+  top: 72px;
   display: none;
+  z-index: 5;
 }
 
 .progress {

@@ -320,4 +320,10 @@ export class LibraryService {
     );
   }
 
+  getTracksByAlbumId(albumId: String): Observable<Track[]> {
+    return this.store.select(fromLibrary.getAllTracks).pipe(
+      map(tracks => tracks.filter(track => track.metadata.albumArtist + '-' + track.metadata.album === albumId))
+    );
+  }
+
 }

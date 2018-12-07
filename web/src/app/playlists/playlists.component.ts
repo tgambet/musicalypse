@@ -102,14 +102,32 @@ import {InfoComponent} from '@app/shared/dialogs/info.component';
             </ng-container>
             <mat-icon class="play-icon">play_circle_outline</mat-icon>
           </div>
-          <span class="primary">{{ item.name }}</span>
+          <span class="primary" [title]="item.name">{{ item.name }}</span>
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
-<!--      <h2>Main Albums</h2>
-      <ul class="list center">
-        <li class="item"></li>
-      </ul>-->
+      <h2>Suggested Albums <mat-icon class="info" matTooltip="Based on your favorites and music you played recently">info</mat-icon></h2>
+      <ul class="list center" [class.touch]="hasTouch()">
+        <li class="item" *ngFor="let item of suggestedAlbumsPlaylists | async">
+          <div class="covers"
+               [ngClass]="{
+                  noCover: getCovers(item).length === 0,
+                  c1: getCovers(item).length < 4,
+                  c4: getCovers(item).length >= 4 && getCovers(item).length < 9,
+                  c9: getCovers(item).length >= 9 && getCovers(item).length < 16,
+                  c16: getCovers(item).length >= 16
+               }"
+               (click)="itemClicked(item)">
+            <mat-icon class="avatar-icon">music_note</mat-icon>
+            <ng-container *ngFor="let cover of getCovers(item).slice(0, 16)">
+              <div [style]="getStyle(cover)" class="cover">&nbsp;</div>
+            </ng-container>
+            <mat-icon class="play-icon">play_circle_outline</mat-icon>
+          </div>
+          <span class="primary" [title]="item.name">{{ item.name }}</span>
+          <span class="secondary">{{ item.tracks.length }} songs</span>
+        </li>
+      </ul>
     </div>
   `,
   styles: [`
@@ -126,8 +144,23 @@ import {InfoComponent} from '@app/shared/dialogs/info.component';
       flex-direction: row;
       list-style: none;
       margin: 0;
-      padding: 0 0.5rem 0.5rem 0.5rem;
-      overflow-x: auto;
+      padding: .5rem;
+      overflow-x: scroll;
+    }
+    .list.touch::-webkit-scrollbar {
+      display: none;
+    }
+    .list:not(.touch) {
+      padding-bottom: 6px;
+    }
+    .list:not(.touch)::-webkit-scrollbar {
+      display: none;
+    }
+    .list:not(.touch):hover {
+      padding-bottom: 0;
+    }
+    .list:not(.touch):hover::-webkit-scrollbar {
+      display: unset;
     }
     .item {
       width: 150px;
@@ -222,12 +255,23 @@ import {InfoComponent} from '@app/shared/dialogs/info.component';
     .center .primary, .center .secondary {
       text-align: center;
     }
+    mat-icon.info {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+      line-height: 20px;
+      cursor: pointer;
+      position: relative;
+      top: 2px;
+    }
     @media screen and (min-width: 599px){
       .item {
         margin: 1rem;
       }
       .list {
         flex-wrap: wrap;
+        overflow-x: auto;
+        padding-bottom: 0 !important;
       }
     }
   `]
@@ -240,6 +284,7 @@ export class PlaylistsComponent {
   allPlaylist: Observable<Playlist>;
 
   artistsPlaylists: Observable<Playlist[]>;
+  suggestedAlbumsPlaylists: Observable<Playlist[]>;
 
   constructor(
     private library: LibraryService,
@@ -265,6 +310,20 @@ export class PlaylistsComponent {
           )
         )).pipe(
           map(playlists => playlists.sort((a, b) => b.tracks.length - a.tracks.length)),
+          map(playlists => playlists.slice(0, 15))
+        )
+      )
+    );
+    this.suggestedAlbumsPlaylists = combineLatest(this.library.getFavorites(), this.library.getRecentTracks()).pipe(
+      map(array => [...array[0], ...array[1]]),
+      map(tracks => tracks.map(track =>
+        ({id: track.metadata.albumArtist + '-' + track.metadata.album, name: `${track.metadata.album} • ${track.metadata.albumArtist}`}))
+      ),
+      map(objs => _.uniqBy(objs, obj => obj.id)),
+      switchMap(objs =>
+        combineLatest(objs.map(meta => this.library.getTracksByAlbumId(meta.id).pipe(
+          map(tracks => ({name: meta.name, tracks: tracks}))
+        ))).pipe(
           map(playlists => playlists.slice(0, 15))
         )
       )
@@ -300,6 +359,10 @@ export class PlaylistsComponent {
 
   deletePlaylist(item: Playlist) {
     this.library.deletePlaylist(item.name);
+  }
+
+  hasTouch() {
+    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
   }
 
 }

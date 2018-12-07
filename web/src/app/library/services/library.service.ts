@@ -296,6 +296,7 @@ export class LibraryService {
 
   savePlaylist(name: string, tracks: Track[]) {
     this.store.dispatch(new SavePlaylist(name, tracks));
+    this.snack.open('Playlist saved!', 'OK', {duration: 2000});
   }
 
   deletePlaylist(name: string) {

@@ -324,7 +324,7 @@ export class PlaylistsComponent {
         combineLatest(objs.map(meta => this.library.getTracksByAlbumId(meta.id).pipe(
           map(tracks => ({name: meta.name, tracks: tracks}))
         ))).pipe(
-          map(playlists => playlists.slice(0, 15))
+          map(playlists => _.shuffle(playlists).slice(0, 15))
         )
       )
     );

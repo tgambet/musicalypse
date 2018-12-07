@@ -29,9 +29,8 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 To build both the frontend and backend of Musicalypse you will need:
 
 * Java JDK8
-* sbt
-* Node
-* npm
+* [sbt (scala build tool)](https://www.scala-lang.org/download/)
+* [Node & npm](https://nodejs.org/en/download/)
 
 ### Run
 

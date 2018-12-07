@@ -50,7 +50,7 @@ export class AudioService {
     this.volume$.subscribe();
     this.muted$.subscribe();
 
-    this.currentTime$ = this._currentTime.asObservable().pipe(publishReplay(1), refCount(), throttleTime(500));
+    this.currentTime$ = this._currentTime.asObservable().pipe(publishReplay(1), refCount(), throttleTime(100));
     this.duration$ = this._duration.asObservable().pipe(publishReplay(1), refCount());
     this.loading$ = this._loading.asObservable().pipe(publishReplay(1), refCount());
     this.playing$ = this._playing.asObservable().pipe(publishReplay(1), refCount());

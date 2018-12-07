@@ -1,5 +1,16 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {MatDialog, MatTabGroup} from '@angular/material';
+import {
+  ChangeDetectionStrategy,
+  Component, ElementRef,
+  EventEmitter,
+  Input, OnChanges,
+  OnDestroy,
+  OnInit,
+  Output, QueryList,
+  SimpleChanges,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
+import {MatDialog, MatList, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {Playlist, Track} from '@app/model';
 import {Observable, Subscription} from 'rxjs';
@@ -9,6 +20,7 @@ import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
 import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
 import {DetailsComponent} from '@app/shared/dialogs/details.component';
+import {CoreUtils} from '@app/core/core.utils';
 
 @Component({
   selector: 'app-library-player',
@@ -16,7 +28,7 @@ import {DetailsComponent} from '@app/shared/dialogs/details.component';
   styleUrls: ['./player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerComponent implements OnInit, OnDestroy {
+export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() currentTrack: Track;
   @Input() playing: boolean;
@@ -37,6 +49,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
   @ViewChild('carousel')
   carousel: MatTabGroup;
 
+  @ViewChild('playlistMatList')
+  playlistMatList: MatList;
+
+  @ViewChild('playlistUl')
+  playlistUl: ElementRef;
+
   selectedCarouselIndex = 0;
 
   smallScreen: boolean;
@@ -53,6 +71,25 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.loading$ = this.audioService.loading$;
     this.duration$ = this.audioService.duration$;
     this.currentTime$ = this.audioService.currentTime$;
+  }
+
+  @ViewChildren('title')
+  titles: QueryList<ElementRef>;
+
+  // Scroll into view the current track if hidden
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.currentTrack && this.titles && (this.playlistMatList || this.playlistUl)) {
+      const foundElement =
+        this.titles.find(el => el.nativeElement.innerHTML.trim() === changes.currentTrack.currentValue.metadata.title.trim());
+      if (foundElement) {
+        const element = foundElement.nativeElement.closest('.mat-list-item, .track-list-item');
+        // We have two types of playlists: TODO: refactor
+        const referenceElement = this.playlistUl ? this.playlistUl.nativeElement : this.playlistMatList['_elementRef'].nativeElement;
+        if (!CoreUtils.isScrolledIntoView(element, referenceElement.parentElement)) {
+          element.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
+        }
+      }
+    }
   }
 
   ngOnInit() {

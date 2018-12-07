@@ -33,6 +33,19 @@ export class CoreUtils {
     }
   }
 
+  static isScrolledIntoView(el: Element, refElement: Element = null): boolean {
+    const rect = el.getBoundingClientRect();
+    const elemTop = rect.top;
+    const elemBottom = rect.bottom;
+    if (refElement) {
+      const refRect = refElement.getBoundingClientRect();
+      const refTop = refRect.top;
+      const refBottom = refRect.bottom;
+      return (elemTop >= refTop) && (elemBottom <= refBottom);
+    }
+    return (elemTop >= 0) && (elemBottom <= window.innerHeight);
+  }
+
 }
 
 export class Theme {

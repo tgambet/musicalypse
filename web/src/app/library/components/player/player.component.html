@@ -44,14 +44,14 @@
           <mat-icon>playlist_play</mat-icon>
           <span>Playlist</span>
         </ng-template>
-        <mat-list *ngIf="smallScreen" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
+        <mat-list *ngIf="smallScreen" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistMatList>
           <mat-list-item *ngFor="let track of playlist; trackBy: trackByURL"
                          class="divider hover"
                          [class.current]="isTrackCurrent(track)"
                          (click)="playTrack(track)">
             <span matLine class="title">
               <mat-icon *ngIf="isTrackCurrent(track) && playing">equalizer</mat-icon>
-              <span>{{ track.metadata.title }}</span>
+              <span #title>{{ track.metadata.title }}</span>
             </span>
             <span matLine class="meta">
               {{ track.metadata.artist }} • {{ track.metadata.album }}
@@ -60,12 +60,12 @@
             <span class="duration">{{ track.metadata.duration | sgTime }}</span>
           </mat-list-item>
         </mat-list>
-        <ul *ngIf="!smallScreen" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
+        <ul *ngIf="!smallScreen" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistUl>
           <ng-container *ngFor="let track of playlist; trackBy: trackByURL">
-            <li [class.current]="isTrackCurrent(track)" class="divider" (click)="playTrack(track)">
+            <li [class.current]="isTrackCurrent(track)" class="divider track-list-item" (click)="playTrack(track)">
               <span class="title c">
                 <mat-icon *ngIf="isTrackCurrent(track) && playing">equalizer</mat-icon>
-                <span>{{ track.metadata.title }}</span>
+                <span #title>{{ track.metadata.title }}</span>
               </span>
               <span class="artist c">{{ track.metadata.artist }}</span>
               <span class="album c">{{ track.metadata.album }}</span>
@@ -81,7 +81,7 @@
           <span>Cover</span>
         </ng-template>
         <div class="albumArt" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-          <img *ngIf="currentTrack && currentTrack.coverUrl" src="{{ currentTrack.coverUrl }}" />
+          <img *ngIf="currentTrack && currentTrack.coverUrl" src="{{ currentTrack.coverUrl }}" alt="Album Cover" />
           <mat-icon *ngIf="!currentTrack || !currentTrack.coverUrl">music_note</mat-icon>
         </div>
       </mat-tab>

@@ -7,11 +7,13 @@ import {
   OnChanges,
   Output,
   QueryList,
-  SimpleChanges,
+  SimpleChanges, ViewChild,
   ViewChildren
 } from '@angular/core';
 import {Track} from '@app/model';
 import {SelectionModel} from '@angular/cdk/collections';
+import {CoreUtils} from '@app/core/core.utils';
+import {MatTable} from '@angular/material';
 
 @Component({
   selector: 'app-player-playlist',
@@ -133,20 +135,15 @@ export class PlayerPlaylistComponent implements OnChanges {
   @ViewChildren('title')
   titles: QueryList<ElementRef>;
 
-  static isScrolledIntoView(el: Element) {
-    const rect = el.getBoundingClientRect();
-    const elemTop = rect.top;
-    const elemBottom = rect.bottom;
-    return (elemTop >= 0) && (elemBottom <= window.innerHeight);
-  }
+  @ViewChild('table')
+  table: MatTable<any>;
 
   // Scroll into view the current track if hidden
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.currentTrack && this.titles) {
+    if (changes.currentTrack && this.titles && this.table) {
       const element = this.titles.find(el => el.nativeElement.innerHTML.trim() === changes.currentTrack.currentValue.metadata.title);
-      if (element && !PlayerPlaylistComponent.isScrolledIntoView(element.nativeElement)) {
-        const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
-        element.nativeElement.parentElement.scrollIntoView(scrollOptions);
+      if (element && !CoreUtils.isScrolledIntoView(element.nativeElement, this.table['_elementRef'].nativeElement.parentElement)) {
+        element.nativeElement.parentElement.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
       }
     }
   }

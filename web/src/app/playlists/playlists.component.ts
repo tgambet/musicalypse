@@ -1,18 +1,20 @@
 import {Component} from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {Playlist} from '@app/model';
 import {LibraryService} from '@app/library/services/library.service';
 import {DomSanitizer} from '@angular/platform-browser';
 
 import * as _ from 'lodash';
 import {Router} from '@angular/router';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
+import {MatDialog} from '@angular/material';
+import {InfoComponent} from '@app/shared/dialogs/info.component';
 
 @Component({
   selector: 'app-playlists',
   template: `
     <div class="playlists">
-      <h2>Playlists</h2>
+      <h2>System Playlists</h2>
       <ul class="list center">
         <li class="item favorites" *ngIf="favoritePlaylist | async; let pl;">
           <div class="covers noCover" (click)="itemClicked(pl)">
@@ -38,14 +40,25 @@ import {map} from 'rxjs/operators';
           <span class="primary">All songs</span>
           <span class="secondary">{{ pl.tracks.length }} songs</span>
         </li>
+      </ul>
+      <h2>My Playlists</h2>
+      <ul class="list center">
+        <li class="item" *ngIf="(playlists | async).length === 0" (click)="openInfoDialog()">
+          <div class="covers noCover">
+            <mat-icon class="avatar-icon">bookmark_border</mat-icon>
+            <mat-icon class="play-icon">bookmark</mat-icon>
+          </div>
+          <span class="primary" style="opacity: .5">My First Playlist</span>
+          <!--<span class="secondary">0 songs</span>-->
+        </li>
         <li class="item" *ngFor="let item of playlists | async">
           <div class="covers"
                [ngClass]="{
                   noCover: getCovers(item).length === 0,
-                  c1: getCovers(item).length === 1,
-                  c4: getCovers(item).length > 1 && getCovers(item).length <= 4,
-                  c9: getCovers(item).length >= 5 && getCovers(item).length <= 9,
-                  c16: getCovers(item).length >= 10
+                  c1: getCovers(item).length < 4,
+                  c4: getCovers(item).length >= 4 && getCovers(item).length < 9,
+                  c9: getCovers(item).length >= 9 && getCovers(item).length < 16,
+                  c16: getCovers(item).length >= 16
                }"
                (click)="itemClicked(item)">
             <mat-icon class="avatar-icon">music_note</mat-icon>
@@ -71,13 +84,32 @@ import {map} from 'rxjs/operators';
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
-      <div class="empty" *ngIf="(playlists | async).length === 0">
-        <span>
-          You don't have any custom playlist yet. Go to the
-          library, play some music and select "Save playlist"
-          from the player menu to create a new playlist.
-        </span>
-      </div>
+      <h2>Main Artists</h2>
+      <ul class="list center">
+        <li class="item" *ngFor="let item of artistsPlaylists | async">
+          <div class="covers"
+               [ngClass]="{
+                  noCover: getCovers(item).length === 0,
+                  c1: getCovers(item).length < 4,
+                  c4: getCovers(item).length >= 4 && getCovers(item).length < 9,
+                  c9: getCovers(item).length >= 9 && getCovers(item).length < 16,
+                  c16: getCovers(item).length >= 16
+               }"
+               (click)="itemClicked(item)">
+            <mat-icon class="avatar-icon">music_note</mat-icon>
+            <ng-container *ngFor="let cover of getCovers(item).slice(0, 16)">
+              <div [style]="getStyle(cover)" class="cover">&nbsp;</div>
+            </ng-container>
+            <mat-icon class="play-icon">play_circle_outline</mat-icon>
+          </div>
+          <span class="primary">{{ item.name }}</span>
+          <span class="secondary">{{ item.tracks.length }} songs</span>
+        </li>
+      </ul>
+<!--      <h2>Main Albums</h2>
+      <ul class="list center">
+        <li class="item"></li>
+      </ul>-->
     </div>
   `,
   styles: [`
@@ -89,25 +121,13 @@ import {map} from 'rxjs/operators';
       display: flex;
       flex-direction: column;
     }
-    .empty {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .empty span {
-      display: inline-block;
-      max-width: 250px;
-      text-align: center;
-    }
     .list {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
       list-style: none;
       margin: 0;
       padding: 0 0.5rem 0.5rem 0.5rem;
-      justify-content: space-evenly;
+      overflow-x: auto;
     }
     .item {
       width: 150px;
@@ -128,6 +148,7 @@ import {map} from 'rxjs/operators';
       display: flex;
       cursor: pointer;
       flex-wrap: wrap;
+      overflow: hidden;
     }
     .covers .play-icon, .covers .avatar-icon {
       width: 60px;
@@ -140,34 +161,28 @@ import {map} from 'rxjs/operators';
       background-size: cover;
     }
     .c16 .cover {
-      min-width: 25%;
-      max-width: 25%;
-      min-height: 25%;
-      max-height: 25%;
+      flex-basis: 25%;
+      height: 25%;
     }
     .c9 .cover {
-      min-width: 33.3333%;
-      max-width: 33.3333%;
-      min-height: 33.3333%;
-      max-height: 33.3333%;
+      flex-basis: 33.3333%;
+      height: 33.3333%;
     }
     .c4 .cover {
-      min-width: 50%;
-      max-width: 50%;
-      min-height: 50%;
-      max-height: 50%;
+      flex-basis: 50%;
+      height: 50%;
     }
     .c1 .cover {
-      min-width: 100%;
-      min-height: 100%;
+      flex-basis: 100%;
+      height: 100%;
     }
     .play-icon {
       color: white;
       text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       display: none;
       position: absolute;
-      left: 45px;
-      top: 45px;
+      left: 44px;
+      top: 44px;
     }
     .more {
       position: absolute;
@@ -211,6 +226,9 @@ import {map} from 'rxjs/operators';
       .item {
         margin: 1rem;
       }
+      .list {
+        flex-wrap: wrap;
+      }
     }
   `]
 })
@@ -221,10 +239,13 @@ export class PlaylistsComponent {
   recentPlaylist: Observable<Playlist>;
   allPlaylist: Observable<Playlist>;
 
+  artistsPlaylists: Observable<Playlist[]>;
+
   constructor(
     private library: LibraryService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     this.playlists = library.getPlaylists();
     this.favoritePlaylist = this.library.getFavorites().pipe(
@@ -236,6 +257,25 @@ export class PlaylistsComponent {
     this.allPlaylist = this.library.getAllTracks().pipe(
       map(favorites => ({ name: '_all', tracks: favorites}))
     );
+    this.artistsPlaylists = this.library.getAllArtists().pipe(
+      switchMap(artists =>
+        combineLatest(artists.map(artist =>
+          this.library.getArtistTracks(artist).pipe(
+            map(tracks => ({name: artist.name, tracks: tracks}))
+          )
+        )).pipe(
+          map(playlists => playlists.sort((a, b) => b.tracks.length - a.tracks.length)),
+          map(playlists => playlists.slice(0, 15))
+        )
+      )
+    );
+  }
+
+  openInfoDialog() {
+    this.dialog.open(InfoComponent, {data: {title: 'Custom Playlists', message: `
+      You don't have any custom playlist yet.<br>
+      To create a new playlist select "Save playlist" from the player menu and it will appear on this page.
+    `}});
   }
 
   getCovers(playlist: Playlist) {

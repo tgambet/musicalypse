@@ -9,11 +9,13 @@ import {DetailsComponent} from './details.component';
 import {FolderComponent} from './folder/folder.component';
 import {PlaylistsDialogComponent} from './playlists-dialog.component';
 import {NewPlaylistDialogComponent} from '@app/shared/dialogs/new-playlist-dialog.component';
+import {InfoComponent} from '@app/shared/dialogs/info.component';
 
 export const COMPONENTS = [
   ConfirmComponent,
   DetailsComponent,
   FolderComponent,
+  InfoComponent,
   PlaylistsDialogComponent,
   NewPlaylistDialogComponent
 ];

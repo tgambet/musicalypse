@@ -35,7 +35,7 @@ import {
 } from '@app/library/actions/playlists.actions';
 import {AudioService} from '@app/core/services/audio.service';
 import {MatSnackBar} from '@angular/material';
-import {filter} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 
 @Injectable()
 export class LibraryService {
@@ -119,7 +119,7 @@ export class LibraryService {
     );
   }
 
-  getAllArtists() {
+  getAllArtists(): Observable<Artist[]> {
     return this.store.select(fromLibrary.getAllArtists);
   }
 
@@ -312,6 +312,12 @@ export class LibraryService {
 
   getPlaylists(): Observable<Playlist[]> {
     return this.store.select(fromLibrary.getPlaylists);
+  }
+
+  getArtistTracks(artist: Artist): Observable<Track[]> {
+    return this.store.select(fromLibrary.getAllTracks).pipe(
+      map(tracks => tracks.filter(track => track.metadata.albumArtist === artist.name))
+    );
   }
 
 }

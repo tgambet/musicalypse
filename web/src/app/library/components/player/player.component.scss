@@ -18,16 +18,21 @@
 .metadata {
   flex-grow: 1;
   text-align: center;
-  min-height: 52px;
-  padding-top: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
   .title {
     font-size: 18px;
     font-weight: 500;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .artist {
     font-size: 14px;
     font-weight: 300;
     margin-top: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 
@@ -223,6 +228,19 @@
   .menu {
     .repeat, .favorites {
       display: block;
+    }
+  }
+  .metadata {
+    min-height: 52px;
+    padding-top: 10px;
+    .title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .artist {
+      font-size: 14px;
+      font-weight: 300;
+      margin-top: 5px;
     }
   }
 }

@@ -1,3 +1,4 @@
+/*
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {Track} from '@app/model';
 
@@ -15,6 +16,7 @@ import {Track} from '@app/model';
       flex-direction: row;
       align-items: center;
       padding: .5rem 1rem .5rem 1rem;
+      font-weight: 300;
     }
     .status-position {
     }
@@ -42,3 +44,4 @@ export class PlayerStatusComponent {
   }
 
 }
+*/

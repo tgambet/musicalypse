@@ -79,6 +79,12 @@ import {MatTable} from '@angular/material';
     mat-table {
       background: none !important;
     }
+    mat-cell:first-of-type {
+      padding-left: 1rem;
+    }
+    mat-cell:last-of-type {
+      padding-right: 1rem;
+    }
     .inner {
       padding-right: 0.5rem;
       overflow: hidden;

@@ -51,9 +51,9 @@ import {Router} from '@angular/router';
                            [currentTrack]="currentTrack$ | async"
                            (trackClicked)="play($event)">
       </app-player-playlist>
-      <app-player-status [playlist]="playlist$ | async"
+      <!--<app-player-status [playlist]="playlist$ | async"
                          [currentTrack]="currentTrack$ | async">
-      </app-player-status>
+      </app-player-status>-->
     </div>
   `,
   styles: [`

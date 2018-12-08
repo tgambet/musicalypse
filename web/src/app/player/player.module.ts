@@ -6,15 +6,13 @@ import {PlayerHeaderComponent} from '@app/player/components/header.component';
 import {PlayerProgressComponent} from '@app/player/components/progress.component';
 import {PlayerControlsComponent} from '@app/player/components/controls.component';
 import {PlayerPlaylistComponent} from '@app/player/components/playlist.component';
-import {PlayerStatusComponent} from '@app/player/components/status.component';
 
 export const COMPONENTS = [
   PlayerComponent,
   PlayerHeaderComponent,
   PlayerProgressComponent,
   PlayerControlsComponent,
-  PlayerPlaylistComponent,
-  PlayerStatusComponent
+  PlayerPlaylistComponent
 ];
 
 @NgModule({

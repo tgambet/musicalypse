@@ -21,6 +21,7 @@
   white-space: nowrap;
   overflow: hidden;
   max-width: 100%;
+  min-height: 45px;
   .title {
     font-size: 18px;
     font-weight: 500;
@@ -30,7 +31,7 @@
   .artist {
     font-size: 14px;
     font-weight: 300;
-    margin-top: 5px;
+    //margin-top: 0.25rem;
     text-overflow: ellipsis;
     overflow: hidden;
   }
@@ -183,6 +184,7 @@
   flex-direction: row;
   align-items: center;
   padding: .5rem 1rem 0 1rem;
+  font-weight: 300;
   .status-position {
 
   }

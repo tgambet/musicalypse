@@ -232,12 +232,4 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     return this.playlist.reduce((total, track) => total + track.metadata.duration, 0);
   }
 
-  getCurrentTrackPosition(): number {
-    if (this.currentTrack) {
-      return this.playlist.findIndex(track => track.url === this.currentTrack.url) + 1;
-    } else {
-      return 0;
-    }
-  }
-
 }

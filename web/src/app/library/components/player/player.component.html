@@ -73,6 +73,9 @@
               <span class="duration c">{{ track.metadata.duration | sgTime }}</span>
             </li>
           </ng-container>
+          <li class="status-bar">
+            <span class="status-total-time">Total duration: {{ getTotalDuration() | sgTime }}</span>
+          </li>
         </ul>
       </mat-tab>
       <mat-tab label="Cover">
@@ -96,10 +99,7 @@
       </mat-tab>-->
     </mat-tab-group>
   </div>
-  <div class="status-bar">
-    <span class="status-position">{{ getCurrentTrackPosition() }}/{{ playlist.length }} tracks</span>
-    <span class="status-total-time">Total duration: {{ getTotalDuration() | sgTime }}</span>
-  </div>
+
   <app-progress [loading]="loading$ | async"
                 [currentTime]="currentTime$ | async"
                 [duration]="duration$ | async"

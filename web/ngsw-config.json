@@ -1,4 +1,7 @@
 {
+  "appData": {
+    "version": "0.5.2"
+  },
   "index": "/index.html",
   "assetGroups": [{
     "name": "app",
@@ -17,8 +20,22 @@
     "updateMode": "prefetch",
     "resources": {
       "files": [
+        "/**/*.woff2",
         "/assets/**"
       ]
     }
+  }],
+  "dataGroups": [{
+    "name": "covers",
+    "version": 0,
+    "urls": [
+      "/cache/covers/**"
+    ],
+    "cacheConfig": {
+      "maxSize": 1000,
+      "maxAge": "1d",
+      "strategy": "performance"
+    }
+
   }]
 }

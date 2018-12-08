@@ -15,6 +15,7 @@ import {AudioService} from './services/audio.service';
 
 import {CoreEffects} from './core.effects';
 import {InitializerComponent} from '@app/core/components/initializer.component';
+import {UpdateService} from '@app/core/services/update.service';
 
 export const COMPONENTS = [
   CoreComponent,
@@ -35,7 +36,8 @@ export const COMPONENTS = [
   providers: [
     HttpSocketClientService,
     LoaderService,
-    AudioService
+    AudioService,
+    UpdateService
   ]
 })
 export class CoreModule {

@@ -12,6 +12,7 @@ import {CoreUtils, Theme} from './core.utils';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ChangeTheme} from '@app/core/core.actions';
+import {UpdateService} from '@app/core/services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -126,7 +127,8 @@ export class CoreComponent implements OnInit {
     private loader: LoaderService,
     private audioService: AudioService,
     private renderer: Renderer2,
-    private appRoot: ElementRef
+    private appRoot: ElementRef,
+    private updateService: UpdateService // necessary to instantiate the service
   ) {
     this.initializing$ = this.loader.initializing$;
     this.hasErrors$ = this.loader.hasErrors$;

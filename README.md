@@ -99,6 +99,14 @@ You can get it easily by running `npm run electron:jre` and entering the path to
 
 *Note:* You should run this command on Windows only.
 
+## Contributing
+
+Please feel free to open tickets to report bugs, suggest new features, or request help.
+
+If you don't have a github account you can do the same by sending an email to contact@creasource.net.
+
+Even if you are not a developer don't hesitate to let us know what you like and what you dislike in Musicalypse, and how you think we can improve it.
+
 ## Privacy Policy
 
 Musicalypse does not collect any personal information. 

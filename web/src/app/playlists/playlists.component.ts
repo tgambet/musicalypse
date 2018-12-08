@@ -107,7 +107,7 @@ import {InfoComponent} from '@app/shared/dialogs/info.component';
         </li>
       </ul>
       <h2>Suggested Albums <mat-icon class="info" matTooltip="Based on your favorites and music you played recently">info</mat-icon></h2>
-      <ul class="list center" [class.touch]="hasTouch()">
+      <ul class="list center">
         <li class="item" *ngFor="let item of suggestedAlbumsPlaylists | async">
           <div class="covers"
                [ngClass]="{
@@ -147,19 +147,16 @@ import {InfoComponent} from '@app/shared/dialogs/info.component';
       padding: .5rem;
       overflow-x: scroll;
     }
-    .list.touch::-webkit-scrollbar {
-      display: none;
-    }
-    .list:not(.touch) {
+    .list {
       padding-bottom: 6px;
     }
-    .list:not(.touch)::-webkit-scrollbar {
+    .list::-webkit-scrollbar {
       display: none;
     }
-    .list:not(.touch):hover {
+    .list:hover {
       padding-bottom: 0;
     }
-    .list:not(.touch):hover::-webkit-scrollbar {
+    .list:hover::-webkit-scrollbar {
       display: unset;
     }
     .item {
@@ -359,10 +356,6 @@ export class PlaylistsComponent {
 
   deletePlaylist(item: Playlist) {
     this.library.deletePlaylist(item.name);
-  }
-
-  hasTouch() {
-    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
   }
 
 }

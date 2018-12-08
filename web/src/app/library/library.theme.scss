@@ -84,4 +84,8 @@
     }
   }
 
+  .status-bar {
+    color: mat-color($foreground, disabled-text);
+  }
+
 }

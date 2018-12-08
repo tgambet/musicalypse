@@ -178,6 +178,19 @@
   }
 }
 
+.status-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: .5rem 1rem 0 1rem;
+  .status-position {
+
+  }
+  .status-total-time {
+    margin-left: auto;
+  }
+}
+
 .menu {
   display: flex;
   flex-direction: row;

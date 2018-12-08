@@ -32,12 +32,14 @@ import {ChangeTheme} from '@app/core/core.actions';
                    [currentTheme]="currentTheme$ | async"
                    [isElectron]="isElectron"
                    [isMaximized]="isMaximized"
+                   [showInstallPrompt]="installPromptEvent !== null"
                    (closeWindow)="closeWindow()"
                    (maximizeWindow)="maximizeWindow()"
                    (minimizeWindow)="minimizeWindow()"
                    (unmaximizeWindow)="unmaximizeWindow()"
                    (changeTheme)="changeTheme($event)"
-                   (toggleSidenav)="toggleSidenav()">
+                   (toggleSidenav)="toggleSidenav()"
+                   (install)="install()">
       </app-toolbar>
 
       <mat-progress-bar class="main-loader"
@@ -116,6 +118,8 @@ export class CoreComponent implements OnInit {
   logs$: Observable<string>;
   hasErrors$: Observable<boolean>;
 
+  installPromptEvent: any = null;
+
   constructor(
     private ref: ChangeDetectorRef,
     private store: Store<fromRoot.State>,
@@ -170,6 +174,27 @@ export class CoreComponent implements OnInit {
       this.changeTheme(JSON.parse(savedTheme));
     } else {
       this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]));
+    }
+  }
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  beforeInstallPrompt(event: Event) {
+    this.installPromptEvent = event;
+    event.preventDefault();
+  }
+
+  install() {
+    if (this.installPromptEvent) {
+      this.installPromptEvent.prompt();
+      this.installPromptEvent.userChoice
+        .then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the A2HS prompt');
+          } else {
+            console.log('User dismissed the A2HS prompt');
+          }
+          this.installPromptEvent = null;
+        });
     }
   }
 

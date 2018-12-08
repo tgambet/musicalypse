@@ -14,6 +14,13 @@ import {Theme} from '@app/core/core.utils';
         Musicalypse
       </h1>
       <div class="filler"></div>
+      <button mat-button
+              class="install-button"
+              *ngIf="showInstallPrompt"
+              (click)="install.emit()">
+        <mat-icon>get_app</mat-icon>
+        Install
+      </button>
       <div class="electron-buttons" *ngIf="isElectron">
         <mat-icon class="electron-theme" (click)="themeChooser = true">format_color_fill</mat-icon>
         <mat-icon (click)="minimizeWindow.emit()">remove</mat-icon>
@@ -53,6 +60,7 @@ export class ToolbarComponent {
   @Input() currentTheme: Theme;
   @Input() isElectron: boolean;
   @Input() isMaximized: boolean;
+  @Input() showInstallPrompt: boolean;
 
   @Output() toggleSidenav = new EventEmitter<void>();
   @Output() changeTheme = new EventEmitter<Theme>();
@@ -60,6 +68,7 @@ export class ToolbarComponent {
   @Output() maximizeWindow = new EventEmitter<void>();
   @Output() minimizeWindow = new EventEmitter<void>();
   @Output() unmaximizeWindow = new EventEmitter<void>();
+  @Output() install = new EventEmitter<void>();
 
   getThemeStyle(theme: Theme) {
     return this.sanitizer.bypassSecurityTrustStyle(`background-color: ${theme.color}`);

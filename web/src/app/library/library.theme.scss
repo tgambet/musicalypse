@@ -67,7 +67,7 @@
     .playlist, .playlist-long {
       .mat-list-item, li {
         color: mat-color($foreground, secondary-text);
-        &:hover {
+        &:not(.status-bar):hover {
           color: mat-color($foreground, text);
           background: mat-color($background, hover);
         }

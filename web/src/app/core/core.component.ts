@@ -8,7 +8,7 @@ import {LoaderService} from './services/loader.service';
 import {UpdateService} from './services/update.service';
 import {AudioService} from './services/audio.service';
 
-import {ChangeTheme, CloseSidenav, ToggleSidenav} from './core.actions';
+import {ChangeTheme, CloseSidenav, SetAudioVolume, ToggleSidenav} from './core.actions';
 import {CoreUtils, Theme} from './core.utils';
 
 import * as fromRoot from '../app.reducers';
@@ -136,6 +136,15 @@ export class CoreComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    // Save and restore volume
+    const savedVolume = CoreUtils.load('volume');
+    if (savedVolume) {
+      this.store.dispatch(new SetAudioVolume(JSON.parse(savedVolume)));
+    }
+    this.store.select(fromRoot.getAudioVolume).subscribe(
+      volume => CoreUtils.save('volume', JSON.stringify(volume))
+    );
 
     // Set up electron listeners
     if (environment.electron) {

@@ -1,7 +1,10 @@
 import {ElementRef, Injectable, Renderer2} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {Observable, Subject} from 'rxjs';
-import {throttleTime} from 'rxjs/operators';
-import {publishReplay, refCount} from 'rxjs/operators';
+import {filter, map, publishReplay, refCount, throttleTime} from 'rxjs/operators';
+
+import * as fromRoot from '@app/app.reducers';
+import {SetAudioDuration, SetAudioError, SetAudioLoading, SetAudioPlaying} from '@app/core/core.actions';
 
 /**
  * Service configured by CoreComponent and in charge of creating and setting up the audio tag.
@@ -9,115 +12,53 @@ import {publishReplay, refCount} from 'rxjs/operators';
 @Injectable()
 export class AudioService {
 
-  private volume = 1.0;
-  private muted = false;
-
-  volume$: Observable<number>;
-  muted$: Observable<boolean>;
   currentTime$: Observable<number>;
-  duration$: Observable<number>;
-  loading$: Observable<boolean>;
-  playing$: Observable<boolean>;
   ended$: Observable<void>;
-  errors$: Observable<MediaError>;
 
-  private _renderer: Renderer2;
   private _appRoot: ElementRef;
-
   set appRoot(value: ElementRef) {
     this._appRoot = value;
   }
+
+  private _renderer: Renderer2;
   set renderer(value: Renderer2) {
     this._renderer = value;
   }
 
-  private _volume = new Subject<number>();
-  private _muted = new Subject<boolean>();
   private _currentTime = new Subject<number>();
-  private _duration = new Subject<number>();
-  private _loading = new Subject<boolean>();
-  private _playing = new Subject<boolean>();
   private _ended = new Subject<void>();
-  private _error = new Subject<MediaError>();
 
   private audioElement: HTMLMediaElement;
-
   private listeners: (() => void)[] = [];
 
-  constructor () {
-    this.volume$ = this._volume.asObservable().pipe(publishReplay(1), refCount());
-    this.muted$ = this._muted.asObservable().pipe(publishReplay(1), refCount());
-    this.volume$.subscribe();
-    this.muted$.subscribe();
+  constructor (
+    private store: Store<fromRoot.State>,
+  ) {
+    this.store.select(fromRoot.getAudioInput).pipe(
+      filter(audio => !!audio.source),
+      map(audio => this.setAudio(audio.source, audio.volume, audio.muted))
+    ).subscribe();
 
     this.currentTime$ = this._currentTime.asObservable().pipe(publishReplay(1), refCount(), throttleTime(100));
-    this.duration$ = this._duration.asObservable().pipe(publishReplay(1), refCount());
-    this.loading$ = this._loading.asObservable().pipe(publishReplay(1), refCount());
-    this.playing$ = this._playing.asObservable().pipe(publishReplay(1), refCount());
     this.ended$ = this._ended.asObservable();
-    this.errors$ = this._error.asObservable();
-
-    this._volume.next(this.volume);
-    this._muted.next(this.muted);
-    this._loading.next(false);
-    this._playing.next(false);
   }
 
-  play(src: string): Promise<void> {
-    this._volume.next(this.volume);
-    this._muted.next(this.muted);
+  play(): Promise<void> {
     if (this.audioElement) {
-      this._renderer.removeChild(this._appRoot, this.audioElement);
-      this.listeners.forEach(listener => listener());
-    }
-    this._playing.next(false);
-    this._loading.next(true);
-    this._currentTime.next(0);
-    this.audioElement = this.createAudioElement(src);
-    return this.audioElement.play();
-  }
-
-  pause() {
-    if (this.audioElement) {
-      this.audioElement.pause();
+      return this.audioElement.play();
     }
   }
 
-  resume() {
+  pause(): void {
     if (this.audioElement) {
-      this.audioElement.play();
+      return this.audioElement.pause();
     }
-  }
-
-  setVolume(volume: number) {
-    if (this.audioElement) {
-      this.audioElement.volume = volume;
-    }
-    this.volume = volume;
-    this._volume.next(this.volume);
-  }
-
-  mute() {
-    if (this.audioElement) {
-      this.audioElement.muted = true;
-    }
-    this.muted = true;
-    this._muted.next(this.muted);
-  }
-
-  unmute() {
-    if (this.audioElement) {
-      this.audioElement.muted = false;
-    }
-    this.muted = false;
-    this._muted.next(this.muted);
   }
 
   seekTo(time: number) {
     this.audioElement.currentTime = time;
     if (!this.isTimeInBuffer(time)) {
-      this._loading.next(true);
-      // this.loading = true;
+      this.store.dispatch(new SetAudioLoading(true));
     }
   }
 
@@ -130,26 +71,40 @@ export class AudioService {
     return false;
   }
 
-  // TODO manage errors
+  private setAudio(src: string, volume: number, muted: boolean): void {
+    if (this.audioElement && this.audioElement.src === src) {
+      this.audioElement.volume = volume;
+      this.audioElement.muted = muted;
+      return;
+    }
+    if (this.audioElement) {
+      this._renderer.removeChild(this._appRoot, this.audioElement);
+      this.listeners.forEach(listener => listener());
+    }
+    this.audioElement = this.createAudioElement(src);
+    this.audioElement.volume = volume;
+    this.audioElement.muted = muted;
+  }
+
   private createAudioElement(src: string): HTMLMediaElement {
+    this.store.dispatch(new SetAudioLoading(true));
+    this._currentTime.next(0);
     const audio: HTMLMediaElement = this._renderer.createElement('audio');
     this._renderer.appendChild(this._appRoot.nativeElement, audio);
-    // this._renderer.setAttribute(audio, 'src', src);
     audio.src = src;
-    audio.volume = this.volume;
-    audio.muted = this.muted;
     this.listeners.push(
-      this._renderer.listen(audio, 'loadedmetadata', (event) => this._duration.next(event.target.duration)),
+      this._renderer.listen(audio, 'loadedmetadata', (event) => this.store.dispatch(new SetAudioDuration(event.target.duration))),
       this._renderer.listen(audio, 'timeupdate', (event) => this._currentTime.next(event.target.currentTime)),
-      this._renderer.listen(audio, 'playing', () => this._playing.next(true)),
-      this._renderer.listen(audio, 'pause', () => this._playing.next(false)),
-      this._renderer.listen(audio, 'abort', () => this._playing.next(false)),
-      this._renderer.listen(audio, 'ended', () => this._playing.next(false)),
-      this._renderer.listen(audio, 'canplay', () => this._loading.next(false)),
+      this._renderer.listen(audio, 'playing', () => this.store.dispatch(new SetAudioPlaying(true))),
+      this._renderer.listen(audio, 'pause', () => this.store.dispatch(new SetAudioPlaying(false))),
+      this._renderer.listen(audio, 'abort', () => this.store.dispatch(new SetAudioPlaying(false))),
+      this._renderer.listen(audio, 'ended', () => this.store.dispatch(new SetAudioPlaying(false))),
+      this._renderer.listen(audio, 'canplay', () => this.store.dispatch(new SetAudioLoading(false))),
       this._renderer.listen(audio, 'ended', () => this._ended.next()),
       this._renderer.listen(audio, 'error', (event) => {
-        this._loading.next(false);
-        this._error.next(event.target.error);
+        this.store.dispatch(new SetAudioLoading(false));
+        this.store.dispatch(new SetAudioError(event.target.error));
+        console.error('An audio error occurred!', event);
       })
     );
     return audio;

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
+
 import {Track} from '@app/model';
-import {AudioService} from '@app/core/services/audio.service';
 import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
@@ -140,7 +140,6 @@ export class MiniPlayerComponent implements OnInit {
 
   constructor(
     private sanitizer: DomSanitizer,
-    private audioService: AudioService,
     private library: LibraryService
   ) { }
 
@@ -153,11 +152,11 @@ export class MiniPlayerComponent implements OnInit {
   }
 
   resume() {
-    this.audioService.resume();
+    this.library.play();
   }
 
   pause() {
-    this.audioService.pause();
+    this.library.pause();
   }
 
   playPrevious() {

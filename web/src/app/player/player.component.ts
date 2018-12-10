@@ -1,13 +1,14 @@
 import {Component} from '@angular/core';
-import {LibraryService} from '@app/library/services/library.service';
-import {Observable} from 'rxjs';
-import {Playlist, Track} from '@app/model';
-import {DomSanitizer} from '@angular/platform-browser';
-import {AudioService} from '@app/core/services/audio.service';
-import {take, tap, mergeMap} from 'rxjs/operators';
-import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
-import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
+import {DomSanitizer} from '@angular/platform-browser';
+import {MatDialog} from '@angular/material';
+import {Observable} from 'rxjs';
+import {mergeMap, take, tap} from 'rxjs/operators';
+
+import {Playlist, Track} from '@app/model';
+import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
+
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-player',
@@ -108,7 +109,6 @@ export class PlayerComponent {
 
   constructor(
     private library: LibraryService,
-    private audio: AudioService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
     private router: Router
@@ -118,12 +118,12 @@ export class PlayerComponent {
     this.playlists$ = library.getPlaylists();
     this.repeat$ = library.getRepeat();
     this.shuffle$ = library.getShuffle();
-    this.volume$ = audio.volume$;
-    this.muted$ = audio.muted$;
-    this.playing$ = audio.playing$;
-    this.loading$ = audio.loading$;
-    this.currentTime$ = audio.currentTime$;
-    this.duration$ = audio.duration$;
+    this.volume$ = library.getAudioVolume();
+    this.muted$ = library.getAudioMuted();
+    this.playing$ = library.getAudioPlaying();
+    this.loading$ = library.getAudioLoading();
+    this.currentTime$ = library.getAudioCurrentTime();
+    this.duration$ = library.getAudioDuration();
     this.isFavorite$ = this.currentTrack$.pipe(mergeMap(t => this.library.isFavorite(t)));
   }
 
@@ -132,15 +132,15 @@ export class PlayerComponent {
   }
 
   seekTo(time: number) {
-    this.audio.seekTo(time);
+    this.library.seekTo(time);
   }
 
   pause() {
-    this.audio.pause();
+    this.library.pause();
   }
 
   resume() {
-    this.audio.resume();
+    this.library.play();
   }
 
   setRepeat(value: boolean) {
@@ -167,11 +167,11 @@ export class PlayerComponent {
   }
 
   setMute(muted: boolean) {
-    muted ? this.audio.mute() : this.audio.unmute();
+    this.library.setMuted(muted);
   }
 
   setVolume(volume: number) {
-    this.audio.setVolume(volume);
+    this.library.setVolume(volume);
   }
 
   play(track: Track) {

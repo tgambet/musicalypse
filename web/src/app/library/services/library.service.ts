@@ -1,41 +1,35 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {MatSnackBar} from '@angular/material';
 import * as _ from 'lodash';
 
 import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
+import {AudioService} from '@app/core/services/audio.service';
 import {LoaderService} from '@app/core/services/loader.service';
+import {SetAudioMuted, SetAudioVolume} from '@app/core/core.actions';
 
-import {LoadTracks} from '../actions/tracks.actions';
+import {AddToPlaylist, DeletePlaylist, LoadPlaylist, LoadPlaylists, RemoveFromPlaylist, SavePlaylist} from '../actions/playlists.actions';
 import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
 import {
-  AddTracksToPlaylist,
-  PlayNextTrackInPlaylist,
-  PlayPreviousTrackInPlaylist,
-  PlayTrack,
+  AddToCurrentPlaylist,
+  PlayNextTrack,
+  PlayPreviousTrack,
   PlayTrackNext,
-  ResetPlaylist,
-  SetPlaylist,
+  SetCurrentPlaylist,
+  SetCurrentTrack,
   SetRepeat,
   SetShuffle
 } from '../actions/player.actions';
 import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions';
 import {AddToRecent} from '../actions/recent.actions';
+import {LoadTracks} from '../actions/tracks.actions';
 
+import * as fromCore from '@app/app.reducers';
 import * as fromLibrary from '../library.reducers';
-import {
-  AddToPlaylist,
-  DeletePlaylist,
-  LoadPlaylist,
-  LoadPlaylists,
-  RemoveFromPlaylist,
-  SavePlaylist
-} from '@app/library/actions/playlists.actions';
-import {AudioService} from '@app/core/services/audio.service';
-import {MatSnackBar} from '@angular/material';
-import {filter, map} from 'rxjs/operators';
 
 @Injectable()
 export class LibraryService {
@@ -62,6 +56,10 @@ export class LibraryService {
         )
       );
 
+    setTimeout(() => this.initialize(), 0);
+  }
+
+  initialize() {
     // Restore selection state, playlist, favorites and recent tracks
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
@@ -73,7 +71,7 @@ export class LibraryService {
     }
     const savedPlaylist = CoreUtils.load('playlist');
     if (savedPlaylist) {
-      this.store.dispatch(new SetPlaylist(JSON.parse(savedPlaylist)));
+      this.store.dispatch(new SetCurrentPlaylist(JSON.parse(savedPlaylist)));
     }
     const savedFavorites = CoreUtils.load('favorites');
     if (savedFavorites) {
@@ -89,8 +87,7 @@ export class LibraryService {
     }
     const savedCurrent = CoreUtils.load('current');
     if (savedCurrent) {
-      this.store.dispatch(new PlayTrack(JSON.parse(savedCurrent)));
-      this.audioService.pause();
+      this.store.dispatch(new SetCurrentTrack(JSON.parse(savedCurrent)));
     }
 
     // Save selection state, playlist, favorites, and recent tracks on change
@@ -100,7 +97,7 @@ export class LibraryService {
     this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
       ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
     );
-    this.store.select(fromLibrary.getPlaylist).subscribe(
+    this.store.select(fromLibrary.getCurrentPlaylist).subscribe(
       playlist => CoreUtils.save('playlist', JSON.stringify(playlist))
     );
     this.store.select(fromLibrary.getFavorites).subscribe(
@@ -159,8 +156,32 @@ export class LibraryService {
     return this.store.select(fromLibrary.getRepeat);
   }
 
+  getAudioMuted() {
+    return this.store.select(fromCore.getAudioMuted);
+  }
+
+  getAudioVolume() {
+    return this.store.select(fromCore.getAudioVolume);
+  }
+
+  getAudioPlaying() {
+    return this.store.select(fromCore.getAudioPlaying);
+  }
+
+  getAudioLoading() {
+    return this.store.select(fromCore.getAudioLoading);
+  }
+
+  getAudioDuration() {
+    return this.store.select(fromCore.getAudioDuration);
+  }
+
+  getAudioCurrentTime() {
+    return this.audioService.currentTime$; // TODO
+  }
+
   getPlaylist() {
-    return this.store.select(fromLibrary.getPlaylist);
+    return this.store.select(fromLibrary.getCurrentPlaylist);
   }
 
   selectArtists(artists: Artist[]) {
@@ -203,32 +224,56 @@ export class LibraryService {
     return this.store.select(fromLibrary.isSelectedAlbum(album));
   }
 
-  playTrack(track: Track) {
-    this.store.dispatch(new PlayTrack(track));
+  setTrack(track: Track) {
+    this.store.dispatch(new SetCurrentTrack(track));
   }
 
-  playTrackNext(track: Track) {
+  playTrack(track: Track) {
+    this.setTrack(track);
+    this.play();
+  }
+
+  play() {
+    this.audioService.play(); // TODO catch errors
+  }
+
+  pause() {
+    this.audioService.pause();
+  }
+
+  seekTo(time: number) {
+    this.audioService.seekTo(time);
+  }
+
+  playTrackNext(track: Track): void {
     this.store.dispatch(new PlayTrackNext(track));
   }
 
   setPlaylist(playlist: Track[]) {
-    this.store.dispatch(new SetPlaylist(playlist));
+    this.store.dispatch(new SetCurrentPlaylist(playlist));
   }
 
-  addTracksToPlaylist(tracks: Track[]) {
-    this.store.dispatch(new AddTracksToPlaylist(tracks));
+  addToCurrentPlaylist(tracks: Track[]) {
+    /*this.store.select(fromLibrary.getCurrentPlaylist).pipe(
+      take(1),
+      map(playlist => {
+        playlist.push(...tracks.filter(track => !playlist.some(t => _.isEqual(t, track))));
+        this.store.dispatch(new SetCurrentPlaylist(playlist));
+      })
+    ).subscribe();*/
+    this.store.dispatch(new AddToCurrentPlaylist(tracks));
   }
 
   clearPlaylist() {
-    this.store.dispatch(new ResetPlaylist());
+    this.store.dispatch(new SetCurrentPlaylist([]));
   }
 
   playPreviousTrack() {
-    this.store.dispatch(new PlayPreviousTrackInPlaylist());
+    this.store.dispatch(new PlayPreviousTrack());
   }
 
   playNextTrack() {
-    this.store.dispatch(new PlayNextTrackInPlaylist());
+    this.store.dispatch(new PlayNextTrack());
   }
 
   setShuffle(value: boolean) {
@@ -237,6 +282,14 @@ export class LibraryService {
 
   setRepeat(value: boolean) {
     this.store.dispatch(new SetRepeat(value));
+  }
+
+  setMuted(value: boolean) {
+    this.store.dispatch(new SetAudioMuted(value));
+  }
+
+  setVolume(value: number) {
+    this.store.dispatch(new SetAudioVolume(value));
   }
 
   selectInLibrary(playlist: Track[]) {
@@ -296,7 +349,7 @@ export class LibraryService {
 
   savePlaylist(name: string, tracks: Track[]) {
     this.store.dispatch(new SavePlaylist(name, tracks));
-    this.snack.open('Playlist saved!', 'OK', {duration: 2000});
+    this.snack.open('Playlist saved!', 'OK', {duration: 2000}); // TODO
   }
 
   deletePlaylist(name: string) {

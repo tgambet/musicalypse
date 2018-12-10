@@ -1,6 +1,7 @@
 import {ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
-import * as fromCore from './core/core.reducers';
 import {environment} from '@env/environment';
+
+import * as fromCore from './core/core.reducers';
 
 export interface State {
   core: fromCore.State;
@@ -45,4 +46,34 @@ export const getShowSidenav = createSelector(
 export const getCurrentTheme = createSelector(
   getCoreState,
   fromCore.getCurrentTheme
+);
+
+export const getAudioInput = createSelector(
+  getCoreState,
+  fromCore.getAudioInput
+);
+
+export const getAudioPlaying = createSelector(
+  getCoreState,
+  fromCore.getAudioPlaying
+);
+
+export const getAudioLoading = createSelector(
+  getCoreState,
+  fromCore.getAudioLoading
+);
+
+export const getAudioDuration = createSelector(
+  getCoreState,
+  fromCore.getAudioDuration
+);
+
+export const getAudioMuted = createSelector(
+  getCoreState,
+  fromCore.getAudioMuted
+);
+
+export const getAudioVolume = createSelector(
+  getCoreState,
+  fromCore.getAudioVolume
 );

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 
 @Component({
   selector: 'app-side-nav',
@@ -11,10 +11,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
          routerLinkActive="active"
          (click)="closeSidenav.emit()">
         <mat-icon matListIcon>play_circle_outline</mat-icon>
-        <span matLine>
-          <mat-icon *ngIf="playing" class="playing-icon">volume_up</mat-icon>
-          Playing now
-        </span>
+        <span matLine>Playing now</span>
       </a>
       <!--<a mat-list-item-->
          <!--routerLink="/mymusic"-->
@@ -102,8 +99,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidenavComponent {
-
-  @Input() playing: boolean;
 
   @Output() closeSidenav = new EventEmitter<void>();
 

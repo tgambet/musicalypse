@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
-import {Playlist} from '@app/model';
-import {LibraryService} from '@app/library/services/library.service';
-import {DomSanitizer} from '@angular/platform-browser';
-
-import * as _ from 'lodash';
 import {Router} from '@angular/router';
-import {map, switchMap} from 'rxjs/operators';
+import {DomSanitizer} from '@angular/platform-browser';
 import {MatDialog} from '@angular/material';
+import {combineLatest, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import * as _ from 'lodash';
+
+import {Playlist} from '@app/model';
 import {InfoComponent} from '@app/shared/dialogs/info.component';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-playlists',

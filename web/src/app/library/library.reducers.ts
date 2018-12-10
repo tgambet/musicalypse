@@ -163,10 +163,19 @@ export const getShuffle = createSelector(
   fromPlayer.getShuffle
 );
 
-export const getPlaylist = createSelector(
+export const getCurrentPlaylist = createSelector(
   getPlayerState,
-  fromPlayer.getPlaylist
+  fromPlayer.getCurrentPlaylist
 );
+
+/*export const getCurrentTrackAndPlaylist = createSelector(
+  getCurrentTrack,
+  getCurrentPlaylist,
+  (track: Track, playlist: Track[]) => ({
+    currentTrack: track,
+    currentPlaylist: playlist
+  })
+);*/
 
 /**
  * Favorites selectors

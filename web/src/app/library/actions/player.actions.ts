@@ -2,20 +2,14 @@ import {Track} from '@app/model';
 import {Action} from '@ngrx/store';
 
 export enum PlayerActionTypes {
-  PlayTrack = '[Player] Play Track',
   PlayTrackNext = '[Player] Play Track Next',
-  AddTracksToPlaylist = '[Player] Add Tracks To Playlist',
-  ResetPlaylist = '[Player] Reset Playlist',
-  PlayNextTrackInPlaylist = '[Player] Play Next Track In Playlist',
-  PlayPreviousTrackInPlaylist = '[Player] Play Previous Track In Playlist',
+  AddToCurrentPlaylist = '[Player] Add To Current Playlist',
+  PlayNextTrack = '[Player] Play Next Track',
+  PlayPreviousTrack = '[Player] Play Previous Track',
   SetRepeat = '[Player] Set Repeat',
   SetShuffle = '[Player] Set Shuffle',
-  SetPlaylist = '[Player] Set Playlist'
-}
-
-export class PlayTrack implements Action {
-  readonly type = PlayerActionTypes.PlayTrack;
-  constructor(public payload: Track) {}
+  SetCurrentTrack = '[Player] Set Track',
+  SetCurrentPlaylist = '[Player] Set Playlist',
 }
 
 export class PlayTrackNext implements Action {
@@ -23,21 +17,17 @@ export class PlayTrackNext implements Action {
   constructor(public payload: Track) {}
 }
 
-export class AddTracksToPlaylist implements Action {
-  readonly type = PlayerActionTypes.AddTracksToPlaylist;
+export class AddToCurrentPlaylist implements Action {
+  readonly type = PlayerActionTypes.AddToCurrentPlaylist;
   constructor(public payload: Track[]) {}
 }
 
-export class ResetPlaylist implements Action {
-  readonly type = PlayerActionTypes.ResetPlaylist;
+export class PlayNextTrack implements Action {
+  readonly type = PlayerActionTypes.PlayNextTrack;
 }
 
-export class PlayNextTrackInPlaylist implements Action {
-  readonly type = PlayerActionTypes.PlayNextTrackInPlaylist;
-}
-
-export class PlayPreviousTrackInPlaylist implements Action {
-  readonly type = PlayerActionTypes.PlayPreviousTrackInPlaylist;
+export class PlayPreviousTrack implements Action {
+  readonly type = PlayerActionTypes.PlayPreviousTrack;
 }
 
 export class SetRepeat implements Action {
@@ -50,18 +40,22 @@ export class SetShuffle implements Action {
   constructor(public payload: boolean) {}
 }
 
-export class SetPlaylist implements Action {
-  readonly type = PlayerActionTypes.SetPlaylist;
+export class SetCurrentTrack implements Action {
+  readonly type = PlayerActionTypes.SetCurrentTrack;
+  constructor(public payload: Track) {}
+}
+
+export class SetCurrentPlaylist implements Action {
+  readonly type = PlayerActionTypes.SetCurrentPlaylist;
   constructor(public payload: Track[]) {}
 }
 
 export type PlayerActionsUnion =
-  PlayTrack |
   PlayTrackNext |
-  AddTracksToPlaylist |
-  ResetPlaylist |
-  PlayNextTrackInPlaylist |
-  PlayPreviousTrackInPlaylist |
+  AddToCurrentPlaylist |
+  PlayNextTrack |
+  PlayPreviousTrack |
   SetRepeat |
   SetShuffle |
-  SetPlaylist;
+  SetCurrentTrack |
+  SetCurrentPlaylist;

@@ -3,23 +3,23 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Title} from '@angular/platform-browser';
 import {Action, Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
+import {from, Observable, of} from 'rxjs';
+import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 
 import {CoreUtils} from '@app/core/core.utils';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
-import {AudioService} from '@app/core/services/audio.service';
 import {LoaderService} from '@app/core/services/loader.service';
+import {SetAudioSource} from '@app/core/core.actions';
 import {Album, Artist, Track} from '@app/model';
 
-import {LibraryUtils} from './library.utils';
-import {AddTracks, LoadTrackFailure, LoadTrackSuccess, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
-import {PlayNextTrackInPlaylist} from './actions/player.actions';
+import {PlayerActionTypes, PlayNextTrack, SetCurrentTrack} from './actions/player.actions';
+import {AddTracks, LoadTrackFailure, LoadTrackSuccess, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
+import {LibraryService} from './services/library.service';
+import {LibraryUtils} from './library.utils';
 import * as fromLibrary from './library.reducers';
-
-import {from, Observable, of} from 'rxjs';
-import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
-import {AddToRecent} from '@app/library/actions/recent.actions';
+import {AudioService} from '@app/core/services/audio.service';
 
 @Injectable()
 export class LibraryEffects {
@@ -102,12 +102,10 @@ export class LibraryEffects {
    * Play Track
    */
   @Effect()
-  playTrack$: Observable<Action> =
-    this.store.select(fromLibrary.getCurrentTrack).pipe(
-      filter(track => !!track),
-      tap(track => this.audioService.play(CoreUtils.resolveUrl(track.url))),
-      tap(track => this.titleService.setTitle(`${track.metadata.artist} • ${track.metadata.title} | Musicalypse`)),
-      map(track => new AddToRecent([track]))
+  setTrack$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(PlayerActionTypes.SetCurrentTrack),
+      map((action: SetCurrentTrack) => new SetAudioSource(CoreUtils.resolveUrl(action.payload.url)))
     );
 
   /**
@@ -115,8 +113,8 @@ export class LibraryEffects {
    */
   @Effect()
   playNextTrack$: Observable<Action> =
-    this.audioService.ended$.pipe(
-      map(() => new PlayNextTrackInPlaylist())
+    this.audio.ended$.pipe(
+      map(() => new PlayNextTrack())
     );
 
   /**
@@ -143,7 +141,8 @@ export class LibraryEffects {
     private httpSocketClient: HttpSocketClientService,
     private store: Store<fromLibrary.State>,
     private titleService: Title,
-    private audioService: AudioService,
+    private library: LibraryService,
+    private audio: AudioService,
     private loader: LoaderService
   ) {}
 

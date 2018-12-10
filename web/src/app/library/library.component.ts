@@ -1,13 +1,11 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-
-import {AudioService} from '../core/services/audio.service';
-import {Album, Artist, Playlist, Track} from '../model';
-import {LibraryService} from './services/library.service';
-
 import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
 import {take} from 'rxjs/operators';
+
+import {Album, Artist, Playlist, Track} from '@app/model';
+import {LibraryService} from './services/library.service';
 
 @Component({
   selector: 'app-library',
@@ -46,9 +44,9 @@ import {take} from 'rxjs/operators';
           <app-library-player [currentTrack]="currentTrack$ | async"
                               [playlist]="playlist$ | async"
                               [playlists]="playlists$ | async"
-                              [muted]="audioService.muted$ | async"
-                              [volume]="audioService.volume$ | async"
-                              [playing]="audioService.playing$ | async"
+                              [muted]="muted$ | async"
+                              [volume]="volume$ | async"
+                              [playing]="playing$ | async"
                               [shuffle]="shuffle$ | async"
                               [repeat]="repeat$ | async"
                               (previous)="translateContent(2)">
@@ -56,12 +54,12 @@ import {take} from 'rxjs/operators';
         </div>
         <app-mini-player [currentTrack]="currentTrack$ | async"
                          [playlist]="playlist$ | async"
-                         [muted]="audioService.muted$ | async"
-                         [volume]="audioService.volume$ | async"
-                         [duration]="audioService.duration$ | async"
-                         [currentTime]="audioService.currentTime$ | async"
-                         [playing]="audioService.playing$ | async"
-                         [loading]="audioService.loading$ | async"
+                         [muted]="muted$ | async"
+                         [volume]="volume$ | async"
+                         [duration]="duration$ | async"
+                         [currentTime]="currentTime$ | async"
+                         [playing]="playing$ | async"
+                         [loading]="loading$ | async"
                          (next)="translateContent(3)">
         </app-mini-player>
       </div>
@@ -82,6 +80,12 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   playlists$: Observable<Playlist[]>;
   shuffle$: Observable<boolean>;
   repeat$: Observable<boolean>;
+  playing$: Observable<boolean>;
+  loading$: Observable<boolean>;
+  volume$: Observable<number>;
+  muted$: Observable<boolean>;
+  duration$: Observable<number>;
+  currentTime$: Observable<number>;
 
   subscriptions: Subscription[] = [];
 
@@ -95,7 +99,6 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    public audioService: AudioService,
     private library: LibraryService,
     private route: ActivatedRoute
   ) {
@@ -182,6 +185,13 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.repeat$          = this.library.getRepeat();
     this.playlist$        = this.library.getPlaylist();
     this.playlists$       = this.library.getPlaylists();
+
+    this.playing$         = this.library.getAudioPlaying();
+    this.loading$         = this.library.getAudioLoading();
+    this.volume$          = this.library.getAudioVolume();
+    this.muted$           = this.library.getAudioMuted();
+    this.duration$        = this.library.getAudioDuration();
+    this.currentTime$     = this.library.getAudioCurrentTime();
 
     // Update the url based on the library state
     // if (this.library.selectedArtists.length > 0) {

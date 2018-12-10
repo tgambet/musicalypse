@@ -1,26 +1,30 @@
 import {
   ChangeDetectionStrategy,
-  Component, ElementRef,
+  Component,
+  ElementRef,
   EventEmitter,
-  Input, OnChanges,
+  Input,
+  OnChanges,
   OnDestroy,
   OnInit,
-  Output, QueryList,
+  Output,
+  QueryList,
   SimpleChanges,
   ViewChild,
   ViewChildren
 } from '@angular/core';
 import {MatDialog, MatList, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Playlist, Track} from '@app/model';
 import {Observable, Subscription} from 'rxjs';
-import * as _ from 'lodash';
-import {AudioService} from '@app/core/services/audio.service';
-import {LibraryService} from '@app/library/services/library.service';
 import {take, tap} from 'rxjs/operators';
-import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
-import {DetailsComponent} from '@app/shared/dialogs/details.component';
+import * as _ from 'lodash';
+
+import {Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
+import {DetailsComponent} from '@app/shared/dialogs/details.component';
+import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
+
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-library-player',
@@ -65,12 +69,11 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     private breakpointObserver: BreakpointObserver,
     // public snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private audioService: AudioService,
     private library: LibraryService
   ) {
-    this.loading$ = this.audioService.loading$;
-    this.duration$ = this.audioService.duration$;
-    this.currentTime$ = this.audioService.currentTime$;
+    this.loading$ = this.library.getAudioLoading();
+    this.duration$ = this.library.getAudioDuration();
+    this.currentTime$ = this.library.getAudioCurrentTime();
   }
 
   @ViewChildren('title')
@@ -136,28 +139,31 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   // }
 
   resume() {
-    this.audioService.resume();
+    this.library.play();
   }
 
   pause() {
-    this.audioService.pause();
+    this.library.pause();
   }
 
   seekTo(time: number) {
-    this.audioService.seekTo(time);
+    this.library.seekTo(time);
   }
 
   setVolume(value: number) {
-    this.audioService.setVolume(value);
+    this.library.setVolume(value);
   }
 
-  mute() {
-    this.audioService.mute();
+  setMuted(muted: boolean) {
+    this.library.setMuted(muted);
+  }
+  /*mute() {
+    this.library.setMuted(true);
   }
 
   unmute() {
-    this.audioService.unmute();
-  }
+    this.library.setMuted(false);
+  }*/
 
   clearPlaylist() {
     this.library.clearPlaylist();

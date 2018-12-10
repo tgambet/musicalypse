@@ -13,7 +13,7 @@
     </div>
     <button mat-button mat-icon-button
             class="mute"
-            (click)="muted ? unmute() : mute()">
+            (click)="setMuted(!muted)">
       <mat-icon *ngIf="!muted && volume > 0.50">volume_up</mat-icon>
       <mat-icon *ngIf="!muted && volume > 0 && volume <= 0.50">volume_down</mat-icon>
       <mat-icon *ngIf="!muted && volume == 0">volume_mute</mat-icon>
@@ -30,7 +30,7 @@
       color="primary"></mat-slider>
     <button mat-button mat-icon-button
             class="mute"
-            (click)="muted ? unmute() : mute()">
+            (click)="setMuted(!muted)">
       <mat-icon *ngIf="!muted && volume > 0.50">volume_up</mat-icon>
       <mat-icon *ngIf="!muted && volume > 0 && volume <= 0.50">volume_down</mat-icon>
       <mat-icon *ngIf="!muted && volume == 0">volume_mute</mat-icon>

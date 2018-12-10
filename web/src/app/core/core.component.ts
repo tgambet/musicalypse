@@ -1,18 +1,17 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2} from '@angular/core';
 import {select, Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {map, take, tap} from 'rxjs/operators';
 import {environment} from '@env/environment';
 
 import {LoaderService} from './services/loader.service';
+import {UpdateService} from './services/update.service';
 import {AudioService} from './services/audio.service';
 
-import * as fromRoot from '../app.reducers';
-import * as LayoutActions from './core.actions';
+import {ChangeTheme, CloseSidenav, ToggleSidenav} from './core.actions';
 import {CoreUtils, Theme} from './core.utils';
 
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {ChangeTheme} from '@app/core/core.actions';
-import {UpdateService} from '@app/core/services/update.service';
+import * as fromRoot from '../app.reducers';
 
 @Component({
   selector: 'app-root',
@@ -56,7 +55,7 @@ import {UpdateService} from '@app/core/services/update.service';
       <mat-sidenav-container (backdropClick)="closeSidenav()">
 
         <mat-sidenav [opened]="showSidenav$ | async" [mode]="'over'">
-          <app-side-nav [playing]="playing$ | async" (closeSidenav)="closeSidenav()"></app-side-nav>
+          <app-side-nav (closeSidenav)="closeSidenav()"></app-side-nav>
         </mat-sidenav>
 
         <router-outlet></router-outlet>
@@ -106,7 +105,6 @@ export class CoreComponent implements OnInit {
   showSidenav$: Observable<boolean>;
   currentTheme$: Observable<Theme>;
   currentThemeCssClass$: Observable<string>;
-  playing$: Observable<boolean>;
 
   isElectron = environment.electron;
   isElectronFocused: boolean;
@@ -164,7 +162,6 @@ export class CoreComponent implements OnInit {
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
     this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
-    this.playing$ = this.audioService.playing$;
 
     // Configure Audio Service
     this.audioService.renderer = this.renderer;
@@ -215,20 +212,19 @@ export class CoreComponent implements OnInit {
     return this.loader.isLoading();
   }
 
-  // openSidenav() {
-  //   this.store.dispatch(new LayoutActions.OpenSidenav());
-  // }
-
   closeSidenav(): void {
-    this.store.dispatch(new LayoutActions.CloseSidenav());
+    this.store.select(fromRoot.getShowSidenav).pipe(
+      take(1),
+      tap(showSidenav => showSidenav ? this.store.dispatch(new CloseSidenav()) : {})
+    ).subscribe();
   }
 
   toggleSidenav(): void {
-    this.store.dispatch(new LayoutActions.ToggleSidenav());
+    this.store.dispatch(new ToggleSidenav());
   }
 
   changeTheme(theme: Theme): void {
-    this.store.dispatch(new LayoutActions.ChangeTheme(theme));
+    this.store.dispatch(new ChangeTheme(theme));
   }
 
   closeWindow(): void {

@@ -1,21 +1,26 @@
 import {Injectable} from '@angular/core';
+import {OverlayContainer} from '@angular/cdk/overlay';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
+
 import {Observable} from 'rxjs';
 import {filter, map, tap} from 'rxjs/operators';
-import {ChangeTheme, CoreActionTypes} from '@app/core/core.actions';
-import {OverlayContainer} from '@angular/cdk/overlay';
-import {CoreUtils} from '@app/core/core.utils';
-import {LoaderService} from '@app/core/services/loader.service';
-import {ScanTracks} from '@app/library/actions/tracks.actions';
+
+import {ChangeTheme, CoreActionTypes} from './core.actions';
+import {CoreUtils} from './core.utils';
+import {LoaderService} from './services/loader.service';
+
 import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
-import {MatDialog} from '@angular/material';
 import * as fromRoot from '@app/app.reducers';
-import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
+// TODO dependency on library!
+import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Injectable()
 export class CoreEffects {
 
+  // Change Theme
   @Effect({ dispatch: false })
   themes$: Observable<void> =
     this.actions$.pipe(
@@ -27,6 +32,7 @@ export class CoreEffects {
       map(() => {})
     );
 
+  // First Notification
   @Effect({ dispatch: false })
   notify$ =
     this.loader.getSharedSocket().pipe(

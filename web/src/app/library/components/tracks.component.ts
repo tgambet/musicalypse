@@ -10,12 +10,13 @@ import {
   ViewChild
 } from '@angular/core';
 import {MatDialog, MatMenu} from '@angular/material';
-import {Track} from '@app/model';
-import {SettingsService} from '@app/settings/services/settings.service';
-import {DetailsComponent} from '@app/shared/dialogs/details.component';
-import * as _ from 'lodash';
-import {LibraryService} from '@app/library/services/library.service';
 import {Observable} from 'rxjs';
+import * as _ from 'lodash';
+
+import {Track} from '@app/model';
+import {DetailsComponent} from '@app/shared/dialogs/details.component';
+import {SettingsService} from '@app/settings/services/settings.service';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-tracks',
@@ -184,11 +185,11 @@ export class TracksComponent implements OnChanges {
   }
 
   addTrackToPlaylist(track: Track) {
-    this.library.addTracksToPlaylist([track]);
+    this.library.addToCurrentPlaylist([track]);
   }
 
   addTracksToPlaylist() {
-    this.library.addTracksToPlaylist(this.tracks.filter(this.filter));
+    this.library.addToCurrentPlaylist(this.tracks.filter(this.filter));
   }
 
   playTrack(track: Track) {

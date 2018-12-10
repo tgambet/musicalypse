@@ -1,8 +1,10 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Track} from '@app/model';
-import {AudioService} from '@app/core/services/audio.service';
 import {Observable} from 'rxjs';
-import {tap, take} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
+
+import {Track} from '@app/model';
+
+import {LibraryService} from '../services/library.service';
 
 @Component({
   selector: 'app-track',
@@ -149,26 +151,18 @@ export class TrackControlComponent {
   loading$: Observable<boolean>;
 
   constructor(
-    private audio: AudioService
+    private library: LibraryService
   ) {
-    this.currentTime$ = this.audio.currentTime$;
-    this.duration$ = this.audio.duration$;
-    this.playing$ = this.audio.playing$;
-    this.loading$ = this.audio.loading$;
-  }
-
-  play() {
-    this.audio.resume();
-  }
-
-  pause() {
-    this.audio.pause();
+    this.currentTime$ = this.library.getAudioCurrentTime();
+    this.duration$ = this.library.getAudioDuration();
+    this.playing$ = this.library.getAudioPlaying();
+    this.loading$ = this.library.getAudioLoading();
   }
 
   playPause() {
     this.playing$.pipe(
       take(1),
-      tap(playing => playing ? this.pause() : this.play())
+      tap(playing => playing ? this.library.pause() : this.library.play())
     ).subscribe();
   }
 

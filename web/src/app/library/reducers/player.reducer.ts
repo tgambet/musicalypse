@@ -1,31 +1,32 @@
 import {Track} from '@app/model';
-import {PlayerActionsUnion, PlayerActionTypes} from '@app/library/actions/player.actions';
 import {List} from 'immutable';
 import * as _ from 'lodash';
+
+import {PlayerActionsUnion, PlayerActionTypes} from '@app/library/actions/player.actions';
 import {PlaylistsActionTypes, PlaylistsActionUnion} from '@app/library/actions/playlists.actions';
 
 export interface State {
   currentTrack: Track;
   repeat: boolean;
   shuffle: boolean;
-  playlist: List<Track>;
+  currentPlaylist: List<Track>;
 }
 
 export const initialState: State = {
   currentTrack: null,
   repeat: false,
   shuffle: false,
-  playlist: List(),
+  currentPlaylist: List(),
 };
 
 export function reducer(
   state = initialState,
-  action: PlayerActionsUnion | PlaylistsActionUnion
+  action: PlayerActionsUnion | PlaylistsActionUnion // TODO use a side effect ?
 ): State {
   switch (action.type) {
 
-    case PlayerActionTypes.PlayTrack: {
-      let playlist = state.playlist;
+    case PlayerActionTypes.SetCurrentTrack: {
+      let playlist = state.currentPlaylist;
       const track = action.payload;
       if (!playlist.some(t => _.isEqual(t, track))) {
         playlist = playlist.push(track);
@@ -33,14 +34,14 @@ export function reducer(
       return {
         ...state,
         currentTrack: track,
-        playlist: playlist
+        currentPlaylist: playlist
       };
     }
 
     case PlayerActionTypes.PlayTrackNext: {
       const next = action.payload;
       const currentTrack = state.currentTrack;
-      let playlist = state.playlist;
+      let playlist = state.currentPlaylist;
       const nextIndex = playlist.findIndex(t => _.isEqual(t, next));
       if (nextIndex > -1) {
         playlist = playlist.delete(nextIndex);
@@ -50,29 +51,21 @@ export function reducer(
       return {
         ...state,
         currentTrack: currentTrack ? currentTrack : next,
-        playlist: playlist
+        currentPlaylist: playlist
       };
     }
 
-    case PlayerActionTypes.AddTracksToPlaylist: {
-      let playlist: List<Track> = state.playlist;
+    case PlayerActionTypes.AddToCurrentPlaylist: {
+      let playlist: List<Track> = state.currentPlaylist;
       playlist = playlist.push(...action.payload.filter(track => !playlist.some(t => _.isEqual(t, track))));
       return {
         ...state,
-        playlist: playlist
+        currentPlaylist: playlist
       };
     }
 
-    case PlayerActionTypes.ResetPlaylist: {
-      return {
-        ...state,
-        playlist: List(),
-        shuffle: false
-      };
-    }
-
-    case PlayerActionTypes.PlayNextTrackInPlaylist: {
-      const playlist = state.playlist;
+    case PlayerActionTypes.PlayNextTrack: {
+      const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
       if (playlist.size === 0 || (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && !state.repeat) {
         return {
@@ -93,8 +86,8 @@ export function reducer(
       };
     }
 
-    case PlayerActionTypes.PlayPreviousTrackInPlaylist: {
-      const playlist = state.playlist;
+    case PlayerActionTypes.PlayPreviousTrack: {
+      const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
       if (playlist.size === 0) {
         return state;
@@ -123,7 +116,7 @@ export function reducer(
     case PlayerActionTypes.SetShuffle: {
       const shuffle = action.payload;
       if (shuffle) {
-        let shuffled = List.of(..._.shuffle(state.playlist.toArray()));
+        let shuffled = List.of(..._.shuffle(state.currentPlaylist.toArray()));
         if (shuffled.includes(state.currentTrack)) {
           shuffled = shuffled.delete(shuffled.indexOf(state.currentTrack));
           shuffled = shuffled.unshift(state.currentTrack);
@@ -131,28 +124,27 @@ export function reducer(
         return {
           ...state,
           shuffle: shuffle,
-          playlist: shuffled
+          currentPlaylist: shuffled
         };
       } else {
         return {
           ...state,
           shuffle: shuffle,
-          playlist: state.playlist.sortBy(t => t.url)
+          currentPlaylist: state.currentPlaylist.sortBy(t => t.url)
         };
       }
     }
 
-    case PlayerActionTypes.SetPlaylist:
+    case PlayerActionTypes.SetCurrentPlaylist:
       return {
         ...state,
-        playlist: List.of(...action.payload),
-        shuffle: false
+        currentPlaylist: List.of(...action.payload)
       };
 
     case PlaylistsActionTypes.LoadPlaylist: {
       return {
         ...state,
-        playlist: List.of(...action.playlist.tracks),
+        currentPlaylist: List.of(...action.playlist.tracks),
         shuffle: false
       };
     }
@@ -166,4 +158,4 @@ export function reducer(
 export const getCurrentTrack = (state: State) => state.currentTrack;
 export const getRepeat = (state: State) => state.repeat;
 export const getShuffle = (state: State) => state.shuffle;
-export const getPlaylist = (state: State) => state.playlist.toArray();
+export const getCurrentPlaylist = (state: State) => state.currentPlaylist.toArray();

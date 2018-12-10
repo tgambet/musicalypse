@@ -7,7 +7,8 @@ import {
   OnChanges,
   Output,
   QueryList,
-  SimpleChanges, ViewChild,
+  SimpleChanges,
+  ViewChild,
   ViewChildren
 } from '@angular/core';
 import {Track} from '@app/model';
@@ -34,7 +35,7 @@ import {MatTable} from '@angular/material';
       <ng-container matColumnDef="title">
         <mat-cell *matCellDef="let track" class="title">
           <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
-          <div #title class="inner">
+          <div #title class="inner" [attr.data-url]="track.url">
             {{ track.metadata.title }}
           </div>
         </mat-cell>
@@ -147,7 +148,7 @@ export class PlayerPlaylistComponent implements OnChanges {
   // Scroll into view the current track if hidden
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.currentTrack && this.titles && this.table) {
-      const element = this.titles.find(el => el.nativeElement.innerHTML.trim() === changes.currentTrack.currentValue.metadata.title);
+      const element = this.titles.find(el => el.nativeElement.getAttribute('data-url') === changes.currentTrack.currentValue.url);
       if (element && !CoreUtils.isScrolledIntoView(element.nativeElement, this.table['_elementRef'].nativeElement.parentElement)) {
         element.nativeElement.parentElement.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
       }

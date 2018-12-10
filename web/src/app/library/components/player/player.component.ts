@@ -76,16 +76,16 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     this.currentTime$ = this.library.getAudioCurrentTime();
   }
 
-  @ViewChildren('title')
-  titles: QueryList<ElementRef>;
+  @ViewChildren('listItem')
+  listItems: QueryList<ElementRef>;
 
   // Scroll into view the current track if hidden
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.currentTrack && this.titles && (this.playlistMatList || this.playlistUl)) {
+    if (changes.currentTrack && this.listItems && (this.playlistMatList || this.playlistUl)) {
       const foundElement =
-        this.titles.find(el => el.nativeElement.innerHTML.trim() === changes.currentTrack.currentValue.metadata.title.trim());
+        this.listItems.find(el => el.nativeElement.getAttribute('data-url') === changes.currentTrack.currentValue.url);
       if (foundElement) {
-        const element = foundElement.nativeElement.closest('.mat-list-item, .track-list-item');
+        const element = foundElement.nativeElement;
         // We have two types of playlists: TODO: refactor
         const referenceElement = this.playlistUl ? this.playlistUl.nativeElement : this.playlistMatList['_elementRef'].nativeElement;
         if (!CoreUtils.isScrolledIntoView(element, referenceElement.parentElement)) {

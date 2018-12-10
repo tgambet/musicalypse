@@ -14,7 +14,6 @@ import {Album, Artist, Track} from '@app/model';
 
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
-import {PlayerActionTypes, PlayNextTrack, SetCurrentTrack} from './actions/player.actions';
 import {AddTracks, LoadTrackFailure, LoadTrackSuccess, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
 import {LibraryService} from './services/library.service';
 import {LibraryUtils} from './library.utils';
@@ -99,22 +98,13 @@ export class LibraryEffects {
     );
 
   /**
-   * Play Track
+   * Set Audio source on currentTrack change
    */
   @Effect()
   setTrack$: Observable<Action> =
-    this.actions$.pipe(
-      ofType(PlayerActionTypes.SetCurrentTrack),
-      map((action: SetCurrentTrack) => new SetAudioSource(CoreUtils.resolveUrl(action.payload.url)))
-    );
-
-  /**
-   * Play next track when a song has ended
-   */
-  @Effect()
-  playNextTrack$: Observable<Action> =
-    this.audio.ended$.pipe(
-      map(() => new PlayNextTrack())
+    this.store.select(fromLibrary.getCurrentTrack).pipe(
+      filter(track => !!track),
+      map(track => new SetAudioSource(CoreUtils.resolveUrl(track.url)))
     );
 
   /**

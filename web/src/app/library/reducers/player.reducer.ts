@@ -64,7 +64,7 @@ export function reducer(
       };
     }
 
-    case PlayerActionTypes.PlayNextTrack: {
+    case PlayerActionTypes.SetNextTrack: {
       const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
       if (playlist.size === 0 || (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && !state.repeat) {
@@ -86,7 +86,7 @@ export function reducer(
       };
     }
 
-    case PlayerActionTypes.PlayPreviousTrack: {
+    case PlayerActionTypes.SetPreviousTrack: {
       const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
       if (playlist.size === 0) {

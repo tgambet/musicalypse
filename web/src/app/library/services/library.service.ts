@@ -16,11 +16,11 @@ import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectA
 import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
 import {
   AddToCurrentPlaylist,
-  PlayNextTrack,
-  PlayPreviousTrack,
   PlayTrackNext,
   SetCurrentPlaylist,
   SetCurrentTrack,
+  SetNextTrack,
+  SetPreviousTrack,
   SetRepeat,
   SetShuffle
 } from '../actions/player.actions';
@@ -55,6 +55,8 @@ export class LibraryService {
           () => store.dispatch(new LoadTracks())
         )
       );
+
+    this.audioService.ended$.subscribe(() => this.playNextTrack());
 
     setTimeout(() => this.initialize(), 0);
   }
@@ -269,11 +271,13 @@ export class LibraryService {
   }
 
   playPreviousTrack() {
-    this.store.dispatch(new PlayPreviousTrack());
+    this.store.dispatch(new SetPreviousTrack());
+    this.play();
   }
 
   playNextTrack() {
-    this.store.dispatch(new PlayNextTrack());
+    this.store.dispatch(new SetNextTrack());
+    this.play();
   }
 
   setShuffle(value: boolean) {

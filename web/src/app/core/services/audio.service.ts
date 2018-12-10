@@ -80,6 +80,7 @@ export class AudioService {
     if (this.audioElement) {
       this._renderer.removeChild(this._appRoot, this.audioElement);
       this.listeners.forEach(listener => listener());
+      setTimeout(() => this._currentTime.next(0));
     }
     this.audioElement = this.createAudioElement(src);
     this.audioElement.volume = volume;
@@ -88,7 +89,6 @@ export class AudioService {
 
   private createAudioElement(src: string): HTMLMediaElement {
     this.store.dispatch(new SetAudioLoading(true));
-    this._currentTime.next(0);
     const audio: HTMLMediaElement = this._renderer.createElement('audio');
     this._renderer.appendChild(this._appRoot.nativeElement, audio);
     audio.src = src;

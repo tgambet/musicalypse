@@ -4,12 +4,12 @@ import {Action} from '@ngrx/store';
 export enum PlayerActionTypes {
   PlayTrackNext = '[Player] Play Track Next',
   AddToCurrentPlaylist = '[Player] Add To Current Playlist',
-  PlayNextTrack = '[Player] Play Next Track',
-  PlayPreviousTrack = '[Player] Play Previous Track',
   SetRepeat = '[Player] Set Repeat',
   SetShuffle = '[Player] Set Shuffle',
   SetCurrentTrack = '[Player] Set Track',
   SetCurrentPlaylist = '[Player] Set Playlist',
+  SetNextTrack = '[Player] Set Next Track',
+  SetPreviousTrack = '[Player] Set Previous Track',
 }
 
 export class PlayTrackNext implements Action {
@@ -22,12 +22,12 @@ export class AddToCurrentPlaylist implements Action {
   constructor(public payload: Track[]) {}
 }
 
-export class PlayNextTrack implements Action {
-  readonly type = PlayerActionTypes.PlayNextTrack;
+export class SetNextTrack implements Action {
+  readonly type = PlayerActionTypes.SetNextTrack;
 }
 
-export class PlayPreviousTrack implements Action {
-  readonly type = PlayerActionTypes.PlayPreviousTrack;
+export class SetPreviousTrack implements Action {
+  readonly type = PlayerActionTypes.SetPreviousTrack;
 }
 
 export class SetRepeat implements Action {
@@ -53,8 +53,8 @@ export class SetCurrentPlaylist implements Action {
 export type PlayerActionsUnion =
   PlayTrackNext |
   AddToCurrentPlaylist |
-  PlayNextTrack |
-  PlayPreviousTrack |
+  SetNextTrack |
+  SetPreviousTrack |
   SetRepeat |
   SetShuffle |
   SetCurrentTrack |

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {distinctUntilChanged, filter} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material';
 
 import {Album, Artist, Playlist, Track} from '@app/model';
@@ -128,7 +128,9 @@ export class LibraryService {
   }
 
   getCurrentTrack(): Observable<Track> {
-    return this.store.select(fromLibrary.getCurrentTrack);
+    return this.store.select(fromLibrary.getCurrentTrack).pipe(
+      distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
+    );
   }
 
   getShuffle() {

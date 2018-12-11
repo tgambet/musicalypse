@@ -144,7 +144,8 @@ export function reducer(
       const playlist = action.payload.map(toImmutable);
       return {
         ...state,
-        currentPlaylist: List.of(...playlist)
+        currentPlaylist: List.of(...playlist),
+        shuffle: false
       };
     }
 

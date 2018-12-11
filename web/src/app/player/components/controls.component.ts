@@ -125,7 +125,7 @@ import {Playlist, Track} from '@app/model';
     }
     @media screen and (min-width: 599px) {
       .volume-slider, .mute {
-        display: flex;
+        display: unset;
       }
     }
   `],

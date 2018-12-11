@@ -3,7 +3,6 @@ import {Album} from '@app/model';
 import {AlbumsActionsUnion, AlbumsActionTypes} from '@app/library/actions/albums.actions';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {LibraryUtils} from '@app/library/library.utils';
-import * as _ from 'lodash';
 
 export const getAlbumId = (album: Album) => album.artist + '-' + album.title;
 
@@ -110,7 +109,7 @@ export function reducer(
           }
         }
       };
-      return _.reduce(albums, fn, state);
+      return albums.reduce(fn, state);
     }
 
     default: {

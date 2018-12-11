@@ -3,7 +3,6 @@ import {Artist} from '@app/model';
 import {ArtistsActionsUnion, ArtistsActionTypes} from '@app/library/actions/artists.actions';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 import {LibraryUtils} from '@app/library/library.utils';
-import * as _ from 'lodash';
 
 /**
  * State
@@ -108,7 +107,7 @@ export function reducer(
           }
         }
       };
-      return _.reduce(artists, fn, state);
+      return artists.reduce(fn, state);
     }
 
     default: {

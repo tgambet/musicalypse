@@ -9,6 +9,7 @@ import {Playlist} from '@app/model';
 import {InfoComponent} from '@app/shared/dialogs/info.component';
 import {LibraryService} from '@app/library/services/library.service';
 import {LibraryUtils} from '@app/library/library.utils';
+import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
 
 @Component({
   selector: 'app-playlists',
@@ -354,7 +355,15 @@ export class PlaylistsComponent {
   }
 
   deletePlaylist(item: Playlist) {
-    this.library.deletePlaylist(item.name);
+    const message = `Are you sure that you want to delete the playlist "${item.name}"?`;
+    this.dialog
+      .open(ConfirmComponent, { data: { title: 'Confirm deletion', message: message }})
+      .afterClosed()
+      .subscribe(answer => {
+        if (answer) {
+          this.library.deletePlaylist(item.name);
+        }
+      });
   }
 
 }

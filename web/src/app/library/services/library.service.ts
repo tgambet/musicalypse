@@ -3,7 +3,6 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material';
-import * as _ from 'lodash';
 
 import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
@@ -30,6 +29,7 @@ import {LoadTracks} from '../actions/tracks.actions';
 
 import * as fromCore from '@app/app.reducers';
 import * as fromLibrary from '../library.reducers';
+import {LibraryUtils} from '../library.utils';
 
 @Injectable()
 export class LibraryService {
@@ -58,7 +58,7 @@ export class LibraryService {
 
     this.audioService.ended$.subscribe(() => this.playNextTrack());
 
-    setTimeout(() => this.initialize(), 0);
+    setTimeout(() => this.initialize());
   }
 
   initialize() {
@@ -298,8 +298,8 @@ export class LibraryService {
   }
 
   selectInLibrary(playlist: Track[]) {
-    const artistsIds = _.uniq(playlist.map(track => track.metadata.albumArtist));
-    const albumsIds = _.uniq(playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album));
+    const artistsIds = LibraryUtils.uniq(playlist.map(track => track.metadata.albumArtist));
+    const albumsIds = LibraryUtils.uniq(playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album));
     this.store.dispatch(new SelectArtistsByIds(artistsIds));
     this.store.dispatch(new SelectAlbumsByIds(albumsIds));
   }

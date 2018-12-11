@@ -1,5 +1,4 @@
 import {Album, Artist, Track} from '@app/model';
-import * as _ from 'lodash';
 import {CoreUtils} from '@app/core/core.utils';
 
 export class LibraryUtils {
@@ -30,9 +29,9 @@ export class LibraryUtils {
 
   static extractArtists(tracks: Track[]): Artist[] {
     const artists: Artist[] = [];
-    _.forEach(tracks, track => {
+    tracks.forEach(track => {
       const artist = track.metadata.albumArtist;
-      const artistIndex = _.findIndex(artists, a => a.name === artist);
+      const artistIndex = artists.findIndex(a => a.name === artist);
       if (artistIndex === -1) {
         const newArtist: Artist = {name: artist, songs: 1};
         if (track.warn) { newArtist.warn = true; }
@@ -49,10 +48,10 @@ export class LibraryUtils {
 
   static extractAlbums(tracks: Track[]): Album[] {
     const albums: Album[] = [];
-    _.forEach(tracks, track => {
+    tracks.forEach(track => {
       const artist = track.metadata.albumArtist;
       const album = track.metadata.album;
-      const albumIndex = _.findIndex(albums, a => a.title === album && a.artist === artist);
+      const albumIndex = albums.findIndex(a => a.title === album && a.artist === artist);
       if (albumIndex === -1) {
         const newAlbum: Album = {title: album, artist: artist, songs: 1};
         if (track.warn) { newAlbum.warn = true; }
@@ -67,12 +66,28 @@ export class LibraryUtils {
     return albums;
   }
 
-  static shuffleArray(a) {
+  static shuffleArray<T>(a: T[]): T[] {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+
+  static uniq<T>(a: T[]): T[] {
+    return a.filter((v, i, s) => s.indexOf(v) === i);
+  }
+
+  static uniqBy<T>(a: T[], p: (t: T) => any): T[] {
+    const interMap = a.reduce(
+      (map, item) => {
+        const key = p(item);
+        if (!map.has(key)) { map.set(key, item); }
+        return map;
+      },
+      new Map()
+    );
+    return Array.from(interMap.values());
   }
 
 }

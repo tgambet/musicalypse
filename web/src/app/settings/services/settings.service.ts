@@ -2,7 +2,6 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material';
 import {Subscription} from 'rxjs';
-import * as _ from 'lodash';
 
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 
@@ -51,7 +50,7 @@ export class SettingsService implements OnDestroy {
     if (this.uploadSubscription) {
       throw new Error('An upload is already in progress!');
     }
-    const files: File[] = _.map(this.files, '_file');
+    const files: File[] = this.files.map(file => file._file);
     // TODO filter out files with progress below 100%
     this.uploadSubscription = this.httpSocketClient.postFiles('/api/upload', files).subscribe(
       (next: { event: HttpEvent<any>, file?: File } | null) => {
@@ -60,7 +59,7 @@ export class SettingsService implements OnDestroy {
             break;
           case HttpEventType.UploadProgress:
             const currentFile: { _file: File, progress: number } =
-              _.filter(this.files, f => f._file === next.file)[0];
+              this.files.filter(f => f._file === next.file)[0];
             currentFile.progress = next.event.loaded / next.event.total * 100;
             break;
           case HttpEventType.ResponseHeader:

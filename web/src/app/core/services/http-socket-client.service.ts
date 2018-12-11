@@ -3,7 +3,6 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {webSocket} from 'rxjs/webSocket';
 import {concat, Observable, Subject} from 'rxjs';
 import {filter, map, share, take} from 'rxjs/operators';
-import * as _ from 'lodash';
 
 import {environment} from '@env/environment';
 
@@ -118,7 +117,7 @@ export class HttpSocketClientService implements OnDestroy {
 
   postFiles(path: string, files: File[]): Observable<Object> {
     const filesObs: Observable<Object>[] =
-      _.map(files, file => this.postFile(path, file).pipe(map(event => ({event: event, file: file }))));
+      files.map( file => this.postFile(path, file).pipe(map(event => ({event: event, file: file }))));
 
     // const acknowledgment = Observable.create(observer => {
     //   observer.next({ event: { type: 10 }});
@@ -126,7 +125,7 @@ export class HttpSocketClientService implements OnDestroy {
     //   return () => {};
     // });
 
-    return _.reduce(filesObs, (obs1: Observable<Object>, obs2) => concat(obs1, obs2));
+    return filesObs.reduce((obs1: Observable<Object>, obs2) => concat(obs1, obs2));
 
   }
 

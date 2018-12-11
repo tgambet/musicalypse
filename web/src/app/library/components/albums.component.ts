@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Observable} from 'rxjs';
-import * as _ from 'lodash';
 
 import {Album} from '@app/model';
 
@@ -180,13 +179,14 @@ export class AlbumsComponent implements OnChanges {
   }
 
   scrollTo(letter: string) {
-    const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+    const scrollOptions: ScrollIntoViewOptions = { block: 'start', inline: 'nearest', behavior: 'smooth' };
     if (letter === '#') {
       this.list.nativeElement.getElementsByClassName('list-item')[0].scrollIntoView(scrollOptions);
       return;
     }
-    const elem = _.find(this.list.nativeElement.getElementsByClassName('list-item'), album => {
-      return album.getElementsByClassName('item-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    const listItems: Element[] = Array.from(this.list.nativeElement.getElementsByClassName('list-item'));
+    const elem = listItems.find(album => {
+      return album.getElementsByClassName('item-name')[0].textContent.toLowerCase().startsWith(letter.toLowerCase());
     });
     if (elem) {
       elem.scrollIntoView(scrollOptions);

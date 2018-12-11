@@ -4,7 +4,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatDialog} from '@angular/material';
 import {combineLatest, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import * as _ from 'lodash';
 
 import {Playlist} from '@app/model';
 import {InfoComponent} from '@app/shared/dialogs/info.component';
@@ -317,8 +316,8 @@ export class PlaylistsComponent {
         id: track.metadata.albumArtist + '-' + track.metadata.album,
         name: `${track.metadata.album} • ${track.metadata.albumArtist}`
       }))),
-      map(objs => _.uniqBy(objs, obj => obj.id)),
-      map(objs => LibraryUtils.shuffleArray(objs).slice(0, 15)),
+      map(metas => LibraryUtils.uniqBy(metas, obj => obj.id)),
+      map(metas => LibraryUtils.shuffleArray(metas).slice(0, 15)),
       switchMap(objs =>
         combineLatest(objs.map(meta => this.library.getTracksByAlbumId(meta.id).pipe(
           map(tracks => ({name: meta.name, tracks: tracks}))
@@ -338,7 +337,7 @@ export class PlaylistsComponent {
     let covers = playlist.tracks
       .map(track => track.coverUrl)
       .filter(cover => !!cover);
-    covers = _.uniq(covers);
+    covers = LibraryUtils.uniq(covers);
     return covers;
   }
 

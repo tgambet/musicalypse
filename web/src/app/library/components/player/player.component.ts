@@ -17,7 +17,6 @@ import {MatDialog, MatList, MatTabGroup} from '@angular/material';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
 import {take, tap} from 'rxjs/operators';
-import * as _ from 'lodash';
 
 import {Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
@@ -104,7 +103,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    _.forEach(this.subscriptions, sub => sub.unsubscribe());
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   trackByURL(index: number, track: Track) {

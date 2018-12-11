@@ -1,6 +1,5 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import * as _ from 'lodash';
 import {Observable, Subscription} from 'rxjs';
 import {take} from 'rxjs/operators';
 
@@ -256,7 +255,7 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    _.forEach(this.subscriptions, sub => sub.unsubscribe());
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   // updateUrl() {

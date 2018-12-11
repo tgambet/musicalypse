@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import {MatDialog, MatMenu} from '@angular/material';
 import {Observable} from 'rxjs';
-import * as _ from 'lodash';
 
 import {Track} from '@app/model';
 import {DetailsComponent} from '@app/shared/dialogs/details.component';
@@ -44,7 +43,7 @@ import {LibraryService} from '@app/library/services/library.service';
         </button>
         <button mat-menu-item (click)="sortedAlphabetically = false" [disabled]="!sortedAlphabetically">
           <mat-icon>sort</mat-icon>
-          <span>Sort by file name</span>
+          <span>Sort by location</span>
         </button>
       </mat-menu>
 
@@ -134,9 +133,9 @@ export class TracksComponent implements OnChanges {
 
   sort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
     if (this.sortedAlphabetically) {
-      return _.sortBy(tracks, (track: Track) => track.metadata.title);
+      return tracks.sort((a, b) => a.metadata.title.toLowerCase().localeCompare(b.metadata.title.toLowerCase()));
     } else {
-      return _.sortBy(tracks, (track: Track) => track.metadata.location);
+      return tracks.sort((a, b) => a.metadata.location.localeCompare(b.metadata.location));
     }
   });
 
@@ -165,13 +164,14 @@ export class TracksComponent implements OnChanges {
   }
 
   scrollTo(letter: string) {
-    const scrollOptions = {block: 'start', inline: 'nearest', behavior: 'smooth'};
+    const scrollOptions: ScrollIntoViewOptions = { block: 'start', inline: 'nearest', behavior: 'smooth' };
     if (letter === '#') {
       this.list.nativeElement.getElementsByClassName('track')[0].scrollIntoView(scrollOptions);
       return;
     }
-    const elem = _.find(this.list.nativeElement.getElementsByClassName('track'), artist => {
-      return artist.getElementsByClassName('track-name')[0].innerText.toLowerCase().startsWith(letter.toLowerCase());
+    const tracks: Element[] = Array.from(this.list.nativeElement.getElementsByClassName('track'));
+    const elem = tracks.find(track => {
+      return track.getElementsByClassName('track-name')[0].textContent.toLowerCase().startsWith(letter.toLowerCase());
     });
     if (elem) {
       elem.scrollIntoView(scrollOptions);

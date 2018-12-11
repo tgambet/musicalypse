@@ -1,3 +1,21 @@
+import {fromJS, Map, Set} from 'immutable';
+
+// https://stackoverflow.com/questions/43607652/typescript-immutable-proper-way-of-extending-immutable-map-type
+
+interface ImmutableMap<T> extends Map<string, any> {}
+
+export function toImmutable<T extends object> (o: T) {
+  return fromJS(o) as ImmutableMap<T>;
+}
+
+export interface Track {
+  url: string;
+  metadata: TrackMetadata;
+  coverUrl?: string;
+  warn?: boolean;
+}
+
+export type ImmutableTrack = ImmutableMap<Track>;
 
 export interface Artist {
   name: string;
@@ -11,13 +29,6 @@ export interface Album {
   title: string;
   songs: number;
   avatarUrl?: string;
-  warn?: boolean;
-}
-
-export interface Track {
-  url: string;
-  metadata: TrackMetadata;
-  coverUrl?: string;
   warn?: boolean;
 }
 
@@ -35,3 +46,8 @@ export interface Playlist {
   name: string;
   tracks: Track[];
 }
+
+export type ImmutablePlaylist = ImmutableMap<{
+  name: string;
+  tracks: Set<Track>;
+}>;

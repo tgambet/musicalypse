@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {filter} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material';
 import * as _ from 'lodash';
 
@@ -62,6 +62,7 @@ export class LibraryService {
   }
 
   initialize() {
+    // TODO refactor
     // Restore selection state, playlist, favorites and recent tracks
     const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
     if (savedSelectedArtistsIds) {
@@ -99,19 +100,19 @@ export class LibraryService {
     this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
       ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
     );
-    this.store.select(fromLibrary.getCurrentPlaylist).subscribe(
+    this.getPlaylist().subscribe(
       playlist => CoreUtils.save('playlist', JSON.stringify(playlist))
     );
-    this.store.select(fromLibrary.getFavorites).subscribe(
+    this.getFavorites().subscribe(
       favs => CoreUtils.save('favorites', JSON.stringify(favs))
     );
-    this.store.select(fromLibrary.getRecentTracks).subscribe(
+    this.getRecentTracks().subscribe(
       tracks => CoreUtils.save('recent', JSON.stringify(tracks))
     );
-    this.store.select(fromLibrary.getPlaylists).subscribe(
+    this.getPlaylists().subscribe(
       playlists => CoreUtils.save('playlists', JSON.stringify(playlists))
     );
-    this.store.select(fromLibrary.getCurrentTrack).subscribe(
+    this.getCurrentTrack().subscribe(
       track => {
         if (track) { CoreUtils.save('current', JSON.stringify(track)); }
       }
@@ -138,15 +139,15 @@ export class LibraryService {
     return this.store.select(fromLibrary.getSelectedAlbums);
   }
 
-  getAllTracks() {
+  getAllTracks(): Observable<Track[]> {
     return this.store.select(fromLibrary.getAllTracks);
   }
 
-  getDisplayedTracks() {
+  getDisplayedTracks(): Observable<Track[]> {
     return this.store.select(fromLibrary.getDisplayedTracks);
   }
 
-  getCurrentTrack() {
+  getCurrentTrack(): Observable<Track> {
     return this.store.select(fromLibrary.getCurrentTrack);
   }
 
@@ -182,7 +183,7 @@ export class LibraryService {
     return this.audioService.currentTime$; // TODO
   }
 
-  getPlaylist() {
+  getPlaylist(): Observable<Track[]> {
     return this.store.select(fromLibrary.getCurrentPlaylist);
   }
 
@@ -312,7 +313,7 @@ export class LibraryService {
   }
 
   isFavorite(track: Track): Observable<boolean> {
-    return this.store.select(fromLibrary.isFavorite(track));
+    return this.store.select(fromLibrary.isFavorite, track);
   }
 
   getFavorites(): Observable<Track[]> {
@@ -372,16 +373,12 @@ export class LibraryService {
     return this.store.select(fromLibrary.getPlaylists);
   }
 
-  getArtistTracks(artist: Artist): Observable<Track[]> {
-    return this.store.select(fromLibrary.getAllTracks).pipe(
-      map(tracks => tracks.filter(track => track.metadata.albumArtist === artist.name))
-    );
+  getTracksByArtist(artist: Artist): Observable<Track[]> {
+    return this.store.select(fromLibrary.getTracksByArtist, artist);
   }
 
   getTracksByAlbumId(albumId: String): Observable<Track[]> {
-    return this.store.select(fromLibrary.getAllTracks).pipe(
-      map(tracks => tracks.filter(track => track.metadata.albumArtist + '-' + track.metadata.album === albumId))
-    );
+    return this.store.select(fromLibrary.getTracksByAlbumId, albumId);
   }
 
 }

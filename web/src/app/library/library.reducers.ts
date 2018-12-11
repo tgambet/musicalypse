@@ -11,8 +11,6 @@ import * as fromFavorites from './reducers/favorites.reducers';
 import * as fromRecent from './reducers/recent.reducer';
 import * as fromPlaylists from './reducers/playlists.reducers';
 
-import * as _ from 'lodash';
-
 export interface LibraryState {
   tracks: fromTracks.State;
   artists: fromArtists.State;
@@ -60,9 +58,24 @@ export const getTracksLoading = createSelector(
 export const {
   selectIds: getTrackIds,
   selectEntities: getTrackEntities,
-  selectAll: getAllTracks,
+  selectAll: getAllImmutableTracks,
   selectTotal: getTotalTracks,
 } = fromTracks.adapter.getSelectors(getTracksState);
+
+export const getAllTracks = createSelector(
+  getAllImmutableTracks,
+  tracks => tracks.map(t => t.toJS() as Track)
+);
+
+export const getTracksByArtist = createSelector(
+  getAllTracks,
+  (tracks: Track[], artist: Artist) => tracks.filter(track => track.metadata.albumArtist === artist.name)
+);
+
+export const getTracksByAlbumId = createSelector(
+  getAllTracks,
+  (tracks: Track[], albumId: string) => tracks.filter(track => track.metadata.albumArtist + '-' + track.metadata.album === albumId)
+);
 
 /**
  * Artists selectors
@@ -87,12 +100,12 @@ export const getSelectedArtistsIds = createSelector(
 export const getSelectedArtists = createSelector(
   getAllArtists,
   getSelectedArtistsIds,
-  (artists, ids) => artists.filter(artist => ids.indexOf(artist.name) > -1)
+  (artists, ids) => artists.filter(artist => ids.includes(artist.name))
 );
 
 export const isSelectedArtist = (artist: Artist) => createSelector(
   getSelectedArtistsIds,
-  ids => ids.indexOf(artist.name) > -1
+  ids => ids.includes(artist.name)
 );
 
 /**
@@ -118,26 +131,26 @@ export const getSelectedAlbumsIds = createSelector(
 export const getSelectedAlbums = createSelector(
   getAllAlbums,
   getSelectedAlbumsIds,
-  (albums, ids) => albums.filter(album => ids.indexOf(fromAlbums.getAlbumId(album)) > -1)
+  (albums, ids) => albums.filter(album => ids.includes(fromAlbums.getAlbumId(album)))
 );
 
 export const isSelectedAlbum = (album: Album) => createSelector(
   getSelectedAlbumsIds,
-  ids => ids.indexOf(fromAlbums.getAlbumId(album)) > -1
+  ids => ids.includes(fromAlbums.getAlbumId(album))
 );
 
 export const getDisplayedAlbums = createSelector(
   getSelectedArtistsIds,
   getAllAlbums,
   (artistsIds, albums) =>
-    albums.filter(album => artistsIds.indexOf(album.artist) > -1)
+    albums.filter(album => artistsIds.includes(album.artist))
 );
 
 export const getDisplayedTracks = createSelector(
   getSelectedAlbumsIds,
   getAllTracks,
   (ids, tracks) =>
-    tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
+    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
 );
 
 /**
@@ -168,15 +181,6 @@ export const getCurrentPlaylist = createSelector(
   fromPlayer.getCurrentPlaylist
 );
 
-/*export const getCurrentTrackAndPlaylist = createSelector(
-  getCurrentTrack,
-  getCurrentPlaylist,
-  (track: Track, playlist: Track[]) => ({
-    currentTrack: track,
-    currentPlaylist: playlist
-  })
-);*/
-
 /**
  * Favorites selectors
  */
@@ -190,9 +194,9 @@ export const getFavorites = createSelector(
   fromFavorites.getFavorites
 );
 
-export const isFavorite = (track: Track) => createSelector(
-  getFavorites,
-  favorites => favorites.some(fav => _.isEqual(fav, track))
+export const isFavorite = createSelector(
+  getFavoritesState,
+  fromFavorites.isFavorite
 );
 
 export const getFavoritesArtists = createSelector(
@@ -217,14 +221,14 @@ export const getDisplayedFavorites = createSelector(
   getSelectedAlbumsIds,
   getFavorites,
   (ids, tracks) =>
-    tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
+    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
 );
 
 export const getDisplayedFavoriteAlbums = createSelector(
   getSelectedArtistsIds,
   getFavoritesAlbums,
   (artistsIds, albums) =>
-    albums.filter(album => artistsIds.indexOf(album.artist) > -1)
+    albums.filter(album => artistsIds.includes(album.artist))
 );
 
 /**
@@ -262,14 +266,14 @@ export const getDisplayedRecentTracks = createSelector(
   getSelectedAlbumsIds,
   getRecentTracks,
   (ids, tracks) =>
-    tracks.filter(track => ids.indexOf(track.metadata.albumArtist + '-' + track.metadata.album) > -1)
+    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
 );
 
 export const getDisplayedRecentAlbums = createSelector(
   getSelectedArtistsIds,
   getRecentAlbums,
   (artistsIds, albums) =>
-    albums.filter(album => artistsIds.indexOf(album.artist) > -1)
+    albums.filter(album => artistsIds.includes(album.artist))
 );
 
 /**

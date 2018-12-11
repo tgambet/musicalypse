@@ -32,12 +32,12 @@ export class DeletePlaylist implements Action {
 
 export class AddToPlaylist implements Action {
   readonly type = PlaylistsActionTypes.AddToPlaylist;
-  constructor(public tracks: Track[], public playlist: string) {}
+  constructor(public tracks: Track[], public playlistName: string) {}
 }
 
 export class RemoveFromPlaylist implements Action {
   readonly type = PlaylistsActionTypes.RemoveFromPlaylist;
-  constructor(public track: Track, public playlist: string) {}
+  constructor(public track: Track, public playlistName: string) {}
 }
 
 export type PlaylistsActionUnion =

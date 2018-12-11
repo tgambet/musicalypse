@@ -1,14 +1,13 @@
-import {List} from 'immutable';
-import {Track} from '@app/model';
+import {Set} from 'immutable';
+import {ImmutableTrack, toImmutable, Track} from '@app/model';
 import {FavoritesActionsUnion, FavoritesActionTypes} from '../actions/favorites.actions';
-import * as _ from 'lodash';
 
 export interface State {
-  favorites: List<Track>;
+  favorites: Set<ImmutableTrack>;
 }
 
 export const initialState: State = {
-  favorites: List()
+  favorites: Set()
 };
 
 export function reducer(
@@ -18,17 +17,18 @@ export function reducer(
   switch (action.type) {
 
     case FavoritesActionTypes.AddToFavorites: {
+      const tracksToAdd = action.payload.map(toImmutable);
       return {
         ...state,
-        favorites: state.favorites.push(...action.payload)
+        favorites: state.favorites.concat(tracksToAdd)
       };
     }
 
     case FavoritesActionTypes.RemoveFromFavorites: {
-      const index = state.favorites.findIndex(f => _.isEqual(f, action.payload));
+      const track = toImmutable(action.payload);
       return {
         ...state,
-        favorites: index > -1 ? state.favorites.delete(index) : state.favorites
+        favorites: state.favorites.contains(track) ? state.favorites.delete(track) : state.favorites
       };
     }
 
@@ -37,6 +37,7 @@ export function reducer(
   }
 }
 
-export const getFavorites = (state: State) => state.favorites.toArray();
+export const getFavorites = (state: State) => state.favorites.toJS() as Track[];
+export const isFavorite = (state: State, track: Track) => state.favorites.contains(toImmutable(track));
 
 

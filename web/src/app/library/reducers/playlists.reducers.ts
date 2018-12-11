@@ -1,10 +1,10 @@
-import {Playlist} from '@app/model';
 import {List} from 'immutable';
+
+import {ImmutablePlaylist, Playlist, toImmutable} from '@app/model';
 import {PlaylistsActionTypes, PlaylistsActionUnion} from '@app/library/actions/playlists.actions';
-import * as _ from 'lodash';
 
 export interface State {
-  playlists: List<Playlist>;
+  playlists: List<ImmutablePlaylist>;
 }
 
 export const initialState: State = {
@@ -18,45 +18,48 @@ export function reducer(
   switch (action.type) {
 
     case PlaylistsActionTypes.AddToPlaylist: {
-      const playlist = state.playlists.find(p => p.name === action.playlist);
-      return {
-        ...state,
-        playlists: state.playlists.set(
-          state.playlists.indexOf(playlist),
-          {
-            name: playlist.name,
-            tracks: _.uniq([...playlist.tracks, ...action.tracks])
-          }
-        )
-      };
+      const playlistIndex = state.playlists.findIndex(p => p.get('name') === action.playlistName);
+      if (playlistIndex === -1) {
+        return {
+          ...state,
+          playlists: state.playlists.push(toImmutable({name: action.playlistName, tracks: action.tracks}))
+        };
+      } else {
+        const playlist = state.playlists.get(playlistIndex);
+        return {
+          ...state,
+          playlists: state.playlists.set(
+            playlistIndex,
+            playlist.set('tracks', playlist.get('tracks').union(action.tracks))
+          )
+        };
+      }
     }
 
     case PlaylistsActionTypes.RemoveFromPlaylist: {
-      const playlist = state.playlists.find(p => p.name === action.playlist);
+      const playlist = state.playlists.find(p => p.get('name') === action.playlistName);
       return {
         ...state,
         playlists: state.playlists.set(
           state.playlists.indexOf(playlist),
-          {
-            name: playlist.name,
-            tracks: playlist.tracks.filter(t => !_.isEqual(t, action.track))
-          }
+          playlist.set('tracks', playlist.get('tracks').delete(action.track))
         )
       };
     }
 
     case PlaylistsActionTypes.LoadPlaylists: {
+      const playlists = action.playlists.map(toImmutable);
       return {
         ...state,
-        playlists: List.of(...action.playlists)
+        playlists: List.of(...playlists)
       };
     }
 
     case PlaylistsActionTypes.SavePlaylist: {
-      const playlist = state.playlists.find(p => p.name === action.name);
+      const playlist = state.playlists.find(p => p.get('name') === action.name);
       const playlists = playlist ?
-        state.playlists.set(state.playlists.indexOf(playlist), {name: action.name, tracks: action.tracks}) :
-        state.playlists.push({name: action.name, tracks: action.tracks});
+        state.playlists.set(state.playlists.indexOf(playlist), toImmutable({name: action.name, tracks: action.tracks})) :
+        state.playlists.push(toImmutable({name: action.name, tracks: action.tracks}));
       return {
         ...state,
         playlists: playlists
@@ -64,10 +67,8 @@ export function reducer(
     }
 
     case PlaylistsActionTypes.DeletePlaylist: {
-      const playlist = state.playlists.find(p => p.name === action.name);
-      const playlists = playlist ?
-        state.playlists.remove(state.playlists.findIndex(p => p.name === action.name)) :
-        state.playlists;
+      const index = state.playlists.findIndex(p => p.get('name') === action.name);
+      const playlists = index > -1 ? state.playlists.remove(index) : state.playlists;
       return {
         ...state,
         playlists: playlists
@@ -80,4 +81,4 @@ export function reducer(
   }
 }
 
-export const getPlaylists = (state: State) => state.playlists.toArray();
+export const getPlaylists = (state: State) => state.playlists.toJS() as Playlist[];

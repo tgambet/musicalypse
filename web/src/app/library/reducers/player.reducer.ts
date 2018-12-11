@@ -1,15 +1,15 @@
-import {Track} from '@app/model';
-import {List} from 'immutable';
-import * as _ from 'lodash';
+import {ImmutableTrack, toImmutable, Track} from '@app/model';
+import {is, List} from 'immutable';
 
 import {PlayerActionsUnion, PlayerActionTypes} from '@app/library/actions/player.actions';
 import {PlaylistsActionTypes, PlaylistsActionUnion} from '@app/library/actions/playlists.actions';
+import {LibraryUtils} from '@app/library/library.utils';
 
 export interface State {
-  currentTrack: Track;
+  currentTrack: ImmutableTrack;
   repeat: boolean;
   shuffle: boolean;
-  currentPlaylist: List<Track>;
+  currentPlaylist: List<ImmutableTrack>;
 }
 
 export const initialState: State = {
@@ -27,8 +27,11 @@ export function reducer(
 
     case PlayerActionTypes.SetCurrentTrack: {
       let playlist = state.currentPlaylist;
-      const track = action.payload;
-      if (!playlist.some(t => _.isEqual(t, track))) {
+      const track = toImmutable(action.payload);
+      if (is(track, state.currentTrack)) {
+        return state; // don't change the state if not needed
+      }
+      if (!playlist.includes(track)) {
         playlist = playlist.push(track);
       }
       return {
@@ -39,14 +42,14 @@ export function reducer(
     }
 
     case PlayerActionTypes.PlayTrackNext: {
-      const next = action.payload;
+      const next = toImmutable(action.payload);
       const currentTrack = state.currentTrack;
       let playlist = state.currentPlaylist;
-      const nextIndex = playlist.findIndex(t => _.isEqual(t, next));
+      const nextIndex = playlist.indexOf(next);
       if (nextIndex > -1) {
         playlist = playlist.delete(nextIndex);
       }
-      const currentIndex = playlist.findIndex(t => _.isEqual(t, currentTrack));
+      const currentIndex = playlist.indexOf(currentTrack);
       playlist = playlist.splice(currentIndex + 1, 0, next);
       return {
         ...state,
@@ -56,8 +59,9 @@ export function reducer(
     }
 
     case PlayerActionTypes.AddToCurrentPlaylist: {
-      let playlist: List<Track> = state.currentPlaylist;
-      playlist = playlist.push(...action.payload.filter(track => !playlist.some(t => _.isEqual(t, track))));
+      let playlist = state.currentPlaylist;
+      const tracksToAdd = action.payload.map(toImmutable);
+      playlist = playlist.push(...tracksToAdd.filter(track => !playlist.includes(track)));
       return {
         ...state,
         currentPlaylist: playlist
@@ -67,14 +71,14 @@ export function reducer(
     case PlayerActionTypes.SetNextTrack: {
       const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
-      if (playlist.size === 0 || (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && !state.repeat) {
+      if (playlist.size === 0 || is(playlist.last(), currentTrack) && !state.repeat) {
         return {
           ...state
         };
       }
       if (!currentTrack ||
-          playlist.findIndex(t => _.isEqual(t, currentTrack)) === -1 ||
-          (playlist.findIndex(t => _.isEqual(t, currentTrack)) === playlist.size - 1) && state.repeat) {
+          playlist.indexOf(currentTrack) === -1 ||
+          is(playlist.last(), currentTrack) && state.repeat) {
         return {
           ...state,
           currentTrack: playlist.get(0)
@@ -82,7 +86,7 @@ export function reducer(
       }
       return {
         ...state,
-        currentTrack: playlist.get(playlist.findIndex(t => _.isEqual(t, currentTrack)) + 1)
+        currentTrack: playlist.get(playlist.indexOf(currentTrack) + 1)
       };
     }
 
@@ -115,8 +119,9 @@ export function reducer(
 
     case PlayerActionTypes.SetShuffle: {
       const shuffle = action.payload;
+      const playlist = state.currentPlaylist.toArray();
       if (shuffle) {
-        let shuffled = List.of(..._.shuffle(state.currentPlaylist.toArray()));
+        let shuffled = List.of(...LibraryUtils.shuffleArray(playlist));
         if (shuffled.includes(state.currentTrack)) {
           shuffled = shuffled.delete(shuffled.indexOf(state.currentTrack));
           shuffled = shuffled.unshift(state.currentTrack);
@@ -130,21 +135,24 @@ export function reducer(
         return {
           ...state,
           shuffle: shuffle,
-          currentPlaylist: state.currentPlaylist.sortBy(t => t.url)
+          currentPlaylist: state.currentPlaylist.sortBy(t => t.get('url'))
         };
       }
     }
 
-    case PlayerActionTypes.SetCurrentPlaylist:
+    case PlayerActionTypes.SetCurrentPlaylist: {
+      const playlist = action.payload.map(toImmutable);
       return {
         ...state,
-        currentPlaylist: List.of(...action.payload)
+        currentPlaylist: List.of(...playlist)
       };
+    }
 
     case PlaylistsActionTypes.LoadPlaylist: {
+      const playlist = action.playlist.tracks.map(toImmutable);
       return {
         ...state,
-        currentPlaylist: List.of(...action.playlist.tracks),
+        currentPlaylist: List.of(...playlist),
         shuffle: false
       };
     }
@@ -155,7 +163,7 @@ export function reducer(
   }
 }
 
-export const getCurrentTrack = (state: State) => state.currentTrack;
+export const getCurrentTrack = (state: State) => state.currentTrack && state.currentTrack.toJS() as Track;
 export const getRepeat = (state: State) => state.repeat;
 export const getShuffle = (state: State) => state.shuffle;
-export const getCurrentPlaylist = (state: State) => state.currentPlaylist.toArray();
+export const getCurrentPlaylist = (state: State) => state.currentPlaylist.toJS() as Track[];

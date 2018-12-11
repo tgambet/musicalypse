@@ -1,18 +1,18 @@
 import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {Track} from '@app/model';
+import {ImmutableTrack, toImmutable} from '@app/model';
 import {TracksActionsUnion, TracksActionTypes} from '@app/library/actions/tracks.actions';
 
 /**
  * State
  */
-export interface State extends EntityState<Track> {
+export interface State extends EntityState<ImmutableTrack> {
   error: string;
   loading: boolean;
 }
 
-export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>({
-  selectId: (track: Track) => track.url,
-  sortComparer: (a, b) => a.url.localeCompare(b.url),
+export const adapter: EntityAdapter<ImmutableTrack> = createEntityAdapter<ImmutableTrack>({
+  selectId: (track: ImmutableTrack) => track.get('url'),
+  sortComparer: (a, b) => a.get('url').localeCompare(b.get('url')),
 });
 
 export const initialState: State = adapter.getInitialState({
@@ -30,14 +30,14 @@ export function reducer(
   switch (action.type) {
 
     case TracksActionTypes.AddTracks:
-      return adapter.addMany(action.payload, state);
+      return adapter.addMany(action.payload.map(toImmutable), state);
 
     case TracksActionTypes.RemoveTracks: {
       return adapter.removeMany(action.payload.map(t => t.url), state);
     }
 
     case TracksActionTypes.LoadTracksSuccess: {
-      return adapter.addMany(action.payload, {
+      return adapter.addMany(action.payload.map(toImmutable), {
         ...state,
         loading: false
       });

@@ -1,10 +1,9 @@
 import {Set} from 'immutable';
-import {Track} from '@app/model';
+import {ImmutableTrack, toImmutable, Track} from '@app/model';
 import {RecentActionsUnion, RecentActionTypes} from '@app/library/actions/recent.actions';
-import * as _ from 'lodash';
 
 export interface State {
-  recentTracks: Set<Track>;
+  recentTracks: Set<ImmutableTrack>;
 }
 
 export const initialState: State = {
@@ -19,8 +18,8 @@ export function reducer(
 
     case RecentActionTypes.AddToRecent: {
       let result = state.recentTracks;
-      action.payload
-        .filter(track => !result.some(t => _.isEqual(t, track)))
+      toImmutable(action.payload)
+        .filter(track => !result.contains(track))
         .forEach(track => result = result.add(track));
       if (result.size > 50) {
         result = result.slice(1, result.size);
@@ -36,6 +35,6 @@ export function reducer(
   }
 }
 
-export const getRecentTracks = (state: State) => state.recentTracks.toArray();
+export const getRecentTracks = (state: State) => state.recentTracks.toJS() as Track[];
 
 

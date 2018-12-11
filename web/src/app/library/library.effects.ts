@@ -102,7 +102,7 @@ export class LibraryEffects {
    */
   @Effect()
   setTrack$: Observable<Action> =
-    this.store.select(fromLibrary.getCurrentTrack).pipe(
+    this.library.getCurrentTrack().pipe(
       filter(track => !!track),
       map(track => new SetAudioSource(CoreUtils.resolveUrl(track.url)))
     );

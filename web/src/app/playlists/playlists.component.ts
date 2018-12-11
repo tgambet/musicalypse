@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import {Playlist} from '@app/model';
 import {InfoComponent} from '@app/shared/dialogs/info.component';
 import {LibraryService} from '@app/library/services/library.service';
+import {LibraryUtils} from '@app/library/library.utils';
 
 @Component({
   selector: 'app-playlists',
@@ -300,29 +301,28 @@ export class PlaylistsComponent {
       map(favorites => ({ name: '_all', tracks: favorites}))
     );
     this.artistsPlaylists = this.library.getAllArtists().pipe(
+      map(artists => artists.sort((a, b) => b.songs - a.songs)),
+      map(artists => artists.slice(0, 15)),
       switchMap(artists =>
         combineLatest(artists.map(artist =>
-          this.library.getArtistTracks(artist).pipe(
+          this.library.getTracksByArtist(artist).pipe(
             map(tracks => ({name: artist.name, tracks: tracks}))
           )
-        )).pipe(
-          map(playlists => playlists.sort((a, b) => b.tracks.length - a.tracks.length)),
-          map(playlists => playlists.slice(0, 15))
-        )
+        ))
       )
     );
     this.suggestedAlbumsPlaylists = combineLatest(this.library.getFavorites(), this.library.getRecentTracks()).pipe(
       map(array => [...array[0], ...array[1]]),
-      map(tracks => tracks.map(track =>
-        ({id: track.metadata.albumArtist + '-' + track.metadata.album, name: `${track.metadata.album} • ${track.metadata.albumArtist}`}))
-      ),
+      map(tracks => tracks.map(track => ({
+        id: track.metadata.albumArtist + '-' + track.metadata.album,
+        name: `${track.metadata.album} • ${track.metadata.albumArtist}`
+      }))),
       map(objs => _.uniqBy(objs, obj => obj.id)),
+      map(objs => LibraryUtils.shuffleArray(objs).slice(0, 15)),
       switchMap(objs =>
         combineLatest(objs.map(meta => this.library.getTracksByAlbumId(meta.id).pipe(
           map(tracks => ({name: meta.name, tracks: tracks}))
-        ))).pipe(
-          map(playlists => _.shuffle(playlists).slice(0, 15))
-        )
+        )))
       )
     );
   }

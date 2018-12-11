@@ -80,16 +80,26 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
 
   // Scroll into view the current track if hidden
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.currentTrack && this.listItems && (this.playlistMatList || this.playlistUl)) {
-      const foundElement =
-        this.listItems.find(el => el.nativeElement.getAttribute('data-url') === changes.currentTrack.currentValue.url);
-      if (foundElement) {
-        const element = foundElement.nativeElement;
-        // We have two types of playlists: TODO: refactor
-        const referenceElement = this.playlistUl ? this.playlistUl.nativeElement : this.playlistMatList['_elementRef'].nativeElement;
-        if (!CoreUtils.isScrolledIntoView(element, referenceElement.parentElement)) {
-          element.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
-        }
+    if ((changes.currentTrack || changes.playlist) && this.listItems && (this.playlistMatList || this.playlistUl)) {
+      setTimeout(() => this.scrollCurrentTrackIntoView());
+    }
+  }
+
+  scrollCurrentTrackIntoView() {
+    // TODO: refactor
+    const listElement =
+      this.playlistUl ? this.playlistUl.nativeElement.parentElement : this.playlistMatList['_elementRef'].nativeElement.parentElement;
+    // If the list element (scrolling parent) is not visible skip scrolling
+    if (!CoreUtils.isHorizontallyVisible(listElement)) {
+      return;
+    }
+    const trackRef =
+      this.listItems.find(el => el.nativeElement.getAttribute('data-url') === this.currentTrack.url);
+    if (trackRef) {
+      const element = trackRef.nativeElement;
+      // We have two types of playlists: TODO: refactor
+      if (!CoreUtils.isScrolledIntoView(element, listElement)) {
+        element.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
       }
     }
   }

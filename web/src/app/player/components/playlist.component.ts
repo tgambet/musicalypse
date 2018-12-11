@@ -148,10 +148,14 @@ export class PlayerPlaylistComponent implements OnChanges {
   // Scroll into view the current track if hidden
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.currentTrack && this.titles && this.table) {
-      const element = this.titles.find(el => el.nativeElement.getAttribute('data-url') === changes.currentTrack.currentValue.url);
-      if (element && !CoreUtils.isScrolledIntoView(element.nativeElement, this.table['_elementRef'].nativeElement.parentElement)) {
-        element.nativeElement.parentElement.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
-      }
+      setTimeout(() => this.scrollCurrentTrackIntoView());
+    }
+  }
+
+  scrollCurrentTrackIntoView() {
+    const element = this.titles.find(el => el.nativeElement.getAttribute('data-url') === this.currentTrack.url);
+    if (element && !CoreUtils.isScrolledIntoView(element.nativeElement, this.table['_elementRef'].nativeElement.parentElement)) {
+      element.nativeElement.parentElement.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
     }
   }
 

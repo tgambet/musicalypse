@@ -59,6 +59,12 @@ export class CoreUtils {
     return (elemTop >= 0) && (elemBottom <= window.innerHeight);
   }
 
+  static isHorizontallyVisible(el: Element): boolean {
+    const rect = el.getBoundingClientRect();
+    const elemLeft = rect.left;
+    return elemLeft < window.innerWidth;
+  }
+
 }
 
 export class Theme {

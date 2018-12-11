@@ -9,7 +9,6 @@ import {Observable} from 'rxjs';
 import {filter, map, tap} from 'rxjs/operators';
 
 import {ChangeTheme, CoreActionTypes} from './core.actions';
-import {CoreUtils} from './core.utils';
 import {LoaderService} from './services/loader.service';
 
 import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
@@ -26,8 +25,8 @@ export class CoreEffects {
     this.actions$.pipe(
       ofType<ChangeTheme>(CoreActionTypes.ChangeTheme),
       tap((action: ChangeTheme) => {
-        this.overlayContainer.getContainerElement().className = 'cdk-overlay-container ' + action.payload.cssClass;
-        CoreUtils.save('theme', JSON.stringify(action.payload));
+        const initialClass = this.overlayContainer.getContainerElement().className;
+        this.overlayContainer.getContainerElement().className = initialClass + ' ' + action.payload.cssClass;
       }),
       map(() => {})
     );

@@ -1,4 +1,5 @@
 import {environment} from '@env/environment';
+import {Observable, Subscription} from 'rxjs';
 
 export class CoreUtils {
 
@@ -21,6 +22,18 @@ export class CoreUtils {
 
   static load(key: string): string {
     return window.localStorage.getItem(key);
+  }
+
+  static restoreAndSave<T>(id: string, onLoad: (saved: T) => void, saveWhen: Observable<T>, ifNotLoaded?: () => void): Subscription {
+    const savedItem = CoreUtils.load(id);
+    if (savedItem) {
+      onLoad(JSON.parse(savedItem));
+    } else {
+      if (ifNotLoaded) { ifNotLoaded(); }
+    }
+    return saveWhen.subscribe(
+      elem => CoreUtils.save(id, JSON.stringify(elem))
+    );
   }
 
   static resolveUrl(sourceUrl: string) {

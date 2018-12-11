@@ -62,60 +62,40 @@ export class LibraryService {
   }
 
   initialize() {
-    // TODO refactor
-    // Restore selection state, playlist, favorites and recent tracks
-    const savedSelectedArtistsIds = CoreUtils.load('selectedArtistsIds');
-    if (savedSelectedArtistsIds) {
-      this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
-    }
-    const savedSelectedAlbumsIds = CoreUtils.load('selectedAlbumsIds');
-    if (savedSelectedAlbumsIds) {
-      this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
-    }
-    const savedPlaylist = CoreUtils.load('playlist');
-    if (savedPlaylist) {
-      this.store.dispatch(new SetCurrentPlaylist(JSON.parse(savedPlaylist)));
-    }
-    const savedFavorites = CoreUtils.load('favorites');
-    if (savedFavorites) {
-      this.store.dispatch(new AddToFavorites(JSON.parse(savedFavorites)));
-    }
-    const savedRecent = CoreUtils.load('recent');
-    if (savedRecent) {
-      this.store.dispatch(new AddToRecent(JSON.parse(savedRecent)));
-    }
-    const savedPlaylists = CoreUtils.load('playlists');
-    if (savedPlaylists) {
-      this.store.dispatch(new LoadPlaylists(JSON.parse(savedPlaylists)));
-    }
-    const savedCurrent = CoreUtils.load('current');
-    if (savedCurrent) {
-      this.store.dispatch(new SetCurrentTrack(JSON.parse(savedCurrent)));
-    }
-
-    // Save selection state, playlist, favorites, and recent tracks on change
-    this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
-      ids => CoreUtils.save('selectedArtistsIds', JSON.stringify(ids))
+    CoreUtils.restoreAndSave(
+      'selectedArtistsIds',
+      e => this.store.dispatch(new SelectArtistsByIds(e)),
+      this.store.select(fromLibrary.getSelectedArtistsIds)
     );
-    this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
-      ids => CoreUtils.save('selectedAlbumsIds', JSON.stringify(ids))
+    CoreUtils.restoreAndSave(
+      'selectedAlbumsIds',
+      e => this.store.dispatch(new SelectAlbumsByIds(e)),
+      this.store.select(fromLibrary.getSelectedAlbumsIds)
     );
-    this.getPlaylist().subscribe(
-      playlist => CoreUtils.save('playlist', JSON.stringify(playlist))
+    CoreUtils.restoreAndSave(
+      'playlist',
+      e => this.store.dispatch(new SetCurrentPlaylist(e)),
+      this.getPlaylist()
     );
-    this.getFavorites().subscribe(
-      favs => CoreUtils.save('favorites', JSON.stringify(favs))
+    CoreUtils.restoreAndSave(
+      'favorites',
+      e => this.store.dispatch(new AddToFavorites(e)),
+      this.getFavorites()
     );
-    this.getRecentTracks().subscribe(
-      tracks => CoreUtils.save('recent', JSON.stringify(tracks))
+    CoreUtils.restoreAndSave(
+      'recent',
+      e => this.store.dispatch(new AddToRecent(e)),
+      this.getRecentTracks()
     );
-    this.getPlaylists().subscribe(
-      playlists => CoreUtils.save('playlists', JSON.stringify(playlists))
+    CoreUtils.restoreAndSave(
+      'playlists',
+      e => this.store.dispatch(new LoadPlaylists(e)),
+      this.getPlaylists()
     );
-    this.getCurrentTrack().subscribe(
-      track => {
-        if (track) { CoreUtils.save('current', JSON.stringify(track)); }
-      }
+    CoreUtils.restoreAndSave(
+      'current',
+      e => this.store.dispatch(new SetCurrentTrack(e)),
+      this.getCurrentTrack().pipe(filter(t => !!t))
     );
   }
 
@@ -237,7 +217,9 @@ export class LibraryService {
   }
 
   play() {
-    this.audioService.play(); // TODO catch errors
+    this.audioService.play().catch(
+      () => this.snack.open('An error occurred!', 'OK', {duration: 2000})
+    );
   }
 
   pause() {
@@ -354,7 +336,7 @@ export class LibraryService {
 
   savePlaylist(name: string, tracks: Track[]) {
     this.store.dispatch(new SavePlaylist(name, tracks));
-    this.snack.open('Playlist saved!', 'OK', {duration: 2000}); // TODO
+    this.snack.open('Playlist saved!', 'OK', {duration: 2000});
   }
 
   deletePlaylist(name: string) {

@@ -136,16 +136,6 @@ export class CoreComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    // Save and restore volume
-    const savedVolume = CoreUtils.load('volume');
-    if (savedVolume) {
-      this.store.dispatch(new SetAudioVolume(JSON.parse(savedVolume)));
-    }
-    this.store.select(fromRoot.getAudioVolume).subscribe(
-      volume => CoreUtils.save('volume', JSON.stringify(volume))
-    );
-
     // Set up electron listeners
     if (environment.electron) {
       const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
@@ -176,13 +166,20 @@ export class CoreComponent implements OnInit {
     this.audioService.renderer = this.renderer;
     this.audioService.appRoot = this.appRoot;
 
-    // Load the last theme
-    const savedTheme = CoreUtils.load('theme');
-    if (savedTheme) {
-      this.changeTheme(JSON.parse(savedTheme));
-    } else {
-      this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]));
-    }
+    // Load and save volume
+    CoreUtils.restoreAndSave(
+      'volume',
+      v => this.store.dispatch(new SetAudioVolume(v)),
+      this.store.select(fromRoot.getAudioVolume)
+    );
+
+    // Load and save theme
+    CoreUtils.restoreAndSave(
+      'theme',
+      t => this.store.dispatch(new ChangeTheme(t)),
+      this.store.select(fromRoot.getCurrentTheme),
+      () => this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]))
+    );
   }
 
   @HostListener('window:beforeinstallprompt', ['$event'])

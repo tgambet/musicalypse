@@ -99,6 +99,7 @@ import {DisplayType} from '@app/library/library.component';
       cursor: pointer;
       font-size: 12px;
       max-width: calc(50% - 27px);
+      white-space: nowrap;
     }
     mat-chip:only-child {
       max-width: 100%;

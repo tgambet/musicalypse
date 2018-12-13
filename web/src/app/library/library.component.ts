@@ -1,10 +1,12 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, Subscription} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {filter, take, tap} from 'rxjs/operators';
 
 import {Album, Artist, Playlist, Track} from '@app/model';
 import {LibraryService} from './services/library.service';
+import {RouterService} from '@app/core/services/router.service';
+import {RouterStateUrl} from '@app/app.serializer';
 
 @Component({
   selector: 'app-library',
@@ -67,7 +69,7 @@ import {LibraryService} from './services/library.service';
   styleUrls: ['./library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LibraryComponent implements OnInit, OnDestroy {
 
   artists$: Observable<Artist[]>;
   selectedArtists$: Observable<Artist[]>;
@@ -99,7 +101,9 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     private library: LibraryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private routerService: RouterService,
+    private ref: ChangeDetectorRef
   ) {
 
   }
@@ -227,31 +231,23 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
     //   })
     // );
 
-    // // Restore selection state
-    // const savedSelectedArtistsIds = PersistenceService.load('selectedArtistsIds');
-    // if (savedSelectedArtistsIds) {
-    //   this.store.dispatch(new SelectArtistsByIds(JSON.parse(savedSelectedArtistsIds)));
-    // }
-    // const savedSelectedAlbumsIds = PersistenceService.load('selectedAlbumsIds');
-    // if (savedSelectedAlbumsIds) {
-    //   this.store.dispatch(new SelectAlbumsByIds(JSON.parse(savedSelectedAlbumsIds)));
-    // }
-    //
-    // // Save selection state on change
-    // this.subscriptions.push(
-    //   this.store.select(fromLibrary.getSelectedArtistsIds).subscribe(
-    //     ids => PersistenceService.save('selectedArtistsIds', JSON.stringify(ids))
-    //   ),
-    //   this.store.select(fromLibrary.getSelectedAlbumsIds).subscribe(
-    //     ids => PersistenceService.save('selectedAlbumsIds', JSON.stringify(ids))
-    //   )
-    // );
+    /*const translateContentOnRouteChange = this.routerService.getRouterState().subscribe(state => {
+      const t = state.queryParams.get('t');
+      if (t !== null && t !== this.contentTranslation.toString(10)) {
+        this.contentTranslation = parseInt(t, 10);
+        this.ref.detectChanges();
+      }
+    });
+    this.subscriptions.push(translateContentOnRouteChange);*/
 
-
-  }
-
-  ngAfterViewInit() {
-
+    const translateOnUrlChange = this.route.queryParamMap.subscribe(params => {
+      const t = params.get('t');
+      if (t !== null && t !== this.contentTranslation.toString(10)) {
+        this.contentTranslation = parseInt(t, 10);
+        this.ref.detectChanges();
+      }
+    });
+    this.subscriptions.push(translateOnUrlChange);
   }
 
   ngOnDestroy() {
@@ -265,7 +261,14 @@ export class LibraryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   translateContent(n: number) {
     this.contentTranslation = n;
-    // this.updateUrl();
+    const updateUrl = () => this.routerService.getRouterState().pipe(
+      take(1),
+      filter((state: RouterStateUrl) => state.queryParams.get('t') !== n.toString()),
+      tap(() => {
+        this.router.navigate(['/library'], { queryParams: { t: n.toString() }, queryParamsHandling: 'merge' });
+      })
+    ).subscribe();
+    setTimeout(updateUrl);
   }
 
 }

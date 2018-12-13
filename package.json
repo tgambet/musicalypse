@@ -65,6 +65,7 @@
     "@angular/service-worker": "^7.1.1",
     "@ngrx/effects": "^7.0.0-beta.1",
     "@ngrx/entity": "^7.0.0-beta.1",
+    "@ngrx/router-store": "^7.0.0-beta.1",
     "@ngrx/store": "^7.0.0-beta.1",
     "@ngrx/store-devtools": "^7.0.0-beta.1",
     "@types/jasmine": "~2.8.6",

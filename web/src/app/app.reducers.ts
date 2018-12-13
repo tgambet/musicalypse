@@ -2,9 +2,12 @@ import {ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} fr
 import {environment} from '@env/environment';
 
 import * as fromCore from './core/core.reducers';
+import {routerReducer, RouterReducerState} from '@ngrx/router-store';
+import {RouterStateUrl} from '@app/app.serializer';
 
 export interface State {
   core: fromCore.State;
+  router: RouterReducerState<RouterStateUrl>;
 }
 
 /**
@@ -14,6 +17,7 @@ export interface State {
  */
 export const reducers: ActionReducerMap<State> = {
   core: fromCore.reducer,
+  router: routerReducer
 };
 
 // console.log all actions
@@ -76,4 +80,9 @@ export const getAudioMuted = createSelector(
 export const getAudioVolume = createSelector(
   getCoreState,
   fromCore.getAudioVolume
+);
+
+export const getRouterState =  createSelector(
+  createFeatureSelector<RouterReducerState<RouterStateUrl>>('router'),
+  (state) => state.state
 );

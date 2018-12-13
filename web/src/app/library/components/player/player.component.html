@@ -5,10 +5,10 @@
     </button>
     <div class="metadata">
       <div class="title">
-        {{ currentTrack ? currentTrack.metadata.title : '' }}
+        {{ currentTrack ? currentTrack.title : '' }}
       </div>
       <div class="artist">
-        {{ currentTrack ? currentTrack.metadata.artist : '' }}
+        {{ currentTrack ? currentTrack.artist : '' }}
       </div>
     </div>
     <button mat-button mat-icon-button
@@ -52,13 +52,13 @@
                              (click)="playTrack(track)">
                 <span matLine class="title">
                   <mat-icon *ngIf="isTrackCurrent(track) && playing">equalizer</mat-icon>
-                  <span>{{ track.metadata.title }}</span>
+                  <span>{{ track.title }}</span>
                 </span>
                 <span matLine class="meta">
-                  {{ track.metadata.artist }} • {{ track.metadata.album }}
+                  {{ track.artist }} • {{ track.album }}
                 </span>
-                <!--<span class="year">{{ track.metadata.year }}</span>-->
-                <span class="duration">{{ track.metadata.duration | sgTime }}</span>
+                <!--<span class="year">{{ track.year }}</span>-->
+                <span class="duration">{{ track.duration | sgTime }}</span>
               </mat-list-item>
             </div>
           </ng-container>
@@ -68,12 +68,12 @@
             <li #listItem [class.current]="isTrackCurrent(track)" class="divider track-list-item" (click)="playTrack(track)" [attr.data-url]="track.url">
               <span class="title c">
                 <mat-icon *ngIf="isTrackCurrent(track) && playing">equalizer</mat-icon>
-                <span>{{ track.metadata.title }}</span>
+                <span>{{ track.title }}</span>
               </span>
-              <span class="artist c">{{ track.metadata.artist }}</span>
-              <span class="album c">{{ track.metadata.album }}</span>
-              <span class="year c">{{ track.metadata.year | sgYear }}</span>
-              <span class="duration c">{{ track.metadata.duration | sgTime }}</span>
+              <span class="artist c">{{ track.artist }}</span>
+              <span class="album c">{{ track.album }}</span>
+              <span class="year c">{{ track.year | sgYear }}</span>
+              <span class="duration c">{{ track.duration | sgTime }}</span>
             </li>
           </ng-container>
           <li class="status-bar">

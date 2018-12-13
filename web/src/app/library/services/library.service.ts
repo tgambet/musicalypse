@@ -287,8 +287,8 @@ export class LibraryService {
   }
 
   selectInLibrary(playlist: Track[]) {
-    const artistsIds = LibraryUtils.uniq(playlist.map(track => track.metadata.albumArtist));
-    const albumsIds = LibraryUtils.uniq(playlist.map(track => track.metadata.albumArtist + '-' + track.metadata.album));
+    const artistsIds = LibraryUtils.uniq(playlist.map(track => track.albumArtist));
+    const albumsIds = LibraryUtils.uniq(playlist.map(track => track.albumArtist + '-' + track.album));
     this.store.dispatch(new SelectArtistsByIds(artistsIds));
     this.store.dispatch(new SelectAlbumsByIds(albumsIds));
   }

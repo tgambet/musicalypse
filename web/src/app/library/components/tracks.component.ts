@@ -51,7 +51,6 @@ import {LibraryService} from '@app/library/services/library.service';
         <mat-list class="list" [class.sorted-alpha]="sortedAlphabetically" dense>
           <app-track *ngFor="let track of filteredTracks; trackBy: trackByURL"
                      [track]="track"
-                     [warn]="track.warn && settings.warnOnMissingTags"
                      [isCurrentTrack]="isCurrentTrack(track)"
                      [search]="search"
                      [favorite]="isFavorite(track) | async"
@@ -126,16 +125,16 @@ export class TracksComponent implements OnChanges {
 
   filter: (track: Track) => boolean = ((track: Track) => {
     if (this.search !== '') {
-      return track.metadata.title.toLowerCase().includes(this.search.toLowerCase());
+      return track.title.toLowerCase().includes(this.search.toLowerCase());
     }
     return true;
   });
 
   sort: (tracks: Track[]) => Track[] = ((tracks: Track[]) => {
     if (this.sortedAlphabetically) {
-      return tracks.sort((a, b) => a.metadata.title.toLowerCase().localeCompare(b.metadata.title.toLowerCase()));
+      return tracks.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
     } else {
-      return tracks.sort((a, b) => a.metadata.location.localeCompare(b.metadata.location));
+      return tracks.sort((a, b) => a.location.localeCompare(b.location));
     }
   });
 

@@ -32,7 +32,7 @@ export class PlayerStatusComponent {
   @Input() currentTrack: Track;
 
   getTotalDuration(): number {
-    return this.playlist.reduce((total, track) => total + track.metadata.duration, 0);
+    return this.playlist.reduce((total, track) => total + track.duration, 0);
   }
 
   getCurrentTrackPosition(): number {

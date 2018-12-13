@@ -10,9 +10,15 @@ export function toImmutable<T extends object> (o: T) {
 
 export interface Track {
   url: string;
-  metadata: TrackMetadata;
   coverUrl?: string;
-  warn?: boolean;
+  location: string;
+  title: string;
+  album: string;
+  artist: string;
+  albumArtist: string;
+  year: string;
+  duration: number;
+  // warn?: boolean;
 }
 
 export type ImmutableTrack = ImmutableMap<Track>;
@@ -21,7 +27,7 @@ export interface Artist {
   name: string;
   songs: number;
   avatarUrl?: string;
-  warn?: boolean;
+  // warn?: boolean;
 }
 
 export interface Album {
@@ -29,17 +35,7 @@ export interface Album {
   title: string;
   songs: number;
   avatarUrl?: string;
-  warn?: boolean;
-}
-
-export interface TrackMetadata {
-  location: string;
-  title: string;
-  album: string;
-  artist: string;
-  albumArtist: string;
-  year: string;
-  duration: number;
+  // warn?: boolean;
 }
 
 export interface Playlist {

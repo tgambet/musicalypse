@@ -37,7 +37,7 @@ class SettingsActor()(implicit application: Application) extends Actor with Stas
           }
         }
       } catch {
-        case _: Throwable => logger.error("Error retrieving network interface list")
+        case t: Throwable => logger.error(t, "Error retrieving network interface list")
       }
       sender() ! ipAddresses
 

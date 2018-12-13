@@ -58,7 +58,6 @@ import {DisplayType} from '@app/library/library.component';
           <app-list-item *ngFor="let album of filteredAlbums; trackBy: trackByTitle"
                          [selected]="isSelected(album) | async"
                          [avatarStyle]="getAvatarStyle(album)"
-                         [warn]="album.warn && settings.warnOnMissingTags"
                          [primaryHTML]="album.title | sgSearch:search"
                          [secondaryHTML]="getSecondaryHTML(album)"
                          (click)="selectOnly(album); next.emit()"

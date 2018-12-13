@@ -7,8 +7,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.settings.RoutingSettings
 import akka.pattern.ask
-import net.creasource.audio.Track
 import net.creasource.core.Application
+import net.creasource.model.Track
 import net.creasource.web.LibraryActor._
 import net.creasource.web.SettingsActor.{DeleteCovers, GetHostIps}
 import spray.json.DefaultJsonProtocol._

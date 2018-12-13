@@ -5,37 +5,37 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 @Component({
   selector: 'app-details',
   template: `
-    <h3 mat-dialog-title>Details of "{{ data.track.metadata.title }}"</h3>
+    <h3 mat-dialog-title>Details of "{{ data.track.title }}"</h3>
     <div mat-dialog-content>
       <mat-grid-list cols="2" rowHeight="fit" gutterSize="1rem">
         <mat-grid-tile [colspan]="2">
           <mat-form-field>
-            <input matInput placeholder="Title" [(ngModel)]="data.track.metadata.title" spellcheck="false" disabled>
+            <input matInput placeholder="Title" [(ngModel)]="data.track.title" spellcheck="false" disabled>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-form-field>
-            <input matInput placeholder="Artist(s)" [(ngModel)]="data.track.metadata.artist" spellcheck="false" disabled>
+            <input matInput placeholder="Artist(s)" [(ngModel)]="data.track.artist" spellcheck="false" disabled>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-form-field>
-            <input matInput placeholder="Album" [(ngModel)]="data.track.metadata.album" spellcheck="false" disabled>
+            <input matInput placeholder="Album" [(ngModel)]="data.track.album" spellcheck="false" disabled>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-form-field>
-            <input matInput placeholder="Album Artist" [(ngModel)]="data.track.metadata.albumArtist" spellcheck="false" disabled>
+            <input matInput placeholder="Album Artist" [(ngModel)]="data.track.albumArtist" spellcheck="false" disabled>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-form-field>
-            <input matInput placeholder="Year" [(ngModel)]="data.track.metadata.year" disabled>
+            <input matInput placeholder="Year" [(ngModel)]="data.track.year" disabled>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile [colspan]="2">
           <mat-form-field>
-            <input class="location" matInput placeholder="Location" disabled [value]="data.track.metadata.location">
+            <input class="location" matInput placeholder="Location" disabled [value]="data.track.location">
             <!--<button mat-button matSuffix mat-icon-button (click)="download()">
               <mat-icon>file_download</mat-icon>
             </button>-->

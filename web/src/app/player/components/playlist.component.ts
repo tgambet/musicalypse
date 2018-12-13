@@ -36,7 +36,7 @@ import {MatTable} from '@angular/material';
         <mat-cell *matCellDef="let track" class="title">
           <mat-icon class="equalizer" *ngIf="currentTrack ? currentTrack.url === track.url : false">equalizer</mat-icon>
           <div #title class="inner" [attr.data-url]="track.url">
-            {{ track.metadata.title }}
+            {{ track.title }}
           </div>
         </mat-cell>
       </ng-container>
@@ -44,7 +44,7 @@ import {MatTable} from '@angular/material';
       <ng-container matColumnDef="artist">
         <mat-cell *matCellDef="let track" class="artist">
           <div class="inner">
-            {{ track.metadata.artist }}
+            {{ track.artist }}
           </div>
         </mat-cell>
       </ng-container>
@@ -52,17 +52,17 @@ import {MatTable} from '@angular/material';
       <ng-container matColumnDef="album">
         <mat-cell *matCellDef="let track" class="album">
           <div class="inner">
-            {{ track.metadata.album }}
+            {{ track.album }}
           </div>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="year">
-        <mat-cell *matCellDef="let track" class="year">{{ track.metadata.year | sgYear }}</mat-cell>
+        <mat-cell *matCellDef="let track" class="year">{{ track.year | sgYear }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="duration">
-        <mat-cell *matCellDef="let track" class="duration">{{ track.metadata.duration | sgTime }}</mat-cell>
+        <mat-cell *matCellDef="let track" class="duration">{{ track.duration | sgTime }}</mat-cell>
       </ng-container>
 
       <mat-row *matRowDef="let row; columns: columns;"

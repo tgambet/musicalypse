@@ -13,10 +13,10 @@ import {DomSanitizer} from '@angular/platform-browser';
       </div>
       <div class="meta">
         <span class="title" *ngIf="currentTrack">
-          {{ currentTrack.metadata.title }}
+          {{ currentTrack.title }}
         </span>
         <span class="artist-album" *ngIf="currentTrack">
-          {{ currentTrack.metadata.artist }} • {{ currentTrack.metadata.album }}
+          {{ currentTrack.artist }} • {{ currentTrack.album }}
         </span>
       </div>
     </div>

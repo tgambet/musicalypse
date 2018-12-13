@@ -9,10 +9,10 @@ import akka.stream.IOResult
 import akka.stream.scaladsl.{Flow, Framing, Sink, Source, StreamConverters}
 import akka.util.ByteString
 import akka.{Done, NotUsed}
-import net.creasource.audio.LibraryScanner.{AlbumCover, getMetadata, getMetadata2}
-import net.creasource.audio.{Track, TrackMetadata}
+import net.creasource.audio.TagExtractor.{getMetadata, getMetadata2}
 import net.creasource.core.Application
 import net.creasource.io._
+import net.creasource.model.{AlbumCover, Track, TrackMetadata}
 import net.creasource.web.LibraryActor._
 import spray.json._
 
@@ -67,7 +67,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   val cacheFolder: Path = Paths.get(application.config.getString("music.cacheFolder"))
   val coversFolder: Path = cacheFolder.resolve("covers")
-  val tracksFile: File = cacheFolder.resolve("tracks.json").toFile
+  val tracksFile: File = cacheFolder.resolve("tracks.v1.json").toFile
   val librariesFile: File = cacheFolder.resolve("libraries.json").toFile
 
   val watchActor: ActorRef = context.actorOf(WatchActor.props, "WatchService")
@@ -99,8 +99,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       t0 <- loadTracks()
       _  = logger.info(t0.length + " tracks have been loaded.")
       _  = logger.info("Filtering tracks...")
-      t1 = t0.filter(t => l1.exists(lib => t.metadata.location.startsWith(lib.toString)))
-      t2 = t1.filter(t => new File(t.metadata.location).exists)
+      t1 = t0.filter(t => l1.exists(lib => t.location.startsWith(lib.toString)))
+      t2 = t1.filter(t => new File(t.location).exists)
       _  = logger.info(t0.length - t2.length + " tracks have been removed.")
       t3 <- if (isFirstLaunch || t0.isEmpty) {
               logger.info("First launch detected. Skipping looking for new tracks.")
@@ -211,7 +211,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
             val result = for {
               _ <- saveLibraries(libraries)
               _ = logger.info("Computing tracks to remove...")
-              deletedTracks = tracks.filter(track => track.metadata.location.startsWith(lib.toString))
+              deletedTracks = tracks.filter(track => track.location.startsWith(lib.toString))
               _ = logger.info(deletedTracks.length + " tracks are to be removed")
               remainingTracks = tracks diff deletedTracks
               _ = self ! SetTracks(remainingTracks)
@@ -243,7 +243,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
     case AddTrack(track, broadcast) =>
       if (!tracks.map(_.url).contains(track.url)) {
-        logger.debug("New track added: " + track.metadata.location)
+        logger.debug("New track added: " + track.location)
         tracks +:= track
         if (broadcast) {
           listeners.foreach(_ ! NewTracks(Seq(track)))
@@ -253,7 +253,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
     case FileSystemChange.Created(path) =>
       logger.debug("File creation: " + path.toAbsolutePath)
-      if (!path.toFile.isDirectory && !tracks.exists(track => track.metadata.location == path.toAbsolutePath.toString)) {
+      if (!path.toFile.isDirectory && !tracks.exists(track => track.location == path.toAbsolutePath.toString)) {
         val libOpt = libraries.find(lib => path.startsWith(lib))
         libOpt match {
           case Some(lib) =>
@@ -273,7 +273,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
     case FileSystemChange.Deleted(file) =>
       logger.debug("File deletion notification: " + file.toString)
-      tracks.filter(track => track.metadata.location.startsWith(file.toString)).foreach { track =>
+      tracks.filter(track => track.location.startsWith(file.toString)).foreach { track =>
         logger.debug("Deleting track: " + track.toString)
         tracks = tracks diff List(track)
         listeners.foreach(listener => listener ! DeletedTracks(Seq(track)))
@@ -287,7 +287,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
 
   }
 
-  def extractMetadataFlow: Flow[Path, (TrackMetadata, Option[AlbumCover]), NotUsed] = {
+  def extractMetadataFlow: Flow[Path, TrackMetadata, NotUsed] = {
     val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac")
     def isSupportedFile(path: Path): Boolean = {
       val extension = path.getFileName.toString.split("""\.""").last.toLowerCase
@@ -302,17 +302,23 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       }
   }
 
-  def metadataToTrackFlow(libraryFolder: Path): Flow[(TrackMetadata, Option[AlbumCover]), Track, NotUsed] = {
-    Flow[(TrackMetadata, Option[AlbumCover])].map { case (metadata, coverOpt) =>
+  def metadataToTrackFlow(libraryFolder: Path): Flow[TrackMetadata, Track, NotUsed] = {
+    Flow[TrackMetadata].map { metadata =>
       val relativePath = libraryFolder
-        .relativize(Paths.get(metadata.location))
+        .relativize(metadata.location)
         .toString
         .replaceAll("""\\""", "/")
       val url = s"/music/$relativePath"
       Track(
         url = url,
-        metadata = metadata,
-        coverUrl = coverOpt.flatMap(coverToFile(_, metadata)).map(f => "/cache/covers/" + f.getName)
+        coverUrl = metadata.cover.flatMap(coverToFile(_, metadata)).map(f => "/cache/covers/" + f.getName),
+        location = metadata.location.toString,
+        title = metadata.title,
+        artist = metadata.artist,
+        albumArtist = metadata.albumArtist,
+        album = metadata.album,
+        year = metadata.year,
+        duration = metadata.duration
       )
     }
   }
@@ -347,8 +353,8 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       res.substring(0, scala.math.min(res.length, 50))
     }
 
-    val cover = albumCover._1
-    val mimeType = albumCover._2
+    val cover = albumCover.bytes
+    val mimeType = albumCover.mimeType
     if ((metadata.artist.isDefined || metadata.albumArtist.isDefined) && metadata.album.isDefined) {
       val file: File = {
         val extension = if (mimeType.indexOf("/") > 0) {
@@ -470,7 +476,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
       .map(lib =>
         StreamConverters.fromJavaStream(() => Files.walk(lib))
           .filter(path => !path.toFile.isDirectory)
-          .filter(path => !oldTracks.exists(track => track.metadata.location == path.toString))
+          .filter(path => !oldTracks.exists(track => track.location == path.toString))
           .via(extractMetadataFlow)
           .via(metadataToTrackFlow(lib))
           .map(Some(_))

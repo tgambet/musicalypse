@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Track} from '@app/model';
 import {Sort} from '@angular/material';
 import {PageEvent} from '@angular/material/paginator/typings/paginator';
@@ -46,27 +46,27 @@ import {SelectionModel} from '@angular/cdk/collections';
 
       <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.title }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.title }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="artist">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Artist</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.albumArtist }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.albumArtist }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="album">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Album</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.album }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.album }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="year">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Year</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.year }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.year }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="duration">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
-        <mat-cell *matCellDef="let track">{{ track.metadata.duration | sgTime }}</mat-cell>
+        <mat-cell *matCellDef="let track">{{ track.duration | sgTime }}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
@@ -179,8 +179,7 @@ export class TracksComponent implements OnChanges {
   }
 
   filter(tracks: Track[]): Track[] {
-    const toString = (track: Track) => `${track.metadata.album}${track.metadata.albumArtist}`
-      + `${track.metadata.artist}${track.metadata.title}${track.metadata.year}`;
+    const toString = (track: Track) => `${track.album}${track.albumArtist}${track.artist}${track.title}${track.year}`;
     return tracks.filter(track => toString(track).toLowerCase().includes(this.search.toLowerCase().trim()));
   }
 
@@ -200,19 +199,19 @@ export class TracksComponent implements OnChanges {
       }
       switch (active) {
         case 'url': return compare(a.url, b.url, isAsc);
-        case 'title': return compare(a.metadata.title, b.metadata.title, isAsc);
+        case 'title': return compare(a.title, b.title, isAsc);
         case 'artist': return compare(
-          a.metadata.albumArtist + a.metadata.album,
-          b.metadata.albumArtist + b.metadata.album,
+          a.albumArtist + a.album,
+          b.albumArtist + b.album,
           isAsc
         );
-        case 'album': return compare(a.metadata.album, b.metadata.album, isAsc);
+        case 'album': return compare(a.album, b.album, isAsc);
         case 'year': return compare(
-          a.metadata.year ? a.metadata.year : '3000',
-          b.metadata.year ? b.metadata.year : '3000',
+          a.year ? a.year : '3000',
+          b.year ? b.year : '3000',
           isAsc
         );
-        case 'duration': return compareNum(a.metadata.duration, b.metadata.duration.toString(), isAsc);
+        case 'duration': return compareNum(a.duration, b.duration.toString(), isAsc);
         default: return 0;
       }
     });

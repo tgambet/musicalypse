@@ -59,7 +59,6 @@ import {SettingsService} from '@app/settings/services/settings.service';
           <app-list-item *ngFor="let artist of filteredArtists; trackBy: trackByName"
                          [selected]="isSelected(artist) | async"
                          [avatarStyle]="getAvatarStyle(artist)"
-                         [warn]="artist.warn && settings.warnOnMissingTags"
                          [primaryHTML]="artist.name | sgSearch:search"
                          [secondaryHTML]="getSecondaryHTML(artist)"
                          (click)="select(artist); next.emit()"

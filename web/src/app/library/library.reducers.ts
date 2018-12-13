@@ -69,12 +69,12 @@ export const getAllTracks = createSelector(
 
 export const getTracksByArtist = createSelector(
   getAllTracks,
-  (tracks: Track[], artist: Artist) => tracks.filter(track => track.metadata.albumArtist === artist.name)
+  (tracks: Track[], artist: Artist) => tracks.filter(track => track.albumArtist === artist.name)
 );
 
 export const getTracksByAlbumId = createSelector(
   getAllTracks,
-  (tracks: Track[], albumId: string) => tracks.filter(track => track.metadata.albumArtist + '-' + track.metadata.album === albumId)
+  (tracks: Track[], albumId: string) => tracks.filter(track => track.albumArtist + '-' + track.album === albumId)
 );
 
 /**
@@ -150,7 +150,7 @@ export const getDisplayedTracks = createSelector(
   getSelectedAlbumsIds,
   getAllTracks,
   (ids, tracks) =>
-    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
+    tracks.filter(track => ids.includes(track.albumArtist + '-' + track.album))
 );
 
 /**
@@ -203,7 +203,7 @@ export const getFavoritesArtists = createSelector(
   getAllArtists,
   getFavorites,
   (artists, favorites) => {
-    const favArtists = favorites.map(fav => fav.metadata.albumArtist);
+    const favArtists = favorites.map(fav => fav.albumArtist);
     return artists.filter(artist => favArtists.includes(artist.name));
   }
 );
@@ -212,7 +212,7 @@ export const getFavoritesAlbums = createSelector(
   getAllAlbums,
   getFavorites,
   (albums, favorites) => {
-    const favAlbums = favorites.map(fav => fav.metadata.album);
+    const favAlbums = favorites.map(fav => fav.album);
     return albums.filter(album => favAlbums.includes(album.title));
   }
 );
@@ -221,7 +221,7 @@ export const getDisplayedFavorites = createSelector(
   getSelectedAlbumsIds,
   getFavorites,
   (ids, tracks) =>
-    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
+    tracks.filter(track => ids.includes(track.albumArtist + '-' + track.album))
 );
 
 export const getDisplayedFavoriteAlbums = createSelector(
@@ -248,7 +248,7 @@ export const getRecentArtists = createSelector(
   getAllArtists,
   getRecentTracks,
   (artists, recentTracks) => {
-    const recentArtists = recentTracks.map(recent => recent.metadata.albumArtist);
+    const recentArtists = recentTracks.map(recent => recent.albumArtist);
     return artists.filter(artist => recentArtists.includes(artist.name));
   }
 );
@@ -257,7 +257,7 @@ export const getRecentAlbums = createSelector(
   getAllAlbums,
   getRecentTracks,
   (albums, recentTracks) => {
-    const recentAlbums = recentTracks.map(recent => recent.metadata.album);
+    const recentAlbums = recentTracks.map(recent => recent.album);
     return albums.filter(album => recentAlbums.includes(album.title));
   }
 );
@@ -266,7 +266,7 @@ export const getDisplayedRecentTracks = createSelector(
   getSelectedAlbumsIds,
   getRecentTracks,
   (ids, tracks) =>
-    tracks.filter(track => ids.includes(track.metadata.albumArtist + '-' + track.metadata.album))
+    tracks.filter(track => ids.includes(track.albumArtist + '-' + track.album))
 );
 
 export const getDisplayedRecentAlbums = createSelector(

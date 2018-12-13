@@ -13,10 +13,10 @@ import {LibraryService} from '../services/library.service';
       <div matLine class="primary-text">
         <mat-icon *ngIf="warn" color="warn" matTooltip="Unset tags!">warning</mat-icon>
         <mat-icon color="warn" class="favorite-icon" *ngIf="favorite">favorite</mat-icon>
-        <span class="track-name" [innerHtml]="track.metadata.title | sgSearch:search"></span>
+        <span class="track-name" [innerHtml]="track.title | sgSearch:search"></span>
       </div>
       <div matLine class="secondary-text">
-        {{ track.metadata.duration | sgTime }} • {{ track.metadata.album }}
+        {{ track.duration | sgTime }} • {{ track.album }}
       </div>
       <button mat-button mat-icon-button
               class="more"

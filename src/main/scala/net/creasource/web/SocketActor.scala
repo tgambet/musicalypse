@@ -9,8 +9,8 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
 import akka.{Done, NotUsed}
-import net.creasource.audio.Track
 import net.creasource.core.Application
+import net.creasource.model.Track
 import net.creasource.web.LibraryActor._
 import spray.json._
 

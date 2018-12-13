@@ -10,7 +10,7 @@ import net.creasource.audio._
 
 import scala.concurrent.{Await, Future}
 
-class LibraryScannerTest extends SimpleTest {
+class TagExtractorTest extends SimpleTest {
 
   "A LibraryScanner" should {
 

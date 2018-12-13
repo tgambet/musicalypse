@@ -16,8 +16,8 @@ import {LibraryService} from '@app/library/services/library.service';
       </div>
 
       <div class="meta">
-        <span class="title">{{ currentTrack ? currentTrack.metadata.title : '' }}</span>
-        <span class="artist">{{ currentTrack ? currentTrack.metadata.artist : '' }}</span>
+        <span class="title">{{ currentTrack ? currentTrack.title : '' }}</span>
+        <span class="artist">{{ currentTrack ? currentTrack.artist : '' }}</span>
       </div>
 
       <div class="controls">

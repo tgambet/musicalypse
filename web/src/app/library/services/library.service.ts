@@ -224,9 +224,11 @@ export class LibraryService {
   }
 
   play() {
-    this.audioService.play().catch(
-      () => this.snack.open('An error occurred!', 'OK', {duration: 2000})
-    );
+    this.audioService.play(); /*.catch(
+      (e) => {
+        this.snack.open('An error occurred!', 'OK', {duration: 2000})
+      }
+    );*/
   }
 
   pause() {

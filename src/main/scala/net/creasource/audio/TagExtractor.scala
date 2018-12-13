@@ -96,7 +96,6 @@ object TagExtractor {
     images
       .find(f => f.toPath.toString.contains("Large"))
       .orElse(images.headOption)
-      .map(f => {println(f); f})
       .map(f => AlbumCover(Files.readAllBytes(f.toPath), Files.probeContentType(f.toPath)))
   }
 

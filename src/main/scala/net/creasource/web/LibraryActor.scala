@@ -362,8 +362,16 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
         } else {
           "." + mimeType.toLowerCase
         }
+
+        val artistName = metadata.albumArtist.flatMap(albumArtist => {
+          if (albumArtist == "")
+            None
+          else
+            Some(albumArtist)
+        }).orElse(metadata.artist).get
+
         coversFolder
-          .resolve(toCompressedString(metadata.albumArtist.getOrElse(metadata.artist.get)) + "-" + toCompressedString(metadata.album.get) + extension)
+          .resolve(toCompressedString(artistName) + "-" + toCompressedString(metadata.album.get) + extension)
           .toAbsolutePath
           .toFile
       }

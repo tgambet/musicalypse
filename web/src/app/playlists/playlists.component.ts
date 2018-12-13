@@ -301,7 +301,7 @@ export class PlaylistsComponent {
       map(favorites => ({ name: '_all', tracks: favorites}))
     );
     this.artistsPlaylists = this.library.getAllArtists().pipe(
-      map(artists => artists.sort((a, b) => b.songs - a.songs)),
+      map(artists => [...artists].sort((a, b) => b.songs - a.songs)), // /!\ sort is an "in-place" operation
       map(artists => artists.slice(0, 15)),
       switchMap(artists =>
         combineLatest(artists.map(artist =>

@@ -1,6 +1,7 @@
 package net.creasource.audio
 
 import java.io.File
+import java.nio.file.Files
 
 import net.creasource.model.{AlbumCover, TrackMetadata}
 
@@ -19,7 +20,9 @@ object TagExtractor {
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt,
-        cover = Option(tags.getAlbumImage).map(image => AlbumCover(image, tags.getAlbumImageMimeType))
+        cover = Option(tags.getAlbumImage)
+          .map(image => AlbumCover(image, tags.getAlbumImageMimeType))
+          .orElse(getCoverInFolder(audioFile))
       )
     } else if (mp3file.hasId3v1Tag) {
       // println("WARN - IDv1 tags found for file " + audioFile)
@@ -32,7 +35,7 @@ object TagExtractor {
         album = Option(tags.getAlbum).map(_.trim),
         year = Option(tags.getYear).map(_.trim),
         duration = mp3file.getLengthInSeconds.toInt,
-        cover = None)
+        cover = getCoverInFolder(audioFile))
     } else {
       TrackMetadata(
         location = audioFile.toPath.toAbsolutePath,
@@ -42,7 +45,7 @@ object TagExtractor {
         album = None,
         year = None,
         duration = mp3file.getLengthInSeconds.toInt,
-        cover = None
+        cover = getCoverInFolder(audioFile)
       )
     }
   }
@@ -64,7 +67,9 @@ object TagExtractor {
           album = Option(tags.getFirst(FieldKey.ALBUM)).map(_.trim),
           year = Option(tags.getFirst(FieldKey.YEAR)).map(_.trim),
           duration = audioHeader.getTrackLength,
-          cover = Option(tags.getFirstArtwork).map(artwork => AlbumCover(artwork.getBinaryData, artwork.getMimeType))
+          cover = Option(tags.getFirstArtwork)
+            .map(artwork => AlbumCover(artwork.getBinaryData, artwork.getMimeType))
+            .orElse(getCoverInFolder(audioFile))
         )
       case None =>
         TrackMetadata(
@@ -78,6 +83,21 @@ object TagExtractor {
           cover = None
         )
     }
+  }
+
+  def getCoverInFolder(file: File): Option[AlbumCover] = {
+    val supportedExtension = Seq("jpg", "jpeg", "png")
+    val folder = file.toPath.getParent.toFile
+    val images = folder.listFiles().filter(file => {
+      val extension = file.toPath.getFileName.toString.split("""\.""").last.toLowerCase
+      supportedExtension.contains(extension)
+    })
+
+    images
+      .find(f => f.toPath.toString.contains("Large"))
+      .orElse(images.headOption)
+      .map(f => {println(f); f})
+      .map(f => AlbumCover(Files.readAllBytes(f.toPath), Files.probeContentType(f.toPath)))
   }
 
 }

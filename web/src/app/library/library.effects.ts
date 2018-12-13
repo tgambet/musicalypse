@@ -19,6 +19,7 @@ import {LibraryService} from './services/library.service';
 import {LibraryUtils} from './library.utils';
 import * as fromLibrary from './library.reducers';
 import {AudioService} from '@app/core/services/audio.service';
+import {AddToRecent} from '@app/library/actions/recent.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -104,7 +105,10 @@ export class LibraryEffects {
   setTrack$: Observable<Action> =
     this.library.getCurrentTrack().pipe(
       filter(track => !!track),
-      map(track => new SetAudioSource(CoreUtils.resolveUrl(track.url)))
+      mergeMap(track => of(
+        new SetAudioSource(CoreUtils.resolveUrl(track.url)),
+        new AddToRecent([track])
+      ))
     );
 
   /**

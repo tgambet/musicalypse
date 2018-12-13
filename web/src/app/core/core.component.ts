@@ -7,6 +7,7 @@ import {environment} from '@env/environment';
 import {LoaderService} from './services/loader.service';
 import {UpdateService} from './services/update.service';
 import {AudioService} from './services/audio.service';
+import {ElectronService} from './services/electron.service';
 
 import {ChangeTheme, CloseSidenav, SetAudioVolume, ToggleSidenav} from './core.actions';
 import {CoreUtils, Theme} from './core.utils';
@@ -109,7 +110,6 @@ export class CoreComponent implements OnInit {
   isElectron = environment.electron;
   isElectronFocused: boolean;
   isMaximized = false;
-  electronRemote = environment.electron ? (<any>window).require('electron').remote : null;
 
   featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
@@ -126,36 +126,36 @@ export class CoreComponent implements OnInit {
     private audioService: AudioService,
     private renderer: Renderer2,
     private appRoot: ElementRef,
-    private updateService: UpdateService // necessary to instantiate the service
+    private updateService: UpdateService,
+    private electronService: ElectronService
   ) {
     this.initializing$ = this.loader.initializing$;
     this.hasErrors$ = this.loader.hasErrors$;
     this.logs$ = this.loader.log$;
 
     this.loader.initialize();
+    this.updateService.initialize();
   }
 
   ngOnInit(): void {
     // Set up electron listeners
-    if (environment.electron) {
-      const ipc = environment.electron ? (<any>window).require('electron').ipcRenderer : null;
-      ipc.on('focus', () => {
-        this.isElectronFocused = true;
-        this.ref.detectChanges(); // TODO investigate why ngZone.run doesn't work here
-      });
-      ipc.on('blur', () => {
-        this.isElectronFocused = false;
-        this.ref.detectChanges();
-      });
-      this.electronRemote.getCurrentWindow().addListener('maximize', () => {
-        this.isMaximized = true;
-        this.ref.detectChanges();
-      });
-      this.electronRemote.getCurrentWindow().addListener('unmaximize', () => {
-        this.isMaximized = false;
-        this.ref.detectChanges();
-      });
-    }
+    this.electronService.onIpc('suspend', this.audioService.pause);
+    this.electronService.onWindow('focus', () => {
+      this.isElectronFocused = true;
+      this.ref.detectChanges();
+    });
+    this.electronService.onWindow('blur', () => {
+      this.isElectronFocused = false;
+      this.ref.detectChanges();
+    });
+    this.electronService.onWindow('maximize', () => {
+      this.isMaximized = true;
+      this.ref.detectChanges();
+    });
+    this.electronService.onWindow('unmaximize', () => {
+      this.isMaximized = false;
+      this.ref.detectChanges();
+    });
 
     // Set up core observables
     this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
@@ -234,19 +234,19 @@ export class CoreComponent implements OnInit {
   }
 
   closeWindow(): void {
-    this.electronRemote.getCurrentWindow().close();
+    this.electronService.getWindow().close();
   }
 
   minimizeWindow(): void {
-    this.electronRemote.getCurrentWindow().minimize();
+    this.electronService.getWindow().minimize();
   }
 
   maximizeWindow(): void {
-    this.electronRemote.getCurrentWindow().maximize();
+    this.electronService.getWindow().maximize();
   }
 
   unmaximizeWindow(): void {
-    this.electronRemote.getCurrentWindow().unmaximize();
+    this.electronService.getWindow().unmaximize();
   }
 
 }

@@ -6,10 +6,12 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
 @Injectable()
 export class UpdateService {
 
-  constructor(updates: SwUpdate, private dialog: MatDialog) {
-    updates.available.subscribe(event => {
-      console.log('current version is', event.current);
-      console.log('available version is', event.available);
+  constructor(private updates: SwUpdate, private dialog: MatDialog) {}
+
+  initialize(): void {
+    this.updates.available.subscribe(event => {
+      // console.log('current version is', event.current);
+      // console.log('available version is', event.available);
       const dialogRef = this.dialog.open(ConfirmComponent, {
         data: {
           title: 'New version available!',
@@ -18,13 +20,13 @@ export class UpdateService {
       });
       dialogRef.afterClosed().subscribe(confirmed => {
         if (confirmed) {
-          updates.activateUpdate().then(() => document.location.reload());
+          this.updates.activateUpdate().then(() => document.location.reload());
         }
       });
     });
-    updates.activated.subscribe(event => {
-      console.log('old version was', event.previous);
-      console.log('new version is', event.current);
-    });
+    /*this.updates.activated.subscribe(event => {
+      // console.log('old version was', event.previous);
+      // console.log('new version is', event.current);
+    });*/
   }
 }

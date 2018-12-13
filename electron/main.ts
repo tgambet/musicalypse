@@ -1,4 +1,4 @@
-import {app, BrowserWindow, screen} from 'electron';
+import {app, BrowserWindow, screen, powerMonitor} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import {ChildProcess} from 'child_process';
@@ -65,12 +65,8 @@ function createWindow() {
     win.show();
   });
 
-  win.on('focus', () => {
-    win.webContents.send('focus');
-  });
-
-  win.on('blur', () => {
-    win.webContents.send('blur');
+  powerMonitor.on('suspend', () => {
+    win.webContents.send('suspend');
   });
 
 }

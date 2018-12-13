@@ -17,6 +17,7 @@ import {CoreEffects} from './core.effects';
 import {InitializerComponent} from '@app/core/components/initializer.component';
 import {UpdateService} from '@app/core/services/update.service';
 import {RouterService} from '@app/core/services/router.service';
+import {ElectronService} from '@app/core/services/electron.service';
 
 export const COMPONENTS = [
   CoreComponent,
@@ -39,7 +40,8 @@ export const COMPONENTS = [
     LoaderService,
     AudioService,
     UpdateService,
-    RouterService
+    RouterService,
+    ElectronService
   ]
 })
 export class CoreModule {

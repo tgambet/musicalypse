@@ -24,7 +24,7 @@ import {CustomSerializer} from './app.serializer';
   imports: [
     // Angular Modules
     RouterModule.forRoot(routes),
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production && !environment.electron }),
 
     // Ngrx Modules
     StoreModule.forRoot(reducers, { metaReducers }),

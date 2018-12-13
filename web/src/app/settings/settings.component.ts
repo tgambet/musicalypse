@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSlideToggleChange} from '@angular/material';
 import {FolderComponent} from '../shared/dialogs/folder/folder.component';
 import {HttpSocketClientService} from '../core/services/http-socket-client.service';
 import {SettingsService} from './services/settings.service';
@@ -15,6 +15,7 @@ import * as LayoutActions from '../core/core.actions';
 import * as fromRoot from '../app.reducers';
 import {ScanTracks} from '../library/actions/tracks.actions';
 import {CoreUtils, Theme} from '../core/core.utils';
+import {ElectronService} from '@app/core/services/electron.service';
 
 @Component({
   selector: 'app-settings',
@@ -87,6 +88,11 @@ import {CoreUtils, Theme} from '../core/core.utils';
               </li>
             </ul>
             <span *ngIf="ips.length === 0">No network connection detected.</span>
+          </div>
+          <div>
+            <mat-slide-toggle (change)="toggleSleepPrevent($event)" color="primary">
+              Prevent the system from going to sleep
+            </mat-slide-toggle>
           </div>
           <mat-divider></mat-divider>
         </div>
@@ -189,11 +195,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   error$: Observable<string>;
   loading$: Observable<boolean>;
   libraryFolders$: Observable<string[]>;
-  // libraryFoldersLength$: Observable<number>;
   currentTheme$: Observable<Theme>;
   hostIps$: Observable<string[]>;
-
-  ipcAddFolder = (event, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
   constructor(
     public settings: SettingsService,
@@ -201,13 +204,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<fromSettings.State>,
     private zone: NgZone,
-    private httpSocketClient: HttpSocketClientService
+    private httpSocketClient: HttpSocketClientService,
+    private electronService: ElectronService
   ) {
     this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
     this.loading$ = this.store.pipe(select(fromSettings.getSettingsLoading));
     this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
     this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
-    // this.libraryFoldersLength$ = this.libraryFolders$.pipe(map(f => f.length));
     this.hostIps$ = this.httpSocketClient.get('/api/host').pipe(
       map((response: string[]) => response),
       share()
@@ -216,19 +219,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(new LoadLibraryFolders());
-
-    if (environment.electron) {
-      const ipc = (<any>window).require('electron').ipcRenderer;
-      ipc.on('selected-directory', this.ipcAddFolder);
-    }
+    this.electronService.onIpc('selected-directory', this.ipcAddFolder);
   }
 
   ngOnDestroy(): void {
-    if (environment.electron) {
-      const ipc = (<any>window).require('electron').ipcRenderer;
-      ipc.removeListener('selected-directory', this.ipcAddFolder);
-    }
+    this.electronService.removeIpc('selected-directory');
   }
+
+  ipcAddFolder = (e, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
   addLibraryFolder(folder: string) {
     this.store.dispatch(new AddLibraryFolder(folder));
@@ -251,8 +249,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   addFolderDialog() {
     if (environment.electron) {
-      const ipc = (<any>window).require('electron').ipcRenderer;
-      ipc.send('open-file-dialog');
+      this.electronService.send('open-file-dialog');
     } else {
       const dialogRef = this.dialog.open(FolderComponent, {
         minWidth: '400px'
@@ -291,8 +288,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   openExternally(event: Event) {
     if (this.isElectron) {
-      const shell = (<any>window).require('electron').shell;
-      shell.openExternal(event.srcElement.getAttribute('href'));
+      this.electronService.openExternal(event.srcElement.getAttribute('href'));
       event.preventDefault();
     }
   }
@@ -334,14 +330,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
         reload => {
           if (reload) {
             if (environment.electron) {
-              const currentWindow = (<any> window).require('electron').remote.getCurrentWindow();
-              currentWindow.loadURL(document.location.toString() + '/../index.html');
+              this.electronService.getWindow().loadURL(document.location.toString() + '/../index.html');
             } else {
               document.location.reload();
             }
           }
         }
       );
+  }
+
+  toggleSleepPrevent(event: MatSlideToggleChange) {
+    if (event.checked) {
+      this.electronService.send('prevent-app-suspension-on');
+    } else {
+      this.electronService.send('prevent-app-suspension-off');
+    }
   }
 
 }

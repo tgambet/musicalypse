@@ -1,4 +1,4 @@
-import {app, BrowserWindow, screen, powerMonitor} from 'electron';
+import {app, BrowserWindow, screen, powerMonitor, powerSaveBlocker} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import {ChildProcess} from 'child_process';
@@ -20,6 +20,7 @@ const rootDirectory: string = path.normalize(
 
 let win: BrowserWindow;
 let serverProcess: ChildProcess;
+let appSuspensionId: number;
 
 function createWindow() {
 
@@ -53,11 +54,7 @@ function createWindow() {
 
   // win.webContents.openDevTools();
 
-  // Emitted when the window is closed.
   win.on('closed', () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     win = null;
   });
 
@@ -115,6 +112,19 @@ function initialize() {
   if (!serve) {
     startServer();
   }
+
+  ipc.on('prevent-app-suspension-on', (event) => {
+    // console.log('preventing the computer from going to sleep');
+    appSuspensionId = powerSaveBlocker.start('prevent-app-suspension');
+    // event.sender.send('prevent-app-suspension-on');
+  });
+
+  ipc.on('prevent-app-suspension-off', (event) => {
+    // console.log('stopping preventing the computer from going to sleep');
+    powerSaveBlocker.stop(appSuspensionId);
+    // event.sender.send('prevent-app-suspension-off');
+  });
+
 }
 
 function startServer() {

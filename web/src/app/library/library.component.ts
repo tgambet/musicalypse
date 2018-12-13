@@ -266,7 +266,19 @@ export class LibraryComponent implements OnInit, OnDestroy {
       take(1),
       filter((state: RouterStateUrl) => state.queryParams.get('t') !== n.toString()),
       tap(() => {
-        this.router.navigate(['/library'], { queryParams: { t: n.toString() }, queryParamsHandling: 'merge' });
+        let route;
+        switch (this.displayType) {
+          case DisplayType.Default:
+            route = '/library';
+            break;
+          case DisplayType.Recent:
+            route = '/recent';
+            break;
+          case DisplayType.Favorites:
+            route = '/favorites';
+            break;
+        }
+        this.router.navigate([route], { queryParams: { t: n.toString() }, queryParamsHandling: 'merge' });
       })
     ).subscribe();
     if (!environment.electron) {

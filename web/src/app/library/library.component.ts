@@ -7,6 +7,7 @@ import {Album, Artist, Playlist, Track} from '@app/model';
 import {LibraryService} from './services/library.service';
 import {RouterService} from '@app/core/services/router.service';
 import {RouterStateUrl} from '@app/app.serializer';
+import {environment} from '@env/environment';
 
 @Component({
   selector: 'app-library',
@@ -268,7 +269,9 @@ export class LibraryComponent implements OnInit, OnDestroy {
         this.router.navigate(['/library'], { queryParams: { t: n.toString() }, queryParamsHandling: 'merge' });
       })
     ).subscribe();
-    setTimeout(updateUrl);
+    if (!environment.electron) {
+      setTimeout(updateUrl);
+    }
   }
 
 }

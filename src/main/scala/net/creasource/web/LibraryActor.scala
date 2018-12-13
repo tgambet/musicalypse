@@ -288,7 +288,7 @@ class LibraryActor()(implicit application: Application) extends Actor with Stash
   }
 
   def extractMetadataFlow: Flow[Path, TrackMetadata, NotUsed] = {
-    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac")
+    val supportedFormats: Seq[String] = Seq("mp3", "ogg", "flac", "wav")
     def isSupportedFile(path: Path): Boolean = {
       val extension = path.getFileName.toString.split("""\.""").last.toLowerCase
       supportedFormats.contains(extension)

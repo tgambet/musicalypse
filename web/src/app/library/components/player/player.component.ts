@@ -90,7 +90,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     const listElement =
       this.playlistUl ? this.playlistUl.nativeElement.parentElement : this.playlistMatList['_elementRef'].nativeElement.parentElement;
     // If the list element (scrolling parent) is not visible skip scrolling
-    if (!CoreUtils.isHorizontallyVisible(listElement)) {
+    if (!listElement || !CoreUtils.isHorizontallyVisible(listElement)) {
       return;
     }
     const trackRef =

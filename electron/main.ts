@@ -8,16 +8,18 @@ const ipc = require('electron').ipcMain;
 const dialog = require('electron').dialog;
 const spawn = require('child_process').spawn;
 
-let win;
 const serve = process.argv.slice(1).some(val => val === '--serve');
 
 const isPackaged: boolean = __dirname.indexOf('app.asar') !== -1;
 
-const rootDirectory = path.normalize(
+const rootDirectory: string = path.normalize(
   isPackaged ?
     path.join(__dirname, '../../../../../') :
     path.join(__dirname, '../../../')
 );
+
+let win: BrowserWindow;
+let serverProcess: ChildProcess;
 
 function createWindow() {
 
@@ -64,102 +66,16 @@ function createWindow() {
   });
 
   win.on('focus', () => {
-    win.send('focus');
+    win.webContents.send('focus');
   });
 
   win.on('blur', () => {
-    win.send('blur');
+    win.webContents.send('blur');
   });
 
 }
 
-function isJavaOnPath(): boolean {
-  try {
-    require('child_process').execSync('java -version');
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-const shouldQuit = app.makeSingleInstance(() => {
-  if (win) {
-    if (win.isMinimized()) {
-      win.restore();
-    }
-    win.focus();
-  }
-});
-
-if (shouldQuit) {
-  app.exit();
-}
-
-try {
-
-  let serverProcess: ChildProcess;
-
-  if (!serve) {
-    const musicFolder = app.getPath('music');
-    const cacheFolder = app.getPath('userData') + '/data';
-
-    const javaExecutable = (process.platform === 'win32') ? 'java.exe' : 'java';
-
-    const javaPath = path.join(rootDirectory, '/target/jre/bin/' + javaExecutable);
-    const JAVACMD = fs.existsSync(javaPath) ? javaPath : 'java';
-
-    if (JAVACMD === 'java' && !isJavaOnPath()) {
-      dialog.showErrorBox(
-        'Java is not installed or can\'t be found',
-        'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
-        'If you think this message is an error, please check your PATH environment variable to see if "java.exe" is accessible.'
-      );
-      console.error('Java couldn\'t be found');
-      app.exit(1);
-    }
-
-    const stagePath = path.join(rootDirectory, 'target/universal/stage');
-
-    const separator = (process.platform === 'win32') ? ';' : ':';
-    const libs = fs.readdirSync(stagePath + '/lib').map(val => 'lib/' + val);
-    const classPath = [
-      libs.filter(lib => lib.indexOf('musicalypse') !== -1),
-      ...libs.filter(lib => lib.indexOf('musicalypse') === -1)
-    ].join(separator);
-
-    serverProcess = spawn(
-        JAVACMD,
-        [`-Dmusic.library=${musicFolder}`, `-Dmusic.cacheFolder=${cacheFolder}`, '-cp', classPath, 'net.creasource.Main'],
-        {
-          cwd: stagePath
-        }
-      ).addListener('exit', code => {
-        if (code === 1) {
-          app.exit(1);
-          throw Error('Server exited unexpectedly.');
-        } else {
-          app.exit(0);
-        }
-      }).addListener('error', (err: Error) => {
-        dialog.showErrorBox(
-          'Error',
-          err.message
-        );
-        app.exit(1);
-      });
-    serverProcess.stdout.addListener('data', chunk => {
-      console.log(chunk.toString().replace(/\n$/, ''));
-      /*dialog.showMessageBox(
-        {message: chunk.toString().replace(/\n$/, '')}
-      );*/
-    });
-    serverProcess.stderr.addListener('data', chunk => {
-      console.error(chunk.toString().replace(/\n$/, ''));
-      /*dialog.showMessageBox(
-        {message: chunk.toString().replace(/\n$/, '')}
-      );*/
-    });
-  }
+function initialize() {
 
   ipc.on('open-file-dialog', function (event) {
     dialog.showOpenDialog({
@@ -171,49 +87,134 @@ try {
     });
   });
 
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
   app.on('ready', () => {
     createWindow();
   });
 
-  // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-      if (serverProcess) {
-        serverProcess.stdin.write('\n');
-        serverProcess.on('exit', app.quit);
-      } else {
-        app.quit();
-      }
+      stopServerAndQuit();
     }
   });
 
-  // app.on('will-quit', () => {
-  //   if (serverProcess) {
-  //     serverProcess.stdin.write('\n');
-  //     serverProcess.on('exit', app.quit);
-  //   } else {
-  //     app.quit();
-  //   }
-  // })
+  app.on('will-quit', () => {
+    stopServerAndQuit();
+  });
 
   app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (win === null) {
       createWindow();
     }
   });
 
-} catch (e) {
-  dialog.showErrorBox(
-    'Error', e.toString()
-  );
-  console.error('An error occurred!');
-  console.error(e);
-  app.exit(1);
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (win) {
+      if (win.isMinimized()) {
+        win.restore();
+      }
+      win.focus();
+    }
+  });
+
+  if (!serve) {
+    startServer();
+  }
 }
+
+function startServer() {
+
+  function isJavaOnPath(): boolean {
+    try {
+      require('child_process').execSync('java -version');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const musicFolder = app.getPath('music');
+  const cacheFolder = app.getPath('userData') + '/data';
+
+  const javaExecutable = (process.platform === 'win32') ? 'java.exe' : 'java';
+  const javaPath = path.join(rootDirectory, '/target/jre/bin/' + javaExecutable);
+  const JAVACMD = fs.existsSync(javaPath) ? javaPath : 'java';
+
+  if (JAVACMD === 'java' && !isJavaOnPath()) {
+    dialog.showErrorBox(
+      'Java is not installed or can\'t be found',
+      'Please go to https://www.java.com/download/ and download and install Java before running Musicalypse. ' +
+      'If you think this message is an error, please check your PATH environment variable to see if "java.exe" is accessible.'
+    );
+    console.error('Java couldn\'t be found');
+    app.exit(1);
+  }
+
+  const stagePath = path.join(rootDirectory, 'target/universal/stage');
+
+  const separator = (process.platform === 'win32') ? ';' : ':';
+  const libs = fs.readdirSync(stagePath + '/lib').map(val => 'lib/' + val);
+  const classPath = [
+    libs.filter(lib => lib.indexOf('musicalypse') !== -1),
+    ...libs.filter(lib => lib.indexOf('musicalypse') === -1)
+  ].join(separator);
+
+  serverProcess = spawn(
+    JAVACMD,
+    [`-Dmusic.library=${musicFolder}`, `-Dmusic.cacheFolder=${cacheFolder}`, '-cp', classPath, 'net.creasource.Main'],
+    {
+      cwd: stagePath
+    }
+  ).addListener('exit', code => {
+    if (code === 1) {
+      app.exit(1);
+      throw Error('Server exited unexpectedly.');
+    } else {
+      app.exit(0);
+    }
+  }).addListener('error', (err: Error) => {
+    dialog.showErrorBox(
+      'Error',
+      err.message
+    );
+    app.exit(1);
+  });
+
+  serverProcess.stdout.addListener('data', chunk => {
+    console.log(chunk.toString().replace(/\n$/, ''));
+    /*dialog.showMessageBox(
+      {message: chunk.toString().replace(/\n$/, '')}
+    );*/
+  });
+
+  serverProcess.stderr.addListener('data', chunk => {
+    console.error(chunk.toString().replace(/\n$/, ''));
+    /*dialog.showMessageBox(
+      {message: chunk.toString().replace(/\n$/, '')}
+    );*/
+  });
+}
+
+function stopServerAndQuit() {
+  if (serverProcess) {
+    serverProcess.stdin.write('\n');
+    serverProcess.on('exit', app.quit);
+  } else {
+    app.quit();
+  }
+}
+
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  try {
+    initialize();
+  } catch (e) {
+    dialog.showErrorBox(
+      'Error', e.toString()
+    );
+    console.error('An error occurred!');
+    console.error(e);
+    app.exit(1);
+  }
+}
+

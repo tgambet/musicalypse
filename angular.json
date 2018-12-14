@@ -17,16 +17,13 @@
             "tsConfig": "web/src/tsconfig.app.json",
             "assets": [
               {
-                "glob": "favicon.ico",
-                "input": "web/src",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
                 "input": "web/src/assets",
                 "output": "/assets"
               },
-              "web/src/manifest.json"
+              "web/src/favicon.ico",
+              "web/src/manifest.json",
+              "web/src/browserconfig.xml"
             ],
             "styles": [
               {
@@ -109,16 +106,13 @@
             "scripts": [],
             "assets": [
               {
-                "glob": "favicon.ico",
-                "input": "web/src/",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
                 "input": "web/src/assets",
                 "output": "/assets"
               },
-              "web/src/manifest.json"
+              "web/src/favicon.ico",
+              "web/src/manifest.json",
+              "web/src/browserconfig.xml"
             ]
           }
         },

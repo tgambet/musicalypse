@@ -4,7 +4,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
   selector: 'app-side-menu',
   template: `
     <nav class="side-menu">
-      <button mat-icon-button (click)="toggleSidenav.emit()" class="last-of-category">
+      <button mat-icon-button (click)="toggleSidenav.emit()" class="last-of-category" matTooltip="Toggle menu">
         <mat-icon>{{ sideNavOpened ? 'close' : 'menu' }}</mat-icon>
       </button>
       <button mat-icon-button

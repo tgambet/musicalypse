@@ -25,7 +25,7 @@ import {DisplayType} from '@app/library/library.component';
 
       <app-chips [hidden]="!showChipList"
                  [list]="selectedAlbums"
-                 [displayProperty]="'title'"
+                 displayProperty="title"
                  (clickedElement)="scrollTo($event.title); showChipList = false;"
                  (removedAll)="deselectAll()"
                  (removedElement)="deselect($event)">
@@ -42,7 +42,7 @@ import {DisplayType} from '@app/library/library.component';
         <mat-chip-list *ngIf="selectedAlbums.length > 0">
           <mat-chip *ngFor="let album of selectedAlbums.length <= 2 ? selectedAlbums : selectedAlbums.slice(0,1)"
                     (click)="scrollTo(album.title)">
-            <span class="chip-text">{{ album.title }}</span>
+            <span class="chip-text" [matTooltip]="album.title">{{ album.title }}</span>
             <mat-icon matChipRemove (click)="deselect(album)">cancel</mat-icon>
           </mat-chip>
           <mat-chip *ngIf="selectedAlbums.length > 2"
@@ -60,6 +60,7 @@ import {DisplayType} from '@app/library/library.component';
                          [avatarStyle]="getAvatarStyle(album)"
                          [primaryHTML]="album.title | sgSearch:search"
                          [secondaryHTML]="getSecondaryHTML(album)"
+                         [tooltip]="album.title"
                          (click)="selectOnly(album); next.emit()"
                          (arrowClicked)="select(album); next.emit()"
                          (checked)="$event ? select(album) : deselect(album)">

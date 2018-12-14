@@ -8,7 +8,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
     <mat-chip-list class="full-list mat-elevation-z3">
       <mat-chip class="remove-all" (click)="removeAll()">Remove All</mat-chip>
       <mat-chip *ngFor="let element of list" (click)="clickElement(element)">
-        <span class="chip-text">{{ element[displayProperty] }}</span>
+        <span class="chip-text" [matTooltip]="element[displayProperty]">{{ element[displayProperty] }}</span>
         <mat-icon matChipRemove (click)="removeElement(element); $event.stopPropagation()">cancel</mat-icon>
       </mat-chip>
     </mat-chip-list>

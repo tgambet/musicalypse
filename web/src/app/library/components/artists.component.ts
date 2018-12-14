@@ -25,7 +25,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
 
       <app-chips [hidden]="!showChipList"
                  [list]="selectedArtists"
-                 [displayProperty]="'name'"
+                 displayProperty="name"
                  (clickedElement)="scrollTo($event.name); showChipList = false"
                  (removedAll)="deselectAll()"
                  (removedElement)="deselect($event)">
@@ -41,7 +41,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
         <mat-chip-list *ngIf="selectedArtists.length > 0">
           <mat-chip *ngFor="let artist of selectedArtists.length <= 2 ? selectedArtists : selectedArtists.slice(0,1)"
                     (click)="scrollTo(artist.name)">
-            <span class="chip-text">{{ artist.name }}</span>
+            <span class="chip-text" [matTooltip]="artist.name">{{ artist.name }}</span>
             <mat-icon matChipRemove (click)="deselect(artist)">cancel</mat-icon>
           </mat-chip>
           <mat-chip *ngIf="selectedArtists.length > 2"
@@ -61,6 +61,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
                          [avatarStyle]="getAvatarStyle(artist)"
                          [primaryHTML]="artist.name | sgSearch:search"
                          [secondaryHTML]="getSecondaryHTML(artist)"
+                         [tooltip]="artist.name"
                          (click)="select(artist); next.emit()"
                          (arrowClicked)="add(artist); next.emit()"
                          (checked)="$event ? add(artist) : deselect(artist)">

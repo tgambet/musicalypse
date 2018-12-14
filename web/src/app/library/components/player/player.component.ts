@@ -97,7 +97,6 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
       this.listItems.find(el => el.nativeElement.getAttribute('data-url') === this.currentTrack.url);
     if (trackRef) {
       const element = trackRef.nativeElement;
-      // We have two types of playlists: TODO: refactor
       if (!CoreUtils.isScrolledIntoView(element, listElement)) {
         element.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'smooth'});
       }
@@ -134,19 +133,6 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  // openDetailsDialog(track: Track) {
-  //   const dialogRef = this.dialog.open(DetailsComponent, {
-  //     // maxWidth: '500px',
-  //     data: { track: track }
-  //   });
-  //
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     // console.log('The dialog was closed');
-  //     console.log(result);
-  //     // this.animal = result;
-  //   });
-  // }
-
   resume() {
     this.library.play();
   }
@@ -166,13 +152,6 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   setMuted(muted: boolean) {
     this.library.setMuted(muted);
   }
-  /*mute() {
-    this.library.setMuted(true);
-  }
-
-  unmute() {
-    this.library.setMuted(false);
-  }*/
 
   clearPlaylist() {
     this.library.clearPlaylist();

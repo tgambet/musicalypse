@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions} from '@angular/material';
 import {Observable, Subscription} from 'rxjs';
 import {filter, take, tap} from 'rxjs/operators';
 
@@ -8,6 +9,12 @@ import {LibraryService} from './services/library.service';
 import {RouterService} from '@app/core/services/router.service';
 import {RouterStateUrl} from '@app/app.serializer';
 import {environment} from '@env/environment';
+
+export const tooltipDefaults: MatTooltipDefaultOptions = {
+  showDelay: 500,
+  hideDelay: 250,
+  touchendHideDelay: 100,
+};
 
 @Component({
   selector: 'app-library',
@@ -68,6 +75,9 @@ import {environment} from '@env/environment';
     </div>
   `,
   styleUrls: ['./library.component.scss'],
+  providers: [
+    {provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: tooltipDefaults}
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryComponent implements OnInit, OnDestroy {

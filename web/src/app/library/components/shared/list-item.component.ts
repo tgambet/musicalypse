@@ -18,7 +18,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 
       <div matLine class="primary-text">
         <mat-icon class="warn" *ngIf="warn" color="warn" matTooltip="Unset tags!">warning</mat-icon>
-        <span class="item-name" [innerHtml]="primaryHTML"></span>
+        <span class="item-name" [innerHtml]="primaryHTML" [matTooltip]="tooltip"></span>
       </div>
 
       <div matLine class="secondary-text" [innerHtml]="secondaryHTML"></div>
@@ -89,6 +89,7 @@ export class ListItemComponent {
   @Input() warn: boolean;
   @Input() primaryHTML: string;
   @Input() secondaryHTML: string;
+  @Input() tooltip: string;
 
   @Output() checked = new EventEmitter<boolean>();
   @Output() arrowClicked = new EventEmitter<void>();

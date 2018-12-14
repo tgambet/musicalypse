@@ -81,7 +81,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
               <span>Delete Playlist</span>
             </button>
           </mat-menu>
-          <span class="primary">{{ item.name }}</span>
+          <span class="primary" [matTooltip]="item.name">{{ item.name }}</span>
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
@@ -103,7 +103,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
             </ng-container>
             <mat-icon class="play-icon">play_circle_outline</mat-icon>
           </div>
-          <span class="primary" [title]="item.name">{{ item.name }}</span>
+          <span class="primary" [matTooltip]="item.name">{{ item.name }}</span>
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
@@ -125,7 +125,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
             </ng-container>
             <mat-icon class="play-icon">play_circle_outline</mat-icon>
           </div>
-          <span class="primary" [title]="item.name">{{ item.name }}</span>
+          <span class="primary" [matTooltip]="item.name">{{ item.name }}</span>
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>

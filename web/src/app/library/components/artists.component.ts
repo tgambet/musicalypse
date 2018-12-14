@@ -47,7 +47,7 @@ import {SettingsService} from '@app/settings/services/settings.service';
           <mat-chip *ngIf="selectedArtists.length > 2"
                     (click)="showChipList = !showChipList"
                     class="chip-more">
-            <span class="chip-text">{{ selectedArtists.length - 1 }} more…</span>
+            <span class="chip-text">{{ showChipList ? "Close" : (selectedArtists.length - 1) + " more…" }}</span>
           </mat-chip>
         </mat-chip-list>
       </app-controls>

@@ -48,7 +48,7 @@ import {DisplayType} from '@app/library/library.component';
           <mat-chip *ngIf="selectedAlbums.length > 2"
                     (click)="showChipList = !showChipList"
                     class="chip-more">
-            {{ selectedAlbums.length - 1 }} more…
+            <span class="chip-text">{{ showChipList ? "Close" : (selectedAlbums.length - 1) + " more…" }}</span>
           </mat-chip>
         </mat-chip-list>
       </app-controls>

@@ -2,6 +2,8 @@ import {app, BrowserWindow, screen, powerMonitor, powerSaveBlocker} from 'electr
 import * as path from 'path';
 import * as url from 'url';
 import {ChildProcess} from 'child_process';
+import Rectangle = Electron.Rectangle;
+import Size = Electron.Size;
 
 const fs = require('fs');
 const ipc = require('electron').ipcMain;
@@ -18,21 +20,24 @@ const rootDirectory: string = path.normalize(
     path.join(__dirname, '../../../')
 );
 
+const windowFile = path.join(rootDirectory, 'data/window.json');
+
 let win: BrowserWindow;
 let serverProcess: ChildProcess;
 let appSuspensionId: number;
 
 function createWindow() {
 
-  const size = screen.getPrimaryDisplay().workAreaSize;
+  const screenSize: Size = screen.getPrimaryDisplay().workAreaSize;
 
-  const windowSize = Math.min(size.height, size.width);
+  const bounds = getSavedWindowBounds(screenSize);
 
-  // Create the browser window.
   win = new BrowserWindow({
     frame: false,
-    width: windowSize - 50,
-    height: windowSize - 200,
+    width: Math.min(bounds.width, screenSize.width),
+    height: Math.min(bounds.height, screenSize.height),
+    x: Math.max(bounds.x, 0),
+    y: Math.max(bounds.y, 0),
     minHeight: 450,
     minWidth: 350,
     show: false,
@@ -61,6 +66,14 @@ function createWindow() {
   win.once('ready-to-show', () => {
     win.show();
   });
+
+  win.on('resize', () =>
+    saveWindowBounds()
+  );
+
+  win.on('move', () =>
+    saveWindowBounds()
+  );
 
   powerMonitor.on('suspend', () => {
     win.webContents.send('suspend');
@@ -113,13 +126,13 @@ function initialize() {
     startServer();
   }
 
-  ipc.on('prevent-app-suspension-on', (event) => {
+  ipc.on('prevent-app-suspension-on', () => {
     // console.log('preventing the computer from going to sleep');
     appSuspensionId = powerSaveBlocker.start('prevent-app-suspension');
     // event.sender.send('prevent-app-suspension-on');
   });
 
-  ipc.on('prevent-app-suspension-off', (event) => {
+  ipc.on('prevent-app-suspension-off', () => {
     // console.log('stopping preventing the computer from going to sleep');
     powerSaveBlocker.stop(appSuspensionId);
     // event.sender.send('prevent-app-suspension-off');
@@ -224,3 +237,20 @@ if (!app.requestSingleInstanceLock()) {
   }
 }
 
+function saveWindowBounds(): void {
+  const bounds = JSON.stringify(win.getBounds());
+  fs.writeFile(windowFile, bounds, () => {});
+}
+
+function getSavedWindowBounds(screenSize: Size): Rectangle {
+  if (fs.existsSync(windowFile)) {
+    return JSON.parse(fs.readFileSync(windowFile));
+  } else {
+    return {
+      width: screenSize.width - 50,
+      height: screenSize.height - 50,
+      x: 25,
+      y: 25
+    };
+  }
+}

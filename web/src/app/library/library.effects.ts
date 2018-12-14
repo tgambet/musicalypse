@@ -105,6 +105,7 @@ export class LibraryEffects {
   setTrack$: Observable<Action> =
     this.library.getCurrentTrack().pipe(
       filter(track => !!track),
+      tap(track => this.titleService.setTitle(`${track.title} • ${track.artist} | Musicalypse`)),
       mergeMap(track => of(
         new SetAudioSource(CoreUtils.resolveUrl(track.url)),
         new AddToRecent([track])

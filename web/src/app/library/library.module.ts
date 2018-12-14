@@ -15,6 +15,7 @@ import {TracksComponent} from './components/tracks.component';
 import {ControlsComponent} from './components/shared/controls.component';
 import {ChipsComponent} from './components/shared/chips.component';
 import {ListItemComponent} from './components/shared/list-item.component';
+import {LoaderComponent} from './components/shared/loader.component';
 import {TrackComponent, TrackControlComponent} from './components/track.component';
 import {ProgressComponent} from './components/player/progress.component';
 
@@ -32,6 +33,7 @@ export const COMPONENTS = [
   ControlsComponent,
   ChipsComponent,
   ListItemComponent,
+  LoaderComponent,
   TrackComponent,
   ProgressComponent,
   TrackControlComponent

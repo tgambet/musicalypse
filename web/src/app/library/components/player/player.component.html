@@ -13,7 +13,8 @@
     </div>
     <button mat-button mat-icon-button
             class="mute"
-            (click)="setMuted(!muted)">
+            (click)="setMuted(!muted)"
+            [disabled]="viewLoading">
       <mat-icon *ngIf="!muted && volume > 0.50">volume_up</mat-icon>
       <mat-icon *ngIf="!muted && volume > 0 && volume <= 0.50">volume_down</mat-icon>
       <mat-icon *ngIf="!muted && volume == 0">volume_mute</mat-icon>
@@ -22,7 +23,7 @@
   </div>
   <div class="volume">
     <mat-slider
-      [disabled]="muted"
+      [disabled]="muted || viewLoading"
       [value]="volume"
       (input)="setVolume($event.value)"
       [max]="1"
@@ -44,7 +45,8 @@
           <mat-icon>playlist_play</mat-icon>
           <span>Playlist</span>
         </ng-template>
-        <mat-list *ngIf="smallScreen" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistMatList>
+        <app-loader [show]="viewLoading"></app-loader>
+        <mat-list *ngIf="smallScreen && !viewLoading" class="playlist" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistMatList>
           <ng-container *ngFor="let track of playlist; trackBy: trackByURL">
             <div #listItem [attr.data-url]="track.url" class="track-list-item divider">
               <mat-list-item class="hover"
@@ -63,7 +65,7 @@
             </div>
           </ng-container>
         </mat-list>
-        <ul *ngIf="!smallScreen" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistUl>
+        <ul *ngIf="!smallScreen && !viewLoading" class="playlist-long" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()" #playlistUl>
           <ng-container *ngFor="let track of playlist; trackBy: trackByURL">
             <li #listItem [class.current]="isTrackCurrent(track)" class="divider track-list-item" (click)="playTrack(track)" [attr.data-url]="track.url">
               <span class="title c">
@@ -112,12 +114,14 @@
     <button mat-button mat-icon-button
             class="shuffle"
             [color]="shuffle ? 'primary' : ''"
+            [disabled]="viewLoading"
             (click)="setShuffle(!shuffle)">
       <mat-icon>shuffle</mat-icon>
     </button>
     <button mat-button mat-icon-button
             class="repeat"
             [color]="repeat ? 'primary' : ''"
+            [disabled]="viewLoading"
             (click)="setRepeat(!repeat)">
       <mat-icon>repeat</mat-icon>
     </button>
@@ -146,7 +150,12 @@
             (click)="addOrRemoveFromFavorites(currentTrack)">
       <mat-icon>{{ (isFavorite(currentTrack) | async) ? 'favorite' : 'favorite_border' }}</mat-icon>
     </button>
-    <button mat-button mat-icon-button [matMenuTriggerFor]="playerMenu" class="more" (click)="$event.stopPropagation()">
+    <button mat-button
+            mat-icon-button
+            [matMenuTriggerFor]="playerMenu"
+            class="more"
+            (click)="$event.stopPropagation()"
+            [disabled]="viewLoading">
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>

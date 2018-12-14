@@ -41,6 +41,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() repeat: boolean;
   @Input() playlist: Track[];
   @Input() playlists: Playlist[];
+  @Input() viewLoading: boolean;
 
   loading$: Observable<boolean>;
   duration$: Observable<number>;

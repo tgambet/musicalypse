@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions} from '@angular/material';
-import {Observable, Subscription} from 'rxjs';
+import {EMPTY, Observable, of, Subscription} from 'rxjs';
 import {filter, take, tap} from 'rxjs/operators';
 
 import {Album, Artist, Playlist, Track} from '@app/model';
@@ -25,7 +25,9 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
            [class.no-track]="!(currentTrack$ | async)"
            [class.no-animation]="noAnimation">
         <div class="column a1">
+          <app-loader [show]="viewLoading"></app-loader>
           <app-artists #artistsComponent
+                       *ngIf="!viewLoading"
                        [artists]="artists$ | async"
                        [selectedArtists]="selectedArtists$ | async"
                        [displayType]="displayType"
@@ -33,7 +35,9 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
           </app-artists>
         </div>
         <div class="column a2">
+          <app-loader [show]="viewLoading"></app-loader>
           <app-albums #albumsComponent
+                      *ngIf="!viewLoading"
                       [albums]="albums$ | async"
                       [selectedAlbums]="selectedAlbums$ | async"
                       [displayType]="displayType"
@@ -42,7 +46,9 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
           </app-albums>
         </div>
         <div class="column a3">
+          <app-loader [show]="viewLoading"></app-loader>
           <app-tracks #tracksComponent
+                      *ngIf="!viewLoading"
                       (next)="translateContent(3)"
                       (previous)="translateContent(1)"
                       [tracks]="tracks$ | async"
@@ -58,6 +64,7 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
                               [playing]="playing$ | async"
                               [shuffle]="shuffle$ | async"
                               [repeat]="repeat$ | async"
+                              [viewLoading]="viewLoading"
                               (previous)="translateContent(2)">
           </app-library-player>
         </div>
@@ -82,22 +89,24 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
 })
 export class LibraryComponent implements OnInit, OnDestroy {
 
-  artists$: Observable<Artist[]>;
-  selectedArtists$: Observable<Artist[]>;
-  albums$: Observable<Album[]>;
-  selectedAlbums$: Observable<Album[]>;
-  tracks$: Observable<Track[]>;
-  currentTrack$: Observable<Track>;
-  playlist$: Observable<Track[]>;
-  playlists$: Observable<Playlist[]>;
-  shuffle$: Observable<boolean>;
-  repeat$: Observable<boolean>;
-  playing$: Observable<boolean>;
-  loading$: Observable<boolean>;
-  volume$: Observable<number>;
-  muted$: Observable<boolean>;
-  duration$: Observable<number>;
-  currentTime$: Observable<number>;
+  viewLoading = true;
+
+  artists$: Observable<Artist[]>         = of([]);
+  selectedArtists$: Observable<Artist[]> = of([]);
+  albums$: Observable<Album[]>           = of([]);
+  selectedAlbums$: Observable<Album[]>   = of([]);
+  tracks$: Observable<Track[]>           = of([]);
+  currentTrack$: Observable<Track>       = EMPTY;
+  playlist$: Observable<Track[]>         = of([]);
+  playlists$: Observable<Playlist[]>     = of([]);
+  shuffle$: Observable<boolean>          = of(false);
+  repeat$: Observable<boolean>           = of(false);
+  playing$: Observable<boolean>          = of(false);
+  loading$: Observable<boolean>          = of(false);
+  volume$: Observable<number>            = of(1);
+  muted$: Observable<boolean>            = of(false);
+  duration$: Observable<number>          = of(0);
+  currentTime$: Observable<number>       = of(0);
 
   subscriptions: Subscription[] = [];
 
@@ -106,7 +115,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
   contentTranslation = 0;
   displayType: DisplayType;
 
-  noAnimation = false;
+  noAnimation = true;
   private animationTimeout;
 
   constructor(
@@ -170,7 +179,23 @@ export class LibraryComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.initializeObservables();
+      this.viewLoading = false;
+      this.ref.detectChanges();
+    });
+    const translateOnUrlChange = this.route.queryParamMap.subscribe(params => {
+      const t = params.get('t');
+      if (t !== null && t !== this.contentTranslation.toString(10)) {
+        this.contentTranslation = parseInt(t, 10);
+        this.ref.detectChanges();
+      }
+    });
+    this.subscriptions.push(translateOnUrlChange);
+    this.noAnimation = false;
+  }
 
+  initializeObservables(): void {
     this.route.data.pipe(
       take(1),
     ).subscribe(data => {
@@ -241,24 +266,6 @@ export class LibraryComponent implements OnInit, OnDestroy {
     //     this.updateUrl();
     //   })
     // );
-
-    /*const translateContentOnRouteChange = this.routerService.getRouterState().subscribe(state => {
-      const t = state.queryParams.get('t');
-      if (t !== null && t !== this.contentTranslation.toString(10)) {
-        this.contentTranslation = parseInt(t, 10);
-        this.ref.detectChanges();
-      }
-    });
-    this.subscriptions.push(translateContentOnRouteChange);*/
-
-    const translateOnUrlChange = this.route.queryParamMap.subscribe(params => {
-      const t = params.get('t');
-      if (t !== null && t !== this.contentTranslation.toString(10)) {
-        this.contentTranslation = parseInt(t, 10);
-        this.ref.detectChanges();
-      }
-    });
-    this.subscriptions.push(translateOnUrlChange);
   }
 
   ngOnDestroy() {

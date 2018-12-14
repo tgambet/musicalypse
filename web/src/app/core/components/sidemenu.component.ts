@@ -10,6 +10,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       <button mat-icon-button
               routerLink="/playing"
               routerLinkActive="active"
+              matTooltip="Playing now"
               (click)="closeSidenav.emit()">
         <mat-icon>play_circle_outline</mat-icon>
       </button>
@@ -23,18 +24,21 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               class="last-of-category"
               routerLink="/playlists"
               routerLinkActive="active"
+              matTooltip="Playlists"
               (click)="closeSidenav.emit()">
         <mat-icon>album</mat-icon>
       </button>
       <button mat-icon-button
               routerLink="/library"
               routerLinkActive="active"
+              matTooltip="Library"
               (click)="closeSidenav.emit()">
         <mat-icon>queue_music</mat-icon>
       </button>
       <button mat-icon-button
               routerLink="/recent"
               routerLinkActive="active"
+              matTooltip="Recently Played"
               (click)="closeSidenav.emit()">
         <mat-icon>schedule</mat-icon>
       </button>
@@ -42,6 +46,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
               class="last-of-category"
               routerLink="/favorites"
               routerLinkActive="active"
+              matTooltip="Favorites"
               (click)="closeSidenav.emit()">
         <mat-icon>favorite_border</mat-icon>
       </button>
@@ -54,12 +59,14 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
       <button mat-icon-button
               routerLink="/settings"
               routerLinkActive="active"
+              matTooltip="Settings"
               (click)="closeSidenav.emit()">
         <mat-icon>settings</mat-icon>
       </button>
       <button mat-icon-button
               routerLink="/about"
               routerLinkActive="active"
+              matTooltip="About"
               (click)="closeSidenav.emit()">
         <mat-icon>info</mat-icon>
       </button>

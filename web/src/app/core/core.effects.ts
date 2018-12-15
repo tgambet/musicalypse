@@ -25,8 +25,7 @@ export class CoreEffects {
     this.actions$.pipe(
       ofType<ChangeTheme>(CoreActionTypes.ChangeTheme),
       tap((action: ChangeTheme) => {
-        const initialClass = this.overlayContainer.getContainerElement().className;
-        this.overlayContainer.getContainerElement().className = initialClass + ' ' + action.payload.cssClass;
+        this.overlayContainer.getContainerElement().className = 'cdk-overlay-container ' + action.payload.cssClass;
       }),
       map(() => {})
     );

@@ -16,6 +16,7 @@ import * as fromRoot from '../app.reducers';
 import {ScanTracks} from '../library/actions/tracks.actions';
 import {CoreUtils, Theme} from '../core/core.utils';
 import {ElectronService} from '@app/core/services/electron.service';
+import {LyricsOptions} from '@app/model';
 
 @Component({
   selector: 'app-settings',
@@ -96,41 +97,84 @@ import {ElectronService} from '@app/core/services/electron.service';
           </div>
           <mat-divider></mat-divider>
         </div>
+        <h3 class="secondary-text">Lyrics</h3>
+        <p>
+          <mat-slide-toggle color="primary" [(ngModel)]="lyricsOpts.useService" (change)="toggleUseService()">
+            Find lyrics on the Web:
+          </mat-slide-toggle>
+        </p>
+        <p style="padding-left: 1.2rem">
+          <mat-checkbox color="primary" [(ngModel)]="lyricsOpts.services.wikia"
+                        [disabled]="!lyricsOpts.useService" (change)="toggleService()">
+            Search on lyrics.wikia.com
+          </mat-checkbox>
+          <a href="http://lyrics.wikia.com" target="_blank"
+             aria-label="http://lyrics.wikia.com" class="open" (click)="openExternally($event)">
+            <mat-icon class="small">open_in_new</mat-icon>
+          </a>
+        </p>
+        <p style="padding-left: 1.2rem">
+          <mat-checkbox color="primary" [(ngModel)]="lyricsOpts.services.lyricsOvh"
+                        [disabled]="!lyricsOpts.useService" (change)="toggleService()">
+            Use the lyrics.ovh service
+          </mat-checkbox>
+          <a href="http://lyrics.ovh" target="_blank"
+             aria-label="https://lyrics.ovh" class="open" (click)="openExternally($event)">
+            <mat-icon class="small">open_in_new</mat-icon>
+          </a>
+        </p>
+        <p>
+          <mat-slide-toggle color="primary" [(ngModel)]="lyricsOpts.automaticSave" [disabled]="!lyricsOpts.useService">
+            Save found lyrics automatically <mat-icon class="small" [matTooltip]="lyricsSaveTooltip">info</mat-icon>
+          </mat-slide-toggle>
+        </p>
+        <mat-divider></mat-divider>
         <h3 class="secondary-text">Cache</h3>
         <p>
           Musicalypse stores some data in a local cache.<br>
           If you experience any issue or want a clean slate you can clear your cache here.
         </p>
         <ul class="cache">
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_favorites">Favorites</mat-checkbox>
+<!--          <li>
+            <span class="select"
+                  tabindex="0"
+                  (click)="selectCacheAll()"
+                  (keypress)="selectCacheAll($event)">
+              <mat-icon>select_all</mat-icon> Select all
+            </span>
+          </li>-->
+          <li class="select-all-wrapper">
+            <button mat-icon-button id="select-all" (click)="selectCacheAll()">
+              <mat-icon>select_all</mat-icon>
+            </button>
+            <label for="select-all">Select all</label>
           </li>
           <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_recent">Recent tracks</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache.favorites">Favorites</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_playlist">Current playlist</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache.recent">Recent tracks</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_playlists">Saved playlists</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache.playlist">Current playlist</mat-checkbox>
           </li>
           <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_theme">Theme</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="cache.playlists">Saved playlists</mat-checkbox>
           </li>
           <li>
+            <mat-checkbox color="primary" [(ngModel)]="cache.theme">Theme</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox color="primary" [(ngModel)]="cache.player">Player (volume, shuffle, repeat)</mat-checkbox>
+          </li>
+          <!--<li>
             <mat-checkbox color="primary" [(ngModel)]="cache_covers">Covers <em>(requires library scan afterwards)</em></mat-checkbox>
-          </li>
+          </li>-->
         </ul>
         <button mat-button
                 class="clear"
                 (click)="clearCache()"
-                [disabled]="!(
-                  cache_theme ||
-                  cache_playlists ||
-                  cache_playlist ||
-                  cache_recent ||
-                  cache_favorites ||
-                  cache_covers)">
+                [disabled]="!hasSelectedCacheOption()">
           Clear selected
         </button>
       </div>
@@ -161,6 +205,14 @@ import {ElectronService} from '@app/core/services/electron.service';
     mat-divider {
       margin: 1rem 0;
     }
+    a.open {
+      margin-left: 0.25rem;
+    }
+    mat-icon.small {
+      font-size: 18px;
+      position: relative;
+      top: 4px;
+    }
     .cache {
       list-style: none;
       padding: 0;
@@ -174,6 +226,20 @@ import {ElectronService} from '@app/core/services/electron.service';
     button.clear {
       max-width: 8rem;
     }
+    .select-all-wrapper {
+      height: 24px;
+    }
+    .select-all-wrapper button {
+      position: relative;
+      top: -8px;
+      left: -12px;
+    }
+    .select-all-wrapper label {
+      position: relative;
+      top: -6px;
+      left: -16px;
+      cursor: pointer;
+    }
     @media screen and (max-width: 598px){
     }
   `],
@@ -185,12 +251,32 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   themes = CoreUtils.allThemes;
 
-  cache_favorites = false;
-  cache_recent = false;
-  cache_playlist = false;
-  cache_playlists = false;
-  cache_theme = false;
-  cache_covers = false;
+  lyricsOpts: LyricsOptions = {
+    useService: true,
+    services: {
+      wikia: true,
+      lyricsOvh: true
+    },
+    automaticSave: true
+  };
+
+  lyricsSaveTooltip = 'If you enable this option, every time lyrics are found they are saved on disk for future use.';
+
+  cache: {
+    favorites: boolean,
+    recent: boolean,
+    playlist: boolean,
+    playlists: boolean,
+    theme: boolean,
+    player: boolean
+  } = {
+    favorites: false,
+    recent: false,
+    playlist: false,
+    playlists: false,
+    theme: false,
+    player: false
+  };
 
   error$: Observable<string>;
   loading$: Observable<boolean>;
@@ -294,31 +380,36 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   clearCache() {
-    if (this.cache_favorites) {
+    if (this.cache.favorites) {
       console.log('clearing favorites');
       CoreUtils.save('favorites', JSON.stringify([]));
     }
-    if (this.cache_recent) {
+    if (this.cache.recent) {
       console.log('clearing recent tracks');
       CoreUtils.save('recent', JSON.stringify([]));
     }
-    if (this.cache_playlist) {
+    if (this.cache.playlist) {
       console.log('clearing current playlist');
       CoreUtils.save('playlist', JSON.stringify([]));
       CoreUtils.remove('current');
     }
-    if (this.cache_playlists) {
+    if (this.cache.playlists) {
       console.log('clearing playlists');
       CoreUtils.save('playlists', JSON.stringify([]));
     }
-    if (this.cache_theme) {
+    if (this.cache.theme) {
       console.log('clearing saved theme');
       CoreUtils.remove('theme');
     }
-    if (this.cache_covers) {
+    if (this.cache.player) {
+      console.log('clearing player state');
+      CoreUtils.remove('volume');
+      CoreUtils.remove('shuffle');
+    }
+    /*if (this.cache.covers) {
       console.log('clearing covers');
       this.httpSocketClient.delete('/api/covers').subscribe();
-    }
+    }*/
     this.dialog.open(
       ConfirmComponent,
       { data: {
@@ -344,6 +435,45 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.electronService.send('prevent-app-suspension-on');
     } else {
       this.electronService.send('prevent-app-suspension-off');
+    }
+  }
+
+  hasSelectedCacheOption() {
+    return Object.values(this.cache).reduce((x, y) => x || y);
+  }
+
+  selectCacheAll() {
+    if (Object.values(this.cache).reduce((x, y) => x && y)) {
+      this.cache = {
+        favorites: false,
+        recent: false,
+        playlist: false,
+        playlists: false,
+        theme: false,
+        player: false
+      };
+    } else {
+      this.cache = {
+        favorites: true,
+        recent: true,
+        playlist: true,
+        playlists: true,
+        theme: true,
+        player: true
+      };
+    }
+  }
+
+  toggleService() {
+    if (!this.lyricsOpts.services.wikia && !this.lyricsOpts.services.lyricsOvh) {
+      this.lyricsOpts.useService = false;
+    }
+  }
+
+  toggleUseService() {
+    if (this.lyricsOpts.useService && !(this.lyricsOpts.services.wikia || this.lyricsOpts.services.lyricsOvh)) {
+      this.lyricsOpts.services.wikia = true;
+      this.lyricsOpts.services.lyricsOvh = true;
     }
   }
 

@@ -107,7 +107,7 @@ export class LibraryEffects {
       filter(track => !!track),
       tap(track => this.titleService.setTitle(`${track.title} • ${track.artist} | Musicalypse`)),
       mergeMap(track => of(
-        new SetAudioSource(CoreUtils.resolveUrl(track.url)),
+        new SetAudioSource(CoreUtils.resolveUrl(encodeURI(track.url))),
         new AddToRecent([track])
       ))
     );

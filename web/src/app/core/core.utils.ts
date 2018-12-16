@@ -38,11 +38,11 @@ export class CoreUtils {
 
   static resolveUrl(sourceUrl: string) {
     if (environment.electron) {
-      return 'http://localhost:' + environment.httpPort + encodeURI(sourceUrl);
+      return 'http://localhost:' + environment.httpPort + sourceUrl;
     } else if (environment.production) {
-      return encodeURI(sourceUrl);
+      return sourceUrl;
     } else {
-      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${encodeURI(sourceUrl)}`;
+      return `${window.location.protocol}//${window.location.hostname}:${environment.httpPort}${sourceUrl}`;
     }
   }
 

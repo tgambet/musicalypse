@@ -70,7 +70,6 @@
     "@ngrx/store-devtools": "^7.0.0-beta.1",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
-    "@types/lodash": "^4.14.104",
     "@types/node": "~8.9.4",
     "codelyzer": "^4.5.0",
     "core-js": "^2.5.4",

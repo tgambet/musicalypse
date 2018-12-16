@@ -2,7 +2,7 @@ package net.creasource.web
 
 import java.nio.file.{Files, Path, Paths}
 
-import akka.actor.{Actor, Props, Stash}
+import akka.actor.{Actor, Props}
 import akka.event.Logging
 import net.creasource.core.Application
 import net.creasource.web.SettingsActor.{DeleteCovers, GetHostIps}
@@ -16,7 +16,7 @@ object SettingsActor {
 
 }
 
-class SettingsActor()(implicit application: Application) extends Actor with Stash with JsonSupport {
+class SettingsActor()(implicit application: Application) extends Actor with JsonSupport {
 
   private val logger = Logging(context.system, this)
 

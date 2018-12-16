@@ -21,6 +21,7 @@ import {ProgressComponent} from './components/player/progress.component';
 
 import {LibraryEffects} from './library.effects';
 import {reducers} from './library.reducers';
+import {LyricsService} from '@app/library/services/lyrics.service';
 
 export const COMPONENTS = [
   AlbumsComponent,
@@ -48,7 +49,8 @@ export const COMPONENTS = [
   declarations: COMPONENTS,
   exports: COMPONENTS,
   providers: [
-    LibraryService
+    LibraryService,
+    LyricsService
   ]
 })
 export class LibraryModule {}

@@ -18,12 +18,13 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
 import {take, tap} from 'rxjs/operators';
 
-import {Playlist, Track} from '@app/model';
+import {LyricsResult, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {DetailsComponent} from '@app/shared/dialogs/details.component';
 import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
 
 import {LibraryService} from '@app/library/services/library.service';
+import {LyricsService} from '@app/library/services/lyrics.service';
 
 @Component({
   selector: 'app-library-player',
@@ -41,14 +42,14 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() repeat: boolean;
   @Input() playlist: Track[];
   @Input() playlists: Playlist[];
+  @Input() lyricsResult: LyricsResult;
   @Input() viewLoading: boolean;
 
   loading$: Observable<boolean>;
   duration$: Observable<number>;
   currentTime$: Observable<number>;
 
-  @Output()
-  previous: EventEmitter<void> = new EventEmitter();
+  @Output() previous: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('carousel')
   carousel: MatTabGroup;
@@ -58,6 +59,9 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
 
   @ViewChild('playlistUl')
   playlistUl: ElementRef;
+
+  @ViewChild('lyrics')
+  lyricsRef: ElementRef;
 
   selectedCarouselIndex = 0;
 
@@ -69,7 +73,8 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     private breakpointObserver: BreakpointObserver,
     // public snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private library: LibraryService
+    private library: LibraryService,
+    private lyricsService: LyricsService
   ) {
     this.loading$ = this.library.getAudioLoading();
     this.duration$ = this.library.getAudioDuration();
@@ -83,6 +88,14 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes.currentTrack || changes.playlist) && this.listItems && (this.playlistMatList || this.playlistUl)) {
       setTimeout(() => this.scrollCurrentTrackIntoView());
+    }
+    // TODO: remove if a lyrics loader is implemented
+    if (changes.currentTrack && this.lyricsRef && this.lyricsRef.nativeElement.parentElement) {
+      this.lyricsRef.nativeElement.parentElement.scrollTop = 0;
+      /*this.lyricsRef.nativeElement.parentElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });*/
     }
   }
 
@@ -225,6 +238,38 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
 
   getTotalDuration(): number {
     return this.playlist.reduce((total, track) => total + track.duration, 0);
+  }
+
+  lyricsEdited(event) {
+    const lyrics = event.target.textContent
+      .replace(/\n{3,}/g, '\n')
+      .split('\n')
+      .map(line => line.trim())
+      .join('\n');
+
+    if (lyrics === '') { return; }
+    if (this.lyricsResult && this.lyricsResult.lyrics && this.lyricsResult.lyrics.trim() === lyrics) { return; }
+
+    this.lyricsService.saveLyrics(lyrics, this.currentTrack.artist, this.currentTrack.title);
+  }
+
+  lyricsPasted(event) {
+    event.preventDefault();
+    const text = (event.originalEvent || event).clipboardData.getData('text/plain');
+    document.execCommand('insertHTML', false, text);
+  }
+
+  onKeyDown(event) {
+    if (event.code === 'Enter') {
+      document.execCommand('insertHTML', false, '\n');
+      return false;
+    }
+  }
+
+  errorClicked() {
+    delete this.lyricsResult.error;
+    this.lyricsResult.lyrics = '';
+    setTimeout(() => this.lyricsRef.nativeElement.focus());
   }
 
 }

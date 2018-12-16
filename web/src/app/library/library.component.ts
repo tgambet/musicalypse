@@ -1,14 +1,15 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions} from '@angular/material';
-import {EMPTY, Observable, of, Subscription} from 'rxjs';
-import {filter, take, tap} from 'rxjs/operators';
+import {combineLatest, EMPTY, Observable, of, Subscription} from 'rxjs';
+import {filter, switchMap, take, tap} from 'rxjs/operators';
 
-import {Album, Artist, Playlist, Track} from '@app/model';
+import {Album, Artist, LyricsResult, Playlist, Track} from '@app/model';
 import {LibraryService} from './services/library.service';
 import {RouterService} from '@app/core/services/router.service';
 import {RouterStateUrl} from '@app/app.serializer';
 import {environment} from '@env/environment';
+import {LyricsService} from '@app/library/services/lyrics.service';
 
 export const tooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 500,
@@ -64,6 +65,7 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
                               [playing]="playing$ | async"
                               [shuffle]="shuffle$ | async"
                               [repeat]="repeat$ | async"
+                              [lyricsResult]="lyricsResult$ | async"
                               [viewLoading]="viewLoading"
                               (previous)="translateContent(2)">
           </app-library-player>
@@ -107,6 +109,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
   muted$: Observable<boolean>            = of(false);
   duration$: Observable<number>          = of(0);
   currentTime$: Observable<number>       = of(0);
+  lyricsResult$: Observable<LyricsResult>     = EMPTY;
 
   subscriptions: Subscription[] = [];
 
@@ -123,7 +126,8 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private library: LibraryService,
     private route: ActivatedRoute,
     private routerService: RouterService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private lyricsService: LyricsService
   ) {
 
   }
@@ -231,6 +235,18 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.muted$           = this.library.getAudioMuted();
     this.duration$        = this.library.getAudioDuration();
     this.currentTime$     = this.library.getAudioCurrentTime();
+
+    // TODO
+    this.lyricsResult$ = combineLatest(this.currentTrack$, of({
+      useService: true,
+      services: {
+        wikia: true,
+        lyricsOvh: true
+      },
+      automaticSave: true
+    })).pipe(
+      switchMap(trackAndOpts => this.lyricsService.getLyrics(trackAndOpts[0], trackAndOpts[1])),
+    );
 
     // Update the url based on the library state
     // if (this.library.selectedArtists.length > 0) {

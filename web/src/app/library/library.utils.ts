@@ -22,7 +22,7 @@ export class LibraryUtils {
       // track.warn = true;
     }
     if (track.coverUrl) {
-      track.coverUrl = CoreUtils.resolveUrl(track.coverUrl);
+      track.coverUrl = CoreUtils.resolveUrl(encodeURI(track.coverUrl));
     }
     return track;
   }

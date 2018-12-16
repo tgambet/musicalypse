@@ -4,12 +4,12 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="metadata">
-      <div class="title" [matTooltip]="currentTrack ? currentTrack.title : ''">
+      <span class="title" [matTooltip]="currentTrack ? currentTrack.title : ''">
         {{ currentTrack ? currentTrack.title : '' }}
-      </div>
-      <div class="artist" [matTooltip]="currentTrack ? currentTrack.artist : ''">
+      </span>
+      <span class="artist" [matTooltip]="currentTrack ? currentTrack.artist : ''">
         {{ currentTrack ? currentTrack.artist : '' }}
-      </div>
+      </span>
     </div>
     <button mat-button mat-icon-button
             class="mute"
@@ -93,15 +93,27 @@
           <mat-icon *ngIf="!currentTrack || !currentTrack.coverUrl">music_note</mat-icon>
         </div>
       </mat-tab>
-      <!--<mat-tab label="Lyrics" >
+      <mat-tab label="Lyrics" >
         <ng-template mat-tab-label>
           <mat-icon>format_align_center</mat-icon>
           <span>Lyrics</span>
         </ng-template>
-        <div class="lyrics" (swipeleft)="swipeLeft()" (swiperight)="swipeRight()">
-
+        <div class="lyrics"
+             #lyrics
+             *ngIf="lyricsResult && lyricsResult.lyrics !== undefined"
+             (swipeleft)="swipeLeft()"
+             (swiperight)="swipeRight()"
+             [attr.contenteditable]="!smallScreen"
+             spellcheck="false"
+             (blur)="lyricsEdited($event)"
+             (paste)="lyricsPasted($event)"
+             (keydown)="onKeyDown($event)">
+          {{ lyricsResult.lyrics }}
         </div>
-      </mat-tab>-->
+        <div class="lyrics error" *ngIf="lyricsResult && lyricsResult.error" (click)="errorClicked()">
+          {{ lyricsResult.error }}
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </div>
 

@@ -47,3 +47,22 @@ export type ImmutablePlaylist = ImmutableMap<{
   name: string;
   tracks: Set<Track>;
 }>;
+
+export interface LyricsResult {
+  lyrics?: string;
+  source?: string;
+  error?: string;
+  suggestions?: {
+    artist: string;
+    title: string;
+  }[];
+}
+
+export interface LyricsOptions {
+  useService: boolean;
+  services: {
+    wikia: boolean;
+    lyricsOvh: boolean;
+  };
+  automaticSave: boolean;
+}

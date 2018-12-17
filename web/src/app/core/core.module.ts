@@ -18,6 +18,7 @@ import {InitializerComponent} from '@app/core/components/initializer.component';
 import {UpdateService} from '@app/core/services/update.service';
 import {RouterService} from '@app/core/services/router.service';
 import {ElectronService} from '@app/core/services/electron.service';
+import {CoreService} from '@app/core/services/core.service';
 
 export const COMPONENTS = [
   CoreComponent,
@@ -36,6 +37,7 @@ export const COMPONENTS = [
   declarations: COMPONENTS,
   exports: COMPONENTS,
   providers: [
+    CoreService,
     HttpSocketClientService,
     LoaderService,
     AudioService,

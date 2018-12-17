@@ -10,6 +10,7 @@ import {RouterService} from '@app/core/services/router.service';
 import {RouterStateUrl} from '@app/app.serializer';
 import {environment} from '@env/environment';
 import {LyricsService} from '@app/library/services/lyrics.service';
+import {SettingsService} from '@app/settings/services/settings.service';
 
 export const tooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 500,
@@ -127,7 +128,8 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private routerService: RouterService,
     private ref: ChangeDetectorRef,
-    private lyricsService: LyricsService
+    private lyricsService: LyricsService,
+    private settings: SettingsService
   ) {
 
   }
@@ -236,15 +238,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.duration$        = this.library.getAudioDuration();
     this.currentTime$     = this.library.getAudioCurrentTime();
 
-    // TODO
-    this.lyricsResult$ = combineLatest(this.currentTrack$, of({
-      useService: true,
-      services: {
-        wikia: true,
-        lyricsOvh: true
-      },
-      automaticSave: true
-    })).pipe(
+    this.lyricsResult$ = combineLatest(this.currentTrack$, this.settings.getLyricsOptions()).pipe(
       switchMap(trackAndOpts => this.lyricsService.getLyrics(trackAndOpts[0], trackAndOpts[1])),
     );
 

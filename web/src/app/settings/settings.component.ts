@@ -1,21 +1,17 @@
 import {ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog, MatSlideToggleChange} from '@angular/material';
+import {Observable} from 'rxjs';
+import {map, share} from 'rxjs/operators';
+
 import {FolderComponent} from '../shared/dialogs/folder/folder.component';
 import {HttpSocketClientService} from '../core/services/http-socket-client.service';
 import {SettingsService} from './services/settings.service';
 import {ConfirmComponent} from '../shared/dialogs/confirm.component';
 import {environment} from '@env/environment';
-import {select, Store} from '@ngrx/store';
-import * as fromSettings from './settings.reducers';
-import {Observable} from 'rxjs';
-import {map, share} from 'rxjs/operators';
-import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder} from './settings.actions';
-import * as LayoutActions from '../core/core.actions';
-import * as fromRoot from '../app.reducers';
-import {ScanTracks} from '../library/actions/tracks.actions';
 import {CoreUtils, Theme} from '../core/core.utils';
 import {ElectronService} from '@app/core/services/electron.service';
+import {CoreService} from '@app/core/services/core.service';
 import {LyricsOptions} from '@app/model';
 
 @Component({
@@ -98,36 +94,10 @@ import {LyricsOptions} from '@app/model';
           <mat-divider></mat-divider>
         </div>
         <h3 class="secondary-text">Lyrics</h3>
-        <p>
-          <mat-slide-toggle color="primary" [(ngModel)]="lyricsOpts.useService" (change)="toggleUseService()">
-            Find lyrics on the Web:
-          </mat-slide-toggle>
-        </p>
-        <p style="padding-left: 1.2rem">
-          <mat-checkbox color="primary" [(ngModel)]="lyricsOpts.services.wikia"
-                        [disabled]="!lyricsOpts.useService" (change)="toggleService()">
-            Search on lyrics.wikia.com
-          </mat-checkbox>
-          <a href="http://lyrics.wikia.com" target="_blank"
-             aria-label="http://lyrics.wikia.com" class="open" (click)="openExternally($event)">
-            <mat-icon class="small">open_in_new</mat-icon>
-          </a>
-        </p>
-        <p style="padding-left: 1.2rem">
-          <mat-checkbox color="primary" [(ngModel)]="lyricsOpts.services.lyricsOvh"
-                        [disabled]="!lyricsOpts.useService" (change)="toggleService()">
-            Use the lyrics.ovh service
-          </mat-checkbox>
-          <a href="http://lyrics.ovh" target="_blank"
-             aria-label="https://lyrics.ovh" class="open" (click)="openExternally($event)">
-            <mat-icon class="small">open_in_new</mat-icon>
-          </a>
-        </p>
-        <p>
-          <mat-slide-toggle color="primary" [(ngModel)]="lyricsOpts.automaticSave" [disabled]="!lyricsOpts.useService">
-            Save found lyrics automatically <mat-icon class="small" [matTooltip]="lyricsSaveTooltip">info</mat-icon>
-          </mat-slide-toggle>
-        </p>
+        <app-lyrics [lyricsOpts]="lyricsOpts$ | async"
+                    (optionsChanged)="saveLyricsOptions($event)"
+                    (linkClicked)="openExternally($event)">
+        </app-lyrics>
         <mat-divider></mat-divider>
         <h3 class="secondary-text">Cache</h3>
         <p>
@@ -135,14 +105,6 @@ import {LyricsOptions} from '@app/model';
           If you experience any issue or want a clean slate you can clear your cache here.
         </p>
         <ul class="cache">
-<!--          <li>
-            <span class="select"
-                  tabindex="0"
-                  (click)="selectCacheAll()"
-                  (keypress)="selectCacheAll($event)">
-              <mat-icon>select_all</mat-icon> Select all
-            </span>
-          </li>-->
           <li class="select-all-wrapper">
             <button mat-icon-button id="select-all" (click)="selectCacheAll()">
               <mat-icon>select_all</mat-icon>
@@ -205,14 +167,6 @@ import {LyricsOptions} from '@app/model';
     mat-divider {
       margin: 1rem 0;
     }
-    a.open {
-      margin-left: 0.25rem;
-    }
-    mat-icon.small {
-      font-size: 18px;
-      position: relative;
-      top: 4px;
-    }
     .cache {
       list-style: none;
       padding: 0;
@@ -251,16 +205,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   themes = CoreUtils.allThemes;
 
-  lyricsOpts: LyricsOptions = {
-    useService: true,
-    services: {
-      wikia: true,
-      lyricsOvh: true
-    },
-    automaticSave: true
-  };
-
-  lyricsSaveTooltip = 'If you enable this option, every time lyrics are found they are saved on disk for future use.';
+  lyricsOpts$: Observable<LyricsOptions>;
 
   cache: {
     favorites: boolean,
@@ -288,23 +233,24 @@ export class SettingsComponent implements OnInit, OnDestroy {
     public settings: SettingsService,
     private dialog: MatDialog,
     private router: Router,
-    private store: Store<fromSettings.State>,
+    private coreService: CoreService,
     private zone: NgZone,
     private httpSocketClient: HttpSocketClientService,
     private electronService: ElectronService
   ) {
-    this.error$ = this.store.pipe(select(fromSettings.getSettingsError));
-    this.loading$ = this.store.pipe(select(fromSettings.getSettingsLoading));
-    this.libraryFolders$ = this.store.pipe(select(fromSettings.getLibraryFolders));
-    this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
+    this.error$ = this.settings.getLibraryError();
+    this.loading$ = this.settings.getLibraryLoading();
+    this.libraryFolders$ = this.settings.getLibraryFolders();
+    this.currentTheme$ = this.coreService.getCurrentTheme();
     this.hostIps$ = this.httpSocketClient.get('/api/host').pipe(
       map((response: string[]) => response),
       share()
     );
+    this.lyricsOpts$ = this.settings.getLyricsOptions();
   }
 
   ngOnInit() {
-    this.store.dispatch(new LoadLibraryFolders());
+    this.settings.loadLibraryFolders();
     this.electronService.onIpc('selected-directory', this.ipcAddFolder);
   }
 
@@ -315,11 +261,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ipcAddFolder = (e, folder) => this.zone.run(() => this.addLibraryFolder(folder[0]));
 
   addLibraryFolder(folder: string) {
-    this.store.dispatch(new AddLibraryFolder(folder));
+    this.settings.addLibraryFolder(folder);
    }
 
   removeLibraryFolder(folder: string) {
-    this.store.dispatch(new RemoveLibraryFolder(folder));
+    this.settings.removeLibraryFolder(folder);
   }
 
   /*addFiles(files: FileList) {
@@ -365,11 +311,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   requestLibraryScan() {
     this.router.navigate(['/']); // .then(() => this.library.scan());
-    this.store.dispatch(new ScanTracks());
+    this.settings.scanTracks();
   }
 
   changeTheme(theme: Theme) {
-    this.store.dispatch(new LayoutActions.ChangeTheme(theme));
+    this.coreService.changeTheme(theme);
   }
 
   openExternally(event: Event) {
@@ -464,17 +410,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleService() {
-    if (!this.lyricsOpts.services.wikia && !this.lyricsOpts.services.lyricsOvh) {
-      this.lyricsOpts.useService = false;
-    }
-  }
-
-  toggleUseService() {
-    if (this.lyricsOpts.useService && !(this.lyricsOpts.services.wikia || this.lyricsOpts.services.lyricsOvh)) {
-      this.lyricsOpts.services.wikia = true;
-      this.lyricsOpts.services.lyricsOvh = true;
-    }
+  saveLyricsOptions(options: LyricsOptions) {
+    this.settings.saveLyricsOptions(options);
   }
 
 }

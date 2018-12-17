@@ -4,7 +4,6 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {LyricsOptions, LyricsResult, Track} from '@app/model';
 import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
-import {MatSnackBar} from '@angular/material';
 import {CoreUtils} from '@app/core/core.utils';
 
 @Injectable()
@@ -16,28 +15,6 @@ export class LyricsService {
     private httpClient: HttpClient,
     // private snack: MatSnackBar
   ) {}
-
-  /*getLyrics2(track: Track): Observable<LyricsResult> {
-    return this.httpSocketClient.get('/api/lyrics/' + encodeURI(track.artist) + '/' + encodeURI(track.title)).pipe(
-      map((response: string) => ({
-        lyrics: response,
-        source: 'local'
-      })),
-      catchError(() => {
-        return this.httpClient.get(this.lyricsOvhAPI + encodeURI(track.artist) + '/' + encodeURI(track.title)).pipe(
-          map((response: any) => response.lyrics as string),
-          // tap(lyrics => this.saveLyrics(lyrics, track.artist, track.title)),
-          map(lyrics => ({
-            lyrics: lyrics,
-            source: 'lyrics.ovh'
-          })),
-        );
-      }),
-      catchError((error: HttpErrorResponse) =>
-        of({ error: 'Lyrics not found' })
-      )
-    );
-  }*/
 
   getLyrics(track: Track, opts: LyricsOptions): Observable<LyricsResult> {
     return this.geLyricsFromApi(track).pipe(

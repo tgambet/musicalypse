@@ -1,27 +1,68 @@
-import {Injectable, OnDestroy} from '@angular/core';
-import {HttpEvent, HttpEventType} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
-import {Subscription} from 'rxjs';
 
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
+import {select, Store} from '@ngrx/store';
+
+import * as fromSettings from '@app/settings/settings.reducers';
+import {Observable} from 'rxjs';
+import {LyricsOptions} from '@app/model';
+import {AddLibraryFolder, LoadLibraryFolders, RemoveLibraryFolder, SetLyricsOptions} from '@app/settings/settings.actions';
+import {ScanTracks} from '@app/library/actions/tracks.actions';
 
 @Injectable()
-export class SettingsService implements OnDestroy {
+export class SettingsService {
 
-  uploadSubscription: Subscription;
+  constructor(
+    private httpSocketClient: HttpSocketClientService,
+    private snackBar: MatSnackBar,
+    private store: Store<fromSettings.State>
+  ) {
+  }
+
+  getLyricsOptions(): Observable<LyricsOptions> {
+    return this.store.select(fromSettings.getLyricsOptions);
+  }
+
+  saveLyricsOptions(options: LyricsOptions) {
+    this.store.dispatch(new SetLyricsOptions(options));
+  }
+
+  getLibraryError(): Observable<string> {
+    return this.store.select(fromSettings.getSettingsError);
+  }
+
+  getLibraryLoading(): Observable<boolean> {
+    return this.store.select(fromSettings.getSettingsLoading);
+  }
+
+  getLibraryFolders(): Observable<string[]> {
+    return this.store.pipe(select(fromSettings.getLibraryFolders));
+  }
+
+  loadLibraryFolders(): void {
+    this.store.dispatch(new LoadLibraryFolders());
+  }
+
+  addLibraryFolder(folder: string): void {
+    this.store.dispatch(new AddLibraryFolder(folder));
+  }
+
+  removeLibraryFolder(folder: string): void {
+    this.store.dispatch(new RemoveLibraryFolder(folder));
+  }
+
+  scanTracks(): void {
+    this.store.dispatch(new ScanTracks());
+  }
+
+  /*  uploadSubscription: Subscription;
 
   files: { _file: File, progress: number }[] = [];
 
-  warnOnMissingTags = false;
+  warnOnMissingTags = false;*/
 
-  constructor(
-    public httpSocketClient: HttpSocketClientService,
-    public snackBar: MatSnackBar
-  ) {
-
-  }
-
-  ngOnDestroy(): void {
+/*  ngOnDestroy(): void {
     if (this.uploadSubscription) {
       this.uploadSubscription.unsubscribe();
     }
@@ -84,7 +125,7 @@ export class SettingsService implements OnDestroy {
         this.files = [];
       }
     );
-  }
+  }*/
 
   // geLibraryFolders(): Observable<string[]> {
   //   return this.httpSocketClient.get('/api/libraries')

@@ -107,9 +107,7 @@
              spellcheck="false"
              (blur)="lyricsEdited($event)"
              (paste)="lyricsPasted($event)"
-             (keydown)="onKeyDown($event)">
-          {{ lyricsResult.lyrics }}
-        </div>
+             (keydown)="onKeyDown($event)">{{ lyricsResult.lyrics }}</div>
         <div class="lyrics error" *ngIf="lyricsResult && lyricsResult.error" (click)="errorClicked()">
           {{ lyricsResult.error }}
         </div>

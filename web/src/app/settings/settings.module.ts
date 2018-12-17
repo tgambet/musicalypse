@@ -13,12 +13,14 @@ import {SettingsService} from './services/settings.service';
 
 import {SettingsEffects} from './settings.effects';
 import {reducers} from './settings.reducers';
+import {LyricsComponent} from '@app/settings/components/lyrics.component';
 
 export const COMPONENTS = [
   SettingsComponent,
   LibraryFoldersComponent,
   UploadsComponent,
-  ThemesComponent
+  ThemesComponent,
+  LyricsComponent
 ];
 
 @NgModule({

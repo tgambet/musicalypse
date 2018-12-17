@@ -1,4 +1,5 @@
 import {Action} from '@ngrx/store';
+import {LyricsOptions} from '@app/model';
 
 export enum SettingsActionTypes {
   AddLibraryFolder = '[Settings] Add Library Folder',
@@ -10,6 +11,7 @@ export enum SettingsActionTypes {
   LoadLibraryFolders = '[Settings] Load Library Folders',
   LoadLibraryFoldersSuccess = '[Settings] Load Library Folders Success',
   LoadLibraryFoldersFailure = '[Settings] Load Library Folders Failure',
+  SetLyricsOptions = '[Settings] Set Lyrics Options'
 }
 
 export class AddLibraryFolder implements Action {
@@ -56,6 +58,11 @@ export class LoadLibraryFoldersFailure implements Action {
   constructor(public payload: string) {}
 }
 
+export class SetLyricsOptions implements Action {
+  readonly type = SettingsActionTypes.SetLyricsOptions;
+  constructor(public payload: LyricsOptions) {}
+}
+
 export type SettingsActionsUnion =
   AddLibraryFolder |
   AddLibraryFolderSuccess |
@@ -65,4 +72,5 @@ export type SettingsActionsUnion =
   RemoveLibraryFolderFailure |
   LoadLibraryFolders |
   LoadLibraryFoldersSuccess |
-  LoadLibraryFoldersFailure;
+  LoadLibraryFoldersFailure |
+  SetLyricsOptions;

@@ -31,7 +31,9 @@ export function reducer(
     case SettingsActionTypes.SetLyricsOptions:
       return {
         ...state,
-        lyricsOptions: action.payload,
+        lyricsOptions: {
+          ...action.payload
+        },
       };
 
     default:

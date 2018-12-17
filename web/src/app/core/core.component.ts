@@ -14,6 +14,10 @@ import {CoreUtils, Theme} from './core.utils';
 
 import * as fromRoot from '../app.reducers';
 
+// TODO dependency on settings, refactor
+import {SetLyricsOptions} from '@app/settings/settings.actions';
+import {getLyricsOptions} from '@app/settings/settings.reducers';
+
 @Component({
   selector: 'app-root',
   template: `
@@ -180,6 +184,13 @@ export class CoreComponent implements OnInit {
       this.store.select(fromRoot.getCurrentTheme),
       () => this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]))
     );
+
+    CoreUtils.restoreAndSave(
+      'lyricsOptions',
+      t => this.store.dispatch(new SetLyricsOptions(t)),
+      this.store.select(getLyricsOptions)
+    );
+
   }
 
   @HostListener('window:beforeinstallprompt', ['$event'])

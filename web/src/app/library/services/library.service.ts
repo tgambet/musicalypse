@@ -102,6 +102,11 @@ export class LibraryService {
       e => this.store.dispatch(new SetShuffle(e)),
       this.getShuffle()
     );
+    CoreUtils.restoreAndSave(
+      'repeat',
+      e => this.store.dispatch(new SetRepeat(e)),
+      this.getRepeat()
+    );
   }
 
   getAllArtists(): Observable<Artist[]> {

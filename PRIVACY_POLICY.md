@@ -12,4 +12,4 @@ Musicalypse does not collect any personal information.
 
 ### Contacting us
 
-If you have any question regarding our privacy policy you can send an email to creasource.net@gmail.com
+If you have any question regarding our privacy policy you can send an email to contact@creasource.net

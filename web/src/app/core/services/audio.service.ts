@@ -12,8 +12,8 @@ import {SetAudioDuration, SetAudioError, SetAudioLoading, SetAudioPlaying} from 
 @Injectable()
 export class AudioService {
 
-  currentTime$: Observable<number>;
-  ended$: Observable<void>;
+  private readonly currentTime$: Observable<number>;
+  private readonly ended$: Observable<void>;
 
   private _appRoot: ElementRef;
   set appRoot(value: ElementRef) {
@@ -60,6 +60,34 @@ export class AudioService {
     if (!this.isTimeInBuffer(time)) {
       this.store.dispatch(new SetAudioLoading(true));
     }
+  }
+
+  getAudioMuted() {
+    return this.store.select(fromRoot.getAudioMuted);
+  }
+
+  getAudioVolume() {
+    return this.store.select(fromRoot.getAudioVolume);
+  }
+
+  getAudioPlaying() {
+    return this.store.select(fromRoot.getAudioPlaying);
+  }
+
+  getAudioLoading() {
+    return this.store.select(fromRoot.getAudioLoading);
+  }
+
+  getAudioDuration() {
+    return this.store.select(fromRoot.getAudioDuration);
+  }
+
+  getAudioCurrentTime() {
+    return this.currentTime$;
+  }
+
+  getAudioEnded() {
+    return this.ended$;
   }
 
   private isTimeInBuffer(time: number): boolean {

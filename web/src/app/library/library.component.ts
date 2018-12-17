@@ -239,6 +239,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.currentTime$     = this.library.getAudioCurrentTime();
 
     this.lyricsResult$ = combineLatest(this.currentTrack$, this.settings.getLyricsOptions()).pipe(
+      filter(trackAndOpts => !!trackAndOpts[0]),
       switchMap(trackAndOpts => this.lyricsService.getLyrics(trackAndOpts[0], trackAndOpts[1])),
     );
 

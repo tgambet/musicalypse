@@ -21,7 +21,17 @@ import {Theme} from '@app/core/core.utils';
         <mat-icon>get_app</mat-icon>
         Install
       </button>
+      <div class="micro-player" *ngIf="!isElectron">
+        <button mat-icon-button *ngIf="isPlaying" (click)="pause.emit()">
+          <mat-icon>pause</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="!isPlaying" (click)="play.emit()">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+      </div>
       <div class="electron-buttons" *ngIf="isElectron">
+        <mat-icon (click)="pause.emit()" *ngIf="isPlaying">pause</mat-icon>
+        <mat-icon (click)="play.emit()" *ngIf="!isPlaying">play_arrow</mat-icon>
         <mat-icon class="electron-theme" (click)="themeChooser = true">format_color_fill</mat-icon>
         <mat-icon (click)="minimizeWindow.emit()">remove</mat-icon>
         <mat-icon (click)="maximizeWindow.emit()" *ngIf="!isMaximized">crop_square</mat-icon>
@@ -61,6 +71,7 @@ export class ToolbarComponent {
   @Input() isElectron: boolean;
   @Input() isMaximized: boolean;
   @Input() showInstallPrompt: boolean;
+  @Input() isPlaying: boolean;
 
   @Output() toggleSidenav = new EventEmitter<void>();
   @Output() changeTheme = new EventEmitter<Theme>();
@@ -69,6 +80,8 @@ export class ToolbarComponent {
   @Output() minimizeWindow = new EventEmitter<void>();
   @Output() unmaximizeWindow = new EventEmitter<void>();
   @Output() install = new EventEmitter<void>();
+  @Output() play = new EventEmitter<void>();
+  @Output() pause = new EventEmitter<void>();
 
   getThemeStyle(theme: Theme) {
     return this.sanitizer.bypassSecurityTrustStyle(`background-color: ${theme.color}`);

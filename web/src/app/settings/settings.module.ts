@@ -13,19 +13,21 @@ import {SettingsService} from './services/settings.service';
 
 import {SettingsEffects} from './settings.effects';
 import {reducers} from './settings.reducers';
-import {LyricsComponent} from '@app/settings/components/lyrics.component';
+import {LyricsOptionsComponent} from './components/lyrics-options.component';
+import {CoreModule} from '@app/core/core.module';
 
 export const COMPONENTS = [
   SettingsComponent,
   LibraryFoldersComponent,
   UploadsComponent,
   ThemesComponent,
-  LyricsComponent
+  LyricsOptionsComponent
 ];
 
 @NgModule({
   imports: [
     SharedModule,
+    CoreModule,
     StoreModule.forFeature('settings', reducers),
     EffectsModule.forFeature([SettingsEffects]),
   ],

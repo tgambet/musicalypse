@@ -38,13 +38,16 @@ import {getLyricsOptions} from '@app/settings/settings.reducers';
                    [isElectron]="isElectron"
                    [isMaximized]="isMaximized"
                    [showInstallPrompt]="installPromptEvent !== null"
+                   [isPlaying]="isPlaying$ | async"
                    (closeWindow)="closeWindow()"
                    (maximizeWindow)="maximizeWindow()"
                    (minimizeWindow)="minimizeWindow()"
                    (unmaximizeWindow)="unmaximizeWindow()"
                    (changeTheme)="changeTheme($event)"
                    (toggleSidenav)="toggleSidenav()"
-                   (install)="install()">
+                   (install)="install()"
+                   (play)="play()"
+                   (pause)="pause()">
       </app-toolbar>
 
       <mat-progress-bar class="main-loader"
@@ -117,6 +120,7 @@ export class CoreComponent implements OnInit {
 
   featuredThemes: Theme[] = CoreUtils.featuredThemes;
 
+  isPlaying$: Observable<boolean>;
   initializing$: Observable<boolean>;
   logs$: Observable<string>;
   hasErrors$: Observable<boolean>;
@@ -133,6 +137,7 @@ export class CoreComponent implements OnInit {
     private updateService: UpdateService,
     private electronService: ElectronService
   ) {
+    this.isPlaying$ = this.audioService.getAudioPlaying();
     this.initializing$ = this.loader.initializing$;
     this.hasErrors$ = this.loader.hasErrors$;
     this.logs$ = this.loader.log$;
@@ -258,6 +263,14 @@ export class CoreComponent implements OnInit {
 
   unmaximizeWindow(): void {
     this.electronService.getWindow().unmaximize();
+  }
+
+  play() {
+    this.audioService.play();
+  }
+
+  pause() {
+    this.audioService.pause();
   }
 
 }

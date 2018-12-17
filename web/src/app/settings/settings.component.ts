@@ -94,10 +94,10 @@ import {LyricsOptions} from '@app/model';
           <mat-divider></mat-divider>
         </div>
         <h3 class="secondary-text">Lyrics</h3>
-        <app-lyrics [lyricsOpts]="lyricsOpts$ | async"
-                    (optionsChanged)="saveLyricsOptions($event)"
-                    (linkClicked)="openExternally($event)">
-        </app-lyrics>
+        <app-lyrics-options [lyricsOpts]="lyricsOpts$ | async"
+                            (optionsChanged)="saveLyricsOptions($event)"
+                            (linkClicked)="openExternally($event)">
+        </app-lyrics-options>
         <mat-divider></mat-divider>
         <h3 class="secondary-text">Cache</h3>
         <p>
@@ -230,7 +230,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   hostIps$: Observable<string[]>;
 
   constructor(
-    public settings: SettingsService,
+    private settings: SettingsService,
     private dialog: MatDialog,
     private router: Router,
     private coreService: CoreService,

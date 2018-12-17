@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {LyricsOptions} from '@app/model';
 
 @Component({
-  selector: 'app-lyrics',
+  selector: 'app-lyrics-options',
   template: `
     <p>
       <mat-slide-toggle color="primary" [(ngModel)]="lyricsOpts.useService" (change)="toggleUseService()">
@@ -47,7 +47,7 @@ import {LyricsOptions} from '@app/model';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LyricsComponent {
+export class LyricsOptionsComponent {
 
   @Input() lyricsOpts: LyricsOptions;
   @Output() linkClicked: EventEmitter<Event> = new EventEmitter();

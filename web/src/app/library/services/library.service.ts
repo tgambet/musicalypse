@@ -27,7 +27,6 @@ import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions'
 import {AddToRecent} from '../actions/recent.actions';
 import {LoadTracks} from '../actions/tracks.actions';
 
-import * as fromCore from '@app/app.reducers';
 import * as fromLibrary from '../library.reducers';
 import {LibraryUtils} from '../library.utils';
 
@@ -56,7 +55,7 @@ export class LibraryService {
         )
       );
 
-    this.audioService.ended$.subscribe(() => this.playNextTrack());
+    this.audioService.getAudioEnded().subscribe(() => this.playNextTrack());
 
     setTimeout(() => this.initialize());
   }
@@ -152,27 +151,27 @@ export class LibraryService {
   }
 
   getAudioMuted() {
-    return this.store.select(fromCore.getAudioMuted);
+    return this.audioService.getAudioMuted();
   }
 
   getAudioVolume() {
-    return this.store.select(fromCore.getAudioVolume);
+    return this.audioService.getAudioVolume();
   }
 
   getAudioPlaying() {
-    return this.store.select(fromCore.getAudioPlaying);
+    return this.audioService.getAudioPlaying();
   }
 
   getAudioLoading() {
-    return this.store.select(fromCore.getAudioLoading);
+    return this.audioService.getAudioLoading();
   }
 
   getAudioDuration() {
-    return this.store.select(fromCore.getAudioDuration);
+    return this.audioService.getAudioDuration();
   }
 
   getAudioCurrentTime() {
-    return this.audioService.currentTime$; // TODO
+    return this.audioService.getAudioCurrentTime();
   }
 
   getPlaylist(): Observable<Track[]> {
@@ -229,11 +228,7 @@ export class LibraryService {
   }
 
   play() {
-    this.audioService.play(); /*.catch(
-      (e) => {
-        this.snack.open('An error occurred!', 'OK', {duration: 2000})
-      }
-    );*/
+    this.audioService.play();
   }
 
   pause() {

@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import * as fromApp from '@app/app.reducers';
 import {Observable} from 'rxjs';
 import {Theme} from '@app/core/core.utils';
-import * as LayoutActions from '@app/core/core.actions';
+import {ChangeTheme} from '@app/core/core.actions';
 
 @Injectable()
 export class CoreService {
@@ -20,7 +20,7 @@ export class CoreService {
   }
 
   changeTheme(theme: Theme): void {
-    this.store.dispatch(new LayoutActions.ChangeTheme(theme));
+    this.store.dispatch(new ChangeTheme(theme));
   }
 
 

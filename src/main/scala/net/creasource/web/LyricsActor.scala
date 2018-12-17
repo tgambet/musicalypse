@@ -74,8 +74,7 @@ class LyricsActor()(implicit application: Application) extends Actor with JsonSu
 
   def saveLyrics(lyrics: String, artist: String, title: String): Future[Done] = {
     val lyricsFile = lyricsFolder.resolve(toCompressedString(artist) + "-" + toCompressedString(title) + ".txt").toFile
-    Source(lyrics)
-      .map(l => ByteString(l))
+    Source.single(ByteString(lyrics))
       .runWith(StreamConverters.fromOutputStream(() => new FileOutputStream(lyricsFile), autoFlush = true))
       .transform {
         case Success(result) => result.status

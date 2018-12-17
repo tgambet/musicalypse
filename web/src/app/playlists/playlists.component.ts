@@ -42,6 +42,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
           <span class="secondary">{{ pl.tracks.length }} songs</span>
         </li>
       </ul>
+      <mat-divider></mat-divider>
       <h2>My Playlists</h2>
       <ul class="list center">
         <li class="item" *ngIf="(playlists | async).length === 0" (click)="openInfoDialog()">
@@ -85,6 +86,7 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
+      <mat-divider></mat-divider>
       <h2>Main Artists</h2>
       <ul class="list center">
         <li class="item" *ngFor="let item of artistsPlaylists | async">
@@ -107,7 +109,11 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
           <span class="secondary">{{ item.tracks.length }} songs</span>
         </li>
       </ul>
-      <h2>Suggested Albums <mat-icon class="info" matTooltip="Based on your favorites and music you played recently">info</mat-icon></h2>
+      <mat-divider></mat-divider>
+      <h2>
+        Suggested Albums
+        <mat-icon class="info" matTooltip="A random list of albums based on your favorites and music you played recently.">info</mat-icon>
+      </h2>
       <ul class="list center">
         <li class="item" *ngFor="let item of suggestedAlbumsPlaylists | async">
           <div class="covers"
@@ -252,6 +258,9 @@ import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';
     }
     .center .primary, .center .secondary {
       text-align: center;
+    }
+    mat-divider {
+      margin: 0 1rem;
     }
     mat-icon.info {
       font-size: 20px;

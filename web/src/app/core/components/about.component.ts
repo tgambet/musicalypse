@@ -8,7 +8,7 @@ import {environment} from '@env/environment';
       <h2>About</h2>
       <h3 class="secondary-text">Version 0.5.2</h3>
       <p>
-        <img src="assets/logo_grey.svg" height="120" width="120" style="float: left; margin: 0 1rem 1rem 0;" alt="Musicalypse Logo">
+        <!--<img src="assets/logo_grey.svg" height="120" width="120" style="float: right; margin: 0 0 0.25rem 0.25rem;" alt="">-->
         Musicalypse is an open source software developed and maintained by Thomas Gambet, available on all desktop platforms
         as an online or native version. You can support its development by
         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E5XHFMS2RAYJN"
@@ -27,11 +27,17 @@ import {environment} from '@env/environment';
         Find out more on
         <a href="https://musicalypse.creasource.net" target="_blank" (click)="openExternally($event)">https://musicalypse.creasource.net</a>
       </p>
-      <p>
+      <!--<p>
         Contact: <a href="mailto:contact@creasource.net">contact@creasource.net</a>
+      </p>-->
+      <mat-divider style="clear: both;"></mat-divider>
+      <h3 class="secondary-text">Contact</h3>
+      <p>
+        Please feel free to contact us for any bug reports, suggestions, or help requests by writing to
+        <a href="mailto:contact@creasource.net">contact@creasource.net</a>.
       </p>
       <mat-divider></mat-divider>
-      <h3 class="secondary-text" style="clear: both;">Contributors</h3>
+      <h3 class="secondary-text">Contributors</h3>
       <ul>
         <li>Logo design: <a href="https://github.com/nunojesus" target="_blank" (click)="openExternally($event)">Nuno Jesus</a></li>
       </ul>

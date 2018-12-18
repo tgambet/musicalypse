@@ -8,7 +8,6 @@ import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {AudioService} from '@app/core/services/audio.service';
 import {LoaderService} from '@app/core/services/loader.service';
-import {SetAudioMuted, SetAudioVolume} from '@app/core/actions/audio.actions';
 
 import {AddToPlaylist, DeletePlaylist, LoadPlaylist, LoadPlaylists, RemoveFromPlaylist, SavePlaylist} from '../actions/playlists.actions';
 import {DeselectAllArtists, DeselectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
@@ -55,7 +54,7 @@ export class LibraryService {
         )
       );
 
-    this.audioService.getAudioEnded().subscribe(() => this.playNextTrack());
+    this.audioService.getEnded().subscribe(() => this.playNextTrack());
 
     setTimeout(() => this.initialize());
   }
@@ -151,27 +150,27 @@ export class LibraryService {
   }
 
   getAudioMuted() {
-    return this.audioService.getAudioMuted();
+    return this.audioService.getMuted();
   }
 
   getAudioVolume() {
-    return this.audioService.getAudioVolume();
+    return this.audioService.getVolume();
   }
 
   getAudioPlaying() {
-    return this.audioService.getAudioPlaying();
+    return this.audioService.getPlaying();
   }
 
   getAudioLoading() {
-    return this.audioService.getAudioLoading();
+    return this.audioService.getLoading();
   }
 
   getAudioDuration() {
-    return this.audioService.getAudioDuration();
+    return this.audioService.getDuration();
   }
 
   getAudioCurrentTime() {
-    return this.audioService.getAudioCurrentTime();
+    return this.audioService.getCurrentTime();
   }
 
   getPlaylist(): Observable<Track[]> {
@@ -273,13 +272,11 @@ export class LibraryService {
   }
 
   setMuted(value: boolean) {
-    this.store.dispatch(new SetAudioMuted(value));
-    // TODO this.audio.service.setMuted(...)
+    this.audioService.setMuted(value);
   }
 
   setVolume(value: number) {
-    this.store.dispatch(new SetAudioVolume(value));
-    // TODO this.audio.service.setVolume(...)
+    this.audioService.setVolume(value);
   }
 
   selectInLibrary(playlist: Track[]) {

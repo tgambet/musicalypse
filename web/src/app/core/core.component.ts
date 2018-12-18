@@ -138,7 +138,7 @@ export class CoreComponent implements OnInit {
     private updateService: UpdateService,
     private electronService: ElectronService
   ) {
-    this.isPlaying$ = this.audioService.getAudioPlaying();
+    this.isPlaying$ = this.audioService.getPlaying();
     this.initializing$ = this.loader.initializing$;
     this.hasErrors$ = this.loader.hasErrors$;
     this.logs$ = this.loader.log$;

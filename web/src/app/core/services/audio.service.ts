@@ -4,7 +4,14 @@ import {Observable, Subject} from 'rxjs';
 import {filter, map, publishReplay, refCount, throttleTime} from 'rxjs/operators';
 
 import * as fromCore from '@app/core/core.reducers';
-import {SetAudioDuration, SetAudioError, SetAudioLoading, SetAudioPlaying} from '@app/core/actions/audio.actions';
+import {
+  SetAudioDuration,
+  SetAudioError,
+  SetAudioLoading,
+  SetAudioMuted,
+  SetAudioPlaying,
+  SetAudioVolume
+} from '@app/core/actions/audio.actions';
 
 /**
  * Service configured by CoreComponent and in charge of creating and setting up the audio tag.
@@ -62,31 +69,39 @@ export class AudioService {
     }
   }
 
-  getAudioMuted() {
+  setMuted(muted: boolean) {
+    this.store.dispatch(new SetAudioMuted(muted));
+  }
+
+  setVolume(volume: number) {
+    this.store.dispatch(new SetAudioVolume(volume));
+  }
+
+  getMuted() {
     return this.store.select(fromCore.getAudioMuted);
   }
 
-  getAudioVolume() {
+  getVolume() {
     return this.store.select(fromCore.getAudioVolume);
   }
 
-  getAudioPlaying() {
+  getPlaying() {
     return this.store.select(fromCore.getAudioPlaying);
   }
 
-  getAudioLoading() {
+  getLoading() {
     return this.store.select(fromCore.getAudioLoading);
   }
 
-  getAudioDuration() {
+  getDuration() {
     return this.store.select(fromCore.getAudioDuration);
   }
 
-  getAudioCurrentTime() {
+  getCurrentTime() {
     return this.currentTime$;
   }
 
-  getAudioEnded() {
+  getEnded() {
     return this.ended$;
   }
 

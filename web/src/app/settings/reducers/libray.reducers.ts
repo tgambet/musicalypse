@@ -4,13 +4,13 @@ import {SettingsActionsUnion, SettingsActionTypes} from '../settings.actions';
  * State
  */
 export interface State {
-  libraryFolders: string[];
+  folders: string[];
   error: string;
   loading: boolean;
 }
 
 const initialState: State = {
-  libraryFolders: [],
+  folders: [],
   error: '',
   loading: false
 };
@@ -27,7 +27,7 @@ export function reducer(
     case SettingsActionTypes.LoadLibraryFoldersSuccess:
       return {
         ...state,
-        libraryFolders: action.payload,
+        folders: action.payload,
         error: '',
         loading: false
       };
@@ -42,7 +42,7 @@ export function reducer(
     case SettingsActionTypes.AddLibraryFolderSuccess:
       return {
         ...state,
-        libraryFolders: [...state.libraryFolders, action.payload],
+        folders: [...state.folders, action.payload],
         error: '',
         loading: false
       };
@@ -57,7 +57,7 @@ export function reducer(
     case SettingsActionTypes.RemoveLibraryFolderSuccess:
       return {
         ...state,
-        libraryFolders: state.libraryFolders.filter(folder => folder !== action.payload),
+        folders: state.folders.filter(folder => folder !== action.payload),
         error: '',
         loading: false
       };
@@ -85,6 +85,6 @@ export function reducer(
 /**
  * Selectors
  */
-export const getLibraryFolders = (state: State) => state.libraryFolders;
+export const getLibraryFolders = (state: State) => state.folders;
 export const getError = (state: State) => state.error;
 export const getLoading = (state: State) => state.loading;

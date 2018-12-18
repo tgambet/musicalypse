@@ -3,8 +3,8 @@ import {Store} from '@ngrx/store';
 import {Observable, Subject} from 'rxjs';
 import {filter, map, publishReplay, refCount, throttleTime} from 'rxjs/operators';
 
-import * as fromRoot from '@app/app.reducers';
-import {SetAudioDuration, SetAudioError, SetAudioLoading, SetAudioPlaying} from '@app/core/core.actions';
+import * as fromCore from '@app/core/core.reducers';
+import {SetAudioDuration, SetAudioError, SetAudioLoading, SetAudioPlaying} from '@app/core/actions/audio.actions';
 
 /**
  * Service configured by CoreComponent and in charge of creating and setting up the audio tag.
@@ -32,9 +32,9 @@ export class AudioService {
   private listeners: (() => void)[] = [];
 
   constructor (
-    private store: Store<fromRoot.State>,
+    private store: Store<fromCore.State>,
   ) {
-    this.store.select(fromRoot.getAudioInput).pipe(
+    this.store.select(fromCore.getAudioInput).pipe(
       filter(audio => !!audio.source),
       map(audio => this.setAudio(audio.source, audio.volume, audio.muted))
     ).subscribe();
@@ -63,23 +63,23 @@ export class AudioService {
   }
 
   getAudioMuted() {
-    return this.store.select(fromRoot.getAudioMuted);
+    return this.store.select(fromCore.getAudioMuted);
   }
 
   getAudioVolume() {
-    return this.store.select(fromRoot.getAudioVolume);
+    return this.store.select(fromCore.getAudioVolume);
   }
 
   getAudioPlaying() {
-    return this.store.select(fromRoot.getAudioPlaying);
+    return this.store.select(fromCore.getAudioPlaying);
   }
 
   getAudioLoading() {
-    return this.store.select(fromRoot.getAudioLoading);
+    return this.store.select(fromCore.getAudioLoading);
   }
 
   getAudioDuration() {
-    return this.store.select(fromRoot.getAudioDuration);
+    return this.store.select(fromCore.getAudioDuration);
   }
 
   getAudioCurrentTime() {

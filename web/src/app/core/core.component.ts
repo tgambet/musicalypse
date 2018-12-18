@@ -9,14 +9,15 @@ import {UpdateService} from './services/update.service';
 import {AudioService} from './services/audio.service';
 import {ElectronService} from './services/electron.service';
 
-import {ChangeTheme, CloseSidenav, SetAudioVolume, ToggleSidenav} from './core.actions';
 import {CoreUtils, Theme} from './core.utils';
 
-import * as fromRoot from '../app.reducers';
+import * as fromCore from '@app/core/core.reducers';
 
 // TODO dependency on settings, refactor
 import {SetLyricsOptions} from '@app/settings/settings.actions';
 import {getLyricsOptions} from '@app/settings/settings.reducers';
+import {SetAudioVolume} from '@app/core/actions/audio.actions';
+import {ChangeTheme, CloseSidenav, ToggleSidenav} from '@app/core/actions/core.actions';
 
 @Component({
   selector: 'app-root',
@@ -129,7 +130,7 @@ export class CoreComponent implements OnInit {
 
   constructor(
     private ref: ChangeDetectorRef,
-    private store: Store<fromRoot.State>,
+    private store: Store<fromCore.State>,
     private loader: LoaderService,
     private audioService: AudioService,
     private renderer: Renderer2,
@@ -167,8 +168,8 @@ export class CoreComponent implements OnInit {
     });
 
     // Set up core observables
-    this.showSidenav$ = this.store.pipe(select(fromRoot.getShowSidenav));
-    this.currentTheme$ = this.store.pipe(select(fromRoot.getCurrentTheme));
+    this.showSidenav$ = this.store.pipe(select(fromCore.getShowSidenav));
+    this.currentTheme$ = this.store.pipe(select(fromCore.getCurrentTheme));
     this.currentThemeCssClass$ = this.currentTheme$.pipe(map(t => t.cssClass));
 
     // Configure Audio Service
@@ -179,14 +180,14 @@ export class CoreComponent implements OnInit {
     CoreUtils.restoreAndSave(
       'volume',
       v => this.store.dispatch(new SetAudioVolume(v)),
-      this.store.select(fromRoot.getAudioVolume)
+      this.store.select(fromCore.getAudioVolume)
     );
 
     // Load and save theme
     CoreUtils.restoreAndSave(
       'theme',
       t => this.store.dispatch(new ChangeTheme(t)),
-      this.store.select(fromRoot.getCurrentTheme),
+      this.store.select(fromCore.getCurrentTheme),
       () => this.store.dispatch(new ChangeTheme(CoreUtils.featuredThemes[0]))
     );
 
@@ -235,7 +236,7 @@ export class CoreComponent implements OnInit {
   }
 
   closeSidenav(): void {
-    this.store.select(fromRoot.getShowSidenav).pipe(
+    this.store.select(fromCore.getShowSidenav).pipe(
       take(1),
       tap(showSidenav => showSidenav ? this.store.dispatch(new CloseSidenav()) : {})
     ).subscribe();

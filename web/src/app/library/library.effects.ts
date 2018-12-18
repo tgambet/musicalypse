@@ -9,7 +9,7 @@ import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 
 import {CoreUtils} from '@app/core/core.utils';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {LoaderService} from '@app/core/services/loader.service';
-import {SetAudioSource} from '@app/core/core.actions';
+import {SetAudioSource} from '@app/core/actions/audio.actions';
 import {Album, Artist, Track} from '@app/model';
 
 import {ArtistsActionTypes} from './actions/artists.actions';

@@ -5,6 +5,9 @@ import {LyricsOptions, LyricsResult, Track} from '@app/model';
 import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {CoreUtils} from '@app/core/core.utils';
+import {SetLyricsLoading} from '@app/library/actions/lyrics.actions';
+import {Store} from '@ngrx/store';
+import * as fromLibrary from '@app/library/library.reducers';
 
 @Injectable()
 export class LyricsService {
@@ -13,7 +16,7 @@ export class LyricsService {
   constructor(
     private httpSocketClient: HttpSocketClientService,
     private httpClient: HttpClient,
-    // private snack: MatSnackBar
+    private store: Store<fromLibrary.State>
   ) {}
 
   getLyrics(track: Track, opts: LyricsOptions): Observable<LyricsResult> {
@@ -112,6 +115,14 @@ export class LyricsService {
       () => console.log('Lyrics saved!'), // this.snack.open('Lyrics saved!', 'OK', {duration: 2000}),
       error => console.log('Failed to save lyrics on the server: ' + error.error)
     );
+  }
+
+  setLyricsLoading(loading: boolean) {
+    this.store.dispatch(new SetLyricsLoading(loading));
+  }
+
+  getLyricsLoading(): Observable<boolean> {
+    return this.store.select(fromLibrary.getLyricsLoading);
   }
 
 }

@@ -1,12 +1,9 @@
 import {ActionReducerMap, createFeatureSelector, createSelector, MetaReducer} from '@ngrx/store';
 import {environment} from '@env/environment';
-
-import * as fromCore from './core/core.reducers';
 import {routerReducer, RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/app.serializer';
 
 export interface State {
-  core: fromCore.State;
   router: RouterReducerState<RouterStateUrl>;
 }
 
@@ -16,7 +13,6 @@ export interface State {
  * and the current or initial state and return a new immutable state.
  */
 export const reducers: ActionReducerMap<State> = {
-  core: fromCore.reducer,
   router: routerReducer
 };
 
@@ -36,51 +32,6 @@ export const reducers: ActionReducerMap<State> = {
  * that will be composed to form the root meta-reducer.
  */
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [/*logger*/] : [];
-
-/**
- * Core Reducers
- */
-export const getCoreState = createFeatureSelector<fromCore.State>('core');
-
-export const getShowSidenav = createSelector(
-  getCoreState,
-  fromCore.getShowSidenav
-);
-
-export const getCurrentTheme = createSelector(
-  getCoreState,
-  fromCore.getCurrentTheme
-);
-
-export const getAudioInput = createSelector(
-  getCoreState,
-  fromCore.getAudioInput
-);
-
-export const getAudioPlaying = createSelector(
-  getCoreState,
-  fromCore.getAudioPlaying
-);
-
-export const getAudioLoading = createSelector(
-  getCoreState,
-  fromCore.getAudioLoading
-);
-
-export const getAudioDuration = createSelector(
-  getCoreState,
-  fromCore.getAudioDuration
-);
-
-export const getAudioMuted = createSelector(
-  getCoreState,
-  fromCore.getAudioMuted
-);
-
-export const getAudioVolume = createSelector(
-  getCoreState,
-  fromCore.getAudioVolume
-);
 
 export const getRouterState =  createSelector(
   createFeatureSelector<RouterReducerState<RouterStateUrl>>('router'),

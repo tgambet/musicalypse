@@ -250,6 +250,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
     if (lyrics === '') { return; }
     if (this.lyricsResult && this.lyricsResult.lyrics && this.lyricsResult.lyrics.trim() === lyrics) { return; }
 
+    this.lyricsResult.lyrics = lyrics;
     this.lyricsService.saveLyrics(lyrics, this.currentTrack.artist, this.currentTrack.title);
   }
 

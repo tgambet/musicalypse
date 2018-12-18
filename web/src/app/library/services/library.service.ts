@@ -8,7 +8,7 @@ import {Album, Artist, Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {AudioService} from '@app/core/services/audio.service';
 import {LoaderService} from '@app/core/services/loader.service';
-import {SetAudioMuted, SetAudioVolume} from '@app/core/core.actions';
+import {SetAudioMuted, SetAudioVolume} from '@app/core/actions/audio.actions';
 
 import {AddToPlaylist, DeletePlaylist, LoadPlaylist, LoadPlaylists, RemoveFromPlaylist, SavePlaylist} from '../actions/playlists.actions';
 import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
@@ -282,10 +282,12 @@ export class LibraryService {
 
   setMuted(value: boolean) {
     this.store.dispatch(new SetAudioMuted(value));
+    // TODO this.audio.service.setMuted(...)
   }
 
   setVolume(value: number) {
     this.store.dispatch(new SetAudioVolume(value));
+    // TODO this.audio.service.setVolume(...)
   }
 
   selectInLibrary(playlist: Track[]) {

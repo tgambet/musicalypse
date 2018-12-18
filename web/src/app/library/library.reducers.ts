@@ -10,6 +10,7 @@ import * as fromPlayer from './reducers/player.reducer';
 import * as fromFavorites from './reducers/favorites.reducers';
 import * as fromRecent from './reducers/recent.reducer';
 import * as fromPlaylists from './reducers/playlists.reducers';
+import * as fromLyrics from './reducers/lyrics.reducers';
 
 export interface LibraryState {
   tracks: fromTracks.State;
@@ -19,6 +20,7 @@ export interface LibraryState {
   favorites: fromFavorites.State;
   recent: fromRecent.State;
   playlists: fromPlaylists.State;
+  lyrics: fromLyrics.State;
 }
 
 export interface State extends fromRoot.State {
@@ -32,7 +34,8 @@ export const reducers: ActionReducerMap<LibraryState> = {
   player: fromPlayer.reducer,
   favorites: fromFavorites.reducer,
   recent: fromRecent.reducer,
-  playlists: fromPlaylists.reducer
+  playlists: fromPlaylists.reducer,
+  lyrics: fromLyrics.reducer
 };
 
 export const getLibraryState = createFeatureSelector<LibraryState>('library');
@@ -287,4 +290,18 @@ export const getPlaylistsState = createSelector(
 export const getPlaylists = createSelector(
   getPlaylistsState,
   fromPlaylists.getPlaylists
+);
+
+/**
+ * Lyrics selectors
+ */
+
+export const getLyricsState = createSelector(
+  getLibraryState,
+  state => state.lyrics
+);
+
+export const getLyricsLoading = createSelector(
+  getLyricsState,
+  fromLyrics.getLoading
 );

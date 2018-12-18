@@ -8,7 +8,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Observable} from 'rxjs';
 import {filter, map, tap} from 'rxjs/operators';
 
-import {ChangeTheme, CoreActionTypes} from './core.actions';
+import {ChangeTheme, CoreActionTypes} from './actions/core.actions';
 import {LoaderService} from './services/loader.service';
 
 import {ConfirmComponent} from '@app/shared/dialogs/confirm.component';

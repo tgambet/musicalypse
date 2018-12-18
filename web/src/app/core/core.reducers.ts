@@ -1,152 +1,74 @@
-import {CoreActionsUnion, CoreActionTypes} from './core.actions';
-import {CoreUtils, Theme} from '@app/core/core.utils';
+import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
+
+import * as fromCore from './reducers/core.reducers';
+import * as fromAudio from './reducers/audio.reducers';
 
 /**
  * State
  */
 export interface State {
-  showSidenav: boolean;
-  currentTheme: Theme;
-  audioInput: {
-    source: string;
-    volume: number;
-    muted: boolean;
-  };
-  audioState: {
-    loading: boolean;
-    playing: boolean;
-    duration: number;
-    error: string;
-  };
+  core: fromCore.State;
+  audio: fromAudio.State;
 }
 
-const initialState: State = {
-  showSidenav: false,
-  currentTheme: CoreUtils.allThemes[0],
-  audioInput: {
-    source: null,
-    volume: 1,
-    muted: false,
-  },
-  audioState: {
-    loading: false,
-    playing: false,
-    duration: 0,
-    error: null
-  },
+export const reducers: ActionReducerMap<State> = {
+  core: fromCore.reducer,
+  audio: fromAudio.reducer,
 };
-
-/**
- * Reducer
- */
-export function reducer(
-  state: State = initialState,
-  action: CoreActionsUnion
-): State {
-  switch (action.type) {
-
-    case CoreActionTypes.OpenSidenav:
-      return {
-        ...state,
-        showSidenav: true,
-      };
-
-    case CoreActionTypes.CloseSidenav:
-      return {
-        ...state,
-        showSidenav: false,
-      };
-
-    case CoreActionTypes.ToggleSidenav:
-      return {
-        ...state,
-        showSidenav: !state.showSidenav,
-      };
-
-    case CoreActionTypes.ChangeTheme:
-      return {
-        ...state,
-        currentTheme: action.payload,
-      };
-
-    case CoreActionTypes.SetAudioSource:
-      return {
-        ...state,
-        audioInput: {
-          ...state.audioInput,
-          source: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioVolume:
-      return {
-        ...state,
-        audioInput: {
-          ...state.audioInput,
-          volume: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioMuted:
-      return {
-        ...state,
-        audioInput: {
-          ...state.audioInput,
-          muted: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioDuration:
-      return {
-        ...state,
-        audioState: {
-          ...state.audioState,
-          duration: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioError:
-      return {
-        ...state,
-        audioState: {
-          ...state.audioState,
-          error: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioPlaying:
-      return {
-        ...state,
-        audioState: {
-          ...state.audioState,
-          playing: action.payload
-        }
-      };
-
-    case CoreActionTypes.SetAudioLoading:
-      return {
-        ...state,
-        audioState: {
-          ...state.audioState,
-          loading: action.payload
-        }
-      };
-
-    default:
-      return state;
-  }
-}
 
 /**
  * Selectors
  */
-export const getShowSidenav = (state: State) => state.showSidenav;
-export const getCurrentTheme = (state: State) => state.currentTheme;
+export const getCoreFeatureState = createFeatureSelector('core');
 
-export const getAudioInput = (state: State) => state.audioInput;
-export const getAudioMuted = (state: State) => state.audioInput.muted;
-export const getAudioVolume = (state: State) => state.audioInput.volume;
+export const getCoreState = createSelector(
+  getCoreFeatureState,
+  (state: State) => state.core
+);
 
-export const getAudioPlaying = (state: State) => state.audioState.playing;
-export const getAudioLoading = (state: State) => state.audioState.loading;
-export const getAudioDuration = (state: State) => state.audioState.duration;
+export const getAudioState = createSelector(
+  getCoreFeatureState,
+  (state: State) => state.audio
+);
+
+export const getShowSidenav = createSelector(
+  getCoreState,
+  fromCore.getShowSidenav
+);
+
+export const getCurrentTheme = createSelector(
+  getCoreState,
+  fromCore.getCurrentTheme
+);
+
+export const getAudioInput = createSelector(
+  getAudioState,
+  fromAudio.getAudioInput
+);
+
+export const getAudioPlaying = createSelector(
+  getAudioState,
+  fromAudio.getAudioPlaying
+);
+
+export const getAudioLoading = createSelector(
+  getAudioState,
+  fromAudio.getAudioLoading
+);
+
+export const getAudioDuration = createSelector(
+  getAudioState,
+  fromAudio.getAudioDuration
+);
+
+export const getAudioMuted = createSelector(
+  getAudioState,
+  fromAudio.getAudioMuted
+);
+
+export const getAudioVolume = createSelector(
+  getAudioState,
+  fromAudio.getAudioVolume
+);
+
+

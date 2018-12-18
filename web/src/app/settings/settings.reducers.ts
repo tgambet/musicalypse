@@ -1,12 +1,12 @@
 import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
 
-import * as fromLibraryFolders from './reducers/libray-folders.reducers';
-import * as fromOptions from './reducers/options.reducers';
+import * as fromLibraryFolders from './reducers/libray.reducers';
+import * as fromLyrics from './reducers/lyrics.reducers';
 import * as fromRoot from '@app/app.reducers';
 
 export interface SettingsState {
-  libraryFolders: fromLibraryFolders.State;
-  options: fromOptions.State;
+  library: fromLibraryFolders.State;
+  lyrics: fromLyrics.State;
 }
 
 export interface State extends fromRoot.State {
@@ -14,20 +14,20 @@ export interface State extends fromRoot.State {
 }
 
 export const reducers: ActionReducerMap<SettingsState> = {
-  libraryFolders: fromLibraryFolders.reducer,
-  options: fromOptions.reducer
+  library: fromLibraryFolders.reducer,
+  lyrics: fromLyrics.reducer
 };
 
 export const getSettingsState = createFeatureSelector<SettingsState>('settings');
 
 export const getLibraryFoldersState = createSelector(
   getSettingsState,
-  state => state.libraryFolders
+  state => state.library
 );
 
-export const getOptionsState = createSelector(
+export const getLyricsState = createSelector(
   getSettingsState,
-  state => state.options
+  state => state.lyrics
 );
 
 export const getLibraryFolders = createSelector(
@@ -46,6 +46,6 @@ export const getSettingsLoading = createSelector(
 );
 
 export const getLyricsOptions = createSelector(
-  getOptionsState,
-  fromOptions.getLyricsOptions
+  getLyricsState,
+  fromLyrics.getLyricsOptions
 );

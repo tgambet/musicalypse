@@ -27,7 +27,11 @@ export class CoreUtils {
   static restoreAndSave<T>(id: string, onLoad: (saved: T) => void, saveWhen: Observable<T>, ifNotLoaded?: () => void): Subscription {
     const savedItem = CoreUtils.load(id);
     if (savedItem) {
-      onLoad(JSON.parse(savedItem));
+      try {
+        onLoad(JSON.parse(savedItem));
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       if (ifNotLoaded) { ifNotLoaded(); }
     }

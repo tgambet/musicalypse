@@ -19,6 +19,8 @@ import {UpdateService} from '@app/core/services/update.service';
 import {RouterService} from '@app/core/services/router.service';
 import {ElectronService} from '@app/core/services/electron.service';
 import {CoreService} from '@app/core/services/core.service';
+import {StoreModule} from '@ngrx/store';
+import {reducers} from '@app/core/core.reducers';
 
 export const COMPONENTS = [
   CoreComponent,
@@ -32,6 +34,7 @@ export const COMPONENTS = [
 @NgModule({
   imports: [
     SharedModule,
+    StoreModule.forFeature('core', reducers),
     EffectsModule.forFeature([CoreEffects]),
   ],
   declarations: COMPONENTS,

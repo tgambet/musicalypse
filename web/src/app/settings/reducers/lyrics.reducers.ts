@@ -4,19 +4,22 @@ import {LyricsOptions} from '@app/model';
 /**
  * State
  */
-export interface State {
-  lyricsOptions: LyricsOptions;
+export interface State extends LyricsOptions {
+  useService: boolean;
+  services: {
+    wikia: boolean;
+    lyricsOvh: boolean;
+  };
+  automaticSave: boolean;
 }
 
 const initialState: State = {
-  lyricsOptions: {
-    useService: true,
-    services: {
-      wikia: true,
-      lyricsOvh: true
-    },
-    automaticSave: true
-  }
+  useService: true,
+  services: {
+    wikia: true,
+    lyricsOvh: true
+  },
+  automaticSave: true
 };
 
 /**
@@ -31,9 +34,7 @@ export function reducer(
     case SettingsActionTypes.SetLyricsOptions:
       return {
         ...state,
-        lyricsOptions: {
-          ...action.payload
-        },
+        ...action.payload
       };
 
     default:
@@ -44,4 +45,4 @@ export function reducer(
 /**
  * Selectors
  */
-export const getLyricsOptions = (state: State) => state.lyricsOptions;
+export const getLyricsOptions = (state: State) => state;

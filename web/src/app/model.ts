@@ -48,16 +48,6 @@ export type ImmutablePlaylist = ImmutableMap<{
   tracks: Set<Track>;
 }>;
 
-export interface LyricsResult {
-  lyrics?: string;
-  source?: string;
-  error?: string;
-  suggestions?: {
-    artist: string;
-    title: string;
-  }[];
-}
-
 export interface LyricsOptions {
   useService: boolean;
   services: {

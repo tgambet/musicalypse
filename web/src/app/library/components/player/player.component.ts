@@ -18,7 +18,7 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
 import {take, tap} from 'rxjs/operators';
 
-import {LyricsResult, Playlist, Track} from '@app/model';
+import {Playlist, Track} from '@app/model';
 import {CoreUtils} from '@app/core/core.utils';
 import {DetailsComponent} from '@app/shared/dialogs/details.component';
 import {PlaylistsDialogComponent} from '@app/shared/dialogs/playlists-dialog.component';
@@ -42,8 +42,11 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() repeat: boolean;
   @Input() playlist: Track[];
   @Input() playlists: Playlist[];
-  @Input() lyricsResult: LyricsResult;
   @Input() viewLoading: boolean;
+  @Input() lyrics: string;
+  @Input() lyricsLoading: boolean;
+  @Input() lyricsError: string;
+  @Input() lyricsSource: string;
 
   loading$: Observable<boolean>;
   duration$: Observable<number>;
@@ -60,7 +63,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('playlistUl')
   playlistUl: ElementRef;
 
-  @ViewChild('lyrics')
+  @ViewChild('lyricsDiv')
   lyricsRef: ElementRef;
 
   selectedCarouselIndex = 0;
@@ -88,14 +91,6 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes.currentTrack || changes.playlist) && this.listItems && (this.playlistMatList || this.playlistUl)) {
       setTimeout(() => this.scrollCurrentTrackIntoView());
-    }
-    // TODO: remove if a lyrics loader is implemented
-    if (changes.currentTrack && this.lyricsRef && this.lyricsRef.nativeElement.parentElement) {
-      this.lyricsRef.nativeElement.parentElement.scrollTop = 0;
-      /*this.lyricsRef.nativeElement.parentElement.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });*/
     }
   }
 
@@ -248,9 +243,8 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
       .join('\n');
 
     if (lyrics === '') { return; }
-    if (this.lyricsResult && this.lyricsResult.lyrics && this.lyricsResult.lyrics.trim() === lyrics) { return; }
+    if (this.lyrics && this.lyrics.trim() === lyrics) { return; }
 
-    this.lyricsResult.lyrics = lyrics;
     this.lyricsService.saveLyrics(lyrics, this.currentTrack.artist, this.currentTrack.title);
   }
 
@@ -268,8 +262,8 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   errorClicked() {
-    delete this.lyricsResult.error;
-    this.lyricsResult.lyrics = '';
+    this.lyricsError = null;
+    this.lyrics = '';
     setTimeout(() => this.lyricsRef.nativeElement.focus());
   }
 

@@ -20,6 +20,9 @@ import {LibraryUtils} from './library.utils';
 import * as fromLibrary from './library.reducers';
 import {AudioService} from '@app/core/services/audio.service';
 import {AddToRecent} from '@app/library/actions/recent.actions';
+import {SettingsService} from '@app/settings/services/settings.service';
+import {LyricsService} from '@app/library/services/lyrics.service';
+import {LoadLyrics, LoadLyricsFailure, LoadLyricsSuccess, LyricsActionTypes} from '@app/library/actions/lyrics.actions';
 
 @Injectable()
 export class LibraryEffects {
@@ -113,6 +116,38 @@ export class LibraryEffects {
     );
 
   /**
+   * Load Lyrics
+   */
+  @Effect()
+  loadLyrics$: Observable<Action> =
+    this.library.getCurrentTrack().pipe(
+      filter(track => !!track),
+      map((track: Track) => new LoadLyrics(track)),
+    );
+
+  @Effect()
+  loadLyrics2$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(LyricsActionTypes.LoadLyrics),
+      map((action: LoadLyrics) => action.payload),
+      switchMap(track =>
+        this.settings.getLyricsOptions().pipe(
+          switchMap(options =>
+            this.lyrics.requestLyrics(track, options).pipe(
+              tap(lyricsAndSource =>
+                options.automaticSave && lyricsAndSource[1] !== 'local' ?
+                  this.lyrics.saveLyrics(lyricsAndSource[0], track.artist, track.title) :
+                  {}
+              ),
+              map(lyricsAndSource => new LoadLyricsSuccess(lyricsAndSource[0], lyricsAndSource[1])),
+              catchError(() => of(new LoadLyricsFailure('No Lyrics found.'))),
+            )
+          ),
+        )
+      ),
+    );
+
+  /**
    * Subscribe to socket events
    */
   @Effect()
@@ -138,7 +173,9 @@ export class LibraryEffects {
     private titleService: Title,
     private library: LibraryService,
     private audio: AudioService,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private settings: SettingsService,
+    private lyrics: LyricsService
   ) {}
 
   public scanTracks(): Observable<Track[]> {

@@ -301,7 +301,22 @@ export const getLyricsState = createSelector(
   state => state.lyrics
 );
 
+export const getLyrics = createSelector(
+  getLyricsState,
+  fromLyrics.getLyrics
+);
+
 export const getLyricsLoading = createSelector(
   getLyricsState,
   fromLyrics.getLoading
+);
+
+export const getLyricsError = createSelector(
+  getLyricsState,
+  fromLyrics.getError
+);
+
+export const getLyricsSource = createSelector(
+  getLyricsState,
+  fromLyrics.getSource
 );

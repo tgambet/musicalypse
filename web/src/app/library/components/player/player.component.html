@@ -99,22 +99,24 @@
           <span>Lyrics</span>
         </ng-template>
         <div class="lyrics"
-             #lyrics
-             *ngIf="lyricsResult && lyricsResult.lyrics !== undefined"
+             #lyricsDiv
+             *ngIf="lyrics !== null"
              (swipeleft)="swipeLeft()"
              (swiperight)="swipeRight()"
              [attr.contenteditable]="!smallScreen"
              spellcheck="false"
              (blur)="lyricsEdited($event)"
              (paste)="lyricsPasted($event)"
-             (keydown)="onKeyDown($event)">{{ lyricsResult.lyrics }}</div>
-        <div class="lyrics error" *ngIf="lyricsResult && lyricsResult.error" (click)="errorClicked()">
-          {{ lyricsResult.error }}
+             (keydown)="onKeyDown($event)">{{ lyrics }}</div>
+        <div class="lyrics error" *ngIf="lyricsError" (click)="errorClicked()">
+          {{ lyricsError }}
+        </div>
+        <div class="lyrics loading" *ngIf="lyricsLoading">
+          <mat-spinner diameter="30"></mat-spinner>
         </div>
       </mat-tab>
     </mat-tab-group>
   </div>
-
   <app-progress [loading]="loading$ | async"
                 [currentTime]="currentTime$ | async"
                 [duration]="duration$ | async"

@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpSocketClientService} from '@app/core/services/http-socket-client.service';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {LyricsOptions, LyricsResult, Track} from '@app/model';
-import {catchError, map, tap} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {LyricsOptions, Track} from '@app/model';
+import {catchError, map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 import {CoreUtils} from '@app/core/core.utils';
-import {SetLyricsLoading} from '@app/library/actions/lyrics.actions';
 import {Store} from '@ngrx/store';
 import * as fromLibrary from '@app/library/library.reducers';
 
@@ -19,19 +18,13 @@ export class LyricsService {
     private store: Store<fromLibrary.State>
   ) {}
 
-  getLyrics(track: Track, opts: LyricsOptions): Observable<LyricsResult> {
+  requestLyrics(track: Track, opts: LyricsOptions): Observable<[string, string]> {
     return this.geLyricsFromApi(track).pipe(
-      map(lyrics => ({
-        lyrics: lyrics,
-        source: 'local'
-      })),
+      map(lyrics => [lyrics, 'local'] as [string, string]),
       catchError(error => {
         if (opts.useService && opts.services.wikia) {
           return this.getLyricsFromWikia(track).pipe(
-            map(lyrics => ({
-              lyrics: lyrics,
-              source: 'lyrics.wikia.com'
-            }))
+            map(lyrics => [lyrics, 'lyrics.wikia.com'] as [string, string])
           );
         } else {
           throw error;
@@ -40,31 +33,19 @@ export class LyricsService {
       catchError(error => {
         if (opts.useService && opts.services.lyricsOvh) {
           return this.getLyricsFromLyricsOvh(track).pipe(
-            map(lyrics => ({
-              lyrics: lyrics,
-              source: 'lyrics.ovh'
-            }))
+            map(lyrics => [lyrics, 'lyrics.ovh'] as [string, string])
           );
         } else {
           throw error;
         }
       }),
-      /*catchError(error => {
-        console.log('Lyrics error -> ' + error.toString());
-        throw error;
-      }),*/
-      catchError(() => of({
-        error: 'No lyrics found.'
-      })),
-      tap((lyrics: LyricsResult) =>
-        opts.automaticSave && lyrics.lyrics && lyrics.source !== 'local' ? this.saveLyrics(lyrics.lyrics, track.artist, track.title) : {}
-      ),
     );
   }
 
   geLyricsFromApi(track: Track): Observable<string> {
     return this.httpSocketClient.get('/api/lyrics/' + encodeURI(track.artist) + '/' + encodeURI(track.title)).pipe(
-      map((response: { lyrics: string }) => response.lyrics)
+      map((response: { lyrics: string }) => response.lyrics),
+      catchError((error: HttpErrorResponse) => { throw new Error(error.message); })
     );
   }
 
@@ -110,19 +91,27 @@ export class LyricsService {
     );
   }
 
-  saveLyrics(lyrics: string, artist: string, title: string) {
+  saveLyrics(lyrics: string, artist: string, title: string): void {
     this.httpSocketClient.post('/api/lyrics/' + encodeURI(artist) + '/' + encodeURI(title), { lyrics: lyrics }).subscribe(
       () => console.log('Lyrics saved!'), // this.snack.open('Lyrics saved!', 'OK', {duration: 2000}),
       error => console.log('Failed to save lyrics on the server: ' + error.error)
     );
   }
 
-  setLyricsLoading(loading: boolean) {
-    this.store.dispatch(new SetLyricsLoading(loading));
+  getLyrics(): Observable<string> {
+    return this.store.select(fromLibrary.getLyrics);
   }
 
-  getLyricsLoading(): Observable<boolean> {
+  getLoading(): Observable<boolean> {
     return this.store.select(fromLibrary.getLyricsLoading);
+  }
+
+  getError(): Observable<string> {
+    return this.store.select(fromLibrary.getLyricsError);
+  }
+
+  getSource(): Observable<string> {
+    return this.store.select(fromLibrary.getLyricsSource);
   }
 
 }

@@ -1,16 +1,15 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions} from '@angular/material';
-import {combineLatest, EMPTY, Observable, of, Subscription} from 'rxjs';
-import {filter, switchMap, take, tap} from 'rxjs/operators';
+import {EMPTY, Observable, of, Subscription} from 'rxjs';
+import {filter, take, tap} from 'rxjs/operators';
 
-import {Album, Artist, LyricsResult, Playlist, Track} from '@app/model';
+import {Album, Artist, Playlist, Track} from '@app/model';
 import {LibraryService} from './services/library.service';
 import {RouterService} from '@app/core/services/router.service';
 import {RouterStateUrl} from '@app/app.serializer';
 import {environment} from '@env/environment';
 import {LyricsService} from '@app/library/services/lyrics.service';
-import {SettingsService} from '@app/settings/services/settings.service';
 
 export const tooltipDefaults: MatTooltipDefaultOptions = {
   showDelay: 500,
@@ -66,7 +65,10 @@ export const tooltipDefaults: MatTooltipDefaultOptions = {
                               [playing]="playing$ | async"
                               [shuffle]="shuffle$ | async"
                               [repeat]="repeat$ | async"
-                              [lyricsResult]="lyricsResult$ | async"
+                              [lyrics]="lyrics$ | async"
+                              [lyricsLoading]="lyricsLoading$ | async"
+                              [lyricsError]="lyricsError$ | async"
+                              [lyricsSource]="lyricsSource$ | async"
                               [viewLoading]="viewLoading"
                               (previous)="translateContent(2)">
           </app-library-player>
@@ -110,7 +112,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
   muted$: Observable<boolean>            = of(false);
   duration$: Observable<number>          = of(0);
   currentTime$: Observable<number>       = of(0);
-  lyricsResult$: Observable<LyricsResult>     = EMPTY;
+  lyrics$: Observable<string>            = EMPTY;
+  lyricsLoading$: Observable<boolean>    = of(false);
+  lyricsError$: Observable<string>       = EMPTY;
+  lyricsSource$: Observable<string>      = EMPTY;
 
   subscriptions: Subscription[] = [];
 
@@ -128,8 +133,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private routerService: RouterService,
     private ref: ChangeDetectorRef,
-    private lyricsService: LyricsService,
-    private settings: SettingsService
+    private lyricsService: LyricsService
   ) {
 
   }
@@ -238,10 +242,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.duration$        = this.library.getAudioDuration();
     this.currentTime$     = this.library.getAudioCurrentTime();
 
-    this.lyricsResult$ = combineLatest(this.currentTrack$, this.settings.getLyricsOptions()).pipe(
-      filter(trackAndOpts => !!trackAndOpts[0]),
-      switchMap(trackAndOpts => this.lyricsService.getLyrics(trackAndOpts[0], trackAndOpts[1])),
-    );
+    this.lyrics$ = this.lyricsService.getLyrics();
+    this.lyricsLoading$ = this.lyricsService.getLoading();
+    this.lyricsError$ = this.lyricsService.getError();
+    this.lyricsSource$ = this.lyricsService.getSource();
 
     // Update the url based on the library state
     // if (this.library.selectedArtists.length > 0) {

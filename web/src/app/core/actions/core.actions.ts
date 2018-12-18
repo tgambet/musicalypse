@@ -2,10 +2,10 @@ import {Action} from '@ngrx/store';
 import {Theme} from '@app/core/core.utils';
 
 export enum CoreActionTypes {
-  OpenSidenav = '[Core] Open Sidenav',
-  CloseSidenav = '[Core] Close Sidenav',
-  ToggleSidenav = '[Core] Toggle Sidenav',
-  ChangeTheme = '[Core] Change Theme',
+  OpenSidenav   = 'core/sidenav/open',
+  CloseSidenav  = 'core/sidenav/close',
+  ToggleSidenav = 'core/sidenav/toggle',
+  ChangeTheme   = 'core/theme',
 }
 
 export class OpenSidenav implements Action {

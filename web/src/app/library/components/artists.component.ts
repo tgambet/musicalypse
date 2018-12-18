@@ -220,7 +220,7 @@ export class ArtistsComponent implements OnChanges {
   }
 
   add(artist: Artist) {
-    this.library.selectArtist(artist);
+    this.library.selectArtists([artist]);
   }
 
   isSelected(artist: Artist): Observable<boolean> {

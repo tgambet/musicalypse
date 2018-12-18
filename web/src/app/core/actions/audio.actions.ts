@@ -1,13 +1,13 @@
 import {Action} from '@ngrx/store';
 
 export enum AudioActionTypes {
-  SetAudioSource = '[Audio] Set Audio Source',
-  SetAudioVolume = '[Audio] Set Audio Volume',
-  SetAudioMuted = '[Audio] Set Audio Muted',
-  SetAudioLoading = '[Audio] Set Audio Loading',
-  SetAudioPlaying = '[Audio] Set Audio Playing',
-  SetAudioDuration = '[Audio] Set Audio Duration',
-  SetAudioError = '[Audio] Set Audio Error',
+  SetAudioSource   = 'core/audio/source',
+  SetAudioVolume   = 'core/audio/volume',
+  SetAudioMuted    = 'core/audio/muted',
+  SetAudioLoading  = 'core/audio/loading',
+  SetAudioPlaying  = 'core/audio/playing',
+  SetAudioDuration = 'core/audio/duration',
+  SetAudioError    = 'core/audio/error',
 }
 
 export class SetAudioSource implements Action {

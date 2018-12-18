@@ -2,14 +2,14 @@ import {Track} from '@app/model';
 import {Action} from '@ngrx/store';
 
 export enum PlayerActionTypes {
-  PlayTrackNext = '[Player] Play Track Next',
-  AddToCurrentPlaylist = '[Player] Add To Current Playlist',
-  SetRepeat = '[Player] Set Repeat',
-  SetShuffle = '[Player] Set Shuffle',
-  SetCurrentTrack = '[Player] Set Track',
-  SetCurrentPlaylist = '[Player] Set Playlist',
-  SetNextTrack = '[Player] Set Next Track',
-  SetPreviousTrack = '[Player] Set Previous Track',
+  PlayTrackNext        = 'library/player/play-track-next',
+  AddToCurrentPlaylist = 'library/player/add-to-playlist',
+  SetRepeat            = 'library/player/repeat',
+  SetShuffle           = 'library/player/shuffle',
+  SetCurrentTrack      = 'library/player/track',
+  SetCurrentPlaylist   = 'library/player/playlist',
+  SetNextTrack         = 'library/player/next',
+  SetPreviousTrack     = 'library/player/previous',
 }
 
 export class PlayTrackNext implements Action {

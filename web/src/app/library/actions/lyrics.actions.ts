@@ -2,9 +2,9 @@ import {Action} from '@ngrx/store';
 import {Track} from '@app/model';
 
 export enum LyricsActionTypes {
-  LoadLyrics = '[Lyrics] Load Lyrics',
-  LoadLyricsSuccess = '[Lyrics] Load Lyrics Success',
-  LoadLyricsFailure = '[Lyrics] Load Lyrics Failure',
+  LoadLyrics        = 'library/lyrics/load',
+  LoadLyricsSuccess = 'library/lyrics/load/success',
+  LoadLyricsFailure = 'library/lyrics/load/failure',
 }
 
 export class LoadLyrics implements Action {

@@ -2,12 +2,12 @@ import {Action} from '@ngrx/store';
 import {Track} from '@app/model';
 
 export enum TracksActionTypes {
-  AddTracks = '[Tracks] Add Tracks',
-  RemoveTracks = '[Tracks] Remove Tracks',
-  LoadTracks = '[Tracks] Load Tracks',
-  LoadTracksSuccess = '[Tracks] Load Tracks Success',
-  LoadTracksFailure = '[Tracks] Load Tracks Failure',
-  ScanTracks = '[Tracks] Scan Tracks',
+  AddTracks         = 'library/tracks/add',
+  RemoveTracks      = 'library/tracks/remove',
+  LoadTracks        = 'library/tracks/load',
+  LoadTracksSuccess = 'library/tracks/load/success',
+  LoadTracksFailure = 'library/tracks/load/failure',
+  ScanTracks        = 'library/tracks/scan',
 }
 
 export class AddTracks implements Action {

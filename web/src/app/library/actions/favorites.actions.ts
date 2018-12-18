@@ -2,8 +2,8 @@ import {Track} from '@app/model';
 import {Action} from '@ngrx/store';
 
 export enum FavoritesActionTypes {
-  AddToFavorites = '[Favorites] Add To Favorites',
-  RemoveFromFavorites = '[Favorites] Remove From Favorites'
+  AddToFavorites      = 'library/favorites/add',
+  RemoveFromFavorites = 'library/favorites/remove'
 }
 
 export class AddToFavorites implements Action {

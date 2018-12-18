@@ -2,12 +2,12 @@ import {Action} from '@ngrx/store';
 import {Playlist, Track} from '@app/model';
 
 export enum PlaylistsActionTypes {
-  LoadPlaylists = '[Playlists] Load Playlists',
-  LoadPlaylist = '[Playlists] Load Playlist',
-  SavePlaylist = '[Playlists] Save Playlist',
-  DeletePlaylist = '[Playlists] Delete Playlist',
-  AddToPlaylist = '[Playlists] Add To Playlist',
-  RemoveFromPlaylist = '[Playlists] Remove From Playlist'
+  LoadPlaylists      = 'library/playlists/load',
+  LoadPlaylist       = 'library/playlists/load-playlist',
+  SavePlaylist       = 'library/playlists/save',
+  DeletePlaylist     = 'library/playlists/delete',
+  AddToPlaylist      = 'library/playlists/add',
+  RemoveFromPlaylist = 'library/playlists/remove'
 }
 
 export class LoadPlaylists implements Action {

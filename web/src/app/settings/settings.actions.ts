@@ -2,16 +2,16 @@ import {Action} from '@ngrx/store';
 import {LyricsOptions} from '@app/model';
 
 export enum SettingsActionTypes {
-  AddLibraryFolder = '[Settings] Add Library Folder',
-  AddLibraryFolderSuccess = '[Settings] Add Library Folder Success',
-  AddLibraryFolderFailure = '[Settings] Add Library Folder Failure',
-  RemoveLibraryFolder = '[Settings] Remove Library Folder',
-  RemoveLibraryFolderSuccess = '[Settings] Remove Library Folder Success',
-  RemoveLibraryFolderFailure = '[Settings] Remove Library Folder Failure',
-  LoadLibraryFolders = '[Settings] Load Library Folders',
-  LoadLibraryFoldersSuccess = '[Settings] Load Library Folders Success',
-  LoadLibraryFoldersFailure = '[Settings] Load Library Folders Failure',
-  SetLyricsOptions = '[Settings] Set Lyrics Options'
+  AddLibraryFolder           = 'settings/library/add',
+  AddLibraryFolderSuccess    = 'settings/library/add/success',
+  AddLibraryFolderFailure    = 'settings/library/add/failure',
+  RemoveLibraryFolder        = 'settings/library/remove',
+  RemoveLibraryFolderSuccess = 'settings/library/remove/success',
+  RemoveLibraryFolderFailure = 'settings/library/remove/failure',
+  LoadLibraryFolders         = 'settings/library/load',
+  LoadLibraryFoldersSuccess  = 'settings/library/load/success',
+  LoadLibraryFoldersFailure  = 'settings/library/load/failure',
+  SetLyricsOptions           = 'settings/lyrics'
 }
 
 export class AddLibraryFolder implements Action {

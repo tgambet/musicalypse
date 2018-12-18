@@ -2,7 +2,7 @@ import {Track} from '@app/model';
 import {Action} from '@ngrx/store';
 
 export enum RecentActionTypes {
-  AddToRecent = '[Recent] Add To Recent Tracks'
+  AddToRecent = 'library/recent/add'
 }
 
 export class AddToRecent implements Action {

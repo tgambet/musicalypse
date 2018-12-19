@@ -236,15 +236,9 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   lyricsEdited(event) {
-    const lyrics = event.target.textContent
-      .replace(/\n{3,}/g, '\n')
-      .split('\n')
-      .map(line => line.trim())
-      .join('\n');
-
+    const lyrics = event.target.textContent;
     if (lyrics === '') { return; }
     if (this.lyrics && this.lyrics.trim() === lyrics) { return; }
-
     this.lyricsService.saveLyrics(lyrics, this.currentTrack.artist, this.currentTrack.title);
   }
 

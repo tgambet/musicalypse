@@ -80,6 +80,13 @@ export class LyricsService {
     return this.httpClient.get('https://api.lyrics.ovh/v1/' + encodeURI(track.artist) + '/' + encodeURI(track.title)).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => { throw new Error(httpErrorResponse.message); }),
       map((response: { lyrics: string }) => response.lyrics),
+      map(lyrics => lyrics
+        .replace(/\r\n/g, '\n')
+        .replace(/\n{3,}/g, '\n')
+        .split('\n')
+        .map(line => line.trim())
+        .join('\n')
+      ),
       // FIX: since lyrics.ovh looks on wikia.com too this might happen:
       map(lyrics => {
         if (lyrics.includes('Unfortunately, we are not licensed to display the full lyrics for this song')) {

@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {MatDialog, MatSlideToggleChange} from '@angular/material';
+import {MatDialog, MatSlideToggleChange, MatSnackBar} from '@angular/material';
 import {Observable} from 'rxjs';
 import {map, share} from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ import {CoreUtils, Theme} from '../core/core.utils';
 import {ElectronService} from '@app/core/services/electron.service';
 import {CoreService} from '@app/core/services/core.service';
 import {LyricsOptions} from '@app/model';
+import {LibraryService} from '@app/library/services/library.service';
 
 @Component({
   selector: 'app-settings',
@@ -139,6 +140,32 @@ import {LyricsOptions} from '@app/model';
                 [disabled]="!hasSelectedCacheOption()">
           Clear selected
         </button>
+        <mat-divider></mat-divider>
+        <h3 class="secondary-text">Metadata</h3>
+        <p>
+          Musicalypse stores extracted covers and lyrics in separate files on disk.<br>
+          If you want to delete those files, for instance if you have edited your covers using an external software, you can do it here.
+        </p>
+        <ul class="cache">
+          <li class="select-all-wrapper">
+            <button mat-icon-button id="select-all-meta" (click)="selectMetadataAll()">
+              <mat-icon>select_all</mat-icon>
+            </button>
+            <label for="select-all-meta">Select all</label>
+          </li>
+          <li>
+            <mat-checkbox color="primary" [(ngModel)]="metadata.covers">Covers</mat-checkbox>
+          </li>
+          <li>
+            <mat-checkbox color="primary" [(ngModel)]="metadata.lyrics">Lyrics</mat-checkbox>
+          </li>
+        </ul>
+        <button mat-button
+                class="clear"
+                (click)="clearMetadata()"
+                [disabled]="!hasSelectedMetadataOption()">
+          Clear selected
+        </button>
       </div>
     </div>
   `,
@@ -223,6 +250,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
     player: false
   };
 
+  metadata: {
+    covers: boolean,
+    lyrics: boolean
+  } = {
+    covers: false,
+    lyrics: false,
+  };
+
   error$: Observable<string>;
   loading$: Observable<boolean>;
   libraryFolders$: Observable<string[]>;
@@ -232,11 +267,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   constructor(
     private settings: SettingsService,
     private dialog: MatDialog,
+    private snack: MatSnackBar,
     private router: Router,
     private coreService: CoreService,
     private zone: NgZone,
     private httpSocketClient: HttpSocketClientService,
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private library: LibraryService
   ) {
     this.error$ = this.settings.getLibraryError();
     this.loading$ = this.settings.getLibraryLoading();
@@ -351,11 +388,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
       console.log('clearing player state');
       CoreUtils.remove('volume');
       CoreUtils.remove('shuffle');
+      CoreUtils.remove('repeat');
     }
-    /*if (this.cache.covers) {
-      console.log('clearing covers');
-      this.httpSocketClient.delete('/api/covers').subscribe();
-    }*/
     this.dialog.open(
       ConfirmComponent,
       { data: {
@@ -363,17 +397,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
         message: 'You have cleared your cache. You should reload Musicalypse for it to take effect. Reload now?'
       }}
     ).afterClosed()
-      .subscribe(
-        reload => {
-          if (reload) {
-            if (environment.electron) {
-              this.electronService.getWindow().loadURL(document.location.toString() + '/../index.html');
-            } else {
-              document.location.reload();
-            }
+    .subscribe(
+      reload => {
+        if (reload) {
+          if (environment.electron) {
+            this.electronService.getWindow().loadURL(document.location.toString() + '/../index.html');
+          } else {
+            document.location.reload();
           }
         }
-      );
+      }
+    );
   }
 
   toggleSleepPrevent(event: MatSlideToggleChange) {
@@ -413,5 +447,56 @@ export class SettingsComponent implements OnInit, OnDestroy {
   saveLyricsOptions(options: LyricsOptions) {
     this.settings.saveLyricsOptions(options);
   }
+
+  hasSelectedMetadataOption() {
+    return Object.values(this.metadata).reduce((x, y) => x || y);
+  }
+
+  selectMetadataAll() {
+    if (Object.values(this.metadata).reduce((x, y) => x && y)) {
+      this.metadata = {
+        covers: false,
+        lyrics: false
+      };
+    } else {
+      this.metadata = {
+        covers: true,
+        lyrics: true
+      };
+    }
+  }
+
+  clearMetadata() {
+    let needsRescan = false;
+    if (this.metadata.covers) {
+      needsRescan = true;
+      console.log('clearing covers');
+      this.httpSocketClient.delete('/api/covers').subscribe();
+    }
+    if (this.metadata.lyrics) {
+      console.log('clearing lyrics');
+      this.httpSocketClient.delete('/api/lyrics').subscribe();
+    }
+    if (needsRescan) {
+      this.dialog.open(
+        ConfirmComponent,
+        { data: {
+            title: 'Metadata cleared!',
+            message: 'You have deleted metadata files from disk. To generate new covers you should scan your library. Do it now?'
+          }}
+      ).afterClosed()
+        .subscribe(
+          reload => {
+            if (reload) {
+              this.library.scanTracks();
+            }
+          }
+        );
+    } else {
+      this.snack.open('Metadata files cleared.', 'OK', {duration: 2000});
+    }
+
+  }
+
 
 }

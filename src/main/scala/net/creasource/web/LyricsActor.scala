@@ -1,7 +1,7 @@
 package net.creasource.web
 
 import java.io.{FileInputStream, FileOutputStream}
-import java.nio.file.{Path, Paths}
+import java.nio.file.{Files, Path, Paths}
 
 import akka.Done
 import akka.actor.{Actor, Props}
@@ -26,6 +26,8 @@ object LyricsActor {
   sealed trait SaveLyricsResult
   case object LyricsSaved extends SaveLyricsResult
   case class LyricsSaveError(error: String) extends SaveLyricsResult
+
+  case object DeleteLyrics
 
   def props()(implicit application: Application): Props = Props(new LyricsActor())
 
@@ -61,6 +63,13 @@ class LyricsActor()(implicit application: Application) extends Actor with JsonSu
         case Success(Done) => client ! LyricsSaved
         case Failure(t) => client ! LyricsSaveError(t.getMessage)
       }
+
+    case DeleteLyrics =>
+      logger.info("Deleting lyrics")
+      Files.walk(lyricsFolder)
+        .filter(path => path != lyricsFolder)
+        .forEach(path => path.toFile.delete())
+      sender() ! Done
 
   }
 

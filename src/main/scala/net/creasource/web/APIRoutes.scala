@@ -1,5 +1,6 @@
 package net.creasource.web
 
+import akka.Done
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model._
@@ -118,6 +119,11 @@ class APIRoutes(application: Application) {
 
   def lyricsRoutes: Route =
     pathPrefix("lyrics") {
+      delete {
+        onSuccess((application.lyricsActor ? DeleteLyrics) (askTimeout).mapTo[Done]) { _ =>
+          complete(StatusCodes.OK, "")
+        }
+      } ~
       path(Segments(2)) { case List(artist, title) =>
         get {
           onSuccess((application.lyricsActor ? GetLyrics(artist, title)) (askTimeout).mapTo[GetLyricsResult]) {

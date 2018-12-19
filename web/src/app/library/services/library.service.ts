@@ -24,7 +24,7 @@ import {
 } from '../actions/player.actions';
 import {AddToFavorites, RemoveFromFavorites} from '../actions/favorites.actions';
 import {AddToRecent} from '../actions/recent.actions';
-import {LoadTracks} from '../actions/tracks.actions';
+import {LoadTracks, ScanTracks} from '../actions/tracks.actions';
 
 import * as fromLibrary from '../library.reducers';
 import {LibraryUtils} from '../library.utils';
@@ -361,6 +361,10 @@ export class LibraryService {
 
   getTracksByAlbumId(albumId: String): Observable<Track[]> {
     return this.store.select(fromLibrary.getTracksByAlbumId, albumId);
+  }
+
+  scanTracks() {
+    this.store.dispatch(new ScanTracks());
   }
 
 }

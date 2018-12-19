@@ -200,6 +200,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
         this.contentTranslation = parseInt(t, 10);
         this.ref.detectChanges();
       }
+      if (t == null && this.contentTranslation !== 0) {
+        this.contentTranslation = 0;
+        this.ref.detectChanges();
+      }
     });
     this.subscriptions.push(translateOnUrlChange);
     this.noAnimation = false;

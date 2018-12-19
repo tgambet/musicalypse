@@ -6,7 +6,7 @@
   <Identity Name="53695CreaSource.Musicalypse"
             ProcessorArchitecture="x64"
             Publisher="CN=482ACF73-DAC8-4D98-BA01-FA590F32FB7E"
-            Version="0.5.2.0" />
+            Version="1.0.0.0" />
   <Properties>
     <DisplayName>Musicalypse</DisplayName>
     <PublisherDisplayName>CreaSource</PublisherDisplayName>

@@ -20,7 +20,9 @@ const rootDirectory: string = path.normalize(
     path.join(__dirname, '../../../')
 );
 
-const windowFile = path.join(rootDirectory, 'data/window.json');
+const cacheFolder = app.getPath('userData') + '/data';
+
+const windowFile = path.join(cacheFolder, 'window.json');
 
 let win: BrowserWindow;
 let serverProcess: ChildProcess;
@@ -152,7 +154,6 @@ function startServer() {
   }
 
   const musicFolder = app.getPath('music');
-  const cacheFolder = app.getPath('userData') + '/data';
 
   const javaExecutable = (process.platform === 'win32') ? 'java.exe' : 'java';
   const javaPath = path.join(rootDirectory, '/target/jre/bin/' + javaExecutable);

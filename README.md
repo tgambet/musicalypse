@@ -12,7 +12,7 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 
 ## Features
 
-* Supports mp3, ogg, and flac
+* Supports mp3, ogg, flac and wav
 * Streaming server for your local network or beyond
 * Accessible by computer, tablets, or phones
 * Playlists

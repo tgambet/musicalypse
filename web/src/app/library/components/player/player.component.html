@@ -100,7 +100,7 @@
         </ng-template>
         <div class="lyrics"
              #lyricsDiv
-             *ngIf="lyrics !== null"
+             *ngIf="lyrics !== null || showError == false"
              (swipeleft)="swipeLeft()"
              (swiperight)="swipeRight()"
              [attr.contenteditable]="!smallScreen"
@@ -108,8 +108,9 @@
              (blur)="lyricsEdited($event)"
              (paste)="lyricsPasted($event)"
              (keydown)="onKeyDown($event)">{{ lyrics }}</div>
-        <div class="lyrics error" *ngIf="lyricsError" (click)="errorClicked()">
-          {{ lyricsError }}
+        <div class="lyrics error" *ngIf="lyricsError && showError" (click)="errorClicked()">
+          {{ lyricsError }}<br>
+          <span *ngIf="!smallScreen">You can copy/paste some lyrics here.</span>
         </div>
         <div class="lyrics loading" *ngIf="lyricsLoading">
           <mat-spinner diameter="30"></mat-spinner>

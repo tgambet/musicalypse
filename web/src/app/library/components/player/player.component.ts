@@ -69,6 +69,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   selectedCarouselIndex = 0;
 
   smallScreen: boolean;
+  showError = true;
 
   subscriptions: Subscription[] = [];
 
@@ -91,6 +92,9 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes.currentTrack || changes.playlist) && this.listItems && (this.playlistMatList || this.playlistUl)) {
       setTimeout(() => this.scrollCurrentTrackIntoView());
+    }
+    if (changes.lyricsError) {
+      this.showError = true;
     }
   }
 
@@ -256,8 +260,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   errorClicked() {
-    this.lyricsError = null;
-    this.lyrics = '';
+    this.showError = false;
     setTimeout(() => this.lyricsRef.nativeElement.focus());
   }
 

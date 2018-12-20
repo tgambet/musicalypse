@@ -140,7 +140,7 @@ export class LibraryEffects {
                   {}
               ),
               map(lyricsAndSource => new LoadLyricsSuccess(lyricsAndSource[0], lyricsAndSource[1])),
-              catchError(() => of(new LoadLyricsFailure('No Lyrics found.'))),
+              catchError(() => of(new LoadLyricsFailure('No lyrics found.'))),
             )
           ),
         )

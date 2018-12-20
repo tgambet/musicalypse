@@ -240,18 +240,23 @@ if (!app.requestSingleInstanceLock()) {
 
 function saveWindowBounds(): void {
   const bounds = JSON.stringify(win.getBounds());
-  fs.writeFile(windowFile, bounds, () => {});
+  fs.writeFileSync(windowFile, bounds);
 }
 
 function getSavedWindowBounds(screenSize: Size): Rectangle {
+  const defaultWindow = {
+    width: screenSize.width - 50,
+    height: screenSize.height - 50,
+    x: 25,
+    y: 25
+  };
   if (fs.existsSync(windowFile)) {
-    return JSON.parse(fs.readFileSync(windowFile));
+    try {
+      return JSON.parse(fs.readFileSync(windowFile));
+    } catch (e) {
+      return defaultWindow;
+    }
   } else {
-    return {
-      width: screenSize.width - 50,
-      height: screenSize.height - 50,
-      x: 25,
-      y: 25
-    };
+    return defaultWindow;
   }
 }

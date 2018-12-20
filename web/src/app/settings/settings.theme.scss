@@ -25,6 +25,10 @@
       padding: 1rem 0;
     }
 
+    .mat-tab-body-content {
+      overflow: unset !important;
+    }
+
   }
 
 }

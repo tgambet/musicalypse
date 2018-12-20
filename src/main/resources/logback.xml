@@ -29,7 +29,7 @@
 
   <logger name="net.creasource.web.LibraryActor" level="INFO" />
   <logger name="net.creasource.io" level="INFO" />
-  <logger name="net.creasource.web.SettingsActor" level="DEBUG" />
+  <logger name="net.creasource.web.SettingsActor" level="INFO" />
 
   <logger name="akka.event.slf4j.Slf4jLogger" level="WARN" />
 

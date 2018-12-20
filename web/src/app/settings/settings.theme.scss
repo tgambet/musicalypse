@@ -17,6 +17,14 @@
       color: mat-color($warn);
     }
 
+    .mat-tab-label {
+      min-width: 100px !important;
+    }
+
+    .mat-tab-body {
+      padding: 1rem 0;
+    }
+
   }
 
 }

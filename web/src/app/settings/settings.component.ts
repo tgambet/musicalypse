@@ -21,151 +21,112 @@ import {LibraryService} from '@app/library/services/library.service';
     <div class="wrapper">
       <div class="settings">
         <h2>Settings</h2>
-        <h3 class="secondary-text library">
-          Library
-          <mat-spinner [diameter]="16" *ngIf="loading$ | async"></mat-spinner>
-        </h3>
-        <p>
-          Specify which folders contain your music and make up your library.<br>
-          Currently we are watching the following folder(s):
-        </p>
-        <app-library-folders [folders]="libraryFolders$ | async"
-                             [error]="error$ | async"
-                             (addFolder)="addFolderDialog()"
-                             (removeFolder)="removeFolderDialog($event)"
-                             (scanRequest)="requestLibraryScan()">
-        </app-library-folders>
-        <mat-divider></mat-divider>
-        <!--<h3 class="secondary-text">Upload</h3>
-        <app-uploads [files]="settings.files"
-                     [isUploading]="settings.isUploading()"
-                     (addFiles)="addFiles($event)"
-                     (uploadFiles)="settings.uploadFiles()"
-                     (cancelUploads)="settings.cancelUpload()"
-                     (clearUploads)="settings.clearUploads()">
-        </app-uploads>
-        <mat-divider></mat-divider>-->
-        <h3 class="secondary-text">Theme</h3>
-        <app-themes [themes]="themes"
-                    [currentTheme]="currentTheme$ | async"
-                    (changeTheme)="changeTheme($event)">
-        </app-themes>
-        <mat-divider></mat-divider>
-        <!--<h3 class="secondary-text">Misc</h3>
-        <div>
-          <button mat-button>
-            <mat-icon>{{ httpSocketClient.isSocketOpen() ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
-            <span> WebSocket</span>
-          </button>
-        </div>-->
-        <!--<div>-->
-        <!--<mat-slide-toggle>Watch library folders</mat-slide-toggle>-->
-        <!--</div>-->
-        <!--<div>
-          <mat-slide-toggle matTooltip="Displays a warning icon next to artists, albums, tracks that have missing or incomplete tags."
-                            [(ngModel)]="settings.warnOnMissingTags">
-            Warn on missing tags
-          </mat-slide-toggle>
-        </div>-->
-        <!--<div>-->
-        <!--<mat-slide-toggle>Misc 2</mat-slide-toggle>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<mat-slide-toggle>Misc 3</mat-slide-toggle>-->
-        <!--</div>-->
-        <!--<mat-divider></mat-divider>-->
-        <div *ngIf="isElectron">
-          <h3 class="secondary-text">Streaming</h3>
-          <p>
-            You can stream your music to your home devices on your local network by connecting to:
-          </p>
-          <div *ngIf="hostIps$ | async; let ips">
-            <ul>
-              <li *ngFor="let ip of ips">
-                <a [href]="'http://' + ip + ':8080'" (click)="openExternally($event)" target="_blank">{{ 'http://' + ip + ':8080' }}</a>
+        <mat-tab-group animationDuration="0ms">
+          <mat-tab label="Library">
+            <p>
+              Specify which folders contain your music and make up your library.<br>
+              Currently we are watching the following folder(s):
+            </p>
+            <app-library-folders [folders]="libraryFolders$ | async"
+                                 [error]="error$ | async"
+                                 [loading]="loading$ | async"
+                                 (addFolder)="addFolderDialog()"
+                                 (removeFolder)="removeFolderDialog($event)"
+                                 (scanRequest)="requestLibraryScan()">
+            </app-library-folders>
+          </mat-tab>
+          <mat-tab label="Theme">
+            <app-themes [themes]="themes"
+                        [currentTheme]="currentTheme$ | async"
+                        (changeTheme)="changeTheme($event)">
+            </app-themes>
+          </mat-tab>
+          <mat-tab label="Streaming" *ngIf="isElectron">
+            <p>
+              You can stream your music to your home devices on your local network by connecting to:
+            </p>
+            <div *ngIf="hostIps$ | async; let ips">
+              <ul>
+                <li *ngFor="let ip of ips">
+                  <a [href]="'http://' + ip + ':8080'" (click)="openExternally($event)" target="_blank">{{ 'http://' + ip + ':8080' }}</a>
+                </li>
+              </ul>
+              <span *ngIf="ips.length === 0">No network connection detected.</span>
+            </div>
+            <div>
+              <mat-slide-toggle (change)="toggleSleepPrevent($event)" color="primary">
+                Prevent the system from going to sleep
+              </mat-slide-toggle>
+            </div>
+          </mat-tab>
+          <mat-tab label="Lyrics">
+            <app-lyrics-options [lyricsOpts]="lyricsOpts$ | async"
+                                (optionsChanged)="saveLyricsOptions($event)"
+                                (linkClicked)="openExternally($event)">
+            </app-lyrics-options>
+          </mat-tab>
+          <mat-tab label="Cache">
+            <p>
+              Musicalypse stores some data in a local cache.<br>
+              If you experience any issue or want a clean slate you can clear your cache here.
+            </p>
+            <ul class="cache">
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.favorites">Favorites</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.recent">Recent tracks</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.playlist">Current playlist</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.playlists">Saved playlists</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.theme">Theme</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="cache.player">Player (volume, shuffle, repeat)</mat-checkbox>
               </li>
             </ul>
-            <span *ngIf="ips.length === 0">No network connection detected.</span>
-          </div>
-          <div>
-            <mat-slide-toggle (change)="toggleSleepPrevent($event)" color="primary">
-              Prevent the system from going to sleep
-            </mat-slide-toggle>
-          </div>
-          <mat-divider></mat-divider>
-        </div>
-        <h3 class="secondary-text">Lyrics</h3>
-        <app-lyrics-options [lyricsOpts]="lyricsOpts$ | async"
-                            (optionsChanged)="saveLyricsOptions($event)"
-                            (linkClicked)="openExternally($event)">
-        </app-lyrics-options>
-        <mat-divider></mat-divider>
-        <h3 class="secondary-text">Cache</h3>
-        <p>
-          Musicalypse stores some data in a local cache.<br>
-          If you experience any issue or want a clean slate you can clear your cache here.
-        </p>
-        <ul class="cache">
-          <li class="select-all-wrapper">
-            <button mat-icon-button id="select-all" (click)="selectCacheAll()">
-              <mat-icon>select_all</mat-icon>
+            <button mat-button (click)="selectCacheAll()">
+              Select all
             </button>
-            <label for="select-all">Select all</label>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.favorites">Favorites</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.recent">Recent tracks</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.playlist">Current playlist</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.playlists">Saved playlists</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.theme">Theme</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="cache.player">Player (volume, shuffle, repeat)</mat-checkbox>
-          </li>
-          <!--<li>
-            <mat-checkbox color="primary" [(ngModel)]="cache_covers">Covers <em>(requires library scan afterwards)</em></mat-checkbox>
-          </li>-->
-        </ul>
-        <button mat-button
-                class="clear"
-                (click)="clearCache()"
-                [disabled]="!hasSelectedCacheOption()">
-          Clear selected
-        </button>
-        <mat-divider></mat-divider>
-        <h3 class="secondary-text">Metadata</h3>
-        <p>
-          Musicalypse stores extracted covers and lyrics in separate files on disk.<br>
-          If you want to delete those files, for instance if you have edited your covers using an external software, you can do it here.
-        </p>
-        <ul class="cache">
-          <li class="select-all-wrapper">
-            <button mat-icon-button id="select-all-meta" (click)="selectMetadataAll()">
-              <mat-icon>select_all</mat-icon>
+            <button mat-button
+                    class="clear"
+                    (click)="clearCache()"
+                    [disabled]="!hasSelectedCacheOption()">
+              Clear selected
             </button>
-            <label for="select-all-meta">Select all</label>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="metadata.covers">Covers</mat-checkbox>
-          </li>
-          <li>
-            <mat-checkbox color="primary" [(ngModel)]="metadata.lyrics">Lyrics</mat-checkbox>
-          </li>
-        </ul>
-        <button mat-button
-                class="clear"
-                (click)="clearMetadata()"
-                [disabled]="!hasSelectedMetadataOption()">
-          Clear selected
-        </button>
+          </mat-tab>
+          <mat-tab label="Metadata">
+            <p>
+              Musicalypse stores extracted covers and lyrics in separate files on disk.<br>
+              If you want to delete those files, for instance if you have edited your covers using an external software, you can do it here.
+            </p>
+            <ul class="cache">
+              <!--<li class="select-all-wrapper">
+                <button mat-icon-button id="select-all-meta" (click)="selectMetadataAll()">
+                  <mat-icon>select_all</mat-icon>
+                </button>
+                <label for="select-all-meta">Select all</label>
+              </li>-->
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="metadata.covers">Covers</mat-checkbox>
+              </li>
+              <li>
+                <mat-checkbox color="primary" [(ngModel)]="metadata.lyrics">Lyrics</mat-checkbox>
+              </li>
+            </ul>
+            <button mat-button
+                    class="clear"
+                    (click)="clearMetadata()"
+                    [disabled]="!hasSelectedMetadataOption()">
+              Clear selected
+            </button>
+          </mat-tab>
+        </mat-tab-group>
       </div>
     </div>
   `,
@@ -182,14 +143,10 @@ import {LibraryService} from '@app/library/services/library.service';
       max-width: 900px;
       width: 100%;
       padding: 0.5rem 1rem;
+      box-sizing: border-box;
     }
     mat-spinner {
       margin-left: 0.5rem;
-    }
-    h3.library {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
     }
     mat-divider {
       margin: 1rem 0;
@@ -206,20 +163,6 @@ import {LibraryService} from '@app/library/services/library.service';
     }
     button.clear {
       max-width: 8rem;
-    }
-    .select-all-wrapper {
-      height: 24px;
-    }
-    .select-all-wrapper button {
-      position: relative;
-      top: -8px;
-      left: -12px;
-    }
-    .select-all-wrapper label {
-      position: relative;
-      top: -6px;
-      left: -16px;
-      cursor: pointer;
     }
     @media screen and (max-width: 598px){
     }
@@ -450,20 +393,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   hasSelectedMetadataOption() {
     return Object.values(this.metadata).reduce((x, y) => x || y);
-  }
-
-  selectMetadataAll() {
-    if (Object.values(this.metadata).reduce((x, y) => x && y)) {
-      this.metadata = {
-        covers: false,
-        lyrics: false
-      };
-    } else {
-      this.metadata = {
-        covers: true,
-        lyrics: true
-      };
-    }
   }
 
   clearMetadata() {

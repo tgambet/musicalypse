@@ -108,8 +108,8 @@ class APIRoutes(application: Application) {
     } ~
     path("covers") {
       delete {
-        onSuccess((application.settingsActor ? DeleteCovers)(askTimeout).mapTo[String]) {
-          ok => complete(StatusCodes.OK, ok.toJson)
+        onSuccess((application.settingsActor ? DeleteCovers)(askTimeout).mapTo[Done]) {
+          _ => complete(StatusCodes.OK, "OK".toJson)
         }
       }
     }

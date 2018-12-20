@@ -260,8 +260,10 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   errorClicked() {
-    this.showError = false;
-    setTimeout(() => this.lyricsRef.nativeElement.focus());
+    if (!this.smallScreen) {
+      this.showError = false;
+      setTimeout(() => this.lyricsRef.nativeElement.focus());
+    }
   }
 
 }

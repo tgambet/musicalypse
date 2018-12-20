@@ -145,9 +145,6 @@ app-root {
 .carousel {
   .mat-tab-header {
     .mat-tab-labels {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
       padding-left: 1rem;
     }
     .mat-tab-label {
@@ -178,36 +175,22 @@ app-root {
   .carousel {
     .mat-tab-header {
       .mat-tab-labels {
-        justify-content: center;
-        align-items: center;
         padding-left: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
       }
       .mat-tab-label {
-        font-size: 0;
-        min-width: unset;
-        border-radius: 50%;
-        padding: 0;
-        height: 8px;
-        width: 8px;
-        margin: 0 4px;
+        width: 80px;
+        height: 40px;
         mat-icon {
-          font-size: 0;
+          margin-right: 0;
+        }
+        span {
+          display: none;
         }
       }
-      .mat-tab-label-active {
-        height: 10px;
-        width: 10px;
-        margin: 0 3px;
-      }
-
-      .mat-ripple-element {
-        display: none;
-      }
-      border: none;
-      padding: 0.5rem 0;
-    }
-    mat-ink-bar {
-      display: none;
     }
   }
 }

@@ -118,7 +118,7 @@ export class PlayerComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.breakpointObserver.observe('(max-width: 599px)').subscribe(result => {
+      this.breakpointObserver.observe('(max-width: 598px)').subscribe(result => {
         this.smallScreen = result.matches;
       })
     );

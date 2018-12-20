@@ -120,22 +120,6 @@
     border: 1px solid mat-color($primary);
   }
 
-  @media screen and (max-width: 598px) {
-    .carousel {
-      .mat-tab-header {
-        .mat-tab-label {
-          background-color: mat-color($foreground, disabled) !important;
-          &:focus {
-            background-color: mat-color($foreground, text) !important;
-          }
-        }
-        .mat-tab-label-active {
-          background-color: mat-color($foreground, text) !important;
-        }
-      }
-    }
-  }
-
   .about {
     a {
       color: mat-color($foreground, text);

@@ -15,6 +15,7 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 * Supports mp3, ogg, flac and wav
 * Streaming server for your local network or beyond
 * Accessible by computer, tablets, or phones
+* Lyrics
 * Playlists
 * Favorites and recent tracks
 * Multiple artists/albums selection

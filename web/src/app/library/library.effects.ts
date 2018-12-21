@@ -1,20 +1,19 @@
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
 import {Title} from '@angular/platform-browser';
 import {Action, Store} from '@ngrx/store';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {from, Observable, of} from 'rxjs';
-import {catchError, filter, finalize, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
+import {from, Observable, Observer, of} from 'rxjs';
+import {catchError, filter, finalize, map, mergeMap, skip, switchMap, take, tap} from 'rxjs/operators';
 
 import {CoreUtils} from '@app/core/core.utils';
 import {HttpSocketClientService, SocketMessage} from '@app/core/services/http-socket-client.service';
 import {LoaderService} from '@app/core/services/loader.service';
-import {SetAudioSource} from '@app/core/actions/audio.actions';
+import {AudioActionTypes, SetAudioSource} from '@app/core/actions/audio.actions';
 import {Album, Artist, Track} from '@app/model';
 
 import {ArtistsActionTypes} from './actions/artists.actions';
 import {DeselectAlbum, DeselectAllAlbums} from './actions/albums.actions';
-import {AddTracks, LoadTrackFailure, LoadTrackSuccess, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
+import {AddTracks, RemoveTracks, TracksActionTypes} from './actions/tracks.actions';
 import {LibraryService} from './services/library.service';
 import {LibraryUtils} from './library.utils';
 import * as fromLibrary from './library.reducers';
@@ -30,16 +29,33 @@ export class LibraryEffects {
   /**
    * Load tracks from the API
    */
-  @Effect()
-  loadTracks$: Observable<Action> =
+  // @Effect()
+  /*loadTracks$: Observable<Action> =
     this.actions$.pipe(
       ofType(TracksActionTypes.LoadTracks),
-      tap(() => this.loader.load()),
+      tap(() => this.loader.load(-1)),
       switchMap(() =>
         this.httpSocketClient.get('/api/libraries/tracks').pipe(
           map((tracks: Track[]) => tracks.map(LibraryUtils.fixTags)),
           map(tracks => new LoadTrackSuccess(tracks)),
           catchError((error: HttpErrorResponse) => of(new LoadTrackFailure(error.error))),
+          finalize(() => this.loader.unload())
+        )
+      ),
+    );*/
+
+  @Effect()
+  loadTracks2$: Observable<Action> =
+    this.actions$.pipe(
+      ofType(TracksActionTypes.LoadTracks),
+      tap(() => this.loader.load(0.01)),
+      switchMap(() =>
+        this.getTracks().pipe(
+          map(tracksAnProgress => {
+            this.loader.load(tracksAnProgress[1]);
+            return tracksAnProgress[0].map(LibraryUtils.fixTags);
+          }),
+          map(tracks => new AddTracks(tracks)),
           finalize(() => this.loader.unload())
         )
       ),
@@ -92,7 +108,7 @@ export class LibraryEffects {
   scanTracks$: Observable<Action> =
     this.actions$.pipe(
       ofType(TracksActionTypes.ScanTracks),
-      tap(() => this.loader.load()),
+      tap(() => this.loader.load(-1)),
       switchMap(() =>
         this.scanTracks().pipe(
           map(tracks => new AddTracks(tracks.map(t => LibraryUtils.fixTags(t)))),
@@ -215,6 +231,49 @@ export class LibraryEffects {
         });
       this.httpSocketClient.send({method: 'ScanLibrary', id: currentId, entity: null});
       return () => {
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
+      };
+    });
+  }
+
+  public getTracks(): Observable<[Track[], number]> {
+    return Observable.create((observer: Observer<[Track[], number]>) => {
+      const currentId = ++this.httpSocketClient.id;
+      let total = 0;
+      let fetched = 0;
+      const subscription0 = this.httpSocketClient.getSocket()
+        .pipe(
+          filter((r: SocketMessage) => r.method === 'TracksTotal' && r.id === currentId),
+          take(1),
+          map((r: SocketMessage) => r.entity),
+          tap((e: number) => total = e)
+        )
+        .subscribe();
+      const subscription1 = this.httpSocketClient.getSocket()
+        .pipe(
+          filter((r: SocketMessage) => r.method === 'TracksAdded' && r.id === currentId),
+          map((r: SocketMessage) => r.entity),
+          map((e: Track[]) => {
+            fetched += e.length;
+            return e;
+          })
+        )
+        .subscribe(
+          next => observer.next([next, total === 0 ? 0 : fetched / total]),
+          error => observer.error(error)
+        );
+      const subscription2 = this.httpSocketClient.getSocket()
+        .pipe(
+          filter((r: SocketMessage) => r.method === 'TracksRetrieved' && r.id === currentId),
+          take(1)
+        )
+        .subscribe(() => {
+          observer.complete();
+        });
+      this.httpSocketClient.send({method: 'GetTracks', id: currentId, entity: null});
+      return () => {
+        subscription0.unsubscribe();
         subscription1.unsubscribe();
         subscription2.unsubscribe();
       };

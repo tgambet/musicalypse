@@ -41,7 +41,7 @@ export class LibraryService {
     // Load Tracks
     loader.initializing$.subscribe(initializing => {
         if (!initializing) {
-          store.dispatch(new LoadTracks());
+          setTimeout(() => store.dispatch(new LoadTracks()), 50);
         }
       }
     );

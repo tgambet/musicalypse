@@ -7,9 +7,8 @@ import {MatSnackBar} from '@angular/material';
 @Injectable()
 export class LoaderService {
 
-  private loadings = 0;
-  private readonly loadings$: Observable<boolean>;
-  private loading = new Subject<boolean>();
+  private readonly loadings$: Observable<number>;
+  private loading = new Subject<number>();
 
   hasErrors$: Observable<boolean>;
   private hasErrors = new Subject<boolean>();
@@ -75,20 +74,16 @@ export class LoaderService {
     }
   }
 
-  isLoading(): Observable<boolean> {
+  getLoading(): Observable<number> {
     return this.loadings$;
   }
 
-  load() {
-    this.loadings += 1;
-    this._update();
+  load(value: number) {
+    this.loading.next(value);
   }
 
   unload() {
-    if (this.loadings > 0) {
-      this.loadings -= 1;
-    }
-    this._update();
+    this.loading.next(0);
   }
 
   initialize() {
@@ -108,14 +103,6 @@ export class LoaderService {
       },
       () => this.initializing.next(false)
     );
-  }
-
-  private _update() {
-    if (this.loadings > 0) {
-      this.loading.next(true);
-    } else {
-      this.loading.next(false);
-    }
   }
 
 }

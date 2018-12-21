@@ -50,12 +50,13 @@ import {ChangeTheme, CloseSidenav, ToggleSidenav} from '@app/core/actions/core.a
                    (play)="play()"
                    (pause)="pause()">
       </app-toolbar>
-
-      <mat-progress-bar class="main-loader"
-                        mode="indeterminate"
-                        [class.show]="isLoading() | async">
-      </mat-progress-bar>
-
+      <ng-container *ngIf="getLoading() | async; let loading">
+        <mat-progress-bar class="main-loader"
+                          [value]="loading * 100"
+                          [mode]="loading > 0 ? 'determinate' : 'indeterminate'"
+                          [class.show]="loading !== 0">
+        </mat-progress-bar>
+      </ng-container>
       <app-side-menu [sideNavOpened]="showSidenav$ | async"
                      (closeSidenav)="closeSidenav()"
                      (toggleSidenav)="toggleSidenav()">
@@ -231,8 +232,8 @@ export class CoreComponent implements OnInit {
     }
   }
 
-  isLoading(): Observable<boolean> {
-    return this.loader.isLoading();
+  getLoading(): Observable<number> {
+    return this.loader.getLoading();
   }
 
   closeSidenav(): void {

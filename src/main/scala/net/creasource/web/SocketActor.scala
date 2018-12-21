@@ -91,6 +91,17 @@ class SocketActor(xhrRoutes: Route)(implicit materializer: ActorMaterializer, ap
           client ! JsonMessage("LibraryScannedFailed", id, JsString(t.getMessage)).toJson
       }
 
+    case JsonMessage("GetTracks", id, _) =>
+      logger.info("Retrieving tracks")
+      val f = (app.libraryActor ? GetTracks)(askTimeout).mapTo[Seq[Track]]
+      f.foreach(tracks => {
+        client ! JsonMessage("TracksTotal", id, tracks.length.toJson).toJson
+        tracks.grouped(100).toSeq.foreach(group =>
+          client ! JsonMessage("TracksAdded", id, group.toJson).toJson
+        )
+        client ! JsonMessage("TracksRetrieved", id, JsNull).toJson
+      })
+
     case a @ JsonMessage(_, _, _) =>
       logger.warning("Unhandled JsonMessage: " + a.prettyPrint)
 

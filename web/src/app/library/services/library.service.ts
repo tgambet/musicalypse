@@ -215,7 +215,6 @@ export class LibraryService {
 
   playTrack(track: Track) {
     this.setTrack(track);
-    this.play();
   }
 
   play() {
@@ -239,13 +238,6 @@ export class LibraryService {
   }
 
   addToCurrentPlaylist(tracks: Track[]) {
-    /*this.store.select(fromLibrary.getCurrentPlaylist).pipe(
-      take(1),
-      map(playlist => {
-        playlist.push(...tracks.filter(track => !playlist.some(t => _.isEqual(t, track))));
-        this.store.dispatch(new SetCurrentPlaylist(playlist));
-      })
-    ).subscribe();*/
     this.store.dispatch(new AddToCurrentPlaylist(tracks));
   }
 
@@ -255,12 +247,10 @@ export class LibraryService {
 
   playPreviousTrack() {
     this.store.dispatch(new SetPreviousTrack());
-    this.play();
   }
 
   playNextTrack() {
     this.store.dispatch(new SetNextTrack());
-    this.play();
   }
 
   setShuffle(value: boolean) {

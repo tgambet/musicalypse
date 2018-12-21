@@ -115,6 +115,14 @@ export class LibraryEffects {
       ))
     );
 
+  @Effect({dispatch: false})
+  playTrack$: Observable<void> =
+    this.actions$.pipe(
+      ofType(AudioActionTypes.SetAudioSource),
+      skip(1), // Don't play on first load
+      tap(() => this.library.play())
+    );
+
   /**
    * Load Lyrics
    */

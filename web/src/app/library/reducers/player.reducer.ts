@@ -72,9 +72,7 @@ export function reducer(
       const playlist = state.currentPlaylist;
       const currentTrack = state.currentTrack;
       if (playlist.size === 0 || is(playlist.last(), currentTrack) && !state.repeat) {
-        return {
-          ...state
-        };
+        return state;
       }
       if (!currentTrack ||
           playlist.indexOf(currentTrack) === -1 ||

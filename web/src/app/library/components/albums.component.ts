@@ -204,7 +204,7 @@ export class AlbumsComponent implements OnChanges {
   }
 
   select(album: Album) {
-    this.library.selectAlbums([album]);
+    this.library.selectAlbum(album);
   }
 
   isSelected(album: Album): Observable<boolean> {

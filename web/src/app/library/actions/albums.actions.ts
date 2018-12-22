@@ -3,6 +3,7 @@ import {Album} from '@app/model';
 
 export enum AlbumsActionTypes {
   LoadAlbums        = 'library/albums/load',
+  SelectAlbum       = 'library/albums/select-add',
   SelectAlbums      = 'library/albums/select',
   SelectAlbumsByIds = 'library/albums/select-by-id',
   DeselectAlbum     = 'library/albums/deselect',
@@ -12,6 +13,11 @@ export enum AlbumsActionTypes {
 export class LoadAlbums implements Action {
   readonly type = AlbumsActionTypes.LoadAlbums;
   constructor(public payload: Album[]) {}
+}
+
+export class SelectAlbum implements Action {
+  readonly type = AlbumsActionTypes.SelectAlbum;
+  constructor(public payload: Album) {}
 }
 
 export class SelectAlbums implements Action {
@@ -35,6 +41,7 @@ export class DeselectAllAlbums implements Action {
 
 export type AlbumsActionsUnion =
   LoadAlbums |
+  SelectAlbum |
   SelectAlbums |
   SelectAlbumsByIds |
   DeselectAlbum |

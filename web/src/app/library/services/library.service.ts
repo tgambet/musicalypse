@@ -10,8 +10,8 @@ import {AudioService} from '@app/core/services/audio.service';
 import {LoaderService} from '@app/core/services/loader.service';
 
 import {AddToPlaylist, DeletePlaylist, LoadPlaylist, LoadPlaylists, RemoveFromPlaylist, SavePlaylist} from '../actions/playlists.actions';
-import {DeselectAllArtists, DeselectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
-import {DeselectAlbum, DeselectAllAlbums, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
+import {DeselectAllArtists, DeselectArtist, SelectArtist, SelectArtists, SelectArtistsByIds} from '../actions/artists.actions';
+import {DeselectAlbum, DeselectAllAlbums, SelectAlbum, SelectAlbums, SelectAlbumsByIds} from '../actions/albums.actions';
 import {
   AddToCurrentPlaylist,
   PlayTrackNext,
@@ -177,6 +177,10 @@ export class LibraryService {
     return this.store.select(fromLibrary.getCurrentPlaylist);
   }
 
+  selectArtist(artist: Artist) {
+    this.store.dispatch(new SelectArtist(artist));
+  }
+
   selectArtists(artists: Artist[]) {
     this.store.dispatch(new SelectArtists(artists));
   }
@@ -191,6 +195,10 @@ export class LibraryService {
 
   isSelectedArtist(artist: Artist): Observable<boolean> {
     return this.store.select(fromLibrary.isSelectedArtist(artist));
+  }
+
+  selectAlbum(album: Album) {
+    this.store.dispatch(new SelectAlbum(album));
   }
 
   selectAlbums(albums: Album[]) {

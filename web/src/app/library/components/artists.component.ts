@@ -62,9 +62,9 @@ import {SettingsService} from '@app/settings/services/settings.service';
                          [primaryHTML]="artist.name | sgSearch:search"
                          [secondaryHTML]="getSecondaryHTML(artist)"
                          [tooltip]="artist.name"
-                         (click)="select(artist); next.emit()"
-                         (arrowClicked)="add(artist); next.emit()"
-                         (checked)="$event ? add(artist) : deselect(artist)">
+                         (click)="selectOnly(artist); next.emit()"
+                         (arrowClicked)="select(artist); next.emit()"
+                         (checked)="$event ? select(artist) : deselect(artist)">
           </app-list-item>
         </mat-list>
       </div>
@@ -214,13 +214,13 @@ export class ArtistsComponent implements OnChanges {
     this.library.selectArtists(this.artists);
   }
 
-  select(artist: Artist) {
+  selectOnly(artist: Artist) {
     this.library.selectArtists([artist]);
     this.showChipList = false;
   }
 
-  add(artist: Artist) {
-    this.library.selectArtists([artist]);
+  select(artist: Artist) {
+    this.library.selectArtist(artist);
   }
 
   isSelected(artist: Artist): Observable<boolean> {

@@ -46,6 +46,17 @@ export function reducer(
       };
     }
 
+    case ArtistsActionTypes.SelectArtist: {
+      if (state.selectedIds.indexOf(action.payload.name) === -1) {
+        return {
+          ...state,
+          selectedIds: [...state.selectedIds, action.payload.name]
+        };
+      } else {
+        return state;
+      }
+    }
+
     case ArtistsActionTypes.SelectArtists: {
       return {
         ...state,

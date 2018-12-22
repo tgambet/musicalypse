@@ -7,7 +7,7 @@ const fs = require('fs-extra');
 
 const options = {
   containerVirtualization: false,
-  inputDirectory: __dirname + '/../dist/electron/win-unpacked',
+  inputDirectory: __dirname + '/../dist/electron/win-ia32-unpacked',
   outputDirectory: __dirname + '/../dist',
   packageVersion: '1.0.0.0',
   packageName: '53695CreaSource.Musicalypse',
@@ -15,7 +15,7 @@ const options = {
   packageDescription: 'A modern audio player built with Web technologies.',
   packageExecutable: 'app/Musicalypse.exe',
   assets: __dirname + '/../build/UWP/assets',
-  manifest: __dirname + '/../build/UWP/AppXManifest.xml',
+  manifest: __dirname + '/../build/UWP/AppXManifest_x86.xml',
   deploy: false,
   publisher: 'CN=482ACF73-DAC8-4D98-BA01-FA590F32FB7E',
   publisherDisplayName: 'CreaSource',

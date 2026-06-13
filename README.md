@@ -1,5 +1,8 @@
 # Musicalypse
 
+> [!NOTE]
+> This repository is archived.
+
 Musicalypse is a modern audio player built with web technologies.
 It is available as an online or native version on main desktop platforms
 and provides a backend streaming server.
@@ -22,8 +25,6 @@ Find out more on [the official website](https://musicalypse.creasource.net).
 * Favorites and recent tracks
 * Multiple artists/albums selection
 * Themes
-
-[![Musicalypse_screenshot](https://musicalypse.creasource.net/img/musicalypse-ipad-4.png)](https://musicalypse.creasource.net)
 
 ## Build
 

@@ -75,7 +75,7 @@
     "codelyzer": "^4.5.0",
     "core-js": "^2.5.4",
     "dotenv": "^5.0.1",
-    "electron": "^3.0.13",
+    "electron": "^35.7.5",
     "electron-builder": "^20.38.3",
     "electron-reload": "^1.4.0",
     "electron-windows-store": "^2.1.0",
